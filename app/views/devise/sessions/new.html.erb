@@ -1,0 +1,318 @@
+<div class="dart-login" style="margin-left: -250px !important;">
+  <div class="login-card">
+    <div class="header-section">
+      <%= image_tag 'admin/logo-store.webp', class: 'logo' %>
+      <h1 class="title">Entrar</h1>
+    </div>
+
+    <div class="messages-section">
+      <%= render 'layouts/partials/messages' %>
+    </div>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'login-form' }) do |f| %>
+      <div class="form-group">
+        <%= f.label :email, 'Email', class: 'form-label' %>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope input-icon"></i>
+          <%= f.email_field :email, 
+              autofocus: true, 
+              autocomplete: "email", 
+              class: 'form-input',
+              placeholder: 'Digite seu email' %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password, 'Senha', class: 'form-label' %>
+        <div class="input-wrapper">
+          <i class="fas fa-lock input-icon"></i>
+          <%= f.password_field :password, 
+              autocomplete: "current-password", 
+              class: 'form-input',
+              placeholder: 'Digite sua senha' %>
+        </div>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <%= f.check_box :remember_me, class: 'checkbox-input' %>
+            <span class="checkbox-custom"></span>
+            <span class="checkbox-text">Lembrar de mim</span>
+          </label>
+        </div>
+      <% end %>
+
+      <div class="button-group">
+        <%= f.submit "Entrar", class: 'submit-button' %>
+      </div>
+    <% end %>
+
+    <div class="footer-section">
+      <% if devise_mapping.recoverable? %>
+        <%= link_to "Esqueceu sua senha?", new_password_path(resource_name), class: 'forgot-link' %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+/* Design limpo inspirado no Dart com background transparente */
+.dart-login {
+  min-height: 100vh;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  border-radius: 16px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 
+    0 4px 24px rgba(0, 123, 255, 0.1),
+    0 2px 8px rgba(255, 193, 7, 0.05);
+  position: relative;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #007bff 0%, #ffc107 100%);
+  border-radius: 16px 16px 0 0;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  width: 64px;
+  height: auto;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 123, 255, 0.1));
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a365d;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.messages-section {
+  margin-bottom: 1.5rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #2d3748;
+  margin: 0;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  color: #718096;
+  font-size: 0.875rem;
+  z-index: 2;
+  transition: color 0.2s ease;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 2.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  color: #2d3748;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-input:focus + .input-icon,
+.input-wrapper:focus-within .input-icon {
+  color: #007bff;
+}
+
+.form-input::placeholder {
+  color: #a0aec0;
+}
+
+.checkbox-group {
+  margin: 0.5rem 0;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #4a5568;
+  gap: 0.75rem;
+}
+
+.checkbox-input {
+  display: none;
+}
+
+.checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e0;
+  border-radius: 4px;
+  background: #ffffff;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+  background: #007bff;
+  border-color: #007bff;
+}
+
+.checkbox-input:checked + .checkbox-custom::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.checkbox-text {
+  user-select: none;
+}
+
+.button-group {
+  margin-top: 1rem;
+}
+
+.submit-button {
+  width: 100%;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.submit-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.submit-button:hover::before {
+  left: 100%;
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+.footer-section {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.forgot-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dart-login {
+    padding: 0.5rem;
+  }
+  
+  .login-card {
+    padding: 1.5rem 1rem;
+  }
+  
+  .title {
+    font-size: 1.375rem;
+  }
+}
+</style>

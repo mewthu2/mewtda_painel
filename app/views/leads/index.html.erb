@@ -1,0 +1,317 @@
+<div class="container-fluid py-4">
+  <% title 'Leads captados (GreatPages)' %>
+  
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h2 class="mb-1 text-light">
+            <i class="fa fa-users me-2"></i>Leads Captados
+          </h2>
+          <p class="text-muted mb-0">
+            <small>Gerencie e exporte seus leads do GreatPages</small>
+          </p>
+        </div>
+        
+        <%= link_to export_leads_path, class: 'btn btn-success d-flex align-items-center gap-2' do %>
+          <i class="fa fa-file-excel"></i>
+          <span>Exportar Planilha</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced Search Form -->
+  <%= form_tag(leads_path, method: 'get') do %>
+    <div class="card mb-4 shadow-sm border-0" style="background: linear-gradient(135deg, #1a1d29 0%, #252837 100%);">
+      <div class="card-header border-0 py-3" style="background: transparent;">
+        <h5 class="mb-0 text-info d-flex align-items-center gap-2">
+          <i class="fa fa-search"></i>
+          Pesquisa Avançada
+        </h5>
+      </div>
+
+      <div class="card-body pt-0">
+        <div class="row g-3">
+          <div class="col-12">
+            <%= label_tag :search, 'Procurar', class: 'form-label text-light' %>
+            <div class="input-group">
+              <span class="input-group-text bg-dark border-secondary text-info">
+                <i class="fa fa-search"></i>
+              </span>
+              <%= text_field_tag :search,
+                    params[:search],
+                    class: 'form-control bg-dark border-secondary text-light',
+                    placeholder: 'Pesquise por nome, email, cidade ou origem',
+                    style: 'border-left: 0;' %>
+            </div>
+            <small class="text-muted">Digite qualquer informação relacionada ao lead</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer border-0 bg-transparent">
+        <%= button_tag class: 'btn btn-info text-dark fw-semibold d-flex align-items-center gap-2' do %>
+          <i class="fa fa-search"></i>
+          <span>Pesquisar</span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Table Section with Overflow -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm" style="background: #1a1d29;">
+        <div class="card-body p-0">
+          <!-- Table Info Header -->
+          <div class="px-4 py-3 border-bottom border-secondary">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <span class="text-light">
+                <i class="fa fa-table me-2"></i>
+                <%= page_entries_info @leads %>
+              </span>
+              <span class="badge bg-info text-dark">
+                <%= @leads.total_entries %> leads no total
+              </span>
+            </div>
+          </div>
+
+          <!-- Table with Horizontal Scroll -->
+          <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+            <table class="table table-dark table-hover mb-0" id="leads-table">
+              <thead style="position: sticky; top: 0; z-index: 10; background: #252837;">
+                <tr>
+                  <th class="text-center py-3" style="min-width: 60px;">
+                    <small class="text-uppercase fw-bold">ID</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 150px;">
+                    <small class="text-uppercase fw-bold">Nome</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 200px;">
+                    <small class="text-uppercase fw-bold">Email</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 120px;">
+                    <small class="text-uppercase fw-bold">Cidade</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 120px;">
+                    <small class="text-uppercase fw-bold">Região</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 100px;">
+                    <small class="text-uppercase fw-bold">País</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 120px;">
+                    <small class="text-uppercase fw-bold">Dispositivo</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 120px;">
+                    <small class="text-uppercase fw-bold">Origem</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 120px;">
+                    <small class="text-uppercase fw-bold">Referral</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 100px;">
+                    <small class="text-uppercase fw-bold">Página</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 100px;">
+                    <small class="text-uppercase fw-bold">Formulário</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 150px;">
+                    <small class="text-uppercase fw-bold">Conversão</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 120px;">
+                    <small class="text-uppercase fw-bold">IP</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 100px;">
+                    <small class="text-uppercase fw-bold">Privacidade</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 120px;">
+                    <small class="text-uppercase fw-bold">Experimento</small>
+                  </th>
+                  <th class="text-center py-3" style="min-width: 120px;">
+                    <small class="text-uppercase fw-bold">Variação</small>
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% @leads.each do |lead| %>
+                  <tr class="align-middle" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <td class="text-center">
+                      <span class="badge bg-secondary">#<%= lead.id %></span>
+                    </td>
+                    <td class="text-center">
+                      <%= lead.name.presence || %(<span class="text-muted">—</span>).html_safe %>
+                    </td>
+                    <td class="text-center">
+                      <small class="text-info"><%= lead.email %></small>
+                    </td>
+                    <td class="text-center">
+                      <%= lead.user_city.presence || %(<span class="text-muted">—</span>).html_safe %>
+                    </td>
+                    <td class="text-center">
+                      <%= lead.user_region.presence || %(<span class="text-muted">—</span>).html_safe %>
+                    </td>
+                    <td class="text-center">
+                      <% if lead.user_country.present? %>
+                        <span class="badge bg-dark border border-secondary">
+                          <%= lead.user_country %>
+                        </span>
+                      <% else %>
+                        <span class="text-muted">—</span>
+                      <% end %>
+                    </td>
+                    <td class="text-center">
+                      <% if lead.device.present? %>
+                        <i class="fa <%= lead.device.downcase.include?('mobile') ? 'fa-mobile' : 'fa-desktop' %> me-1"></i>
+                        <%= lead.device %>
+                      <% else %>
+                        <span class="text-muted">—</span>
+                      <% end %>
+                    </td>
+                    <td class="text-center">
+                      <span class="badge bg-primary"><%= lead.source %></span>
+                    </td>
+                    <td class="text-center">
+                      <%= lead.referral_source.presence || %(<span class="text-muted">—</span>).html_safe %>
+                    </td>
+                    <td class="text-center">
+                      <% if lead.page_url.present? %>
+                        <%= link_to lead.page_url, target: '_blank', class: 'btn btn-sm btn-outline-info' do %>
+                          <i class="fa fa-external-link-alt"></i>
+                        <% end %>
+                      <% else %>
+                        <span class="text-muted">—</span>
+                      <% end %>
+                    </td>
+                    <td class="text-center">
+                      <%= lead.greatpages_form_id.presence || %(<span class="text-muted">—</span>).html_safe %>
+                    </td>
+                    <td class="text-center">
+                      <% if lead.conversion_at.present? %>
+                        <small class="text-success">
+                          <i class="fa fa-calendar me-1"></i>
+                          <%= lead.conversion_at.strftime('%d/%m/%Y') %><br>
+                          <i class="fa fa-clock me-1"></i>
+                          <%= lead.conversion_at.strftime('%H:%M') %>
+                        </small>
+                      <% else %>
+                        <span class="text-muted">—</span>
+                      <% end %>
+                    </td>
+                    <td class="text-center">
+                      <% if lead.ip_address.present? %>
+                        <code class="text-light"><%= lead.ip_address %></code>
+                      <% else %>
+                        <span class="text-muted">—</span>
+                      <% end %>
+                    </td>
+                    <td class="text-center">
+                      <% if lead.privacy_policy.present? %>
+                        <span class="badge bg-success">
+                          <i class="fa fa-check"></i> Aceito
+                        </span>
+                      <% else %>
+                        <span class="text-muted">—</span>
+                      <% end %>
+                    </td>
+                    <td class="text-center">
+                      <%= lead.experiment_id.presence || %(<span class="text-muted">—</span>).html_safe %>
+                    </td>
+                    <td class="text-center">
+                      <%= lead.variation_id.presence || %(<span class="text-muted">—</span>).html_safe %>
+                    </td>
+                  </tr>
+                <% end %>
+
+                <% if @leads.empty? %>
+                  <tr>
+                    <td colspan="16" class="text-center py-5">
+                      <div class="text-muted">
+                        <i class="fa fa-inbox fa-3x mb-3 d-block" style="opacity: 0.3;"></i>
+                        <h5>Nenhum lead encontrado</h5>
+                        <p class="mb-0">Tente ajustar os filtros de pesquisa</p>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <%= will_paginate @leads,
+        list_classes: %w[pagination justify-content-center],
+        inner_window: 1,
+        class: 'pagination-dark'
+      %>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Custom Scrollbar */
+  .table-responsive::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+  }
+
+  .table-responsive::-webkit-scrollbar-track {
+    background: #1a1d29;
+  }
+
+  .table-responsive::-webkit-scrollbar-thumb {
+    background: #3d4153;
+    border-radius: 5px;
+  }
+
+  .table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #4d5163;
+  }
+
+  /* Table Hover Effect */
+  .table-dark tbody tr:hover {
+    background-color: rgba(23, 162, 184, 0.1) !important;
+    transition: background-color 0.2s ease;
+  }
+
+  /* Smooth Shadows */
+  .card {
+    transition: box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Pagination Dark Theme */
+  .pagination-dark .page-link {
+    background-color: #1a1d29;
+    border-color: #3d4153;
+    color: #17a2b8;
+  }
+
+  .pagination-dark .page-link:hover {
+    background-color: #252837;
+    border-color: #17a2b8;
+    color: #17a2b8;
+  }
+
+  .pagination-dark .page-item.active .page-link {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    color: #000;
+  }
+
+  /* Better Input Focus */
+  .form-control:focus {
+    border-color: #17a2b8;
+    box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+  }
+</style>
