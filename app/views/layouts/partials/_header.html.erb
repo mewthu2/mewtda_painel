@@ -1,19 +1,54 @@
-<header class="navbar-header bg-dark">
-  <div class="navbar-brand bg-dark">
-    <div class="brand-logo bg-dark">
-      <%= image_tag 'admin/logo-store', style: 'width:30%; margin-top:5px;' %>
-    </div>
-  </div>
-  <div class="navbar-content text-white">
-    <%= yield :title %>
-  </div>
-  <div class="navbar-dropdowns">
-    <nav class="navbar navbar-expand-sm">
-      <div class="dropdown" style="margin-top: 12px; margin-right: -12em;">
-        <%= image_tag 'admin/usuario-200x200', style: 'width:10%; border-radius: 50%;' %>
-        <strong class="text-white"><%= current_user.name %></strong>
-        <%= link_to destroy_user_session_path(current_user), data: { turbo: :false } do %>Sair<% end %>
+<header class="navbar-header">
+  <nav class="navbar navbar-expand-lg creative-navbar">
+    <div class="container-fluid px-3 px-lg-4">
+      <%= link_to root_path, class: 'navbar-brand d-flex align-items-center gap-2 brand-area' do %>
+        <span class="brand-badge">
+          <i class="fa-solid fa-bolt"></i>
+        </span>
+        <%= image_tag 'admin/logo-store', alt: 'Mewtda', class: 'brand-logo-image' %>
+      <% end %>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerMenu" aria-controls="headerMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="headerMenu">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 creative-nav-icons">
+          <li class="nav-item">
+            <%= link_to root_path, class: "nav-link #{'active' if current_page?(root_path)}" do %>
+              <i class="fa-solid fa-house"></i>
+              <span>Home</span>
+            <% end %>
+          </li>
+          <li class="nav-item">
+            <%= link_to leads_path, class: "nav-link #{'active' if current_page?(leads_path)}" do %>
+              <i class="fa-regular fa-envelope"></i>
+              <span>Leads</span>
+            <% end %>
+          </li>
+          <li class="nav-item">
+            <%= link_to attempts_path, class: "nav-link #{'active' if current_page?(attempts_path)}" do %>
+              <i class="fa-solid fa-shield-halved"></i>
+              <span>Tentativas</span>
+            <% end %>
+          </li>
+          <li class="nav-item">
+            <%= link_to dashboard_index_path, class: "nav-link #{'active' if current_page?(dashboard_index_path)}" do %>
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Dashboard</span>
+            <% end %>
+          </li>
+        </ul>
+
+        <div class="user-area d-flex align-items-center">
+          <span class="user-chip d-none d-md-inline"><%= current_user.name %></span>
+          <%= image_tag 'admin/usuario-200x200', alt: current_user.name, class: 'user-avatar' %>
+          <%= link_to destroy_user_session_path(current_user), data: { turbo: :false }, class: 'btn btn-sm btn-outline-danger ms-2' do %>
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="d-none d-lg-inline">Sair</span>
+          <% end %>
+        </div>
       </div>
-    </nav>
-  </div>
+    </div>
+  </nav>
 </header>
