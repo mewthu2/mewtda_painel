@@ -1,64 +1,158 @@
-<div class="row">
-  <% title 'Lista de Perfis' %>
-</div>
+<% title 'Perfis' %>
 
-<%= link_to new_profile_path, class: 'btn btn-sm btn-primary text-light mb-lg' do %> 
-  <i class="fa fa-plus"></i> Novo perfil
-<% end %>
+<div class="profiles-wrapper">
 
-<%= form_tag(profiles_path, method: 'get') do %>
-  <div class="card mb-lg advanced-search-form bg-dark text-light" id="filters">
-    <div class="card-header text-info">
-      Pesquisa avançada
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-sm-12">
-          <%= label_tag :search, 'Procurar' %>
-          <%= text_field_tag :search, params[:search], class: 'form-control', placeholder: 'Pesquise por nome, email ou telefone' %>
+  <%# Filtros %>
+  <%= form_tag(profiles_path, method: 'get') do %>
+    <div class="profiles-filters">
+      <div class="profiles-filters__row">
+        <div class="profiles-filters__field">
+          <label>Buscar</label>
+          <%= text_field_tag :search, params[:search], class: 'profiles-filters__input', placeholder: 'Nome do perfil...' %>
+        </div>
+        <div class="profiles-filters__actions">
+          <%= button_tag class: 'profiles-btn profiles-btn--primary', name: '' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            Filtrar
+          <% end %>
+          <%= link_to profiles_path, class: 'profiles-btn profiles-btn--secondary' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Limpar
+          <% end %>
+          <%= link_to new_profile_path, class: 'profiles-btn profiles-btn--success' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Novo Perfil
+          <% end %>
         </div>
       </div>
     </div>
-    <div class="card-footer">
-      <%= button_tag class: 'btn btn-secondary text-info', name: '' do %><i class="fa fa-search text-info"></i> Pesquisar<% end %>
-    </div>
-  </div>
-<% end %>
+  <% end %>
 
-<div class="row">
-  <div class="col-12">
-    <table class="table table-dark table-hover table-responsive" style="overflow-x: scroll;" id="profiles-table">
+  <%# Tabela %>
+  <div class="profiles-table-wrap">
+    <div class="profiles-table-header">
+      <span class="profiles-table-header__title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        Perfis
+      </span>
+      <span class="profiles-table-header__count"><%= @profiles.total_entries rescue @profiles.count %> encontrados</span>
+    </div>
+
+    <table class="profiles-table">
       <thead>
         <tr>
-          <th width="50" class="text-center"><i class="fa fa-ellipsis-v"></i></th>
-          <th class="text-center"><%= 'ID' %></th>
-          <th class="text-center"><%= Profile.human_attribute_name :name %></th>
-          <th class="text-center"><%= Profile.human_attribute_name :created_at %></th>
+          <th>Perfil</th>
+          <th class="text-center">ID</th>
+          <th class="text-center">Usuários</th>
+          <th>Criado em</th>
+          <th class="text-center">Ações</th>
         </tr>
       </thead>
       <tbody>
         <% @profiles.each do |profile| %>
           <tr>
+            <td>
+              <div class="profiles-table__profile">
+                <div class="profiles-table__icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="profiles-table__name"><%= profile.name %></div>
+                  <% if profile.id == 1 %>
+                    <div class="profiles-table__badge profiles-table__badge--admin">Administrador</div>
+                  <% end %>
+                </div>
+              </div>
+            </td>
             <td class="text-center">
-              <%= link_to edit_profile_path(profile), class: 'btn btn-sm btn-primary text-light' do %> 
-                <i class="fa fa-pencil-alt"></i>
+              <span class="profiles-table__id">#<%= profile.id %></span>
+            </td>
+            <td class="text-center">
+              <span class="profiles-table__count"><%= User.where(profile_id: profile.id).count %></span>
+            </td>
+            <td class="profiles-table__date"><%= profile.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+            <td class="text-center">
+              <%= link_to edit_profile_path(profile), class: 'profiles-btn profiles-btn--icon' do %>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+                </svg>
+                Editar
               <% end %>
             </td>
-            <td class="text-center"><%= profile.id %></td>
-            <td class="text-center"><%= profile.name %></td>
-            <td class="text-center"><%= profile.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+          </tr>
+        <% end %>
+        <% if @profiles.empty? %>
+          <tr>
+            <td colspan="5" class="profiles-table__empty">Nenhum perfil encontrado.</td>
           </tr>
         <% end %>
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="7">
-            <%= page_entries_info @profiles %>
-          </th>
+          <td colspan="5"><%= page_entries_info @profiles %></td>
         </tr>
       </tfoot>
     </table>
+
+    <%= will_paginate @profiles, list_classes: %w[profiles-pagination] %>
   </div>
+
 </div>
 
-<%= will_paginate @profiles, list_classes: %w[pagination justify-content-center mt-lg], inner_window: 1 %>
+<style>
+  .profiles-wrapper { padding: 1.5rem 2rem; }
+
+  .profiles-filters { background: #fff; border: 1px solid #e4e7f0; border-radius: 10px; padding: 1.1rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .profiles-filters__row { display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: flex-end; }
+  .profiles-filters__field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 200px; }
+  .profiles-filters__field label { font-size: 0.78rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
+  .profiles-filters__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #1e2235; background: #f8f9fc; outline: none; transition: border-color 0.15s; }
+  .profiles-filters__input:focus { border-color: #3b4adf; background: #fff; }
+  .profiles-filters__actions { display: flex; gap: 0.5rem; align-items: flex-end; }
+
+  .profiles-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
+  .profiles-btn:hover { opacity: 0.88; }
+  .profiles-btn--primary { background: #3b4adf; color: #fff; }
+  .profiles-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
+  .profiles-btn--success { background: #1d7a3e; color: #fff; }
+  .profiles-btn--icon { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; padding: 0.4rem 0.75rem; font-size: 0.82rem; }
+
+  .profiles-table-wrap { background: #fff; border: 1px solid #e4e7f0; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden; }
+  .profiles-table-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid #f0f2f8; }
+  .profiles-table-header__title { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #1e2235; font-size: 0.95rem; }
+  .profiles-table-header__count { font-size: 0.8rem; color: #9097b5; background: #f4f5fb; padding: 0.25rem 0.65rem; border-radius: 20px; }
+
+  .profiles-table { width: 100%; border-collapse: collapse; }
+  .profiles-table thead th { padding: 0.75rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: #9097b5; text-transform: uppercase; letter-spacing: 0.06em; background: #f8f9fc; border-bottom: 1px solid #e4e7f0; }
+  .profiles-table tbody td { padding: 0.9rem 1.25rem; border-bottom: 1px solid #f0f2f8; font-size: 0.875rem; color: #3a4060; vertical-align: middle; }
+  .profiles-table tbody tr:last-child td { border-bottom: none; }
+  .profiles-table tbody tr:hover td { background: #f8f9fc; }
+  .profiles-table tfoot td { padding: 0.75rem 1.25rem; font-size: 0.8rem; color: #9097b5; border-top: 1px solid #f0f2f8; }
+  .profiles-table__empty { text-align: center; color: #9097b5; padding: 3rem !important; }
+
+  .profiles-table__profile { display: flex; align-items: center; gap: 0.75rem; }
+  .profiles-table__icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #3b4adf, #6674f5); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .profiles-table__name { font-weight: 600; color: #1e2235; }
+  .profiles-table__badge { display: inline-flex; align-items: center; padding: 0.15rem 0.55rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-top: 0.2rem; }
+  .profiles-table__badge--admin { background: #fef3c7; color: #92400e; }
+  .profiles-table__id { font-family: monospace; font-size: 0.82rem; background: #f4f5fb; padding: 0.2rem 0.55rem; border-radius: 6px; color: #5a6380; }
+  .profiles-table__count { font-weight: 600; color: #3b4adf; }
+  .profiles-table__date { color: #6b7280; font-size: 0.82rem; white-space: nowrap; }
+
+  .profiles-pagination { display: flex; list-style: none; gap: 0.4rem; padding: 1rem 1.5rem; margin: 0; justify-content: center; }
+  .profiles-pagination li a, .profiles-pagination li span { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 0.5rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500; border: 1px solid #e4e7f0; color: #3a4060; text-decoration: none; transition: all 0.15s; }
+  .profiles-pagination li.current span { background: #3b4adf; color: #fff; border-color: #3b4adf; }
+  .profiles-pagination li a:hover { background: #f0f2fb; border-color: #b0b8f0; }
+  .text-center { text-align: center; }
+</style>

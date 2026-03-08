@@ -1,58 +1,102 @@
 <%= form_for(user, as: user, html: { autocomplete: 'off' }, data: { disabled: read_only }) do |form| %>
-  <div class="bg-dark p-4">
-    <div class="page-header text-primary">
-      <h4>
-        <%= user.new_record? ? "Criar Usuário" : "Atualizar Usuário" %>
-        <small class="text-secondary"> Informações do usuário</small>
-      </h4>
-    </div>
 
-    <div class="row">
-      <%= form.label 'Nome', class: 'col-form-label text-secondary' %>
-      <div class="col-12">
-        <%= form.text_field :name, class: 'form-control', required: true %>
-      </div>
-    </div>
+  <div class="uform-wrapper">
+    <div class="uform-card">
 
-    <div class="row">
-      <%= form.label 'Email', class: 'col-form-label text-secondary' %>
-      <div class="col-12">
-        <%= form.email_field :email, class: 'form-control', required: true %>
-      </div>
-    </div>
-
-    <% if user.new_record? %>
-      <div class="row">
-        <%= form.label 'Senha', class: 'col-form-label text-secondary' %>
-        <div class="col-12 mb-3">
-          <%= form.password_field :password, class: 'form-control', required: true %>
+      <div class="uform-card__header">
+        <div class="uform-card__header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="uform-card__title"><%= user.new_record? ? 'Criar Usuário' : 'Editar Usuário' %></h2>
+          <p class="uform-card__subtitle">Informações do usuário</p>
         </div>
       </div>
 
-      <div class="row">
-        <%= form.label 'Confirmação de Senha', class: 'col-form-label text-secondary' %>
-        <div class="col-12 mb-3">
-          <%= form.password_field :password_confirmation, class: 'form-control', required: true %>
+      <div class="uform-card__body">
+
+        <div class="uform-field">
+          <%= form.label :name, 'Nome', class: 'uform-field__label' %>
+          <%= form.text_field :name, class: 'uform-field__input', required: true, placeholder: 'Nome completo' %>
         </div>
-      </div>
-    <% end %>
 
-    <div class="row">
-      <%= form.label 'Perfil', class: 'col-form-label text-secondary' %>
-      <div class="col-12">
-        <%= form.collection_select :profile_id, @profiles, :id, :name, { include_blank: 'Selecione um perfil' }, { class: 'form-control' } %>
-      </div>
-    </div>
+        <div class="uform-field">
+          <%= form.label :email, 'E-mail', class: 'uform-field__label' %>
+          <%= form.email_field :email, class: 'uform-field__input', required: true, placeholder: 'email@exemplo.com' %>
+        </div>
 
-    <div class="panel-buttons bg-secondary">
-      <%= link_to users_path, class: 'btn btn-dark btn-lg' do %>
-        <i class="fa fa-undo"></i> Voltar
-      <% end %>
-      <% unless read_only %>
-        <%= form.button class: 'btn btn-primary btn-lg', data: { disable_with: user.new_record? ? 'Criando...' : 'Salvando...' } do %>
-          <i class="fa fa-save"></i> <%= user.new_record? ? 'Criar Usuário' : 'Atualizar Usuário' %>
+        <% if user.new_record? %>
+          <div class="uform-row">
+            <div class="uform-field">
+              <%= form.label :password, 'Senha', class: 'uform-field__label' %>
+              <%= form.password_field :password, class: 'uform-field__input', required: true, placeholder: 'Mínimo 6 caracteres' %>
+            </div>
+            <div class="uform-field">
+              <%= form.label :password_confirmation, 'Confirmar Senha', class: 'uform-field__label' %>
+              <%= form.password_field :password_confirmation, class: 'uform-field__input', required: true, placeholder: 'Repita a senha' %>
+            </div>
+          </div>
         <% end %>
-      <% end %>
+
+        <div class="uform-field">
+          <%= form.label :profile_id, 'Perfil', class: 'uform-field__label' %>
+          <%= form.collection_select :profile_id, @profiles, :id, :name,
+              { include_blank: 'Selecione um perfil' },
+              { class: 'uform-field__input uform-field__input--select' } %>
+        </div>
+
+      </div>
+
+      <div class="uform-card__footer">
+        <%= link_to users_path, class: 'uform-btn uform-btn--secondary' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+          </svg>
+          Voltar
+        <% end %>
+        <% unless read_only %>
+          <%= form.button class: 'uform-btn uform-btn--primary',
+              data: { disable_with: user.new_record? ? 'Criando...' : 'Salvando...' } do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <%= user.new_record? ? 'Criar Usuário' : 'Salvar Alterações' %>
+          <% end %>
+        <% end %>
+      </div>
+
     </div>
   </div>
+
 <% end %>
+
+<style>
+  .uform-wrapper { padding: 1.5rem 2rem; display: flex; justify-content: center; }
+
+  .uform-card { background: #fff; border: 1px solid #e4e7f0; border-radius: 14px; box-shadow: 0 2px 12px rgba(30,40,100,0.07); width: 100%; max-width: 600px; overflow: hidden; }
+
+  .uform-card__header { display: flex; align-items: center; gap: 1rem; padding: 1.5rem 1.75rem; border-bottom: 1px solid #f0f2f8; background: #f8f9fc; }
+  .uform-card__header-icon { width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #3b4adf, #6674f5); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .uform-card__title { font-size: 1.05rem; font-weight: 700; color: #1e2235; margin: 0; }
+  .uform-card__subtitle { font-size: 0.8rem; color: #9097b5; margin: 0.15rem 0 0; }
+
+  .uform-card__body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .uform-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 520px) { .uform-row { grid-template-columns: 1fr; } }
+
+  .uform-field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .uform-field__label { font-size: 0.8rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
+  .uform-field__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.55rem 0.85rem; font-size: 0.9rem; color: #1e2235; background: #f8f9fc; outline: none; transition: border-color 0.15s, background 0.15s; width: 100%; box-sizing: border-box; }
+  .uform-field__input:focus { border-color: #3b4adf; background: #fff; }
+  .uform-field__input--select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%239097b5' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.85rem center; padding-right: 2.5rem; cursor: pointer; }
+
+  .uform-card__footer { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; padding: 1.25rem 1.75rem; border-top: 1px solid #f0f2f8; background: #f8f9fc; }
+
+  .uform-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
+  .uform-btn:hover { opacity: 0.88; }
+  .uform-btn--primary { background: #3b4adf; color: #fff; }
+  .uform-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
+</style>

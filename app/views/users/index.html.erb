@@ -1,66 +1,166 @@
-<div class="row">
-  <% title 'Lista de Usuários' %>
-</div>
+<% title 'Usuários' %>
 
-<%= link_to new_user_path, class: 'btn btn-sm btn-primary text-light mb-lg' do %> 
-  <i class="fa fa-plus"></i> Novo usuário
-<% end %>
+<div class="users-wrapper">
 
-<%= form_tag(users_path, method: 'get') do %>
-  <div class="card mb-lg advanced-search-form bg-dark text-light" id="filters">
-    <div class="card-header text-info">
-      Pesquisa avançada
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-sm-12">
-          <%= label_tag :search, 'Procurar' %>
-          <%= text_field_tag :search, params[:search], class: 'form-control', placeholder: 'Pesquise por nome, email ou telefone' %>
+  <%# Filtros %>
+  <%= form_tag(users_path, method: 'get') do %>
+    <div class="users-filters">
+      <div class="users-filters__row">
+        <div class="users-filters__field">
+          <label>Buscar</label>
+          <%= text_field_tag :search, params[:search], class: 'users-filters__input', placeholder: 'Nome ou e-mail...' %>
+        </div>
+        <div class="users-filters__actions">
+          <%= button_tag class: 'users-btn users-btn--primary', name: '' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            Filtrar
+          <% end %>
+          <%= link_to users_path, class: 'users-btn users-btn--secondary' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Limpar
+          <% end %>
+          <%= link_to new_user_path, class: 'users-btn users-btn--success' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Novo Usuário
+          <% end %>
         </div>
       </div>
     </div>
-    <div class="card-footer">
-      <%= button_tag class: 'btn btn-secondary text-info', name: '' do %><i class="fa fa-search text-info"></i> Pesquisar<% end %>
-    </div>
-  </div>
-<% end %>
+  <% end %>
 
-<div class="row">
-  <div class="col-12">
-    <table class="table table-dark table-hover table-responsive" style="overflow-x: scroll;" id="users-table">
+  <%# Tabela %>
+  <div class="users-table-wrap">
+    <div class="users-table-header">
+      <span class="users-table-header__title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+        </svg>
+        Usuários
+      </span>
+      <span class="users-table-header__count"><%= @users.total_entries rescue @users.count %> encontrados</span>
+    </div>
+
+    <table class="users-table">
       <thead>
         <tr>
-          <th width="50" class="text-center"><i class="fa fa-ellipsis-v"></i></th>
-          <th class="text-center"><%= 'ID' %></th>
-          <th class="text-center"><%= User.human_attribute_name :name %></th>
-          <th class="text-center"><%= User.human_attribute_name :email %></th>
-          <th class="text-center"><%= User.human_attribute_name :created_at %></th>
+          <th>Usuário</th>
+          <th>E-mail</th>
+          <th>Perfil</th>
+          <th>Cadastrado em</th>
+          <th class="text-center">Ações</th>
         </tr>
       </thead>
       <tbody>
         <% @users.each do |user| %>
+          <% initials = user.name.to_s.split(' ').first(2).map { |w| w[0] }.join.upcase %>
           <tr>
-            <td class="text-center">
-              <%= link_to edit_user_path(user), class: 'btn btn-sm btn-primary text-light' do %> 
-                <i class="fa fa-pencil-alt"></i>
+            <td>
+              <div class="users-table__user">
+                <div class="users-table__avatar"><%= initials.presence || '?' %></div>
+                <div>
+                  <div class="users-table__name"><%= user.name %></div>
+                  <div class="users-table__id">ID #<%= user.id %></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <a href="mailto:<%= user.email %>" class="users-table__email"><%= user.email %></a>
+            </td>
+            <td>
+              <% if user.admin? %>
+                <span class="users-table__badge users-table__badge--admin">Admin</span>
+              <% else %>
+                <span class="users-table__badge users-table__badge--user"><%= user.try(:profile)&.name || 'Usuário' %></span>
               <% end %>
             </td>
-            <td class="text-center"><%= user.id %></td>
-            <td class="text-center"><%= user.name %></td>
-            <td class="text-center"><%= user.email %></td>
-            <td class="text-center"><%= user.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+            <td class="users-table__date"><%= user.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+            <td class="text-center">
+              <%= link_to edit_user_path(user), class: 'users-btn users-btn--icon' do %>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+                </svg>
+                Editar
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @users.empty? %>
+          <tr>
+            <td colspan="5" class="users-table__empty">Nenhum usuário encontrado.</td>
           </tr>
         <% end %>
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="7">
-            <%= page_entries_info @users %>
-          </th>
+          <td colspan="5"><%= page_entries_info @users %></td>
         </tr>
       </tfoot>
     </table>
+
+    <%= will_paginate @users, list_classes: %w[users-pagination] %>
   </div>
+
 </div>
 
-<%= will_paginate @users, list_classes: %w[pagination justify-content-center mt-lg], inner_window: 1 %>
+<style>
+  .users-wrapper { padding: 1.5rem 2rem; }
+
+  .users-filters {
+    background: #fff;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    padding: 1.1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .users-filters__row { display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: flex-end; }
+  .users-filters__field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 200px; }
+  .users-filters__field label { font-size: 0.78rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
+  .users-filters__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #1e2235; background: #f8f9fc; outline: none; transition: border-color 0.15s; }
+  .users-filters__input:focus { border-color: #3b4adf; background: #fff; }
+  .users-filters__actions { display: flex; gap: 0.5rem; align-items: flex-end; }
+
+  .users-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
+  .users-btn:hover { opacity: 0.88; }
+  .users-btn--primary { background: #3b4adf; color: #fff; }
+  .users-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
+  .users-btn--success { background: #1d7a3e; color: #fff; }
+  .users-btn--icon { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; padding: 0.4rem 0.75rem; font-size: 0.82rem; }
+
+  .users-table-wrap { background: #fff; border: 1px solid #e4e7f0; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden; }
+  .users-table-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid #f0f2f8; }
+  .users-table-header__title { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #1e2235; font-size: 0.95rem; }
+  .users-table-header__count { font-size: 0.8rem; color: #9097b5; background: #f4f5fb; padding: 0.25rem 0.65rem; border-radius: 20px; }
+
+  .users-table { width: 100%; border-collapse: collapse; }
+  .users-table thead th { padding: 0.75rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: #9097b5; text-transform: uppercase; letter-spacing: 0.06em; background: #f8f9fc; border-bottom: 1px solid #e4e7f0; }
+  .users-table tbody td { padding: 0.9rem 1.25rem; border-bottom: 1px solid #f0f2f8; font-size: 0.875rem; color: #3a4060; vertical-align: middle; }
+  .users-table tbody tr:last-child td { border-bottom: none; }
+  .users-table tbody tr:hover td { background: #f8f9fc; }
+  .users-table tfoot td { padding: 0.75rem 1.25rem; font-size: 0.8rem; color: #9097b5; border-top: 1px solid #f0f2f8; }
+  .users-table__empty { text-align: center; color: #9097b5; padding: 3rem !important; }
+
+  .users-table__user { display: flex; align-items: center; gap: 0.75rem; }
+  .users-table__avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b4adf, #6674f5); color: #fff; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .users-table__name { font-weight: 600; color: #1e2235; }
+  .users-table__id { font-size: 0.75rem; color: #9097b5; }
+  .users-table__email { color: #3b4adf; text-decoration: none; font-size: 0.875rem; }
+  .users-table__email:hover { text-decoration: underline; }
+  .users-table__date { color: #6b7280; font-size: 0.82rem; white-space: nowrap; }
+
+  .users-table__badge { display: inline-flex; align-items: center; padding: 0.2rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .users-table__badge--admin { background: #fef3c7; color: #92400e; }
+  .users-table__badge--user { background: #eff6ff; color: #1d4ed8; }
+
+  .users-pagination { display: flex; list-style: none; gap: 0.4rem; padding: 1rem 1.5rem; margin: 0; justify-content: center; }
+  .users-pagination li a, .users-pagination li span { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 0.5rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500; border: 1px solid #e4e7f0; color: #3a4060; text-decoration: none; transition: all 0.15s; }
+  .users-pagination li.current span { background: #3b4adf; color: #fff; border-color: #3b4adf; }
+  .users-pagination li a:hover { background: #f0f2fb; border-color: #b0b8f0; }
+  .text-center { text-align: center; }
+</style>
