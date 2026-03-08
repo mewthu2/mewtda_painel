@@ -14,6 +14,10 @@ module MewtdaPainel
     config.time_zone = 'Brasilia'
 
     config.active_record.default_timezone = :utc
+
+    config.i18n.default_locale = :'pt-BR'
+    config.i18n.available_locales = [:'pt-BR', :en]
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

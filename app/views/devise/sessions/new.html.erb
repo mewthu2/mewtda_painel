@@ -420,3 +420,59 @@
     }
   }
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const words = [
+    "Shopify",
+    "Nuvemshop",
+    "WooCommerce",
+    "Loja Integrada",
+    "Magento",
+    "Tray",
+    "VTEX",
+    "Mercado Livre",
+    "Amazon",
+    "Magalu",
+    "Shopee",
+    "E-commerce próprio"
+  ];
+
+  const element = document.getElementById("tw-text");
+
+  let wordIndex = 0;
+  let charIndex = 0;
+  let deleting = false;
+
+  function typeEffect() {
+    const currentWord = words[wordIndex];
+
+    if (!deleting) {
+      element.textContent = currentWord.substring(0, charIndex + 1);
+      charIndex++;
+
+      if (charIndex === currentWord.length) {
+        deleting = true;
+        setTimeout(typeEffect, 1400);
+        return;
+      }
+
+    } else {
+      element.textContent = currentWord.substring(0, charIndex - 1);
+      charIndex--;
+
+      if (charIndex === 0) {
+        deleting = false;
+        wordIndex = (wordIndex + 1) % words.length;
+      }
+    }
+
+    const speed = deleting ? 45 : 75;
+    setTimeout(typeEffect, speed);
+  }
+
+  typeEffect();
+
+});
+</script>
