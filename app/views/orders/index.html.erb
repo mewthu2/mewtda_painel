@@ -2,7 +2,6 @@
 
 <div class="orders-wrapper">
 
-  <%# Filtros %>
   <%= form_tag(orders_path, method: 'get') do %>
     <div class="orders-filters">
 
@@ -46,7 +45,6 @@
     </div>
   <% end %>
 
-  <%# Tabela %>
   <div class="orders-table-wrap">
     <table class="orders-table">
       <thead>
@@ -73,7 +71,6 @@
 
             <tr>
 
-              <%# Número do pedido com link Shopify %>
               <td>
                 <% shopify_url = "https://admin.shopify.com/store/henrribrasil/orders/#{order.shopify_order_id}" %>
                 <%= link_to shopify_url, target: '_blank', rel: 'noopener noreferrer', class: 'orders-table__order-link' do %>
@@ -86,7 +83,6 @@
                 <% end %>
               </td>
 
-              <%# Cliente %>
               <td>
                 <% if customer %>
                   <% full_name = [customer.first_name, customer.last_name].compact.join(' ').presence || customer.name %>
@@ -101,7 +97,6 @@
                 <% end %>
               </td>
 
-              <%# Telefone %>
               <td>
                 <% if customer&.phone.present? %>
                   <a href="tel:<%= customer.phone %>" class="orders-table__phone">
@@ -115,12 +110,10 @@
                 <% end %>
               </td>
 
-              <%# Qtd itens %>
               <td class="text-center">
                 <span class="orders-badge orders-badge--count"><%= items.size %></span>
               </td>
 
-              <%# Total %>
               <td class="text-right">
                 <% if total > 0 %>
                   <strong class="orders-table__total">R$ <%= number_with_precision(total, precision: 2, delimiter: '.', separator: ',') %></strong>
@@ -129,7 +122,6 @@
                 <% end %>
               </td>
 
-              <%# Data %>
               <td class="text-center">
                 <span class="orders-table__date">
                   <%= order.shopify_creation_date.strftime('%d/%m/%Y') %>
@@ -137,7 +129,6 @@
                 </span>
               </td>
 
-              <%# Botão Detalhes %>
               <td class="text-center">
                 <button
                   class="orders-btn-detail"
@@ -189,7 +180,6 @@
 
 </div>
 
-<%# Modal de detalhes do pedido %>
 <div id="order-modal-overlay" class="order-modal-overlay" onclick="closeOrderModal(event)">
   <div class="order-modal" role="dialog" aria-modal="true" aria-labelledby="order-modal-title">
 
@@ -215,7 +205,6 @@
 
     <div class="order-modal__body">
 
-      <%# Info do pedido + cliente %>
       <div class="order-modal__meta">
         <div class="order-modal__meta-group">
           <span class="order-modal__meta-label">Data do pedido</span>
@@ -239,7 +228,6 @@
         </div>
       </div>
 
-      <%# Itens do pedido %>
       <div class="order-modal__items-title">Itens do Pedido</div>
       <div id="order-modal-items" class="order-modal__items"></div>
 
@@ -247,538 +235,6 @@
 
   </div>
 </div>
-
-<style>
-  .orders-wrapper {
-    padding: 1.5rem 2rem;
-  }
-
-  /* Filtros */
-  .orders-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: flex-end;
-    background: #ffffff;
-    border: 1px solid #e4e7f0;
-    border-radius: 10px;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  }
-
-  .orders-filters__field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    flex: 1;
-    min-width: 140px;
-  }
-
-  .orders-filters__field label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #5a6380;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .orders-filters__input,
-  .orders-filters__select {
-    border: 1px solid #e4e7f0;
-    border-radius: 8px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    color: #1e2235;
-    background: #f8f9fc;
-    outline: none;
-    transition: border-color 0.15s ease, background 0.15s ease;
-  }
-
-  .orders-filters__input:focus,
-  .orders-filters__select:focus {
-    border-color: #3b4adf;
-    background: #ffffff;
-  }
-
-  .orders-filters__actions {
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-end;
-  }
-
-  /* Botões */
-  .orders-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 1.1rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    text-decoration: none;
-    transition: opacity 0.15s ease;
-  }
-
-  .orders-btn:hover { opacity: 0.88; }
-
-  .orders-btn--primary {
-    background: #3b4adf;
-    color: #ffffff;
-  }
-
-  .orders-btn--export { background: #1d7a3e; color: #ffffff; }
-  .orders-btn--export:hover { opacity: 0.88; }
-
-  .orders-btn--secondary {
-    background: #f0f2fb;
-    color: #3b4adf;
-    border: 1px solid #dde1f5;
-  }
-
-  /* Botão Ver Detalhes */
-  .orders-btn-detail {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.8rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    border: 1px solid #dde1f5;
-    background: #f0f2fb;
-    color: #3b4adf;
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-
-  .orders-btn-detail:hover {
-    background: #3b4adf;
-    color: #ffffff;
-    border-color: #3b4adf;
-  }
-
-  /* Tabela */
-  .orders-table-wrap {
-    background: #ffffff;
-    border: 1px solid #e4e7f0;
-    border-radius: 10px;
-    overflow: auto;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  }
-
-  .orders-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    color: #1e2235;
-  }
-
-  .orders-table thead tr {
-    background: #f4f5fb;
-    border-bottom: 1px solid #e4e7f0;
-  }
-
-  .orders-table th {
-    padding: 0.85rem 1rem;
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #5a6380;
-    white-space: nowrap;
-  }
-
-  .orders-table td {
-    padding: 0.8rem 1rem;
-    border-bottom: 1px solid #f0f2f8;
-    vertical-align: middle;
-  }
-
-  .orders-table tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  .orders-table tbody tr:hover {
-    background: #f8f9fc;
-  }
-
-  .orders-table tfoot tr {
-    background: #f4f5fb;
-    border-top: 1px solid #e4e7f0;
-  }
-
-  .orders-table tfoot th {
-    padding: 0.7rem 1rem;
-    font-size: 0.8rem;
-    color: #5a6380;
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-
-  .text-center { text-align: center; }
-  .text-right  { text-align: right; }
-
-  /* Link pedido */
-  .orders-table__order-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    text-decoration: none;
-    color: #3b4adf;
-    white-space: nowrap;
-  }
-
-  .orders-table__order-link:hover .orders-badge--order {
-    background: #3b4adf;
-    color: #ffffff;
-  }
-
-  .orders-table__external-icon {
-    color: #9097b5;
-    transition: color 0.15s ease;
-    flex-shrink: 0;
-  }
-
-  .orders-table__order-link:hover .orders-table__external-icon {
-    color: #3b4adf;
-  }
-
-  /* Cliente */
-  .orders-table__customer {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-    font-size: 0.875rem;
-    color: #1e2235;
-  }
-
-  .orders-table__customer-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #eef0fd;
-    color: #3b4adf;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  /* Telefone */
-  .orders-table__phone {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    color: #5a6380;
-    text-decoration: none;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    transition: color 0.15s ease;
-  }
-
-  .orders-table__phone:hover { color: #3b4adf; }
-
-  /* Total */
-  .orders-table__total {
-    color: #1e2235;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  /* Data + hora */
-  .orders-table__date {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.1rem;
-    font-size: 0.85rem;
-    white-space: nowrap;
-  }
-
-  .orders-table__time {
-    font-size: 0.75rem;
-    color: #9097b5;
-  }
-
-  .orders-table__empty {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: #9097b5;
-    font-size: 0.9rem;
-  }
-
-  /* Badges */
-  .orders-badge {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 5px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-
-  .orders-badge--order {
-    background: #eef0fd;
-    color: #3b4adf;
-    font-family: monospace;
-    font-size: 0.85rem;
-  }
-
-  .orders-badge--count {
-    background: #f0f2fb;
-    color: #3b4adf;
-    min-width: 24px;
-    text-align: center;
-  }
-
-  .orders-badge--empty {
-    background: transparent;
-    color: #c4c9dd;
-  }
-
-  /* ===== MODAL ===== */
-  .order-modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 18, 40, 0.45);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(3px);
-  }
-
-  .order-modal-overlay.is-open {
-    display: flex;
-  }
-
-  .order-modal {
-    background: #ffffff;
-    border-radius: 14px;
-    width: 100%;
-    max-width: 720px;
-    max-height: 88vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-    overflow: hidden;
-  }
-
-  .order-modal__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #e4e7f0;
-    background: #f8f9fc;
-    flex-shrink: 0;
-  }
-
-  .order-modal__label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #9097b5;
-    margin: 0 0 0.2rem;
-  }
-
-  .order-modal__title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #1e2235;
-    margin: 0;
-    font-family: monospace;
-  }
-
-  .order-modal__close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #9097b5;
-    padding: 0.35rem;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-
-  .order-modal__close:hover {
-    background: #f0f2fb;
-    color: #3b4adf;
-  }
-
-  .order-modal__body {
-    overflow-y: auto;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  /* Meta info */
-  .order-modal__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    background: #f8f9fc;
-    border: 1px solid #e4e7f0;
-    border-radius: 10px;
-    padding: 1rem 1.25rem;
-  }
-
-  .order-modal__meta-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    flex: 1;
-    min-width: 130px;
-  }
-
-  .order-modal__meta-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #9097b5;
-  }
-
-  .order-modal__meta-value {
-    font-size: 0.9rem;
-    color: #1e2235;
-    font-weight: 500;
-  }
-
-  .order-modal__meta-total {
-    color: #3b4adf;
-    font-weight: 700;
-    font-size: 1rem;
-  }
-
-  /* Itens */
-  .order-modal__items-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #9097b5;
-    margin-bottom: -0.5rem;
-  }
-
-  .order-modal__items {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .order-modal__item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: #ffffff;
-    border: 1px solid #e4e7f0;
-    border-radius: 10px;
-    padding: 0.875rem 1rem;
-    transition: box-shadow 0.15s ease;
-  }
-
-  .order-modal__item:hover {
-    box-shadow: 0 2px 10px rgba(59, 74, 223, 0.08);
-  }
-
-  .order-modal__item-img {
-    width: 56px;
-    height: 56px;
-    border-radius: 8px;
-    object-fit: cover;
-    background: #f0f2fb;
-    flex-shrink: 0;
-    border: 1px solid #e4e7f0;
-  }
-
-  .order-modal__item-img-placeholder {
-    width: 56px;
-    height: 56px;
-    border-radius: 8px;
-    background: #f0f2fb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border: 1px solid #e4e7f0;
-    color: #c4c9dd;
-  }
-
-  .order-modal__item-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .order-modal__item-name {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #1e2235;
-  }
-
-  .order-modal__item-sku {
-    font-size: 0.75rem;
-    color: #9097b5;
-    font-family: monospace;
-  }
-
-  .order-modal__item-variants {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-top: 0.15rem;
-  }
-
-  .order-modal__item-variant-tag {
-    background: #eef0fd;
-    color: #3b4adf;
-    border-radius: 4px;
-    padding: 0.1rem 0.45rem;
-    font-size: 0.72rem;
-    font-weight: 600;
-  }
-
-  .order-modal__item-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.25rem;
-    flex-shrink: 0;
-  }
-
-  .order-modal__item-qty {
-    font-size: 0.78rem;
-    color: #9097b5;
-    background: #f0f2fb;
-    border-radius: 5px;
-    padding: 0.15rem 0.5rem;
-    font-weight: 600;
-  }
-
-  .order-modal__item-price {
-    font-size: 0.85rem;
-    color: #5a6380;
-  }
-
-  .order-modal__item-subtotal {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #1e2235;
-  }
-</style>
 
 <script>
   (function() {

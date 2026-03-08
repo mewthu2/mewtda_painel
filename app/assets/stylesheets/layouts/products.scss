@@ -1,0 +1,216 @@
+.products-wrapper {
+  padding: 1.5rem 2rem;
+}
+
+.products-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  background: #ffffff;
+  border: 1px solid #e4e7f0;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.products-filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 160px;
+}
+
+.products-filters__field label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #5a6380;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.products-filters__input,
+.products-filters__select {
+  border: 1px solid #e4e7f0;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #1e2235;
+  background: #f8f9fc;
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.products-filters__input:focus,
+.products-filters__select:focus {
+  border-color: #3b4adf;
+  background: #ffffff;
+}
+
+.products-filters__actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.products-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.products-btn:hover { opacity: 0.88; }
+
+.products-btn--primary {
+  background: #3b4adf;
+  color: #ffffff;
+}
+
+.products-btn--export { background: #1d7a3e; color: #ffffff; }
+.products-btn--export:hover { opacity: 0.88; }
+
+.products-btn--secondary {
+  background: #f0f2fb;
+  color: #3b4adf;
+  border: 1px solid #dde1f5;
+}
+
+.products-table-wrap {
+  background: #ffffff;
+  border: 1px solid #e4e7f0;
+  border-radius: 10px;
+  overflow: auto;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  color: #1e2235;
+}
+
+.products-table thead tr {
+  background: #f4f5fb;
+  border-bottom: 1px solid #e4e7f0;
+}
+
+.products-table th {
+  padding: 0.85rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #5a6380;
+  white-space: nowrap;
+}
+
+.products-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #f0f2f8;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.products-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.products-table tbody tr:hover {
+  background: #f8f9fc;
+}
+
+.products-table tfoot tr {
+  background: #f4f5fb;
+  border-top: 1px solid #e4e7f0;
+}
+
+.products-table tfoot th {
+  padding: 0.7rem 1rem;
+  font-size: 0.8rem;
+  color: #5a6380;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+
+.products-table__name {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: 320px;
+  white-space: normal;
+}
+
+.products-table__thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid #e4e7f0;
+}
+
+.products-table__no-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: #f0f2fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #9097b5;
+}
+
+.products-table__empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #9097b5;
+  font-size: 0.9rem;
+}
+
+.products-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.products-badge--sku {
+  background: #eef0fd;
+  color: #3b4adf;
+  font-family: monospace;
+  font-size: 0.78rem;
+}
+
+.products-badge--option {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.products-badge--id {
+  background: #f0f2fb;
+  color: #5a6380;
+  font-family: monospace;
+  font-size: 0.72rem;
+}
+
+.products-badge--empty {
+  background: transparent;
+  color: #c4c9dd;
+}

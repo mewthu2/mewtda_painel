@@ -17,6 +17,9 @@
  *= require layouts/utils
  *= require layouts/header
  *= require layouts/chosen
+ *= require layouts/products
+ *= require layouts/orders
+ *= require layouts/customers
  *= require_self
  */
  $fa-font-path: '@fortawesome/fontawesome-free/webfonts';

@@ -22,6 +22,9 @@ Rails.application.routes.draw do
       collection do
         get :export_xlsx
       end
+      member do
+        get :details
+      end
     end
 
     resources :products, only: [:index] do
@@ -33,6 +36,9 @@ Rails.application.routes.draw do
     resources :customers, only: [:index] do
       collection do
         get :export_xlsx
+      end
+      member do
+        get :details
       end
     end
 
