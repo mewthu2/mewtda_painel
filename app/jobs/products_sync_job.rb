@@ -10,10 +10,6 @@ class ProductsSyncJob < ApplicationJob
     end
   end
 
-  ############################################
-  # CLIENT SHOPIFY
-  ############################################
-
   def client_shopify_rest
     session = ShopifyAPI::Auth::Session.new(
       shop: ENV.fetch('HENRRI_SHOP_URL'),
@@ -22,10 +18,6 @@ class ProductsSyncJob < ApplicationJob
 
     ShopifyAPI::Clients::Rest::Admin.new(session:)
   end
-
-  ############################################
-  # SYNC PRODUTOS COM PAGINAÇÃO
-  ############################################
 
   def sync_all_products
     Rails.logger.info "[ProductsSyncJob] Iniciando sincronização de produtos"
@@ -56,10 +48,6 @@ class ProductsSyncJob < ApplicationJob
 
     Rails.logger.info "[ProductsSyncJob] Sincronização finalizada"
   end
-
-  ############################################
-  # PROCESSA PRODUTOS
-  ############################################
 
   def process_products(products)
     products.each do |shopify_product|

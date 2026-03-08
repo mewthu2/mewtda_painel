@@ -1,91 +1,194 @@
-.navbar-header {
-  position: sticky;
-  top: 0;
-  z-index: 1020;
+.crm-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+
+  height:64px;
+  padding:0 24px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  box-shadow:0 1px 3px rgba(0,0,0,0.06);
 }
 
-.creative-navbar {
-  background: #ffffff;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 8px 26px rgba(15, 23, 42, 0.08);
-  min-height: 74px;
+.crm-header__left{
+  display:flex;
+  align-items:center;
+  gap:18px;
 }
 
-.brand-area {
-  color: #0f172a;
-  font-weight: 700;
+.crm-header__brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
 }
 
-.brand-badge {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #0ea5e9, #6366f1);
-  color: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.crm-header__logo{
+  width:90px;
 }
 
-.brand-logo-image {
-  width: 140px;
-  max-width: 100%;
+.crm-header__divider{
+  width:1px;
+  height:24px;
+  background:#e5e7eb;
 }
 
-.creative-nav-icons {
-  gap: 0.6rem;
+.crm-header__nav{
+  display:flex;
+  gap:6px;
 }
 
-.creative-nav-icons .nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 999px;
-  color: #334155;
-  padding: 0.5rem 0.9rem;
-  transition: all 0.25s ease;
+.crm-header__nav-link{
+  padding:7px 14px;
+  border-radius:8px;
+  font-size:14px;
+  color:#6b7280;
+  text-decoration:none;
+  transition:.15s;
 }
 
-.creative-nav-icons .nav-link i {
-  width: 20px;
-  text-align: center;
-  color: #0284c7;
+.crm-header__nav-link:hover{
+  background:#f3f4f6;
+  color:#111827;
 }
 
-.creative-nav-icons .nav-link:hover,
-.creative-nav-icons .nav-link.active {
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(99, 102, 241, 0.15));
-  color: #0f172a;
-  transform: translateY(-1px);
+.crm-header__nav-link.active{
+  background:#eef2ff;
+  color:#4338ca;
+  font-weight:600;
 }
 
-.user-area {
-  gap: 0.6rem;
+.crm-header__actions{
+  display:flex;
+  align-items:center;
 }
 
-.user-chip {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #334155;
-  border-radius: 999px;
-  padding: 0.35rem 0.8rem;
-  font-size: 0.85rem;
+.crm-header__user{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  position:relative;
 }
 
-.user-avatar {
-  width: 38px;
-  height: 38px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid #e2e8f0;
+.crm-header__avatar{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  object-fit:cover;
 }
 
-@media (max-width: 991px) {
-  .creative-nav-icons .nav-link {
-    border-radius: 0.75rem;
+.crm-header__user-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.crm-header__user-name{
+  font-size:14px;
+  font-weight:600;
+  color:#111827;
+}
+
+.crm-header__user-role{
+  font-size:11px;
+  color:#9ca3af;
+}
+
+.crm-header__chevron{
+  color:#9ca3af;
+  transition:transform .2s;
+}
+
+.crm-header__dropdown{
+  display:none;
+  position:absolute;
+  right:0;
+  top:50px;
+
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+
+  width:170px;
+
+  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+  overflow:hidden;
+}
+
+.crm-header__dropdown-item{
+  display:block;
+  padding:10px 14px;
+  font-size:14px;
+  color:#111827;
+  text-decoration:none;
+  transition:.15s;
+}
+
+.crm-header__dropdown-item:hover{
+  background:#f9fafb;
+}
+
+.crm-header__dropdown-item--danger{
+  color:#ef4444;
+}
+
+.crm-header__dropdown-item--danger:hover{
+  background:#fff5f5;
+}
+
+.crm-header__dropdown-sep{
+  height:1px;
+  background:#e5e7eb;
+  margin:4px 0;
+}
+
+.crm-header__hamburger{
+  display:none;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:4px;
+  color:#374151;
+}
+
+@media (max-width:900px){
+
+  .crm-header__nav{
+    position:fixed;
+    left:-260px;
+    top:64px;
+
+    flex-direction:column;
+
+    background:#fff;
+
+    width:240px;
+    height:calc(100vh - 64px);
+
+    padding:20px 16px;
+
+    border-right:1px solid #e5e7eb;
+    box-shadow:2px 0 12px rgba(0,0,0,0.08);
+
+    transition:left .25s ease;
+    z-index:999;
+    overflow-y:auto;
   }
 
-  .user-area {
-    padding-top: 0.65rem;
+  .crm-header__nav.open{
+    left:0;
   }
+
+  .crm-header__hamburger{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
 }
