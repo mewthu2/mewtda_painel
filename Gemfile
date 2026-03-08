@@ -3,7 +3,13 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.2.2'
 
+# This gem supports operating on xlsx files (Open XML format). While it is capable of properly parsing the entire OOXML structure
+gem 'rubyXL'
+
 gem 'jwt'
+
+# This library provides support for Ruby Shopify apps to access the Shopify Admin API, by making it easier to perform the following actions:
+gem 'shopify_api'
 
 # Use postgresql as the database for Active Record
 gem 'pg'

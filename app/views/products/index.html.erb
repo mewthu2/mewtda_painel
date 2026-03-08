@@ -1,0 +1,370 @@
+<% title 'Produtos' %>
+
+<div class="products-wrapper">
+
+  <%# Filtros %>
+  <%= form_tag(products_path, method: 'get') do %>
+    <div class="products-filters">
+      <div class="products-filters__field">
+        <label>Buscar</label>
+        <%= text_field_tag :search, params[:search], class: 'products-filters__input', placeholder: 'Nome do produto ou SKU...' %>
+      </div>
+
+      <div class="products-filters__field">
+        <label>Fornecedor</label>
+        <%= select_tag :vendor,
+              options_for_select([['Todos', '']] + @vendors.map { |v| [v, v] }, params[:vendor]),
+              class: 'products-filters__select' %>
+      </div>
+
+      <div class="products-filters__field">
+        <label>Variação 1</label>
+        <%= select_tag :option1,
+              options_for_select([['Todas', '']] + @option1s.map { |o| [o, o] }, params[:option1]),
+              class: 'products-filters__select' %>
+      </div>
+
+      <div class="products-filters__field">
+        <label>Variação 2</label>
+        <%= select_tag :option2,
+              options_for_select([['Todas', '']] + @option2s.map { |o| [o, o] }, params[:option2]),
+              class: 'products-filters__select' %>
+      </div>
+
+      <div class="products-filters__actions">
+        <%= button_tag class: 'products-btn products-btn--primary', name: '' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+          Filtrar
+        <% end %>
+        <%= link_to export_xlsx_products_path(params.permit(:search, :vendor, :option1, :option2)),
+            class: 'products-btn products-btn--export' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Exportar XLSX
+        <% end %>
+        <%= link_to products_path, class: 'products-btn products-btn--secondary' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          Limpar
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Tabela %>
+  <div class="products-table-wrap">
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th>SKU</th>
+          <th>Nome do Produto</th>
+          <th>Fornecedor</th>
+          <th class="text-center">Variação 1</th>
+          <th class="text-center">Variação 2</th>
+          <th class="text-right">Preço</th>
+          <th class="text-right">Preço Comparativo</th>
+          <th class="text-center">ID Shopify</th>
+          <th class="text-center">Criado em</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @products.empty? %>
+          <tr>
+            <td colspan="9" class="products-table__empty">Nenhum produto encontrado.</td>
+          </tr>
+        <% else %>
+          <% @products.each do |product| %>
+            <tr>
+              <td><span class="products-badge products-badge--sku"><%= product.sku %></span></td>
+              <td class="products-table__name">
+                <% if product.image_url.present? %>
+                  <%= image_tag product.image_url, class: 'products-table__thumb', alt: product.shopify_product_name %>
+                <% else %>
+                  <span class="products-table__no-img">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                  </span>
+                <% end %>
+                <%= product.shopify_product_name %>
+              </td>
+              <td><%= product.vendor %></td>
+              <td class="text-center">
+                <% if product.option1.present? %>
+                  <span class="products-badge products-badge--option"><%= product.option1 %></span>
+                <% else %>
+                  <span class="products-badge products-badge--empty">—</span>
+                <% end %>
+              </td>
+              <td class="text-center">
+                <% if product.option2.present? %>
+                  <span class="products-badge products-badge--option"><%= product.option2 %></span>
+                <% else %>
+                  <span class="products-badge products-badge--empty">—</span>
+                <% end %>
+              </td>
+              <td class="text-right">
+                <% if product.price.present? %>
+                  R$ <%= number_with_precision(product.price, precision: 2, delimiter: '.', separator: ',') %>
+                <% else %>
+                  <span class="products-badge products-badge--empty">—</span>
+                <% end %>
+              </td>
+              <td class="text-right">
+                <% if product.compare_at_price.present? %>
+                  R$ <%= number_with_precision(product.compare_at_price, precision: 2, delimiter: '.', separator: ',') %>
+                <% else %>
+                  <span class="products-badge products-badge--empty">—</span>
+                <% end %>
+              </td>
+              <td class="text-center">
+                <% if product.shopify_product_id.present? %>
+                  <span class="products-badge products-badge--id"><%= product.shopify_product_id %></span>
+                <% end %>
+              </td>
+              <td class="text-center"><%= product.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="9">
+            <%= page_entries_info @products %>
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <%= will_paginate @products, list_classes: %w[pagination justify-content-center mt-lg], inner_window: 1 %>
+
+</div>
+
+<style>
+  .products-wrapper {
+    padding: 1.5rem 2rem;
+  }
+
+  /* Filtros */
+  .products-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+    background: #ffffff;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .products-filters__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .products-filters__field label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #5a6380;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .products-filters__input,
+  .products-filters__select {
+    border: 1px solid #e4e7f0;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: #1e2235;
+    background: #f8f9fc;
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .products-filters__input:focus,
+  .products-filters__select:focus {
+    border-color: #3b4adf;
+    background: #ffffff;
+  }
+
+  .products-filters__actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  /* Botões */
+  .products-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .products-btn:hover { opacity: 0.88; }
+
+  .products-btn--primary {
+    background: #3b4adf;
+    color: #ffffff;
+  }
+
+  .products-btn--export { background: #1d7a3e; color: #ffffff; }
+  .products-btn--export:hover { opacity: 0.88; }
+
+  .products-btn--secondary {
+    background: #f0f2fb;
+    color: #3b4adf;
+    border: 1px solid #dde1f5;
+  }
+
+  /* Tabela */
+  .products-table-wrap {
+    background: #ffffff;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    overflow: auto;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    color: #1e2235;
+  }
+
+  .products-table thead tr {
+    background: #f4f5fb;
+    border-bottom: 1px solid #e4e7f0;
+  }
+
+  .products-table th {
+    padding: 0.85rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #5a6380;
+    white-space: nowrap;
+  }
+
+  .products-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #f0f2f8;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .products-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .products-table tbody tr:hover {
+    background: #f8f9fc;
+  }
+
+  .products-table tfoot tr {
+    background: #f4f5fb;
+    border-top: 1px solid #e4e7f0;
+  }
+
+  .products-table tfoot th {
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+    color: #5a6380;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .text-center { text-align: center; }
+  .text-right  { text-align: right; }
+
+  /* Células especiais */
+  .products-table__name {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    max-width: 320px;
+    white-space: normal;
+  }
+
+  .products-table__thumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #e4e7f0;
+  }
+
+  .products-table__no-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: #f0f2fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #9097b5;
+  }
+
+  .products-table__empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #9097b5;
+    font-size: 0.9rem;
+  }
+
+  /* Badges */
+  .products-badge {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .products-badge--sku {
+    background: #eef0fd;
+    color: #3b4adf;
+    font-family: monospace;
+    font-size: 0.78rem;
+  }
+
+  .products-badge--option {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  .products-badge--id {
+    background: #f0f2fb;
+    color: #5a6380;
+    font-family: monospace;
+    font-size: 0.72rem;
+  }
+
+  .products-badge--empty {
+    background: transparent;
+    color: #c4c9dd;
+  }
+</style>

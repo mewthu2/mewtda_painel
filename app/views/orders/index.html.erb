@@ -1,0 +1,854 @@
+<% title 'Pedidos' %>
+
+<div class="orders-wrapper">
+
+  <%# Filtros %>
+  <%= form_tag(orders_path, method: 'get') do %>
+    <div class="orders-filters">
+
+      <div class="orders-filters__field">
+        <label>Buscar</label>
+        <%= text_field_tag :search, params[:search], class: 'orders-filters__input', placeholder: 'Nº do pedido...' %>
+      </div>
+
+      <div class="orders-filters__field">
+        <label>Data início</label>
+        <%= date_field_tag :date_from, params[:date_from], class: 'orders-filters__input' %>
+      </div>
+
+      <div class="orders-filters__field">
+        <label>Data fim</label>
+        <%= date_field_tag :date_to, params[:date_to], class: 'orders-filters__input' %>
+      </div>
+
+      <div class="orders-filters__actions">
+        <%= button_tag class: 'orders-btn orders-btn--primary', name: '' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+          Filtrar
+        <% end %>
+        <%= link_to export_xlsx_orders_path(params.permit(:search, :kinds, :staff_name, :date_from, :date_to)),
+            class: 'orders-btn orders-btn--export' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Exportar XLSX
+        <% end %>
+        <%= link_to orders_path, class: 'orders-btn orders-btn--secondary' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          Limpar
+        <% end %>
+      </div>
+
+    </div>
+  <% end %>
+
+  <%# Tabela %>
+  <div class="orders-table-wrap">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Pedido</th>
+          <th>Cliente</th>
+          <th>Telefone</th>
+          <th class="text-center">Itens</th>
+          <th class="text-right">Total</th>
+          <th class="text-center">Data</th>
+          <th class="text-center">Detalhes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @orders.empty? %>
+          <tr>
+            <td colspan="7" class="orders-table__empty">Nenhum pedido encontrado.</td>
+          </tr>
+        <% else %>
+          <% @orders.each do |order| %>
+            <% customer = order.customer %>
+            <% items = order.try(:order_items).presence || [] %>
+            <% total = items.sum { |i| i.price.to_f * i.quantity.to_i } %>
+
+            <tr>
+
+              <%# Número do pedido com link Shopify %>
+              <td>
+                <% shopify_url = "https://admin.shopify.com/store/henrribrasil/orders/#{order.shopify_order_id}" %>
+                <%= link_to shopify_url, target: '_blank', rel: 'noopener noreferrer', class: 'orders-table__order-link' do %>
+                  <span class="orders-badge orders-badge--order">
+                    <%= order.shopify_order_number.present? ? order.shopify_order_number : "##{order.shopify_order_id}" %>
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="orders-table__external-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                  </svg>
+                <% end %>
+              </td>
+
+              <%# Cliente %>
+              <td>
+                <% if customer %>
+                  <% full_name = [customer.first_name, customer.last_name].compact.join(' ').presence || customer.name %>
+                  <span class="orders-table__customer">
+                    <span class="orders-table__customer-avatar">
+                      <%= full_name.present? ? full_name.strip[0].upcase : '?' %>
+                    </span>
+                    <%= full_name.presence || '—' %>
+                  </span>
+                <% else %>
+                  <span class="orders-badge orders-badge--empty">—</span>
+                <% end %>
+              </td>
+
+              <%# Telefone %>
+              <td>
+                <% if customer&.phone.present? %>
+                  <a href="tel:<%= customer.phone %>" class="orders-table__phone">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                    </svg>
+                    <%= customer.phone %>
+                  </a>
+                <% else %>
+                  <span class="orders-badge orders-badge--empty">—</span>
+                <% end %>
+              </td>
+
+              <%# Qtd itens %>
+              <td class="text-center">
+                <span class="orders-badge orders-badge--count"><%= items.size %></span>
+              </td>
+
+              <%# Total %>
+              <td class="text-right">
+                <% if total > 0 %>
+                  <strong class="orders-table__total">R$ <%= number_with_precision(total, precision: 2, delimiter: '.', separator: ',') %></strong>
+                <% else %>
+                  <span class="orders-badge orders-badge--empty">—</span>
+                <% end %>
+              </td>
+
+              <%# Data %>
+              <td class="text-center">
+                <span class="orders-table__date">
+                  <%= order.shopify_creation_date.strftime('%d/%m/%Y') %>
+                  <span class="orders-table__time"><%= order.shopify_creation_date.strftime('%H:%M') %></span>
+                </span>
+              </td>
+
+              <%# Botão Detalhes %>
+              <td class="text-center">
+                <button
+                  class="orders-btn-detail"
+                  onclick="openOrderModal(this)"
+                  data-order-number="<%= order.shopify_order_number %>"
+                  data-order-id="<%= order.shopify_order_id %>"
+                  data-created="<%= order.shopify_creation_date.strftime('%d/%m/%Y às %H:%M') %>"
+                  data-customer-name="<%= [customer&.first_name, customer&.last_name].compact.join(' ').presence || customer&.name || '—' %>"
+                  data-customer-email="<%= customer&.email.presence || '—' %>"
+                  data-customer-phone="<%= customer&.phone.presence || '—' %>"
+                  data-total="<%= total > 0 ? 'R$ ' + number_with_precision(total, precision: 2, delimiter: '.', separator: ',') : '—' %>"
+                  data-items="<%= (items || []).map { |i|
+                    {
+                      name:     i.try(:product_name) || i.try(:name) || i.try(:title) || 'Produto',
+                      sku:      i.try(:sku).presence || '—',
+                      qty:      i.try(:quantity).to_i,
+                      price:    i.try(:price).to_f,
+                      subtotal: (i.try(:price).to_f * i.try(:quantity).to_i),
+                      image:    i.try(:image_url).presence || i.try(:product)&.image_url,
+                      option1:  i.try(:option1).presence,
+                      option2:  i.try(:option2).presence,
+                      option3:  i.try(:option3).presence
+                    }
+                  }.to_json.gsub('"', '&quot;') %>"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Ver
+                </button>
+              </td>
+
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="7">
+            <%= page_entries_info @orders %>
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <%= will_paginate @orders, list_classes: %w[pagination justify-content-center mt-lg], inner_window: 1 %>
+
+</div>
+
+<%# Modal de detalhes do pedido %>
+<div id="order-modal-overlay" class="order-modal-overlay" onclick="closeOrderModal(event)">
+  <div class="order-modal" role="dialog" aria-modal="true" aria-labelledby="order-modal-title">
+
+    <div class="order-modal__header">
+      <div>
+        <p class="order-modal__label">Detalhes do Pedido</p>
+        <h2 class="order-modal__title" id="order-modal-title"></h2>
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <a id="order-modal-shopify-link" href="#" target="_blank" rel="noopener noreferrer" class="orders-btn orders-btn--primary" style="font-size:0.8rem; padding:0.4rem 0.9rem;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+          </svg>
+          Ver no Shopify
+        </a>
+        <button class="order-modal__close" onclick="closeOrderModal()" aria-label="Fechar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="order-modal__body">
+
+      <%# Info do pedido + cliente %>
+      <div class="order-modal__meta">
+        <div class="order-modal__meta-group">
+          <span class="order-modal__meta-label">Data do pedido</span>
+          <span class="order-modal__meta-value" id="order-modal-date"></span>
+        </div>
+        <div class="order-modal__meta-group">
+          <span class="order-modal__meta-label">Total</span>
+          <span class="order-modal__meta-value order-modal__meta-total" id="order-modal-total"></span>
+        </div>
+        <div class="order-modal__meta-group">
+          <span class="order-modal__meta-label">Cliente</span>
+          <span class="order-modal__meta-value" id="order-modal-customer"></span>
+        </div>
+        <div class="order-modal__meta-group">
+          <span class="order-modal__meta-label">E-mail</span>
+          <span class="order-modal__meta-value" id="order-modal-email"></span>
+        </div>
+        <div class="order-modal__meta-group">
+          <span class="order-modal__meta-label">Telefone</span>
+          <span class="order-modal__meta-value" id="order-modal-phone"></span>
+        </div>
+      </div>
+
+      <%# Itens do pedido %>
+      <div class="order-modal__items-title">Itens do Pedido</div>
+      <div id="order-modal-items" class="order-modal__items"></div>
+
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .orders-wrapper {
+    padding: 1.5rem 2rem;
+  }
+
+  /* Filtros */
+  .orders-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+    background: #ffffff;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .orders-filters__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .orders-filters__field label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #5a6380;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .orders-filters__input,
+  .orders-filters__select {
+    border: 1px solid #e4e7f0;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: #1e2235;
+    background: #f8f9fc;
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .orders-filters__input:focus,
+  .orders-filters__select:focus {
+    border-color: #3b4adf;
+    background: #ffffff;
+  }
+
+  .orders-filters__actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  /* Botões */
+  .orders-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .orders-btn:hover { opacity: 0.88; }
+
+  .orders-btn--primary {
+    background: #3b4adf;
+    color: #ffffff;
+  }
+
+  .orders-btn--export { background: #1d7a3e; color: #ffffff; }
+  .orders-btn--export:hover { opacity: 0.88; }
+
+  .orders-btn--secondary {
+    background: #f0f2fb;
+    color: #3b4adf;
+    border: 1px solid #dde1f5;
+  }
+
+  /* Botão Ver Detalhes */
+  .orders-btn-detail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid #dde1f5;
+    background: #f0f2fb;
+    color: #3b4adf;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .orders-btn-detail:hover {
+    background: #3b4adf;
+    color: #ffffff;
+    border-color: #3b4adf;
+  }
+
+  /* Tabela */
+  .orders-table-wrap {
+    background: #ffffff;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    overflow: auto;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    color: #1e2235;
+  }
+
+  .orders-table thead tr {
+    background: #f4f5fb;
+    border-bottom: 1px solid #e4e7f0;
+  }
+
+  .orders-table th {
+    padding: 0.85rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #5a6380;
+    white-space: nowrap;
+  }
+
+  .orders-table td {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #f0f2f8;
+    vertical-align: middle;
+  }
+
+  .orders-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .orders-table tbody tr:hover {
+    background: #f8f9fc;
+  }
+
+  .orders-table tfoot tr {
+    background: #f4f5fb;
+    border-top: 1px solid #e4e7f0;
+  }
+
+  .orders-table tfoot th {
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+    color: #5a6380;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .text-center { text-align: center; }
+  .text-right  { text-align: right; }
+
+  /* Link pedido */
+  .orders-table__order-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: #3b4adf;
+    white-space: nowrap;
+  }
+
+  .orders-table__order-link:hover .orders-badge--order {
+    background: #3b4adf;
+    color: #ffffff;
+  }
+
+  .orders-table__external-icon {
+    color: #9097b5;
+    transition: color 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .orders-table__order-link:hover .orders-table__external-icon {
+    color: #3b4adf;
+  }
+
+  /* Cliente */
+  .orders-table__customer {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    color: #1e2235;
+  }
+
+  .orders-table__customer-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #eef0fd;
+    color: #3b4adf;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Telefone */
+  .orders-table__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #5a6380;
+    text-decoration: none;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+
+  .orders-table__phone:hover { color: #3b4adf; }
+
+  /* Total */
+  .orders-table__total {
+    color: #1e2235;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Data + hora */
+  .orders-table__date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  .orders-table__time {
+    font-size: 0.75rem;
+    color: #9097b5;
+  }
+
+  .orders-table__empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #9097b5;
+    font-size: 0.9rem;
+  }
+
+  /* Badges */
+  .orders-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 5px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .orders-badge--order {
+    background: #eef0fd;
+    color: #3b4adf;
+    font-family: monospace;
+    font-size: 0.85rem;
+  }
+
+  .orders-badge--count {
+    background: #f0f2fb;
+    color: #3b4adf;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .orders-badge--empty {
+    background: transparent;
+    color: #c4c9dd;
+  }
+
+  /* ===== MODAL ===== */
+  .order-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 18, 40, 0.45);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+
+  .order-modal-overlay.is-open {
+    display: flex;
+  }
+
+  .order-modal {
+    background: #ffffff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 720px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    overflow: hidden;
+  }
+
+  .order-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e4e7f0;
+    background: #f8f9fc;
+    flex-shrink: 0;
+  }
+
+  .order-modal__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #9097b5;
+    margin: 0 0 0.2rem;
+  }
+
+  .order-modal__title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e2235;
+    margin: 0;
+    font-family: monospace;
+  }
+
+  .order-modal__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9097b5;
+    padding: 0.35rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .order-modal__close:hover {
+    background: #f0f2fb;
+    color: #3b4adf;
+  }
+
+  .order-modal__body {
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* Meta info */
+  .order-modal__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: #f8f9fc;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+  }
+
+  .order-modal__meta-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+    min-width: 130px;
+  }
+
+  .order-modal__meta-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #9097b5;
+  }
+
+  .order-modal__meta-value {
+    font-size: 0.9rem;
+    color: #1e2235;
+    font-weight: 500;
+  }
+
+  .order-modal__meta-total {
+    color: #3b4adf;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  /* Itens */
+  .order-modal__items-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #9097b5;
+    margin-bottom: -0.5rem;
+  }
+
+  .order-modal__items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .order-modal__item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #ffffff;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    padding: 0.875rem 1rem;
+    transition: box-shadow 0.15s ease;
+  }
+
+  .order-modal__item:hover {
+    box-shadow: 0 2px 10px rgba(59, 74, 223, 0.08);
+  }
+
+  .order-modal__item-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #f0f2fb;
+    flex-shrink: 0;
+    border: 1px solid #e4e7f0;
+  }
+
+  .order-modal__item-img-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    background: #f0f2fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid #e4e7f0;
+    color: #c4c9dd;
+  }
+
+  .order-modal__item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .order-modal__item-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e2235;
+  }
+
+  .order-modal__item-sku {
+    font-size: 0.75rem;
+    color: #9097b5;
+    font-family: monospace;
+  }
+
+  .order-modal__item-variants {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.15rem;
+  }
+
+  .order-modal__item-variant-tag {
+    background: #eef0fd;
+    color: #3b4adf;
+    border-radius: 4px;
+    padding: 0.1rem 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .order-modal__item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    flex-shrink: 0;
+  }
+
+  .order-modal__item-qty {
+    font-size: 0.78rem;
+    color: #9097b5;
+    background: #f0f2fb;
+    border-radius: 5px;
+    padding: 0.15rem 0.5rem;
+    font-weight: 600;
+  }
+
+  .order-modal__item-price {
+    font-size: 0.85rem;
+    color: #5a6380;
+  }
+
+  .order-modal__item-subtotal {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e2235;
+  }
+</style>
+
+<script>
+  (function() {
+    function openOrderModal(btn) {
+      var overlay = document.getElementById('order-modal-overlay');
+      var orderId = btn.dataset.orderId;
+
+      document.getElementById('order-modal-title').textContent   = btn.dataset.orderNumber || '#' + orderId;
+      document.getElementById('order-modal-date').textContent    = btn.dataset.created;
+      document.getElementById('order-modal-total').textContent   = btn.dataset.total;
+      document.getElementById('order-modal-customer').textContent = btn.dataset.customerName;
+      document.getElementById('order-modal-email').textContent   = btn.dataset.customerEmail;
+      document.getElementById('order-modal-phone').textContent   = btn.dataset.customerPhone;
+      document.getElementById('order-modal-shopify-link').href   =
+        'https://admin.shopify.com/store/henrribrasil/orders/' + orderId;
+
+      var items = [];
+      try { items = JSON.parse(btn.dataset.items.replace(/&quot;/g, '"')); } catch(e) {}
+
+      var container = document.getElementById('order-modal-items');
+      container.innerHTML = '';
+
+      if (!items.length) {
+        container.innerHTML = '<p style="color:#9097b5; font-size:0.875rem;">Nenhum item encontrado para este pedido.</p>';
+      } else {
+        items.forEach(function(item) {
+          var subtotal = 'R$ ' + item.subtotal.toFixed(2).replace('.', ',');
+          var price    = 'R$ ' + item.price.toFixed(2).replace('.', ',') + ' / un.';
+
+          var variantTags = '';
+          [item.option1, item.option2, item.option3].filter(Boolean).forEach(function(v) {
+            variantTags += '<span class="order-modal__item-variant-tag">' + v + '</span>';
+          });
+
+          var imgHtml = item.image
+            ? '<img src="' + item.image + '" alt="' + item.name + '" class="order-modal__item-img">'
+            : '<div class="order-modal__item-img-placeholder"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v13.5A1.5 1.5 0 003.75 21z" /></svg></div>';
+
+          container.innerHTML +=
+            '<div class="order-modal__item">' +
+              imgHtml +
+              '<div class="order-modal__item-info">' +
+                '<span class="order-modal__item-name">' + item.name + '</span>' +
+                '<span class="order-modal__item-sku">SKU: ' + item.sku + '</span>' +
+                (variantTags ? '<div class="order-modal__item-variants">' + variantTags + '</div>' : '') +
+              '</div>' +
+              '<div class="order-modal__item-right">' +
+                '<span class="order-modal__item-qty">Qtd: ' + item.qty + '</span>' +
+                '<span class="order-modal__item-price">' + price + '</span>' +
+                '<span class="order-modal__item-subtotal">' + subtotal + '</span>' +
+              '</div>' +
+            '</div>';
+        });
+      }
+
+      overlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOrderModal(event) {
+      if (event && event.target !== document.getElementById('order-modal-overlay') && !event.target.closest('.order-modal__close')) return;
+      document.getElementById('order-modal-overlay').classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeOrderModal();
+    });
+
+    window.openOrderModal  = openOrderModal;
+    window.closeOrderModal = closeOrderModal;
+  })();
+</script>

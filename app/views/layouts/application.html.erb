@@ -25,11 +25,14 @@
   </head>
 
   <body>
-    <div class="wrapper main-background">
+    <div class="main-background">
       <% if current_user.present? %>
         <%= render 'layouts/partials/header' %>
       <% end %>
       <%= render 'layouts/partials/content' %>
+      <% if current_user.present? %>
+        <%= render 'layouts/partials/footer' %>
+      <% end %>
     </div>
   </body>
 </html>

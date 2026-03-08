@@ -1,318 +1,422 @@
-<div class="dart-login" style="margin-left: -250px !important;">
-  <div class="login-card">
-    <div class="header-section">
-      <%= image_tag 'admin/logo-store.webp', class: 'logo' %>
-      <h1 class="title">Entrar</h1>
-    </div>
+<div class="login-page">
 
-    <div class="messages-section">
-      <%= render 'layouts/partials/messages' %>
-    </div>
+  <div class="login-brand">
+    <div class="login-brand__inner">
+      <%= image_tag 'admin/logo-store.png', class: 'login-brand__logo', alt: 'Logo' %>
+      <p class="login-brand__tagline">Gerencie seu negócio com inteligência</p>
 
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'login-form' }) do |f| %>
-      <div class="form-group">
-        <%= f.label :email, 'Email', class: 'form-label' %>
-        <div class="input-wrapper">
-          <i class="fas fa-envelope input-icon"></i>
-          <%= f.email_field :email, 
-              autofocus: true, 
-              autocomplete: "email", 
-              class: 'form-input',
-              placeholder: 'Digite seu email' %>
-        </div>
+      <div class="login-brand__typewriter">
+        <span class="login-brand__typewriter-prefix">Para sua loja:</span>
+        <span class="login-brand__typewriter-text" id="tw-text"></span><span class="login-brand__cursor"></span>
       </div>
-
-      <div class="form-group">
-        <%= f.label :password, 'Senha', class: 'form-label' %>
-        <div class="input-wrapper">
-          <i class="fas fa-lock input-icon"></i>
-          <%= f.password_field :password, 
-              autocomplete: "current-password", 
-              class: 'form-input',
-              placeholder: 'Digite sua senha' %>
-        </div>
-      </div>
-
-      <% if devise_mapping.rememberable? %>
-        <div class="checkbox-group">
-          <label class="checkbox-label">
-            <%= f.check_box :remember_me, class: 'checkbox-input' %>
-            <span class="checkbox-custom"></span>
-            <span class="checkbox-text">Lembrar de mim</span>
-          </label>
-        </div>
-      <% end %>
-
-      <div class="button-group">
-        <%= f.submit "Entrar", class: 'submit-button' %>
-      </div>
-    <% end %>
-
-    <div class="footer-section">
-      <% if devise_mapping.recoverable? %>
-        <%= link_to "Esqueceu sua senha?", new_password_path(resource_name), class: 'forgot-link' %>
-      <% end %>
     </div>
   </div>
+
+  <div class="login-form-side">
+    <div class="login-card">
+
+      <div class="login-card__header">
+        <%= image_tag 'admin/logo-store.png', class: 'login-card__logo-mobile', alt: 'Logo' %>
+        <h1 class="login-card__title">Bem-vindo de volta</h1>
+        <p class="login-card__subtitle">Acesse sua conta para continuar</p>
+      </div>
+
+      <div class="login-card__messages">
+        <%= render 'layouts/partials/messages' %>
+      </div>
+
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'login-card__form' }) do |f| %>
+
+        <div class="login-field">
+          <label class="login-field__label">E-mail</label>
+          <div class="login-field__wrap">
+            <svg class="login-field__icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+            <%= f.email_field :email,
+                autofocus: true,
+                autocomplete: "email",
+                class: 'login-field__input',
+                placeholder: 'seu@email.com' %>
+          </div>
+        </div>
+
+        <div class="login-field">
+          <label class="login-field__label">Senha</label>
+          <div class="login-field__wrap">
+            <svg class="login-field__icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+            <%= f.password_field :password,
+                autocomplete: "current-password",
+                class: 'login-field__input',
+                placeholder: '••••••••' %>
+          </div>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div class="login-remember">
+            <label class="login-remember__label">
+              <%= f.check_box :remember_me, class: 'login-remember__check' %>
+              <span class="login-remember__box"></span>
+              <span class="login-remember__text">Lembrar de mim</span>
+            </label>
+          </div>
+        <% end %>
+
+        <%= f.submit "Entrar", class: 'login-submit' %>
+
+      <% end %>
+
+      <div class="login-card__footer">
+        <% if devise_mapping.recoverable? %>
+          <%= link_to "Esqueceu sua senha?", new_password_path(resource_name), class: 'login-card__forgot' %>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Design limpo inspirado no Dart com background transparente */
-.dart-login {
-  min-height: 100vh;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-}
+  .login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+  }
 
-.login-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 193, 7, 0.2);
-  border-radius: 16px;
-  padding: 2.5rem;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 
-    0 4px 24px rgba(0, 123, 255, 0.1),
-    0 2px 8px rgba(255, 193, 7, 0.05);
-  position: relative;
-}
+  .login-brand {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
 
-.login-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #007bff 0%, #ffc107 100%);
-  border-radius: 16px 16px 0 0;
-}
+  .login-brand__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
 
-.header-section {
-  text-align: center;
-  margin-bottom: 2rem;
-}
+  .login-brand__inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
 
-.logo {
-  width: 64px;
-  height: auto;
-  margin-bottom: 1rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 123, 255, 0.1));
-}
+  .login-brand__logo {
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+  }
 
-.title {
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: #1a365d;
-  margin: 0;
-  letter-spacing: -0.025em;
-}
+  .login-brand__tagline {
+    color: rgba(255,255,255,0.75);
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    max-width: 300px;
+    line-height: 1.6;
+  }
 
-.messages-section {
-  margin-bottom: 1.5rem;
-}
+  .login-brand__typewriter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 100px;
+    padding: 0.5rem 1.1rem;
+    backdrop-filter: blur(6px);
+    max-width: 500px;
+  }
 
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
+  .login-brand__typewriter-prefix {
+    white-space: nowrap;
+    color: rgba(255,255,255,0.45);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+  .login-brand__typewriter-text {
+    color: #7ee8a2;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    min-width: 140px;
+  }
 
-.form-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #2d3748;
-  margin: 0;
-}
+  .login-brand__cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: #7ee8a2;
+    margin-left: 1px;
+    vertical-align: middle;
+    border-radius: 2px;
+    animation: tw-blink 0.7s step-end infinite;
+    flex-shrink: 0;
+  }
 
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
+  @keyframes tw-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
 
-.input-icon {
-  position: absolute;
-  left: 1rem;
-  color: #718096;
-  font-size: 0.875rem;
-  z-index: 2;
-  transition: color 0.2s ease;
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.875rem 1rem 0.875rem 2.75rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  color: #2d3748;
-  background: #ffffff;
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.form-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-.form-input:focus + .input-icon,
-.input-wrapper:focus-within .input-icon {
-  color: #007bff;
-}
-
-.form-input::placeholder {
-  color: #a0aec0;
-}
-
-.checkbox-group {
-  margin: 0.5rem 0;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 0.875rem;
-  color: #4a5568;
-  gap: 0.75rem;
-}
-
-.checkbox-input {
-  display: none;
-}
-
-.checkbox-custom {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #cbd5e0;
-  border-radius: 4px;
-  background: #ffffff;
-  position: relative;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.checkbox-input:checked + .checkbox-custom {
-  background: #007bff;
-  border-color: #007bff;
-}
-
-.checkbox-input:checked + .checkbox-custom::after {
-  content: '✓';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.checkbox-text {
-  user-select: none;
-}
-
-.button-group {
-  margin-top: 1rem;
-}
-
-.submit-button {
-  width: 100%;
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-  color: white;
-  border: none;
-  padding: 0.875rem 1.5rem;
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.submit-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.6s ease;
-}
-
-.submit-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-}
-
-.submit-button:hover::before {
-  left: 100%;
-}
-
-.submit-button:active {
-  transform: translateY(0);
-}
-
-.footer-section {
-  text-align: center;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.forgot-link {
-  color: #007bff;
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.forgot-link:hover {
-  color: #0056b3;
-  text-decoration: underline;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-  .login-card {
+  .login-form-side {
+    width: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 2rem 1.5rem;
-    margin: 1rem;
   }
-  
-  .title {
-    font-size: 1.5rem;
-  }
-}
 
-@media (max-width: 480px) {
-  .dart-login {
-    padding: 0.5rem;
-  }
-  
   .login-card {
-    padding: 1.5rem 1rem;
+    background: #ffffff;
+    border: 1px solid #e4e7f0;
+    border-radius: 16px;
+    padding: 2rem 1.75rem;
+    width: 400px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 24px rgba(30, 40, 100, 0.08);
   }
-  
-  .title {
-    font-size: 1.375rem;
+
+  .login-card__logo-mobile {
+    display: none;
+    width: 100px;
+    height: auto;
+    margin-bottom: 1.25rem;
   }
-}
+
+  .login-card__header {
+    margin-bottom: 2rem;
+  }
+
+  .login-card__title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1b2255;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .login-card__subtitle {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: #7a83aa;
+    line-height: 1.5;
+  }
+
+  .login-card__messages {
+    margin-bottom: 1.25rem;
+  }
+
+  .login-card__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .login-field__label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #4a5380;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .login-field__wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .login-field__icon {
+    position: absolute;
+    left: 0.85rem;
+    color: #9097b5;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  .login-field__input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.6rem;
+    border: 1.5px solid #e4e7f0;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: #1e2235;
+    background: #f8f9fc;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+
+  .login-field__input:focus {
+    border-color: #3b4adf;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 74, 223, 0.1);
+  }
+
+  .login-field__input::placeholder {
+    color: #b0b8d0;
+  }
+
+  /* ---- Lembrar ---- */
+  .login-remember {
+    margin: 0.25rem 0;
+  }
+
+  .login-remember__label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #4a5380;
+    user-select: none;
+  }
+
+  .login-remember__check {
+    display: none;
+  }
+
+  .login-remember__box {
+    width: 17px;
+    height: 17px;
+    border: 1.5px solid #c8ceea;
+    border-radius: 5px;
+    background: #f8f9fc;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .login-remember__check:checked + .login-remember__box {
+    background: #3b4adf;
+    border-color: #3b4adf;
+  }
+
+  .login-remember__check:checked + .login-remember__box::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 5px;
+    height: 9px;
+    border: 2px solid #fff;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+  }
+
+  .login-submit {
+    width: 100%;
+    margin-top: 0.5rem;
+    background: #3b4adf;
+    color: #ffffff;
+    border: none;
+    padding: 0.875rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  }
+
+  .login-submit:hover {
+    background: #2f3bbf;
+    box-shadow: 0 4px 14px rgba(59, 74, 223, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .login-submit:active {
+    transform: translateY(0);
+  }
+
+  .login-card__footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f0f2f8;
+  }
+
+  .login-card__forgot {
+    color: #3b4adf;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .login-card__forgot:hover {
+    color: #2f3bbf;
+    text-decoration: underline;
+  }
+
+  /* ---- Mobile ---- */
+  @media (max-width: 768px) {
+    .login-page {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-brand {
+      display: none;
+    }
+
+    .login-form-side {
+      width: auto;
+      flex: none;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+    }
+
+    .login-card {
+      width: 400px;
+      max-width: calc(100vw - 2.5rem);
+      padding: 2rem 1.5rem;
+    }
+
+    .login-card__logo-mobile {
+      display: block;
+    }
+
+    .login-card__header {
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .login-card {
+      width: 100%;
+      padding: 1.75rem 1.25rem;
+      border-radius: 12px;
+    }
+  }
 </style>
