@@ -1,4 +1,3 @@
-# app/controllers/integration_controller.rb
 class IntegrationController < ActionController::API
   before_action :authenticate_integration!
 
@@ -7,28 +6,21 @@ class IntegrationController < ActionController::API
   private
 
   def authenticate_integration!
-    Rails.logger.warn "RAW AUTH HEADER: #{request.headers['Authorization'].inspect}"
+    raw_header = request.headers['Authorization']
 
-    auth_header = request.headers['Authorization']
-    return unauthorized unless auth_header
+    Rails.logger.warn "RAW AUTH HEADER: #{raw_header.inspect}"
 
-    token = auth_header.split(' ').last
+    token = raw_header.to_s.split(' ').last
+
     Rails.logger.warn "TOKEN RECEIVED: #{token.inspect}"
 
-    integration = IntegrationUser.find_by(slug: 'greatpages', active: true)
-    return unauthorized unless integration
+    integration = IntegrationUser.find_by(api_secret: token, active: true)
 
-    Rails.logger.warn "API KEY USED: #{integration.api_secret.inspect}"
-
-    payload = Jwt::IntegrationToken.decode(token, integration)
-    Rails.logger.warn "JWT PAYLOAD: #{payload.inspect}"
-
-    return unauthorized unless payload
+    unless integration
+      render json: { error: 'Unauthorized' }, status: :unauthorized
+      return
+    end
 
     @current_integration = integration
-  end
-
-  def unauthorized
-    render json: { error: 'Unauthorized integration' }, status: :unauthorized
   end
 end

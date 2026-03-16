@@ -1,18 +1,12 @@
-module Integrations
-  class ShopifyEventsController < IntegrationController
-    skip_before_action :authenticate_integration!, if: -> { request.options? }
+class Integrations::ShopifyEventsController < IntegrationController
+  def create
+    ShopifyEvent.create!(
+      integration_user: current_integration,
+      event_name: params[:name],
+      session_id: params[:session_id],
+      payload: params.to_unsafe_h
+    )
 
-    def create
-      return head :ok if request.options?
-
-      payload = JSON.parse(request.raw_post)
-
-      ShopifyEvents::Track.new(
-        integration: current_integration,
-        payload: payload
-      ).call
-
-      head :ok
-    end
+    head :ok
   end
 end
