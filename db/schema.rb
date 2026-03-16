@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_16_200846) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_16_210618) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -39,10 +39,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_200846) do
     t.string "name"
     t.string "email"
     t.boolean "active", default: true
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -180,12 +178,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_200846) do
     t.jsonb "data"
     t.jsonb "context"
     t.jsonb "raw_payload"
+    t.index ["client_id", "kind"], name: "index_shopify_events_on_client_id_and_kind"
     t.index ["client_id"], name: "index_shopify_events_on_client_id"
     t.index ["event_name"], name: "index_shopify_events_on_event_name"
+    t.index ["event_timestamp"], name: "index_shopify_events_on_event_timestamp"
     t.index ["integration_user_id"], name: "index_shopify_events_on_integration_user_id"
     t.index ["kind"], name: "index_shopify_events_on_kind"
     t.index ["session_id", "event_name"], name: "index_shopify_events_on_session_id_and_event_name"
     t.index ["session_id"], name: "index_shopify_events_on_session_id"
+    t.index ["shop_domain", "kind"], name: "index_shopify_events_on_shop_domain_and_kind"
     t.index ["shop_domain"], name: "index_shopify_events_on_shop_domain"
     t.index ["shopify_event_id"], name: "index_shopify_events_on_shopify_event_id"
   end
@@ -211,6 +212,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_200846) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "profile_id"
+    t.bigint "client_id"
+    t.index ["client_id"], name: "index_users_on_client_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["profile_id"], name: "index_users_on_profile_id"
@@ -218,7 +221,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_200846) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
-  add_foreign_key "clients", "users"
   add_foreign_key "integration_users", "clients"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
@@ -226,5 +228,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_200846) do
   add_foreign_key "orders", "locations"
   add_foreign_key "shopify_events", "clients"
   add_foreign_key "shopify_events", "integration_users"
+  add_foreign_key "users", "clients"
   add_foreign_key "users", "profiles"
 end

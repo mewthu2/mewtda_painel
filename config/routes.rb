@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     end
 
     get '/', to: 'dashboard#index', as: :painel
+    get '/session/:session_id', to: 'dashboard#session_detail', as: :painel_session
 
     get '/shopify/auth', to: 'shopify_auth#auth'
     get '/shopify/callback', to: 'shopify_auth#callback'

@@ -1,5 +1,5 @@
 class Client < ApplicationRecord
-  belongs_to :user
+  has_many :users
   has_many :integration_users, dependent: :destroy
 
   validates :name, presence: true
