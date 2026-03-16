@@ -1,6 +1,7 @@
 module Integrations
   class ShopifyEventsController < IntegrationController
     skip_before_action :authenticate_integration!, if: -> { request.options? }
+    skip_forgery_protection
 
     def create
       return head :ok if request.options?
