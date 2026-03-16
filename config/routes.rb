@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   root to: redirect('/painel')
 
   namespace :integrations do
-    post '/shopify/events', to: 'shopify_events#create'
+    match '/shopify/events', to: 'shopify_events#create', via: [:post, :options]
   end
 
   scope '/painel' do

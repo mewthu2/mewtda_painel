@@ -1,11 +1,11 @@
 module Integrations
   class ShopifyEventsController < IntegrationController
+    skip_before_action :authenticate_integration!, if: -> { request.options? }
+
     def create
-      Rails.logger.info('SHOPIFY EVENT RECEIVED')
+      return head :ok if request.options?
 
       payload = JSON.parse(request.raw_post)
-
-      Rails.logger.info(payload)
 
       ShopifyEvents::Track.new(
         integration: current_integration,
