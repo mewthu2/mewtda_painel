@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_07_193446) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_16_190444) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -33,6 +33,16 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_07_193446) do
     t.integer "bling_order_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "clients", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.boolean "active", default: true
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -75,6 +85,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_07_193446) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "client_id", null: false
+    t.index ["client_id"], name: "index_integration_users_on_client_id"
     t.index ["slug"], name: "index_integration_users_on_slug", unique: true
   end
 
@@ -151,6 +163,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_07_193446) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "shopify_events", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.bigint "integration_user_id", null: false
+    t.string "kind"
+    t.string "session_id"
+    t.string "shopify_event_id"
+    t.jsonb "payload", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_shopify_events_on_client_id"
+    t.index ["integration_user_id"], name: "index_shopify_events_on_integration_user_id"
+    t.index ["kind"], name: "index_shopify_events_on_kind"
+    t.index ["session_id"], name: "index_shopify_events_on_session_id"
+    t.index ["shopify_event_id"], name: "index_shopify_events_on_shopify_event_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "phone"
@@ -179,9 +207,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_07_193446) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "clients", "users"
+  add_foreign_key "integration_users", "clients"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "locations"
+  add_foreign_key "shopify_events", "clients"
+  add_foreign_key "shopify_events", "integration_users"
   add_foreign_key "users", "profiles"
 end

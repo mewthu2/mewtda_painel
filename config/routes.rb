@@ -3,6 +3,10 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   root to: redirect('/painel')
 
+  namespace :integrations do
+    post '/shopify/events', to: 'shopify_events#create'
+  end
+
   scope '/painel' do
     devise_for :user, skip: [:registrations]
 
@@ -10,7 +14,6 @@ Rails.application.routes.draw do
       mount Sidekiq::Web => '/sidekiq'
     end
 
-    # 👇 rota principal do painel
     get '/', to: 'dashboard#index', as: :painel
 
     get '/shopify/auth', to: 'shopify_auth#auth'
