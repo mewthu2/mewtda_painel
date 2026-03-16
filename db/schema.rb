@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_16_190444) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_16_200846) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -172,10 +172,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_190444) do
     t.jsonb "payload", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "event_id"
+    t.string "event_name"
+    t.string "event_type"
+    t.string "shop_domain"
+    t.datetime "event_timestamp"
+    t.jsonb "data"
+    t.jsonb "context"
+    t.jsonb "raw_payload"
     t.index ["client_id"], name: "index_shopify_events_on_client_id"
+    t.index ["event_name"], name: "index_shopify_events_on_event_name"
     t.index ["integration_user_id"], name: "index_shopify_events_on_integration_user_id"
     t.index ["kind"], name: "index_shopify_events_on_kind"
+    t.index ["session_id", "event_name"], name: "index_shopify_events_on_session_id_and_event_name"
     t.index ["session_id"], name: "index_shopify_events_on_session_id"
+    t.index ["shop_domain"], name: "index_shopify_events_on_shop_domain"
     t.index ["shopify_event_id"], name: "index_shopify_events_on_shopify_event_id"
   end
 

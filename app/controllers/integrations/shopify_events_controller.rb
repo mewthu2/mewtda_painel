@@ -2,9 +2,15 @@ class Integrations::ShopifyEventsController < IntegrationController
   def create
     ShopifyEvent.create!(
       integration_user: current_integration,
+      event_id: params[:id],
       event_name: params[:name],
-      session_id: params[:session_id],
-      payload: params.to_unsafe_h
+      event_type: params[:type],
+      session_id: params[:session_id] || params[:clientId],
+      shop_domain: params.dig(:context, :shop_domain),
+      event_timestamp: params[:timestamp],
+      data: params[:data],
+      context: params[:context],
+      raw_payload: params.to_unsafe_h
     )
 
     head :ok
