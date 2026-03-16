@@ -1,4 +1,4 @@
-class Coupons::GenerateCashbackCode
+class Coupouns::GenerateCashbackCode
   CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.freeze
 
   def self.call(order_number)
