@@ -73,10 +73,10 @@ class DashboardController < ApplicationController
     # ══════════════════════════════════════════════════════════════
     # CONTAGENS DO FUNIL (uma unica query)
     # ══════════════════════════════════════════════════════════════
-    counts_query = base_scope
-      .where(kind: %w[page_viewed product_viewed product_added_to_cart checkout_started checkout_completed])
-      .group(:kind)
-      .count
+    funnel_kinds = %w[page_viewed product_viewed product_added_to_cart checkout_started checkout_completed]
+    
+    counts_query = base_scope.where(kind: funnel_kinds).group(:kind).count
+    prev_counts_query = prev_scope.where(kind: funnel_kinds).group(:kind).count
 
     @counts = {
       page_viewed:        counts_query["page_viewed"] || 0,
@@ -85,11 +85,6 @@ class DashboardController < ApplicationController
       checkout_started:   counts_query["checkout_started"] || 0,
       checkout_completed: counts_query["checkout_completed"] || 0
     }
-
-    prev_counts_query = prev_scope
-      .where(kind: %w[page_viewed product_viewed product_added_to_cart checkout_started checkout_completed])
-      .group(:kind)
-      .count
 
     @prev_counts = {
       page_viewed:        prev_counts_query["page_viewed"] || 0,
@@ -123,14 +118,11 @@ class DashboardController < ApplicationController
     }
 
     # ══════════════════════════════════════════════════════════════
-    # SESSOES UNICAS
+    # SESSOES UNICAS E NAO CONVERTIDAS
     # ══════════════════════════════════════════════════════════════
     @unique_sessions = base_scope.distinct.count(:session_id)
     @prev_unique_sessions = prev_scope.distinct.count(:session_id)
 
-    # ══════════════════════════════════════════════════════════════
-    # SESSOES NAO CONVERTIDAS (sem checkout_completed)
-    # ══════════════════════════════════════════════════════════════
     sessions_with_checkout = base_scope.where(kind: "checkout_completed").distinct.count(:session_id)
     @abandoned_carts = @unique_sessions - sessions_with_checkout
     @abandoned_rate = @unique_sessions > 0 ? ((@abandoned_carts.to_f / @unique_sessions) * 100).round(1) : 0
@@ -155,7 +147,7 @@ class DashboardController < ApplicationController
       end
 
     # ══════════════════════════════════════════════════════════════
-    # TOP PRODUTOS
+    # TOP PRODUTOS (busca direta no Ruby para garantir dados)
     # ══════════════════════════════════════════════════════════════
     @top_products_viewed = fetch_top_products(base_scope, "product_viewed")
     @top_products_carted = fetch_top_products(base_scope, "product_added_to_cart")
@@ -236,39 +228,54 @@ class DashboardController < ApplicationController
   # ══════════════════════════════════════════════════════════════
 
   def fetch_top_products(scope, kind)
-    results = scope
+    events = scope
       .where(kind: kind)
-      .select(
-        "data->'productVariant'->'product'->>'id' as product_id",
-        "data->'productVariant'->'product'->>'title' as product_title",
-        "data->'productVariant'->'product'->>'url' as product_url",
-        "data->'productVariant'->'image'->>'src' as product_image",
-        "data->'productVariant'->'price'->>'amount' as product_price",
-        "data->'productVariant'->'price'->>'currencyCode' as currency",
-        "COUNT(*) as view_count"
-      )
-      .group(
-        "data->'productVariant'->'product'->>'id'",
-        "data->'productVariant'->'product'->>'title'",
-        "data->'productVariant'->'product'->>'url'",
-        "data->'productVariant'->'image'->>'src'",
-        "data->'productVariant'->'price'->>'amount'",
-        "data->'productVariant'->'price'->>'currencyCode'"
-      )
-      .order("view_count DESC")
-      .limit(5)
+      .where("data IS NOT NULL")
+      .limit(500)
+      .pluck(:data)
 
-    results.map do |r|
-      {
-        id:       r.product_id,
-        title:    r.product_title || "Produto ##{r.product_id}",
-        url:      r.product_url,
-        image:    r.product_image,
-        price:    r.product_price&.to_f,
-        currency: r.currency || "BRL",
-        count:    r.view_count.to_i
-      }
+    return [] if events.empty?
+
+    product_data = {}
+
+    events.each do |data|
+      next unless data.is_a?(Hash)
+
+      # product_viewed usa data["productVariant"]
+      # product_added_to_cart usa data["cartLine"]["merchandise"]
+      if data["productVariant"]
+        pv      = data["productVariant"]
+        product = pv["product"] || {}
+        image   = pv["image"] || {}
+        price   = pv["price"] || {}
+      elsif data["cartLine"]
+        pv      = data["cartLine"]["merchandise"] || {}
+        product = pv["product"] || {}
+        image   = pv["image"] || {}
+        price   = pv["price"] || {}
+      else
+        next
+      end
+
+      product_id = product["id"]
+      next unless product_id.present?
+
+      if product_data[product_id]
+        product_data[product_id][:count] += 1
+      else
+        product_data[product_id] = {
+          id:       product_id,
+          title:    product["title"].presence || "Produto ##{product_id}",
+          url:      product["url"],
+          image:    image["src"],
+          price:    price["amount"]&.to_f,
+          currency: price["currencyCode"] || "BRL",
+          count:    1
+        }
+      end
     end
+
+    product_data.values.sort_by { |p| -p[:count] }.first(5)
   end
 
   def calculate_avg_times(scope)
@@ -291,8 +298,8 @@ class DashboardController < ApplicationController
 
     events_by_session.each do |_, events|
       timestamps = {}
-      events.each do |_, kind, created_at|
-        timestamps[kind] ||= created_at
+      events.each do |_, k, created_at|
+        timestamps[k] ||= created_at
       end
 
       if timestamps["page_viewed"] && timestamps["product_viewed"]
@@ -317,7 +324,7 @@ class DashboardController < ApplicationController
   end
 
   def fetch_sessions(scope)
-    # Busca sessoes recentes com agregacao
+    # Busca as 20 sessoes mais recentes
     session_ids = scope
       .group(:session_id)
       .order(Arel.sql("MAX(created_at) DESC"))
@@ -326,7 +333,7 @@ class DashboardController < ApplicationController
 
     return [] if session_ids.empty?
 
-    # Busca dados agregados para cada sessao em uma query
+    # Dados agregados
     session_data = scope
       .where(session_id: session_ids)
       .group(:session_id)
@@ -339,7 +346,7 @@ class DashboardController < ApplicationController
         "BOOL_OR(kind = 'checkout_completed') as has_checkout"
       )
 
-    # Busca os kinds de cada sessao separadamente
+    # Kinds de cada sessao
     kinds_data = scope
       .where(session_id: session_ids)
       .order(created_at: :desc)
@@ -347,15 +354,17 @@ class DashboardController < ApplicationController
       .group_by(&:first)
       .transform_values { |v| v.map(&:last).first(5) }
 
-    # Busca o navigator de cada sessao
-    nav_data = scope
+    # Navigator de cada sessao
+    nav_data = {}
+    scope
       .where(session_id: session_ids)
       .where("context->>'navigator' IS NOT NULL")
-      .order(:session_id, :created_at)
       .select("DISTINCT ON (session_id) session_id, context->>'navigator' as nav")
-      .each_with_object({}) { |r, h| h[r.session_id] = r.nav }
+      .order(:session_id, :created_at)
+      .each { |r| nav_data[r.session_id] = r.nav }
 
-    session_data.order(Arel.sql("MAX(created_at) DESC")).map do |s|
+    # Monta resultado ordenado por last_at desc
+    results = session_data.map do |s|
       ua = JSON.parse(nav_data[s.session_id])["userAgent"] rescue nil
       device = if ua =~ /Mobile|iPhone|Android.*Mobile/i
         "mobile"
@@ -379,5 +388,7 @@ class DashboardController < ApplicationController
         duration_min: duration
       }
     end
+
+    results.sort_by { |s| s[:last_at] }.reverse
   end
 end
