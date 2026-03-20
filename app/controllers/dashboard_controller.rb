@@ -212,10 +212,13 @@ class DashboardController < ApplicationController
   end
 
   def fetch_top_products(scope, kind)
-    # O productId fica em data->'productVariant'->'product'->>'id'
-    product_id_path = "data->'productVariant'->'product'->>'id'"
+    product_id_path =
+      if kind == "product_added_to_cart"
+        "data->'cartLine'->'merchandise'->'product'->>'id'"
+      else
+        "data->'productVariant'->'product'->>'id'"
+      end
 
-    # Agrupa por productId e conta os eventos
     counts = scope.where(kind: kind)
                   .where("#{product_id_path} IS NOT NULL")
                   .group(Arel.sql(product_id_path))
@@ -225,7 +228,6 @@ class DashboardController < ApplicationController
 
     return [] if counts.empty?
 
-    # Para cada productId, busca o primeiro evento para extrair dados do payload
     event_data = scope.where(kind: kind)
                       .where("#{product_id_path} IN (?)", counts.keys.compact)
                       .select("DISTINCT ON (#{product_id_path}) #{product_id_path} AS product_id, data")
@@ -242,35 +244,33 @@ class DashboardController < ApplicationController
       product = Product.find_by(shopify_product_id: product_id)
       payload = event_data[product_id] || {}
 
-      # Extrai dados da estrutura: data["productVariant"]["product"] e data["productVariant"]
-      variant_data = payload.dig("productVariant") || {}
-      product_data = variant_data.dig("product") || {}
+      if kind == "product_added_to_cart"
+        variant_data = payload.dig("cartLine", "merchandise") || {}
+        product_data = variant_data.dig("product") || {}
+        image_src    = variant_data.dig("image", "src")
+        price        = variant_data.dig("price", "amount")&.to_f
+      else
+        variant_data = payload.dig("productVariant") || {}
+        product_data = variant_data.dig("product") || {}
+        image_src    = variant_data.dig("image", "src")
+        price        = variant_data.dig("price", "amount")&.to_f
+      end
 
-      # Fallback em cascata: banco > payload do evento > SKU > ID
       title = product&.shopify_product_name ||
               product_data["title"] ||
-              product_data["untranslatedTitle"] ||
               variant_data["title"] ||
               (variant_data["sku"].present? ? "SKU: #{variant_data["sku"]}" : nil) ||
-              (product_id.present? ? "ID #{product_id}" : "Produto desconhecido")
+              (product_id.present? ? "ID #{product_id}" : "Produto")
 
-      # Imagem: banco > payload (variant > product)
-      image_src = variant_data.dig("image", "src")
       image = product&.image_url || image_src
-
-      # Preco: banco > payload
-      price = product&.price ||
-              variant_data.dig("price", "amount")&.to_f
-
-      # SKU do variant
-      sku = variant_data["sku"]
+      sku   = variant_data["sku"]
 
       {
         id:    product_id,
         title: title,
         sku:   sku,
         image: image,
-        price: price,
+        price: product&.price || price,
         count: count
       }
     end
