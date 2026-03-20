@@ -10,6 +10,8 @@ gem 'jwt'
 
 gem 'rack-cors'
 
+gem 'font-awesome-sass', '~> 6.4'
+
 # This library provides support for Ruby Shopify apps to access the Shopify Admin API, by making it easier to perform the following actions:
 gem 'shopify_api'
 

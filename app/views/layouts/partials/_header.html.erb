@@ -18,23 +18,30 @@
 
     <!-- DASHBOARD -->
     <%= link_to painel_path, class: "crm-header__nav-link #{'active' if current_page?(painel_path)}" do %>
+      <i class="fa-solid fa-chart-line crm-fa"></i>
       Dashboard
     <% end %>
 
     <!-- OPERAÇÕES -->
     <div class="crm-header__group">
-      <span class="crm-header__group-label">Operações</span>
+      <span class="crm-header__group-label">
+        <i class="fa-solid fa-gear crm-fa"></i>
+        Operações
+      </span>
 
       <div class="crm-header__dropdown-nav">
         <%= link_to orders_path, class: "crm-header__dropdown-link" do %>
+          <i class="fa-solid fa-box crm-fa"></i>
           Pedidos
         <% end %>
 
         <%= link_to customers_path, class: "crm-header__dropdown-link" do %>
+          <i class="fa-solid fa-users crm-fa"></i>
           Clientes
         <% end %>
 
         <%= link_to products_path, class: "crm-header__dropdown-link" do %>
+          <i class="fa-solid fa-bag-shopping crm-fa"></i>
           Produtos
         <% end %>
       </div>
@@ -42,14 +49,19 @@
 
     <!-- MARKETING -->
     <div class="crm-header__group">
-      <span class="crm-header__group-label">Marketing</span>
+      <span class="crm-header__group-label">
+        <i class="fa-solid fa-bullhorn crm-fa"></i>
+        Marketing
+      </span>
 
       <div class="crm-header__dropdown-nav">
         <%= link_to painel_path, class: "crm-header__dropdown-link" do %>
+          <i class="fa-solid fa-bullseye crm-fa"></i>
           Campanhas
         <% end %>
 
         <%= link_to painel_path, class: "crm-header__dropdown-link" do %>
+          <i class="fa-solid fa-robot crm-fa"></i>
           Automações
         <% end %>
       </div>
@@ -58,18 +70,24 @@
     <!-- ADMIN -->
     <% if current_user.admin? %>
       <div class="crm-header__group">
-        <span class="crm-header__group-label">Admin</span>
+        <span class="crm-header__group-label">
+          <i class="fa-solid fa-shield-halved crm-fa"></i>
+          Admin
+        </span>
 
         <div class="crm-header__dropdown-nav">
           <%= link_to users_path, class: "crm-header__dropdown-link" do %>
+            <i class="fa-solid fa-user crm-fa"></i>
             Usuários
           <% end %>
 
           <%= link_to profiles_path, class: "crm-header__dropdown-link" do %>
+            <i class="fa-solid fa-id-badge crm-fa"></i>
             Perfis
           <% end %>
 
           <%= link_to '/painel/sidekiq', class: "crm-header__dropdown-link", target: '_blank' do %>
+            <i class="fa-solid fa-bolt crm-fa"></i>
             Sidekiq
           <% end %>
         </div>
@@ -110,14 +128,17 @@
 
         <% if current_user.admin? %>
           <%= link_to users_path, class: 'crm-header__dropdown-item' do %>
+            <i class="fa-solid fa-user crm-fa"></i>
             Usuários
           <% end %>
 
           <%= link_to profiles_path, class: 'crm-header__dropdown-item' do %>
+            <i class="fa-solid fa-id-badge crm-fa"></i>
             Perfis
           <% end %>
 
           <%= link_to '/painel/sidekiq', class: 'crm-header__dropdown-item', target: '_blank' do %>
+            <i class="fa-solid fa-bolt crm-fa"></i>
             Sidekiq
           <% end %>
 
@@ -127,6 +148,7 @@
         <%= link_to destroy_user_session_path,
           data: { turbo: false },
           class: 'crm-header__dropdown-item crm-header__dropdown-item--danger' do %>
+          <i class="fa-solid fa-right-from-bracket crm-fa"></i>
           Sair
         <% end %>
 
@@ -142,6 +164,13 @@
 
 /* RESET */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+.crm-fa {
+  margin-right: 6px;
+  color: #000;
+  font-size: 13px;
+}
 
 /* HEADER */
 .crm-header {
