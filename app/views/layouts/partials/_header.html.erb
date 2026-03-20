@@ -237,6 +237,18 @@
   position: relative;
 }
 
+/* Zona segura invisível para manter dropdown aberto */
+.crm-header__group::after {
+  content: '';
+  position: absolute;
+  top: calc(100% - 4px);
+  left: 0;
+  right: 0;
+  height: 16px;
+  pointer-events: auto;
+  z-index: 301;
+}
+
 .crm-header__group-label {
   cursor: pointer;
   font-size: 14px;
@@ -280,9 +292,11 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   padding: 6px;
   z-index: 300;
+  pointer-events: auto;
 }
 
-.crm-header__group:hover .crm-header__dropdown-nav {
+.crm-header__group:hover .crm-header__dropdown-nav,
+.crm-header__dropdown-nav:hover {
   display: block;
   animation: fadeInDown 0.15s ease;
 }
