@@ -16,43 +16,34 @@
 
   <nav class="crm-header__nav" id="crm-nav">
 
-    <%= link_to painel_path,
-    class: "crm-header__nav-link #{'active' if current_page?(painel_path)}" do %>
+    <%= link_to painel_path, class: "crm-header__nav-link #{'active' if current_page?(painel_path)}" do %>
       Dashboard
     <% end %>
 
-    <%= link_to customers_path,
-    class: "crm-header__nav-link #{'active' if current_page?(customers_path)}" do %>
+    <%= link_to customers_path, class: "crm-header__nav-link #{'active' if current_page?(customers_path)}" do %>
       Clientes
     <% end %>
 
-    <%= link_to orders_path,
-    class: "crm-header__nav-link #{'active' if current_page?(orders_path)}" do %>
+    <%= link_to orders_path, class: "crm-header__nav-link #{'active' if current_page?(orders_path)}" do %>
       Pedidos
     <% end %>
 
-    <%= link_to products_path,
-    class: "crm-header__nav-link #{'active' if current_page?(products_path)}" do %>
+    <%= link_to products_path, class: "crm-header__nav-link #{'active' if current_page?(products_path)}" do %>
       Produtos
     <% end %>
 
     <% if current_user.admin? %>
-
-      <%= link_to users_path,
-      class: "crm-header__nav-link #{'active' if current_page?(users_path)}" do %>
+      <%= link_to users_path, class: "crm-header__nav-link #{'active' if current_page?(users_path)}" do %>
         Usuários
       <% end %>
 
-      <%= link_to profiles_path,
-      class: "crm-header__nav-link #{'active' if current_page?(profiles_path)}" do %>
+      <%= link_to profiles_path, class: "crm-header__nav-link #{'active' if current_page?(profiles_path)}" do %>
         Perfis
       <% end %>
 
-      <%= link_to '/painel/sidekiq',
-      class: "crm-header__nav-link" do %>
+      <%= link_to '/painel/sidekiq', class: "crm-header__nav-link" do %>
         Sidekiq
       <% end %>
-
     <% end %>
 
   </nav>
@@ -61,13 +52,8 @@
 
     <% if current_user.admin? %>
       <div class="crm-header__client-selector">
-        <label for="client-selector" class="crm-header__client-label">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
-          </svg>
-        </label>
         <select id="client-selector" class="crm-header__client-select" onchange="updateSelectedClient(this.value)">
-          <option value="">Selecione um cliente</option>
+          <option value="">Cliente</option>
           <% Client.where(active: true).order(:name).each do |client| %>
             <option value="<%= client.id %>" <%= 'selected' if session[:selected_client_id].to_i == client.id %>>
               <%= client.name %>
@@ -82,7 +68,10 @@
       <%= image_tag 'admin/usuario-200x200', class: 'crm-header__avatar' %>
 
       <div class="crm-header__user-info">
-        <span class="crm-header__user-name"><%= current_user.name %></span>
+        <span class="crm-header__user-name-full"><%= current_user.name %></span>
+        <span class="crm-header__user-initial">
+          <%= current_user.name.first.upcase %>
+        </span>
         <span class="crm-header__user-role"><%= current_user.admin? ? 'Administrador' : 'Usuário' %></span>
       </div>
 
@@ -93,7 +82,6 @@
       <div class="crm-header__dropdown" id="crm-dropdown">
 
         <% if current_user.admin? %>
-
           <%= link_to users_path, class: 'crm-header__dropdown-item' do %>
             Usuários
           <% end %>
@@ -107,7 +95,6 @@
           <% end %>
 
           <div class="crm-header__dropdown-sep"></div>
-
         <% end %>
 
         <%= link_to destroy_user_session_path,
@@ -126,87 +113,226 @@
 
 <div id="client-toast" class="crm-toast"></div>
 
+<style>
+
+/* RESET */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* HEADER */
+.crm-header {
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e6e9f2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.2rem;
+}
+
+/* LEFT */
+.crm-header__left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.crm-header__logo {
+  height: 32px;
+}
+
+/* NAV */
+.crm-header__nav {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.crm-header__nav-link {
+  text-decoration: none;
+  color: #5b648a;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.crm-header__nav-link.active {
+  color: #3b4adf;
+}
+
+/* ACTIONS */
+.crm-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* USER */
+.crm-header__user {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.crm-header__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.crm-header__user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.crm-header__user-name-full {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.crm-header__user-role {
+  font-size: 0.7rem;
+  color: #8c93b3;
+}
+
+/* INITIAL */
+.crm-header__user-initial {
+  display: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #3b4adf;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* DROPDOWN */
+.crm-header__dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e6e9f2;
+  border-radius: 10px;
+  display: none;
+  min-width: 180px;
+}
+
+.crm-header__dropdown-item {
+  display: block;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  color: #333;
+}
+
+.crm-header__dropdown-item:hover {
+  background: #f5f7ff;
+}
+
+.crm-header__dropdown-item--danger {
+  color: #e74c3c;
+}
+
+/* HAMBURGER */
+.crm-header__hamburger {
+  display: none;
+  background: none;
+  border: none;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  .crm-header__nav {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    background: white;
+    flex-direction: column;
+    padding: 1rem;
+    display: none;
+  }
+
+  .crm-header__nav.open {
+    display: flex;
+  }
+
+  .crm-header__hamburger {
+    display: block;
+  }
+
+  .crm-header__user-name-full,
+  .crm-header__user-role {
+    display: none;
+  }
+
+  .crm-header__user-initial {
+    display: flex;
+  }
+
+  .crm-header__avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+}
+
+</style>
+
 <script>
 
-  function updateSelectedClient(clientId) {
-    if (!clientId) return;
+function updateSelectedClient(clientId) {
+  if (!clientId) return;
 
-    fetch('/painel/update_selected_client', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-      },
-      body: JSON.stringify({ client_id: clientId })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        showToast('Cliente atualizado: ' + data.client_name, 'success');
-        // Recarrega a página para atualizar os dados
-        setTimeout(() => window.location.reload(), 1000);
-      } else {
-        showToast('Erro ao atualizar cliente', 'error');
-      }
-    })
-    .catch(() => {
-      showToast('Erro ao atualizar cliente', 'error');
+  fetch('/painel/update_selected_client', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify({ client_id: clientId })
+  })
+  .then(res => res.json())
+  .then(() => location.reload());
+}
+
+/* DROPDOWN */
+(function(){
+  var menu = document.getElementById('crm-user-menu');
+  var dropdown = document.getElementById('crm-dropdown');
+
+  if(menu && dropdown){
+    menu.addEventListener('click', function(e){
+      e.stopPropagation();
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.addEventListener('click', function(){
+      dropdown.style.display = 'none';
     });
   }
+})();
 
-  function showToast(message, type) {
-    var toast = document.getElementById('client-toast');
-    toast.textContent = message;
-    toast.className = 'crm-toast crm-toast--' + type + ' crm-toast--visible';
-    setTimeout(function() {
-      toast.classList.remove('crm-toast--visible');
-    }, 3000);
+/* HAMBURGER */
+(function(){
+  var btn = document.getElementById('crm-hamburger');
+  var nav = document.getElementById('crm-nav');
+
+  if(btn && nav){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      nav.classList.toggle('open');
+    });
+
+    document.addEventListener('click', function(e){
+      if(!nav.contains(e.target) && !btn.contains(e.target)){
+        nav.classList.remove('open');
+      }
+    });
   }
-
-  (function(){
-
-    var menu     = document.getElementById('crm-user-menu');
-    var dropdown = document.getElementById('crm-dropdown');
-    var chevron  = menu ? menu.querySelector('.crm-header__chevron') : null;
-
-    if(menu && dropdown){
-
-      menu.addEventListener('click', function(e){
-        e.stopPropagation();
-        var open = dropdown.style.display === 'block';
-        dropdown.style.display = open ? 'none' : 'block';
-        if(chevron) chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
-      });
-
-      document.addEventListener('click', function(){
-        dropdown.style.display = 'none';
-        if(chevron) chevron.style.transform = 'rotate(0deg)';
-      });
-
-    }
-
-  })();
-
-  (function(){
-
-    var hamburger = document.getElementById('crm-hamburger');
-    var nav       = document.getElementById('crm-nav');
-
-    if(hamburger && nav){
-
-      hamburger.addEventListener('click', function(e){
-        e.stopPropagation();
-        nav.classList.toggle('open');
-      });
-
-      document.addEventListener('click', function(e){
-        if(!nav.contains(e.target) && !hamburger.contains(e.target)){
-          nav.classList.remove('open');
-        }
-      });
-
-    }
-
-  })();
+})();
 
 </script>
