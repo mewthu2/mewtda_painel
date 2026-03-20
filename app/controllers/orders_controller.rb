@@ -9,7 +9,7 @@ class OrdersController < ApplicationController
   end
 
   def details
-    order    = Order.includes(:customer, order_items: :product).find(params[:id])
+    order    = orders_scope.includes(:customer, order_items: :product).find(params[:id])
     customer = order.customer
     items    = order.order_items
 
@@ -85,8 +85,20 @@ class OrdersController < ApplicationController
 
   private
 
+  def current_client_id
+    if current_user.admin?
+      session[:selected_client_id] || current_user.client_id
+    else
+      current_user.client_id
+    end
+  end
+
+  def orders_scope
+    Order.where(client_id: current_client_id)
+  end
+
   def set_filter_scope
-    @orders_scope = Order.all
+    @orders_scope = orders_scope # <-- Agora usa orders_scope ao invés de Order.all
     @orders_scope = @orders_scope.where(kinds: params[:kinds])                                             if params[:kinds].present?
     @orders_scope = @orders_scope.where(staff_name: params[:staff_name])                                   if params[:staff_name].present?
     @orders_scope = @orders_scope.where('shopify_order_number ILIKE ?', "%#{params[:search]}%")            if params[:search].present?
@@ -95,7 +107,7 @@ class OrdersController < ApplicationController
   end
 
   def load_form_references
-    @kinds       = Order.distinct.pluck(:kinds).compact.sort
-    @staff_names = Order.distinct.pluck(:staff_name).compact.sort
+    @kinds       = orders_scope.distinct.pluck(:kinds).compact.sort       # <-- Também filtrado por client
+    @staff_names = orders_scope.distinct.pluck(:staff_name).compact.sort  # <-- Também filtrado por client
   end
 end

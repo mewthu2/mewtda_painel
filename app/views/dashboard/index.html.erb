@@ -2,79 +2,138 @@
 
 <style>
   .db-page { padding: 24px 28px; min-height: 100vh; }
+  @media (max-width: 600px) { .db-page { padding: 16px; } }
 
   .db-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 16px;
     margin-bottom: 24px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px 24px;
+  }
+  @media (max-width: 600px) {
+    .db-header { padding: 14px 16px; flex-direction: column; align-items: flex-start; }
   }
   .db-header__left { display: flex; flex-direction: column; gap: 4px; }
+  .db-header__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+  .db-header__breadcrumb svg { color: #cbd5e1; }
+  .db-header__client-name {
+    color: #0369a1;
+    font-weight: 600;
+    background: #f0f9ff;
+    padding: 1px 8px;
+    border-radius: 4px;
+    border: 1px solid #bae6fd;
+    font-size: 12px;
+  }
   .db-header__title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 800;
     color: #0f172a;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.4px;
+    line-height: 1.2;
   }
   .db-header__subtitle {
     font-size: 13px;
-    color: #64748b;
+    color: #94a3b8;
   }
   .db-header__right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     flex-wrap: wrap;
   }
-
-  .db-client-select {
+  .db-filters {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #fff;
+    gap: 4px;
+    background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 6px 12px;
+    border-radius: 10px;
+    padding: 4px;
   }
-  .db-client-select__label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    color: #94a3b8;
-  }
-  .db-client-select select {
+  .db-filter-btn {
+    padding: 6px 14px;
+    border-radius: 7px;
     border: none;
     background: transparent;
-    font-size: 13px;
-    font-weight: 600;
-    color: #0f172a;
-    cursor: pointer;
-    padding-right: 20px;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0 center;
-    background-repeat: no-repeat;
-    background-size: 16px;
-  }
-  .db-client-select select:focus { outline: none; }
-
-  .db-filters { display: flex; gap: 6px; }
-  .db-filter-btn {
-    padding: 7px 16px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    background: #fff;
-    color: #475569;
+    color: #64748b;
     font-size: 13px;
     font-weight: 500;
     text-decoration: none;
     transition: all .15s;
+    white-space: nowrap;
   }
-  .db-filter-btn:hover { background: #f1f5f9; border-color: #cbd5e1; color: #1e293b; }
-  .db-filter-btn--active { background: #0f172a; color: #fff; border-color: #0f172a; }
+  .db-filter-btn:hover { background: #fff; color: #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .db-filter-btn--active { background: #fff; color: #0f172a; font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .db-filters--muted .db-filter-btn { opacity: .45; pointer-events: none; }
+
+  .db-month-filter { display: flex; align-items: center; }
+  .db-month-filter__form { display: flex; align-items: center; gap: 6px; }
+  .db-month-filter__select {
+    height: 34px;
+    padding: 0 28px 0 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%2394a3b8' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    transition: all .15s;
+  }
+  .db-month-filter__select:focus { outline: none; border-color: #94a3b8; background-color: #fff; }
+  .db-month-filter__select--active { border-color: #0f172a; background-color: #fff; color: #0f172a; font-weight: 600; }
+  .db-month-filter__btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: none;
+    background: #0f172a;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+    white-space: nowrap;
+  }
+  .db-month-filter__btn:hover { background: #1e293b; }
+  .db-month-filter__clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid #fca5a5;
+    background: #fff1f2;
+    color: #ef4444;
+    text-decoration: none;
+    transition: all .15s;
+  }
+  .db-month-filter__clear:hover { background: #fee2e2; }
+  @media (max-width: 768px) {
+    .db-month-filter__form { flex-wrap: wrap; }
+    .db-month-filter__select { flex: 1; min-width: 90px; }
+  }
 
   .db-empty {
     display: flex;
@@ -113,6 +172,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 20px;
+    overflow: hidden;
   }
   .db-card__header {
     display: flex;
@@ -134,6 +194,7 @@
   }
   @media (max-width: 1100px) { .db-kpi-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 700px) { .db-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .db-kpi-grid { grid-template-columns: 1fr; } }
 
   .db-kpi {
     background: #fff;
@@ -172,6 +233,7 @@
     line-height: 1;
     margin-bottom: 6px;
   }
+  @media (max-width: 480px) { .db-kpi__value { font-size: 24px; } }
   .db-kpi__change {
     font-size: 11px;
     font-weight: 600;
@@ -190,12 +252,17 @@
     border-radius: 16px;
     padding: 28px;
     margin-bottom: 24px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
+  @media (max-width: 600px) { .db-funnel-section { padding: 20px 16px; } }
   .db-funnel-section__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
   }
   .db-funnel-section__title {
     font-size: 14px;
@@ -206,20 +273,26 @@
     gap: 8px;
   }
   .db-funnel-section__title svg { opacity: .6; }
-  .db-funnel-section__client {
-    font-size: 12px;
-    color: #94a3b8;
-    background: rgba(255,255,255,.08);
-    padding: 6px 12px;
-    border-radius: 6px;
+.db-funnel-section__period {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  background: rgba(255,255,255,.08);
+  padding: 6px 12px;
+  border-radius: 6px;
   }
-  .db-funnel-section__client strong { color: #fff; }
+.db-funnel-section__period svg { opacity: .7; }
 
   .db-funnel {
     display: flex;
     align-items: stretch;
     gap: 0;
+    min-width: 600px;
   }
+  @media (max-width: 700px) { .db-funnel { min-width: 500px; } }
   .db-funnel__step {
     flex: 1;
     display: flex;
@@ -254,6 +327,7 @@
     line-height: 1;
     margin-bottom: 4px;
   }
+  @media (max-width: 700px) { .db-funnel__count { font-size: 24px; } }
   .db-funnel__name {
     font-size: 11px;
     color: #94a3b8;
@@ -311,7 +385,12 @@
     .db-grid-2, .db-grid-3 { grid-template-columns: 1fr; }
   }
 
-  .db-chart-wrap { min-height: 240px; }
+  .db-chart-wrap {
+    min-height: 240px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .db-chart-wrap > div { min-width: 400px; }
 
   .db-top-list { list-style: none; padding: 0; margin: 0; }
   .db-top-list li {
@@ -388,6 +467,11 @@
     font-weight: 600;
     color: #0f172a;
   }
+  .db-top-list__sku {
+    font-size: 11px;
+    color: #94a3b8;
+    font-family: monospace;
+  }
   .db-top-list__price {
     font-size: 11px;
     color: #64748b;
@@ -406,6 +490,11 @@
     display: grid;
     grid-template-columns: repeat(24, 1fr);
     gap: 3px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (max-width: 700px) {
+    .db-heatmap { min-width: 500px; }
   }
   .db-heatmap__cell {
     aspect-ratio: 1;
@@ -438,6 +527,10 @@
     grid-template-columns: repeat(24, 1fr);
     gap: 3px;
     margin-top: 4px;
+    overflow-x: auto;
+  }
+  @media (max-width: 700px) {
+    .db-heatmap__labels { min-width: 500px; }
   }
   .db-heatmap__label {
     text-align: center;
@@ -458,12 +551,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .db-table-card__title { font-size: 14px; font-weight: 700; color: #0f172a; }
   .db-table-card__count { font-size: 12px; color: #94a3b8; }
+  .db-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .db-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 700px;
   }
   .db-table thead th {
     padding: 12px 16px;
@@ -524,6 +624,7 @@
     backdrop-filter: blur(4px);
     z-index: 1000;
     overflow-y: auto;
+    padding: 20px;
   }
   .db-modal {
     background: #fff;
@@ -533,6 +634,7 @@
     box-shadow: 0 25px 80px rgba(0,0,0,.25);
     overflow: hidden;
   }
+  @media (max-width: 600px) { .db-modal { margin: 20px auto; } }
   .db-modal__head {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     padding: 24px;
@@ -623,43 +725,66 @@
 
 <div class="db-page">
 
-  <div class="db-header">
-    <div class="db-header__left">
-      <h1 class="db-header__title">Funil de Conversao</h1>
-      <p class="db-header__subtitle">
-        <% if @client %>
-          Dados de <strong><%= @client.name %></strong>
-        <% else %>
-          Analise o comportamento dos seus clientes
-        <% end %>
-      </p>
+<div class="db-header">
+  <div class="db-header__left">
+    <div class="db-header__breadcrumb">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Dashboard</span>
+      <% if @client %>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        <span class="db-header__client-name"><%= @client.name %></span>
+      <% end %>
+    </div>
+    <h1 class="db-header__title">Analytics</h1>
+    <p class="db-header__subtitle">
+      <% if @client %>
+        Funil de conversao e comportamento dos visitantes
+      <% else %>
+        Selecione um cliente para visualizar os dados
+      <% end %>
+    </p>
+  </div>
+
+  <div class="db-header__right">
+    <%# Filtros rapidos de periodo %>
+    <div class="db-filters <%= 'db-filters--muted' if @using_month_filter %>">
+      <%= link_to "Hoje",    painel_path(period: "1"),  class: "db-filter-btn #{'db-filter-btn--active' if @period == '1' && !@using_month_filter}" %>
+      <%= link_to "7 dias",  painel_path(period: "7"),  class: "db-filter-btn #{'db-filter-btn--active' if @period == '7' && !@using_month_filter}" %>
+      <%= link_to "15 dias", painel_path(period: "15"), class: "db-filter-btn #{'db-filter-btn--active' if @period == '15' && !@using_month_filter}" %>
+      <%= link_to "30 dias", painel_path(period: "30"), class: "db-filter-btn #{'db-filter-btn--active' if @period == '30' && !@using_month_filter}" %>
     </div>
 
-    <div class="db-header__right">
-      <% if @is_admin && @clients.present? %>
-        <div class="db-client-select">
-          <span class="db-client-select__label">Cliente</span>
-          <select id="client-selector" onchange="window.location.href = this.value">
-            <% @clients.each do |client| %>
-              <option
-                value="<%= painel_path(client_id: client.id, period: @period) %>"
-                <%= 'selected' if client.id == @selected_client_id %>
-              >
-                <%= client.name %>
-              </option>
-            <% end %>
-          </select>
-        </div>
-      <% end %>
+    <%# Filtro por mes/ano %>
+    <div class="db-month-filter">
+      <%= form_with url: painel_path, method: :get, local: true, class: "db-month-filter__form" do |f| %>
+        <select name="year" class="db-month-filter__select <%= 'db-month-filter__select--active' if @using_month_filter %>">
+          <option value="">Ano</option>
+          <% [2025, 2026].each do |y| %>
+            <option value="<%= y %>" <%= 'selected' if @filter_year == y %>><%= y %></option>
+          <% end %>
+        </select>
 
-      <div class="db-filters">
-        <%= link_to "Hoje",    painel_path(client_id: @selected_client_id, period: "1"),  class: "db-filter-btn #{'db-filter-btn--active' if @period == '1'}" %>
-        <%= link_to "7 dias",  painel_path(client_id: @selected_client_id, period: "7"),  class: "db-filter-btn #{'db-filter-btn--active' if @period == '7'}" %>
-        <%= link_to "15 dias", painel_path(client_id: @selected_client_id, period: "15"), class: "db-filter-btn #{'db-filter-btn--active' if @period == '15'}" %>
-        <%= link_to "30 dias", painel_path(client_id: @selected_client_id, period: "30"), class: "db-filter-btn #{'db-filter-btn--active' if @period == '30'}" %>
-      </div>
+        <select name="month" class="db-month-filter__select <%= 'db-month-filter__select--active' if @using_month_filter %>">
+          <option value="">Mes</option>
+          <% Date::MONTHNAMES.compact.each_with_index do |name, idx| %>
+            <option value="<%= idx + 1 %>" <%= 'selected' if @filter_month == idx + 1 %>><%= name %></option>
+          <% end %>
+        </select>
+
+        <button type="submit" class="db-month-filter__btn">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+          Filtrar
+        </button>
+
+        <% if @using_month_filter %>
+          <%= link_to painel_path(period: "1"), class: "db-month-filter__clear" do %>
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <% end %>
+        <% end %>
+      <% end %>
     </div>
   </div>
+</div>
 
 
   <% if @empty_state %>
@@ -733,11 +858,11 @@
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
           Funil de Conversao
         </div>
-        <% if @client %>
-          <div class="db-funnel-section__client">
-            Cliente: <strong><%= @client.name %></strong>
-          </div>
-        <% end %>
+        <div class="db-funnel-section__period">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <% period_label = { "1" => "Hoje", "7" => "Ultimos 7 dias", "15" => "Ultimos 15 dias", "30" => "Ultimos 30 dias" }[@period] || "Hoje" %>
+          <%= period_label %>
+        </div>
       </div>
 
       <div class="db-funnel">
@@ -818,14 +943,18 @@
         <div class="db-card__header">
           <span class="db-card__title">Eventos por Dia</span>
         </div>
-        <div id="events_chart" class="db-chart-wrap"></div>
+        <div class="db-chart-wrap">
+          <div id="events_chart"></div>
+        </div>
       </div>
 
       <div class="db-card">
         <div class="db-card__header">
           <span class="db-card__title">Dispositivos</span>
         </div>
-        <div id="devices_chart" class="db-chart-wrap"></div>
+        <div class="db-chart-wrap">
+          <div id="devices_chart"></div>
+        </div>
       </div>
     </div>
 
@@ -835,7 +964,9 @@
         <div class="db-card__header">
           <span class="db-card__title">Origem do Trafego</span>
         </div>
-        <div id="referrers_chart" class="db-chart-wrap"></div>
+        <div class="db-chart-wrap">
+          <div id="referrers_chart"></div>
+        </div>
       </div>
 
       <div class="db-card">
@@ -861,7 +992,9 @@
                 <% end %>
                 <div class="db-top-list__info">
                   <span class="db-top-list__title"><%= p[:title] %></span>
-                  <% if p[:price].present? && p[:price] > 0 %>
+                  <% if p[:sku].present? %>
+                    <span class="db-top-list__sku">SKU: <%= p[:sku] %></span>
+                  <% elsif p[:price].present? && p[:price].to_f > 0 %>
                     <span class="db-top-list__price">
                       <%= number_to_currency(p[:price], unit: "R$ ", separator: ",", delimiter: ".") %>
                     </span>
@@ -899,7 +1032,9 @@
                 <% end %>
                 <div class="db-top-list__info">
                   <span class="db-top-list__title"><%= p[:title] %></span>
-                  <% if p[:price].present? && p[:price] > 0 %>
+                  <% if p[:sku].present? %>
+                    <span class="db-top-list__sku">SKU: <%= p[:sku] %></span>
+                  <% elsif p[:price].present? && p[:price].to_f > 0 %>
                     <span class="db-top-list__price">
                       <%= number_to_currency(p[:price], unit: "R$ ", separator: ",", delimiter: ".") %>
                     </span>
@@ -960,14 +1095,18 @@
         <div class="db-card__header">
           <span class="db-card__title">Atividade por Dia da Semana</span>
         </div>
-        <div id="weekday_chart" class="db-chart-wrap"></div>
+        <div class="db-chart-wrap">
+          <div id="weekday_chart"></div>
+        </div>
       </div>
 
       <div class="db-card">
         <div class="db-card__header">
           <span class="db-card__title">Funil Comparativo</span>
         </div>
-        <div id="funnel_bar_chart" class="db-chart-wrap"></div>
+        <div class="db-chart-wrap">
+          <div id="funnel_bar_chart"></div>
+        </div>
       </div>
     </div>
 
@@ -978,73 +1117,75 @@
         <span class="db-table-card__count"><%= @sessions.size %> sessoes | <%= @sessions.count { |s| !s[:abandoned] } %> convertidas</span>
       </div>
 
-      <table class="db-table">
-        <thead>
-          <tr>
-            <th>Sessao</th>
-            <th>Dominio</th>
-            <th>Jornada</th>
-            <th class="center">Device</th>
-            <th class="center">Duracao</th>
-            <th class="center">Eventos</th>
-            <th class="center">Status</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% if @sessions.empty? %>
+      <div class="db-table-wrap">
+        <table class="db-table">
+          <thead>
             <tr>
-              <td colspan="7" class="db-table__empty">
-                Nenhuma sessao encontrada no periodo selecionado.
-              </td>
+              <th>Sessao</th>
+              <th>Dominio</th>
+              <th>Jornada</th>
+              <th class="center">Device</th>
+              <th class="center">Duracao</th>
+              <th class="center">Eventos</th>
+              <th class="center">Status</th>
             </tr>
-          <% else %>
-            <% @sessions.each do |s| %>
-              <tr
-                class="db-session-row <%= 'db-table__row--abandoned' if s[:abandoned] %>"
-                data-session-id="<%= s[:session_id] %>"
-                data-fetch-url="<%= painel_session_path(session_id: s[:session_id], client_id: @selected_client_id) %>"
-              >
-                <td>
-                  <span class="db-badge db-badge--mono"><%= s[:session_id].truncate(12) %></span>
-                </td>
-                <td style="font-weight:500; color:#0f172a"><%= s[:shop_domain] %></td>
-                <td>
-                  <div style="display:flex; gap:4px; flex-wrap:wrap">
-                    <% s[:last_kinds].each do |kind| %>
-                      <%
-                        badge_class = case kind
-                          when 'page_viewed'           then 'db-badge--page'
-                          when 'product_viewed'        then 'db-badge--product'
-                          when 'product_added_to_cart' then 'db-badge--cart'
-                          when 'checkout_started'      then 'db-badge--cart'
-                          when 'checkout_completed'    then 'db-badge--checkout'
-                          else ''
-                        end
-                      %>
-                      <span class="db-badge <%= badge_class %>"><%= kind.split('_').first(2).join(' ') %></span>
-                    <% end %>
-                  </div>
-                </td>
-                <td class="center">
-                  <span class="db-badge db-badge--device"><%= s[:device] %></span>
-                </td>
-                <td class="center" style="color:#64748b; font-size:12px"><%= s[:duration_min] %> min</td>
-                <td class="center">
-                  <span class="db-badge db-badge--count"><%= s[:event_count] %></span>
-                </td>
-                <td class="center">
-                  <% if s[:abandoned] %>
-                    <span class="db-badge db-badge--abandoned">nao converteu</span>
-                  <% else %>
-                    <span class="db-badge" style="background:#dcfce7; color:#15803d">converteu</span>
-                  <% end %>
+          </thead>
+
+          <tbody>
+            <% if @sessions.empty? %>
+              <tr>
+                <td colspan="7" class="db-table__empty">
+                  Nenhuma sessao encontrada no periodo selecionado.
                 </td>
               </tr>
+            <% else %>
+              <% @sessions.each do |s| %>
+                <tr
+                  class="db-session-row <%= 'db-table__row--abandoned' if s[:abandoned] %>"
+                  data-session-id="<%= s[:session_id] %>"
+                  data-fetch-url="<%= painel_session_path(session_id: s[:session_id]) %>"
+                >
+                  <td>
+                    <span class="db-badge db-badge--mono"><%= s[:session_id].truncate(12) %></span>
+                  </td>
+                  <td style="font-weight:500; color:#0f172a"><%= s[:shop_domain] %></td>
+                  <td>
+                    <div style="display:flex; gap:4px; flex-wrap:wrap">
+                      <% s[:last_kinds].each do |kind| %>
+                        <%
+                          badge_class = case kind
+                            when 'page_viewed'           then 'db-badge--page'
+                            when 'product_viewed'        then 'db-badge--product'
+                            when 'product_added_to_cart' then 'db-badge--cart'
+                            when 'checkout_started'      then 'db-badge--cart'
+                            when 'checkout_completed'    then 'db-badge--checkout'
+                            else ''
+                          end
+                        %>
+                        <span class="db-badge <%= badge_class %>"><%= kind.split('_').first(2).join(' ') %></span>
+                      <% end %>
+                    </div>
+                  </td>
+                  <td class="center">
+                    <span class="db-badge db-badge--device"><%= s[:device] %></span>
+                  </td>
+                  <td class="center" style="color:#64748b; font-size:12px"><%= s[:duration_min] %> min</td>
+                  <td class="center">
+                    <span class="db-badge db-badge--count"><%= s[:event_count] %></span>
+                  </td>
+                  <td class="center">
+                    <% if s[:abandoned] %>
+                      <span class="db-badge db-badge--abandoned">nao converteu</span>
+                    <% else %>
+                      <span class="db-badge" style="background:#dcfce7; color:#15803d">converteu</span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
             <% end %>
-          <% end %>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   <% end %>

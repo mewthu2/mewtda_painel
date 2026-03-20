@@ -27,5 +27,98 @@
  @import '@fortawesome/fontawesome-free/scss/brands';
  @import '@fortawesome/fontawesome-free/scss/solid';
 
+ /* Client Selector no Header */
+.crm-header__client-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 1.5rem;
+}
+
+.crm-header__client-label {
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.crm-header__client-select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  padding: 0.4rem 2rem 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  min-width: 160px;
+  transition: all 0.2s ease;
+}
+
+.crm-header__client-select:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.crm-header__client-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.crm-header__client-select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+/* Toast de notificação */
+.crm-toast {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  z-index: 9999;
+  transform: translateX(120%);
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.crm-toast--visible {
+  transform: translateX(0);
+}
+
+.crm-toast--success {
+  background: #10b981;
+  color: #fff;
+}
+
+.crm-toast--error {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .crm-header__client-selector {
+    margin-right: 0.75rem;
+  }
+
+  .crm-header__client-select {
+    min-width: 120px;
+    font-size: 0.8rem;
+    padding: 0.35rem 1.75rem 0.35rem 0.5rem;
+  }
+
+  .crm-header__client-label {
+    display: none;
+  }
+}
+
+
  
  

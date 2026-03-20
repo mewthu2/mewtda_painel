@@ -1,7 +1,14 @@
 class OrdersUpdateJob < ApplicationJob
   queue_as :default
 
-  def perform(action:, **options)
+  def perform(action:, client_id:, **options)
+    @client = Client.find(client_id)
+    
+    unless @client.active?
+      Rails.logger.warn "[OrdersUpdateJob] Client #{client_id} está inativo. Ignorando job."
+      return
+    end
+
     case action
     when 'sync_all'
       sync_all_orders(options)
@@ -17,7 +24,7 @@ class OrdersUpdateJob < ApplicationJob
       Rails.logger.error "[OrdersUpdateJob] Ação desconhecida: #{action}"
     end
   rescue StandardError => e
-    Rails.logger.error "[OrdersUpdateJob] Erro: #{e.message}"
+    Rails.logger.error "[OrdersUpdateJob] Erro para client #{client_id}: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
     raise e
   end
@@ -28,10 +35,9 @@ class OrdersUpdateJob < ApplicationJob
 
     session = build_shopify_session
 
-    location = Location.find_by(slug: 'Henrri')
-
     Shopify::Orders.sync_shopify_orders_to_rails(
       session: session,
+      client: @client,
       limit: limit,
       status: status,
       time_range: :all
@@ -45,10 +51,9 @@ class OrdersUpdateJob < ApplicationJob
 
     session = build_shopify_session
 
-    location = Location.find_by(slug: 'Henrri')
-
     Shopify::Orders.sync_shopify_orders_to_rails(
       session: session,
+      client: @client,
       limit: limit,
       status: status,
       time_range: routine
@@ -62,9 +67,9 @@ class OrdersUpdateJob < ApplicationJob
     raise ArgumentError, 'shopify_order_id é obrigatório' if shopify_order_id.blank?
 
     session = build_shopify_session
-    client  = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+    client_api = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
-    response = client.get(
+    response = client_api.get(
       path: "orders/#{shopify_order_id}.json",
       query: {
         fields: 'id,created_at,line_items,note_attributes,customer'
@@ -76,7 +81,8 @@ class OrdersUpdateJob < ApplicationJob
 
     Shopify::Orders.create_or_update_order_from_shopify(
       shopify_order,
-      session: session
+      session: session,
+      client: @client
     )
   end
 
@@ -96,7 +102,10 @@ class OrdersUpdateJob < ApplicationJob
 
     session = build_shopify_session
 
-    Order.where.not(shopify_order_id: nil).where(customer_id: nil)
+    # Filtra apenas orders do client atual
+    Order.where(client_id: @client.id)
+         .where.not(shopify_order_id: nil)
+         .where(customer_id: nil)
          .find_in_batches(batch_size: batch_size) do |orders|
       orders.each do |order|
         sync_customer_for_order(order, session)
@@ -110,17 +119,17 @@ class OrdersUpdateJob < ApplicationJob
 
   def build_shopify_session
     ShopifyAPI::Auth::Session.new(
-      shop: ENV.fetch('HENRRI_SHOP_URL'),
-      access_token: ENV.fetch('HENRRI_OAUTH_SECRET')
+      shop: @client.shopify_shop_url,
+      access_token: @client.shopify_access_token
     )
   end
 
   def sync_customer_for_order(order, session)
     return if order.shopify_order_id.blank?
 
-    client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+    client_api = ShopifyAPI::Clients::Rest::Admin.new(session:)
 
-    response = client.get(
+    response = client_api.get(
       path: "orders/#{order.shopify_order_id}.json",
       query: { fields: 'id,customer' }
     )

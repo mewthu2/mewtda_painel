@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       mount Sidekiq::Web => '/sidekiq'
     end
 
+    post 'update_selected_client', to: 'clients#update_selected_client'
     get '/', to: 'dashboard#index', as: :painel
     get '/session/:session_id', to: 'dashboard#session_detail', as: :painel_session
 

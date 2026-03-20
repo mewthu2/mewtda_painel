@@ -1,7 +1,19 @@
 class ProductsSyncJob < ApplicationJob
   queue_as :default
 
-  def perform(action:)
+  def perform(action:, client_id:)
+    @client = Client.find_by(id: client_id)
+
+    unless @client
+      Rails.logger.error "[ProductsSyncJob] Client não encontrado: #{client_id}"
+      return
+    end
+
+    unless @client.active?
+      Rails.logger.error "[ProductsSyncJob] Client inativo: #{@client.name}"
+      return
+    end
+
     case action
     when 'sync_all_products'
       sync_all_products
@@ -12,15 +24,15 @@ class ProductsSyncJob < ApplicationJob
 
   def client_shopify_rest
     session = ShopifyAPI::Auth::Session.new(
-      shop: ENV.fetch('HENRRI_SHOP_URL'),
-      access_token: ENV.fetch('HENRRI_OAUTH_SECRET')
+      shop: @client.shopify_shop_url,
+      access_token: @client.shopify_access_token
     )
 
     ShopifyAPI::Clients::Rest::Admin.new(session:)
   end
 
   def sync_all_products
-    Rails.logger.info "[ProductsSyncJob] Iniciando sincronização de produtos"
+    Rails.logger.info "[ProductsSyncJob] Iniciando sincronização de produtos para client: #{@client.name}"
 
     client = client_shopify_rest
 
@@ -46,13 +58,14 @@ class ProductsSyncJob < ApplicationJob
       process_products(response.body['products'])
     end
 
-    Rails.logger.info "[ProductsSyncJob] Sincronização finalizada"
+    Rails.logger.info "[ProductsSyncJob] Sincronização finalizada para client: #{@client.name}"
   end
 
   def process_products(products)
     products.each do |shopify_product|
       shopify_product['variants'].each do |variant|
         product = Product.find_or_initialize_by(
+          client_id: @client.id,
           shopify_variant_id: variant['id'].to_s
         )
 
@@ -74,7 +87,7 @@ class ProductsSyncJob < ApplicationJob
 
         product.save!
 
-        Rails.logger.info "[ProductsSyncJob] Produto sincronizado SKU #{product.sku}"
+        Rails.logger.info "[ProductsSyncJob] Produto sincronizado SKU #{product.sku} para client: #{@client.name}"
       end
     end
   end

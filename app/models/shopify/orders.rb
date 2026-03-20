@@ -4,8 +4,8 @@ class Shopify::Orders
 
   class << self
 
-    def sync_shopify_orders_to_rails(session:, limit: 100, status: 'any', time_range: :all)
-      client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+    def sync_shopify_orders_to_rails(session:, client:, limit: 100, status: 'any', time_range: :all)
+      api_client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
       total = 0
 
@@ -27,9 +27,13 @@ class Shopify::Orders
 
       query_params[:created_at_min] = created_at_min if created_at_min.present?
 
-      @henrri_location ||= Location.find_by!(slug: 'henrri')
+      # Busca ou cria a location do client
+      @location = Location.find_or_create_by!(slug: client.name.parameterize) do |loc|
+        loc.name = client.name
+        loc.client_id = client.id
+      end
 
-      response = client.get(
+      response = api_client.get(
         path: 'orders',
         query: query_params
       )
@@ -38,23 +42,27 @@ class Shopify::Orders
         response.body['orders'].each do |shopify_order|
           create_or_update_order_from_shopify(
             shopify_order,
-            session: session
+            session: session,
+            client: client
           )
           total += 1
         end
 
         break unless response.next_page_info
 
-        response = client.get(
+        response = api_client.get(
           path: 'orders',
           query: {
             page_info: response.next_page_info
           }
         )
       end
+
+      Rails.logger.info "[Shopify::Orders] Sincronizados #{total} pedidos para client #{client.id} (#{client.name})"
+      total
     end
 
-    def create_or_update_order_from_shopify(shopify_order, session:)
+    def create_or_update_order_from_shopify(shopify_order, session:, client:)
       shopify_order_id     = shopify_order['id'].to_s
       shopify_order_number = shopify_order['name']
       shopify_created_at   = Time.parse(shopify_order['created_at'])
@@ -66,15 +74,21 @@ class Shopify::Orders
       staff_id   = note_attributes['staff_ID']
       staff_name = note_attributes['staff_name']
 
-      location = @henrri_location ||= Location.find_by!(slug: 'henrri')
+      location = @location ||= Location.find_or_create_by!(slug: client.name.parameterize) do |loc|
+        loc.name = client.name
+        loc.client_id = client.id
+      end
 
       customer = find_or_create_customer_from_shopify(
         shopify_order,
         session: session
       )
 
+      # Busca order existente pelo shopify_order_id E client_id
+      # Isso permite que diferentes clients tenham orders com mesmo shopify_order_id
       order = Order.find_or_initialize_by(
-        shopify_order_id: shopify_order_id
+        shopify_order_id: shopify_order_id,
+        client_id: client.id
       )
 
       order.assign_attributes(
@@ -83,7 +97,8 @@ class Shopify::Orders
         staff_name: staff_name.presence || order.staff_name,
         location_id: location.id,
         shopify_creation_date: shopify_created_at,
-        customer_id: customer&.id
+        customer_id: customer&.id,
+        client_id: client.id
       )
 
       order.created_at = shopify_created_at if order.new_record?
@@ -142,9 +157,9 @@ class Shopify::Orders
 
       shopify_customer_id = customer_stub['id'].to_s
 
-      client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+      api_client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
-      response = client.get(
+      response = api_client.get(
         path: "customers/#{shopify_customer_id}.json"
       )
 
@@ -197,6 +212,12 @@ class Shopify::Orders
         default_address_country_code: default_address['country_code'],
         default_address_province_code: default_address['province_code']
       )
+    end
+
+    def update_order_staff(shopify_order_id, staff_id:, staff_name:)
+      order = Order.find_by!(shopify_order_id:)
+      order.update!(staff_id:, staff_name:)
+      order
     end
 
   end

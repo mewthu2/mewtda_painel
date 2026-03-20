@@ -34,7 +34,6 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
             </svg>
             <%= f.email_field :email,
-                autofocus: true,
                 autocomplete: "email",
                 class: 'login-field__input',
                 placeholder: 'seu@email.com' %>
@@ -83,7 +82,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   .login-page {
-    min-height: 100vh;
     display: flex;
     align-items: stretch;
   }
@@ -191,7 +189,8 @@
     border: 1px solid #e4e7f0;
     border-radius: 16px;
     padding: 2rem 1.75rem;
-    width: 400px;
+    width: 100%;
+    max-width: 400px;
     flex-shrink: 0;
     box-shadow: 0 4px 24px rgba(30, 40, 100, 0.08);
   }
@@ -375,12 +374,10 @@
     text-decoration: underline;
   }
 
-  /* ---- Mobile ---- */
   @media (max-width: 768px) {
     .login-page {
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      min-height: 100vh;
     }
 
     .login-brand {
@@ -388,19 +385,19 @@
     }
 
     .login-form-side {
-      width: auto;
-      flex: none;
+      width: 100%;
       min-height: 100vh;
+      padding: 1.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1.25rem;
     }
 
     .login-card {
-      width: 400px;
-      max-width: calc(100vw - 2.5rem);
-      padding: 2rem 1.5rem;
+      width: 100%;
+      max-width: 420px;
+      padding: 1.75rem 1.4rem;
+      border-radius: 14px;
     }
 
     .login-card__logo-mobile {
@@ -412,11 +409,23 @@
     }
   }
 
-  @media (max-width: 400px) {
+  @media (max-width: 480px) {
     .login-card {
       width: 100%;
-      padding: 1.75rem 1.25rem;
+      padding: 1.5rem 1.2rem;
       border-radius: 12px;
+    }
+
+    .login-field__input {
+      font-size: 16px; /* evita zoom automático no iOS */
+    }
+
+    .login-card__title {
+      font-size: 1.4rem;
+    }
+
+    .login-card__subtitle {
+      font-size: 0.85rem;
     }
   }
 </style>

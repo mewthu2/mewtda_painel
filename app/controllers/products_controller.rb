@@ -1,4 +1,5 @@
 class ProductsController < ApplicationController
+  before_action :set_client_scope
   before_action :load_form_references, only: [:index]
   before_action :set_filter_scope, only: [:index, :export_xlsx]
 
@@ -45,8 +46,20 @@ class ProductsController < ApplicationController
 
   private
 
+  def current_client_id
+    if current_user.admin?
+      session[:selected_client_id] || current_user.client_id
+    else
+      current_user.client_id
+    end
+  end
+
+  def set_client_scope
+    @client_id = current_client_id
+  end
+
   def set_filter_scope
-    @products_scope = Product.all
+    @products_scope = Product.where(client_id: @client_id)
     @products_scope = @products_scope.where(vendor: params[:vendor])                                    if params[:vendor].present?
     @products_scope = @products_scope.where(option1: params[:option1])                                  if params[:option1].present?
     @products_scope = @products_scope.where(option2: params[:option2])                                  if params[:option2].present?
@@ -54,8 +67,8 @@ class ProductsController < ApplicationController
   end
 
   def load_form_references
-    @vendors  = Product.distinct.pluck(:vendor).compact.sort
-    @option1s = Product.distinct.pluck(:option1).compact.sort
-    @option2s = Product.distinct.pluck(:option2).compact.sort
+    @vendors  = Product.where(client_id: @client_id).distinct.pluck(:vendor).compact.sort
+    @option1s = Product.where(client_id: @client_id).distinct.pluck(:option1).compact.sort
+    @option2s = Product.where(client_id: @client_id).distinct.pluck(:option2).compact.sort
   end
 end

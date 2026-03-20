@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_16_210618) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_20_020548) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -41,6 +41,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_210618) do
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "shopify_shop_url"
+    t.string "shopify_access_token"
+    t.index ["shopify_shop_url"], name: "index_clients_on_shopify_shop_url", unique: true
   end
 
   create_table "customers", force: :cascade do |t|
@@ -96,6 +99,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_210618) do
     t.string "shopify_location_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "client_id"
+    t.index ["client_id"], name: "index_locations_on_client_id"
     t.index ["shopify_location_id"], name: "index_locations_on_shopify_location_id", unique: true
     t.index ["slug"], name: "index_locations_on_slug", unique: true
   end
@@ -126,6 +131,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_210618) do
     t.jsonb "payments", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "client_id"
+    t.index ["client_id", "shopify_order_id"], name: "index_orders_on_client_id_and_shopify_order_id", unique: true
+    t.index ["client_id"], name: "index_orders_on_client_id"
     t.index ["customer_id"], name: "index_orders_on_customer_id"
     t.index ["location_id"], name: "index_orders_on_location_id"
     t.index ["shopify_order_id"], name: "index_orders_on_shopify_order_id", unique: true
@@ -149,9 +157,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_210618) do
     t.string "image_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "client_id"
+    t.index ["client_id", "shopify_variant_id"], name: "index_products_on_client_and_variant", unique: true
+    t.index ["client_id"], name: "index_products_on_client_id"
     t.index ["shopify_inventory_item_id"], name: "index_products_on_shopify_inventory_item_id"
     t.index ["shopify_product_id"], name: "index_products_on_shopify_product_id"
-    t.index ["shopify_variant_id"], name: "index_products_on_shopify_variant_id"
     t.index ["sku"], name: "index_products_on_sku"
   end
 
@@ -222,10 +232,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_16_210618) do
   end
 
   add_foreign_key "integration_users", "clients"
+  add_foreign_key "locations", "clients"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
+  add_foreign_key "orders", "clients"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "locations"
+  add_foreign_key "products", "clients"
   add_foreign_key "shopify_events", "clients"
   add_foreign_key "shopify_events", "integration_users"
   add_foreign_key "users", "clients"
