@@ -32,6 +32,14 @@
       Produtos
     <% end %>
 
+    <%= link_to painel_path, class: "crm-header__nav-link #{'active' if current_page?(products_path)}" do %>
+      Automações
+    <% end %>
+
+    <%= link_to painel_path, class: "crm-header__nav-link #{'active' if current_page?(products_path)}" do %>
+      Campanhas
+    <% end %>
+
     <% if current_user.admin? %>
       <%= link_to users_path, class: "crm-header__nav-link #{'active' if current_page?(users_path)}" do %>
         Usuários
