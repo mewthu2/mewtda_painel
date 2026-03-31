@@ -3,6 +3,7 @@ class Order < ApplicationRecord
   belongs_to :client
   belongs_to :location, optional: true
   has_many :order_items, dependent: :destroy
+  has_many :campaign_actions, dependent: :nullify
 
   # Escopos de busca
   scope :by_number, lambda { |q| where('shopify_order_number ILIKE ?', "%#{q}%") if q.present? }

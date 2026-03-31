@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_20_020548) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_31_025451) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -35,6 +35,42 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_20_020548) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "campaign_actions", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.bigint "customer_id", null: false
+    t.bigint "order_id"
+    t.integer "kind", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.text "message_sent"
+    t.datetime "notified_at"
+    t.text "response"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "kind"], name: "index_campaign_actions_on_campaign_id_and_kind"
+    t.index ["campaign_id", "status"], name: "index_campaign_actions_on_campaign_id_and_status"
+    t.index ["campaign_id"], name: "index_campaign_actions_on_campaign_id"
+    t.index ["customer_id"], name: "index_campaign_actions_on_customer_id"
+    t.index ["notified_at"], name: "index_campaign_actions_on_notified_at"
+    t.index ["order_id"], name: "index_campaign_actions_on_order_id"
+  end
+
+  create_table "campaigns", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "name", null: false
+    t.integer "kind", default: 0, null: false
+    t.text "message"
+    t.integer "days_after_purchase", default: 7
+    t.date "start_date"
+    t.date "end_date"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id", "kind"], name: "index_campaigns_on_client_id_and_kind"
+    t.index ["client_id"], name: "index_campaigns_on_client_id"
+    t.index ["start_date", "end_date"], name: "index_campaigns_on_start_date_and_end_date"
+  end
+
   create_table "clients", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -43,6 +79,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_20_020548) do
     t.datetime "updated_at", null: false
     t.string "shopify_shop_url"
     t.string "shopify_access_token"
+    t.string "zapi_instance_id"
+    t.string "zapi_instance_token"
+    t.string "zapi_client_token"
     t.index ["shopify_shop_url"], name: "index_clients_on_shopify_shop_url", unique: true
   end
 
@@ -231,6 +270,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_20_020548) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "campaign_actions", "campaigns"
+  add_foreign_key "campaign_actions", "customers"
+  add_foreign_key "campaign_actions", "orders"
+  add_foreign_key "campaigns", "clients"
   add_foreign_key "integration_users", "clients"
   add_foreign_key "locations", "clients"
   add_foreign_key "order_items", "orders"

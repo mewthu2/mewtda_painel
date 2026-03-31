@@ -1,10 +1,11 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_user, only: %i[show edit update destroy]
-  before_action :load_refferences, only: %i[show edit new]
+  before_action :load_refferences, only: %i[show edit new create]
+  before_action :require_admin!
 
   def index
-    @users = User.paginate(page: params[:page], per_page: params_per_page(params[:per_page]))
+    @users = User.includes(:client, :profile).paginate(page: params[:page], per_page: params_per_page(params[:per_page]))
   end
 
   def show; end
@@ -18,7 +19,7 @@ class UsersController < ApplicationController
     if @user.save
       redirect_to users_path, notice: 'Usuário criado com sucesso.'
     else
-      redirect_to @user, alert: "Erro na atualização de usuário: #{@user.errors.full_messages.to_sentence}"
+      render :new, status: :unprocessable_entity  # Corrigido para renderizar o form
     end
   end
 
@@ -28,7 +29,8 @@ class UsersController < ApplicationController
     if @user.update(user_params)
       redirect_to users_path, notice: 'Usuário atualizado com sucesso.'
     else
-      redirect_to users_path, alert: "Erro na atualização de usuário: #{@user.errors.full_messages.to_sentence}"
+      load_refferences
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -41,6 +43,7 @@ class UsersController < ApplicationController
 
   def load_refferences
     @profiles = Profile.all
+    @clients = Client.where(active: true).order(:name)
   end
 
   def set_user
@@ -48,6 +51,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation, :profile_id)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :profile_id, :client_id)
   end
 end

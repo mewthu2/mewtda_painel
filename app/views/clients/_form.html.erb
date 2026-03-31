@@ -1,0 +1,286 @@
+<%= form_for(client, as: :client, html: { autocomplete: 'off' }, data: { disabled: read_only }) do |form| %>
+
+  <div class="cform-wrapper">
+    <div class="cform-card">
+
+      <div class="cform-card__header">
+        <div class="cform-card__header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="cform-card__title"><%= client.new_record? ? 'Criar Cliente' : 'Editar Cliente' %></h2>
+          <p class="cform-card__subtitle">Informações do cliente e integrações</p>
+        </div>
+      </div>
+
+      <% if client.errors.any? %>
+        <div class="cform-errors">
+          <div class="cform-errors__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <div>
+            <strong>Corrija os erros abaixo:</strong>
+            <ul>
+              <% client.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="cform-card__body">
+
+        <%# Informações Básicas %>
+        <div class="cform-section">
+          <div class="cform-section__header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+            </svg>
+            Informações Básicas
+          </div>
+
+          <div class="cform-row">
+            <div class="cform-field">
+              <%= form.label :name, 'Nome do Cliente', class: 'cform-field__label' %>
+              <%= form.text_field :name, class: 'cform-field__input', required: true, placeholder: 'Nome da empresa ou cliente', disabled: read_only %>
+            </div>
+            <div class="cform-field">
+              <%= form.label :email, 'E-mail', class: 'cform-field__label' %>
+              <%= form.email_field :email, class: 'cform-field__input', required: true, placeholder: 'email@exemplo.com', disabled: read_only %>
+            </div>
+          </div>
+
+          <div class="cform-field">
+            <%= form.label :active, 'Status', class: 'cform-field__label' %>
+            <div class="cform-toggle">
+              <%= form.check_box :active, class: 'cform-toggle__input', disabled: read_only %>
+              <span class="cform-toggle__label">Cliente ativo</span>
+            </div>
+          </div>
+        </div>
+
+        <%# Configurações Shopify %>
+        <div class="cform-section cform-section--shopify">
+          <div class="cform-section__header cform-section__header--shopify">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Integração Shopify
+          </div>
+
+          <div class="cform-field">
+            <%= form.label :shopify_shop_url, 'URL da Loja Shopify', class: 'cform-field__label' %>
+            <%= form.text_field :shopify_shop_url, class: 'cform-field__input', placeholder: 'https://sua-loja.myshopify.com', disabled: read_only %>
+            <span class="cform-field__hint">URL completa da loja Shopify</span>
+          </div>
+
+          <div class="cform-field">
+            <%= form.label :shopify_access_token, 'Token de Acesso', class: 'cform-field__label' %>
+            <div class="cform-field__input-wrapper">
+              <%= form.password_field :shopify_access_token, class: 'cform-field__input cform-field__input--password', placeholder: client.shopify_access_token.present? ? '••••••••••••••••' : 'shpat_xxxxxxxxxxxxxxxx', disabled: read_only, value: '' %>
+              <% if client.shopify_access_token.present? %>
+                <span class="cform-field__badge cform-field__badge--success">Configurado</span>
+              <% end %>
+            </div>
+            <span class="cform-field__hint">Deixe em branco para manter o token atual. Token da API Admin do Shopify.</span>
+          </div>
+
+          <% if client.persisted? && client.shopify_shop_url.present? && client.shopify_access_token.present? %>
+            <div class="cform-alert cform-alert--success">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Integração Shopify configurada e pronta para uso.</span>
+            </div>
+          <% elsif client.persisted? %>
+            <div class="cform-alert cform-alert--warning">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+              <span>Configure a URL e o Token para ativar a integração Shopify.</span>
+            </div>
+          <% end %>
+        </div>
+
+        <%# Configurações Zapi %>
+        <div class="cform-section cform-section--zapi">
+          <div class="cform-section__header cform-section__header--zapi">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="9" x2="15" y2="9"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+            Integração Zapi
+          </div>
+
+          <div class="cform-field">
+            <%= form.label :zapi_instance_id, 'ID da Instância', class: 'cform-field__label' %>
+            <%= form.text_field :zapi_instance_id, class: 'cform-field__input', placeholder: 'ID da instância Zapi', disabled: read_only %>
+            <span class="cform-field__hint">ID único da instância Zapi</span>
+          </div>
+
+          <div class="cform-row">
+            <div class="cform-field">
+              <%= form.label :zapi_instance_token, 'Token da Instância', class: 'cform-field__label' %>
+              <div class="cform-field__input-wrapper">
+                <%= form.password_field :zapi_instance_token, class: 'cform-field__input cform-field__input--password', placeholder: client.zapi_instance_token.present? ? '••••••••••••••••' : 'Token da instância', disabled: read_only, value: '' %>
+                <% if client.zapi_instance_token.present? %>
+                  <span class="cform-field__badge cform-field__badge--success">Configurado</span>
+                <% end %>
+              </div>
+              <span class="cform-field__hint">Deixe em branco para manter o token atual.</span>
+            </div>
+            <div class="cform-field">
+              <%= form.label :zapi_client_token, 'Token do Cliente', class: 'cform-field__label' %>
+              <div class="cform-field__input-wrapper">
+                <%= form.password_field :zapi_client_token, class: 'cform-field__input cform-field__input--password', placeholder: client.zapi_client_token.present? ? '••••••••••••••••' : 'Token do cliente', disabled: read_only, value: '' %>
+                <% if client.zapi_client_token.present? %>
+                  <span class="cform-field__badge cform-field__badge--success">Configurado</span>
+                <% end %>
+              </div>
+              <span class="cform-field__hint">Deixe em branco para manter o token atual.</span>
+            </div>
+          </div>
+
+          <% if client.persisted? && client.zapi_instance_id.present? && client.zapi_instance_token.present? && client.zapi_client_token.present? %>
+            <div class="cform-alert cform-alert--success">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Integração Zapi configurada e pronta para uso.</span>
+            </div>
+          <% elsif client.persisted? %>
+            <div class="cform-alert cform-alert--warning">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+              <span>Configure os campos para ativar a integração Zapi.</span>
+            </div>
+          <% end %>
+        </div>
+
+        <%# Usuários Vinculados (somente em edição) %>
+        <% if client.persisted? && client.users.any? %>
+          <div class="cform-section">
+            <div class="cform-section__header">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+              </svg>
+              Usuários Vinculados (<%= client.users.count %>)
+            </div>
+
+            <div class="cform-users-list">
+              <% client.users.each do |user| %>
+                <% initials = user.name.to_s.split(' ').first(2).map { |w| w[0] }.join.upcase %>
+                <div class="cform-user-item">
+                  <div class="cform-user-item__avatar"><%= initials.presence || '?' %></div>
+                  <div class="cform-user-item__info">
+                    <div class="cform-user-item__name"><%= user.name %></div>
+                    <div class="cform-user-item__email"><%= user.email %></div>
+                  </div>
+                  <%= link_to edit_user_path(user), class: 'cform-user-item__link' do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                    </svg>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+      </div>
+
+      <div class="cform-card__footer">
+        <%= link_to clients_path, class: 'cform-btn cform-btn--secondary' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+          </svg>
+          Voltar
+        <% end %>
+        <% unless read_only %>
+          <%= form.button class: 'cform-btn cform-btn--primary',
+              data: { disable_with: client.new_record? ? 'Criando...' : 'Salvando...' } do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <%= client.new_record? ? 'Criar Cliente' : 'Salvar Alterações' %>
+          <% end %>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+
+<% end %>
+
+<style>
+  .cform-wrapper { padding: 1.5rem 2rem; display: flex; justify-content: center; }
+
+  .cform-card { background: #fff; border: 1px solid #e4e7f0; border-radius: 14px; box-shadow: 0 2px 12px rgba(30,40,100,0.07); width: 100%; overflow: hidden; }
+
+  .cform-card__header { display: flex; align-items: center; gap: 1rem; padding: 1.5rem 1.75rem; border-bottom: 1px solid #f0f2f8; background: #f8f9fc; }
+  .cform-card__header-icon { width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #5e8e3e, #7ab356); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cform-card__title { font-size: 1.05rem; font-weight: 700; color: #1e2235; margin: 0; }
+  .cform-card__subtitle { font-size: 0.8rem; color: #9097b5; margin: 0.15rem 0 0; }
+
+  .cform-errors { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem 1.5rem; background: #fef2f2; border-bottom: 1px solid #fecaca; color: #991b1b; font-size: 0.85rem; }
+  .cform-errors__icon { flex-shrink: 0; color: #dc2626; }
+  .cform-errors ul { margin: 0.5rem 0 0 1rem; padding: 0; }
+  .cform-errors li { margin: 0.25rem 0; }
+
+  .cform-card__body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .cform-section { background: #f8f9fc; border: 1px solid #e4e7f0; border-radius: 10px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+  .cform-section--shopify { background: #f0fdf4; border-color: #bbf7d0; }
+  .cform-section--zapi { background: #eff6ff; border-color: #bfdbfe; }
+  .cform-section__header { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; color: #1e2235; margin-bottom: 0.5rem; }
+  .cform-section__header--shopify { color: #166534; }
+  .cform-section__header--zapi { color: #1e40af; }
+
+  .cform-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 520px) { .cform-row { grid-template-columns: 1fr; } }
+
+  .cform-field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .cform-field__label { font-size: 0.8rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
+  .cform-field__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.55rem 0.85rem; font-size: 0.9rem; color: #1e2235; background: #fff; outline: none; transition: border-color 0.15s, background 0.15s; width: 100%; box-sizing: border-box; }
+  .cform-field__input:focus { border-color: #3b4adf; }
+  .cform-field__input:disabled { background: #f0f2f8; cursor: not-allowed; }
+  .cform-field__input--password { font-family: monospace; }
+  .cform-field__input-wrapper { display: flex; align-items: center; gap: 0.75rem; }
+  .cform-field__input-wrapper .cform-field__input { flex: 1; }
+  .cform-field__hint { font-size: 0.75rem; color: #9097b5; }
+
+  .cform-field__badge { display: inline-flex; align-items: center; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+  .cform-field__badge--success { background: #d1fae5; color: #065f46; }
+
+  .cform-toggle { display: flex; align-items: center; gap: 0.75rem; }
+  .cform-toggle__input { width: 18px; height: 18px; accent-color: #3b4adf; cursor: pointer; }
+  .cform-toggle__label { font-size: 0.875rem; color: #3a4060; }
+
+  .cform-alert { display: flex; align-items: center; gap: 0.65rem; padding: 0.85rem 1rem; border-radius: 8px; font-size: 0.85rem; }
+  .cform-alert--success { background: #d1fae5; color: #065f46; }
+  .cform-alert--warning { background: #fef3c7; color: #92400e; }
+
+  .cform-users-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .cform-user-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: #fff; border: 1px solid #e4e7f0; border-radius: 8px; }
+  .cform-user-item__avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #3b4adf, #6674f5); color: #fff; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cform-user-item__info { flex: 1; }
+  .cform-user-item__name { font-weight: 600; font-size: 0.85rem; color: #1e2235; }
+  .cform-user-item__email { font-size: 0.75rem; color: #9097b5; }
+  .cform-user-item__link { color: #3b4adf; padding: 0.35rem; border-radius: 6px; transition: background 0.15s; }
+  .cform-user-item__link:hover { background: #f0f2fb; }
+
+  .cform-card__footer { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; padding: 1.25rem 1.75rem; border-top: 1px solid #f0f2f8; background: #f8f9fc; }
+
+  .cform-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
+  .cform-btn:hover { opacity: 0.88; }
+  .cform-btn--primary { background: #3b4adf; color: #fff; }
+  .cform-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
+</style>

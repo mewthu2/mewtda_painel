@@ -1,5 +1,6 @@
 class Customer < ApplicationRecord
   has_many :orders, dependent: :nullify
+  has_many :campaign_actions, dependent: :nullify
 
   validates :shopify_customer_id, uniqueness: true
 

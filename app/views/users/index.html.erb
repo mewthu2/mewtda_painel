@@ -52,6 +52,8 @@
           <th>Usuário</th>
           <th>E-mail</th>
           <th>Perfil</th>
+          <th>Shopify URL</th>
+          <th>Shopify Token</th>
           <th>Cadastrado em</th>
           <th class="text-center">Ações</th>
         </tr>
@@ -79,6 +81,27 @@
                 <span class="users-table__badge users-table__badge--user"><%= user.try(:profile)&.name || 'Usuário' %></span>
               <% end %>
             </td>
+            <td>
+              <% if user.client&.shopify_shop_url.present? %>
+                <a href="<%= user.client.shopify_shop_url %>" target="_blank" class="users-table__shopify-url">
+                  <%= user.client.shopify_shop_url.gsub(/https?:\/\//, '').truncate(30) %>
+                </a>
+              <% else %>
+                <span class="users-table__empty-field">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% if user.client&.shopify_access_token.present? %>
+                <span class="users-table__badge users-table__badge--shopify">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  </svg>
+                  Configurado
+                </span>
+              <% else %>
+                <span class="users-table__badge users-table__badge--pending">Não configurado</span>
+              <% end %>
+            </td>
             <td class="users-table__date"><%= user.created_at.strftime('%d/%m/%Y %H:%M') %></td>
             <td class="text-center">
               <%= link_to edit_user_path(user), class: 'users-btn users-btn--icon' do %>
@@ -92,13 +115,13 @@
         <% end %>
         <% if @users.empty? %>
           <tr>
-            <td colspan="5" class="users-table__empty">Nenhum usuário encontrado.</td>
+            <td colspan="7" class="users-table__empty">Nenhum usuário encontrado.</td>
           </tr>
         <% end %>
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="5"><%= page_entries_info @users %></td>
+          <td colspan="7"><%= page_entries_info @users %></td>
         </tr>
       </tfoot>
     </table>
@@ -139,7 +162,7 @@
   .users-table-header__count { font-size: 0.8rem; color: #9097b5; background: #f4f5fb; padding: 0.25rem 0.65rem; border-radius: 20px; }
 
   .users-table { width: 100%; border-collapse: collapse; }
-  .users-table thead th { padding: 0.75rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: #9097b5; text-transform: uppercase; letter-spacing: 0.06em; background: #f8f9fc; border-bottom: 1px solid #e4e7f0; }
+  .users-table thead th { padding: 0.75rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: #9097b5; text-transform: uppercase; letter-spacing: 0.06em; background: #f8f9fc; border-bottom: 1px solid #e4e7f0; white-space: nowrap; }
   .users-table tbody td { padding: 0.9rem 1.25rem; border-bottom: 1px solid #f0f2f8; font-size: 0.875rem; color: #3a4060; vertical-align: middle; }
   .users-table tbody tr:last-child td { border-bottom: none; }
   .users-table tbody tr:hover td { background: #f8f9fc; }
@@ -154,9 +177,15 @@
   .users-table__email:hover { text-decoration: underline; }
   .users-table__date { color: #6b7280; font-size: 0.82rem; white-space: nowrap; }
 
-  .users-table__badge { display: inline-flex; align-items: center; padding: 0.2rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .users-table__shopify-url { color: #5e8e3e; text-decoration: none; font-size: 0.82rem; font-family: monospace; }
+  .users-table__shopify-url:hover { text-decoration: underline; }
+  .users-table__empty-field { color: #c5c9db; font-size: 0.875rem; }
+
+  .users-table__badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
   .users-table__badge--admin { background: #fef3c7; color: #92400e; }
   .users-table__badge--user { background: #eff6ff; color: #1d4ed8; }
+  .users-table__badge--shopify { background: #d1fae5; color: #065f46; }
+  .users-table__badge--pending { background: #fef3c7; color: #92400e; }
 
   .users-pagination { display: flex; list-style: none; gap: 0.4rem; padding: 1rem 1.5rem; margin: 0; justify-content: center; }
   .users-pagination li a, .users-pagination li span { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 0.5rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500; border: 1px solid #e4e7f0; color: #3a4060; text-decoration: none; transition: all 0.15s; }

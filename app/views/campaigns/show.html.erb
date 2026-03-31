@@ -1,0 +1,430 @@
+<% title @campaign.name %>
+
+<div class="campaign-show-wrapper">
+
+  <%# Header %>
+  <div class="campaign-show-header">
+    <div class="campaign-show-header__left">
+      <%= link_to campaigns_path, class: 'campaign-show-header__back' do %>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+        </svg>
+      <% end %>
+      <div>
+        <h1 class="campaign-show-header__title"><%= @campaign.name %></h1>
+        <p class="campaign-show-header__subtitle">Cliente: <%= current_client.name %></p>
+      </div>
+    </div>
+    <div class="campaign-show-header__right">
+      <%= link_to edit_campaign_path(@campaign), class: 'campaign-show-btn campaign-show-btn--secondary' do %>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+        </svg>
+        Editar
+      <% end %>
+    </div>
+  </div>
+
+  <%# Alerta Zapi %>
+  <% unless @campaign.zapi_configured? %>
+    <div class="campaign-show-alert campaign-show-alert--danger">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+      </svg>
+      <div>
+        <strong>Integração Zapi não configurada!</strong>
+        <p>As notificações desta campanha não serão enviadas.</p>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Cards de Estatísticas %>
+  <div class="campaign-show-stats">
+    <div class="campaign-show-stat">
+      <div class="campaign-show-stat__icon campaign-show-stat__icon--total">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+        </svg>
+      </div>
+      <div class="campaign-show-stat__content">
+        <span class="campaign-show-stat__value"><%= @campaign.actions_count %></span>
+        <span class="campaign-show-stat__label">Total</span>
+      </div>
+    </div>
+    <div class="campaign-show-stat">
+      <div class="campaign-show-stat__icon campaign-show-stat__icon--sent">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="campaign-show-stat__content">
+        <span class="campaign-show-stat__value"><%= @campaign.sent_count %></span>
+        <span class="campaign-show-stat__label">Enviados</span>
+      </div>
+    </div>
+    <div class="campaign-show-stat">
+      <div class="campaign-show-stat__icon campaign-show-stat__icon--pending">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="campaign-show-stat__content">
+        <span class="campaign-show-stat__value"><%= @campaign.pending_count %></span>
+        <span class="campaign-show-stat__label">Pendentes</span>
+      </div>
+    </div>
+    <div class="campaign-show-stat">
+      <div class="campaign-show-stat__icon campaign-show-stat__icon--failed">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+        </svg>
+      </div>
+      <div class="campaign-show-stat__content">
+        <span class="campaign-show-stat__value"><%= @campaign.failed_count %></span>
+        <span class="campaign-show-stat__label">Falharam</span>
+      </div>
+    </div>
+  </div>
+
+  <%# Info da Campanha %>
+  <div class="campaign-show-info">
+    <div class="campaign-show-info__grid">
+      <div class="campaign-show-info__item">
+        <span class="campaign-show-info__label">Tipo</span>
+        <span class="campaign-show-info__value"><%= @campaign.kind.humanize %></span>
+      </div>
+      <div class="campaign-show-info__item">
+        <span class="campaign-show-info__label">Dias após compra</span>
+        <span class="campaign-show-info__value"><%= @campaign.days_after_purchase %> dias</span>
+      </div>
+      <div class="campaign-show-info__item">
+        <span class="campaign-show-info__label">Período</span>
+        <span class="campaign-show-info__value"><%= @campaign.start_date.strftime('%d/%m/%Y') %> até <%= @campaign.end_date.strftime('%d/%m/%Y') %></span>
+      </div>
+      <div class="campaign-show-info__item">
+        <span class="campaign-show-info__label">Status</span>
+        <% case @campaign.status %>
+        <% when :running %>
+          <span class="campaign-show-info__badge campaign-show-info__badge--running">Em execução</span>
+        <% when :pending %>
+          <span class="campaign-show-info__badge campaign-show-info__badge--pending">Aguardando</span>
+        <% when :finished %>
+          <span class="campaign-show-info__badge campaign-show-info__badge--finished">Finalizada</span>
+        <% when :inactive %>
+          <span class="campaign-show-info__badge campaign-show-info__badge--inactive">Inativa</span>
+        <% end %>
+      </div>
+    </div>
+    <div class="campaign-show-info__message">
+      <span class="campaign-show-info__label">Mensagem</span>
+      <div class="campaign-show-info__message-box"><%= @campaign.message %></div>
+    </div>
+  </div>
+
+  <%# Filtros das Ações %>
+  <%= form_tag(campaign_path(@campaign), method: 'get') do %>
+    <div class="campaign-show-filters">
+      <div class="campaign-show-filters__field">
+        <label>Buscar cliente</label>
+        <%= text_field_tag :search, params[:search], class: 'campaign-show-filters__input', placeholder: 'Nome ou e-mail...' %>
+      </div>
+      <div class="campaign-show-filters__field campaign-show-filters__field--small">
+        <label>Status</label>
+        <%= select_tag :action_status,
+            options_for_select([['Todos', ''], ['Pendente', 'pending'], ['Enviado', 'sent'], ['Falhou', 'failed'], ['Cancelado', 'cancelled']], params[:action_status]),
+            class: 'campaign-show-filters__input campaign-show-filters__input--select' %>
+      </div>
+      <div class="campaign-show-filters__actions">
+        <%= button_tag class: 'campaign-show-btn campaign-show-btn--primary', name: '' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+          Filtrar
+        <% end %>
+        <%= link_to campaign_path(@campaign), class: 'campaign-show-btn campaign-show-btn--secondary' do %>
+          Limpar
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Tabela de Ações %>
+  <div class="campaign-show-table-wrap">
+    <div class="campaign-show-table-header">
+      <span class="campaign-show-table-header__title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+        </svg>
+        Notificações
+      </span>
+      <span class="campaign-show-table-header__count"><%= @campaign_actions.total_entries rescue @campaign_actions.count %> registros</span>
+    </div>
+
+    <table class="campaign-show-table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Pedido</th>
+          <th>Status</th>
+          <th>Agendado para</th>
+          <th>Notificado em</th>
+          <th>Mensagem</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @campaign_actions.each do |action| %>
+          <tr>
+            <td>
+              <div class="campaign-show-table__customer">
+                <% initials = action.customer.name.to_s.split(' ').first(2).map { |w| w[0] }.join.upcase rescue '?' %>
+                <div class="campaign-show-table__avatar"><%= initials %></div>
+                <div>
+                  <div class="campaign-show-table__name"><%= action.customer.name %></div>
+                  <div class="campaign-show-table__email"><%= action.customer.email %></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <% if action.order.present? %>
+                <%= link_to "##{action.order.id}", order_path(action.order), class: 'campaign-show-table__order-link' %>
+              <% else %>
+                <span class="campaign-show-table__empty">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% case action.kind %>
+              <% when 'pending' %>
+                <span class="campaign-show-table__status campaign-show-table__status--pending">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Pendente
+                </span>
+              <% when 'sent' %>
+                <span class="campaign-show-table__status campaign-show-table__status--sent">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Enviado
+                </span>
+              <% when 'failed' %>
+                <span class="campaign-show-table__status campaign-show-table__status--failed" title="<%= action.error_message %>">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                  </svg>
+                  Falhou
+                </span>
+              <% when 'cancelled' %>
+                <span class="campaign-show-table__status campaign-show-table__status--cancelled">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                  Cancelado
+                </span>
+              <% end %>
+            </td>
+            <td>
+              <% if action.scheduled_for.present? %>
+                <span class="campaign-show-table__date"><%= action.scheduled_for.strftime('%d/%m/%Y %H:%M') %></span>
+              <% else %>
+                <span class="campaign-show-table__empty">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% if action.notified_at.present? %>
+                <span class="campaign-show-table__date"><%= action.notified_at.strftime('%d/%m/%Y %H:%M') %></span>
+              <% else %>
+                <span class="campaign-show-table__empty">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% if action.message_sent.present? %>
+                <button type="button" class="campaign-show-table__message-btn" data-message="<%= action.message_sent %>" onclick="showMessage(this)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Ver
+                </button>
+              <% else %>
+                <span class="campaign-show-table__empty">—</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @campaign_actions.empty? %>
+          <tr>
+            <td colspan="6" class="campaign-show-table__empty-row">
+              <div class="campaign-show-table__empty-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                </svg>
+                <p>Nenhuma notificação registrada para esta campanha.</p>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+      <% if @campaign_actions.any? %>
+        <tfoot>
+          <tr>
+            <td colspan="6"><%= page_entries_info @campaign_actions rescue '' %></td>
+          </tr>
+        </tfoot>
+      <% end %>
+    </table>
+
+    <%= will_paginate @campaign_actions, list_classes: %w[campaign-show-pagination] rescue nil %>
+  </div>
+
+</div>
+
+<%# Modal de Mensagem %>
+<div class="campaign-show-modal" id="messageModal">
+  <div class="campaign-show-modal__backdrop" onclick="closeMessage()"></div>
+  <div class="campaign-show-modal__content">
+    <div class="campaign-show-modal__header">
+      <h3>Mensagem Enviada</h3>
+      <button type="button" onclick="closeMessage()" class="campaign-show-modal__close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="campaign-show-modal__body" id="messageContent"></div>
+  </div>
+</div>
+
+<style>
+  .campaign-show-wrapper { padding: 1.5rem 2rem; }
+
+  /* Header */
+  .campaign-show-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .campaign-show-header__left { display: flex; align-items: center; gap: 1rem; }
+  .campaign-show-header__back { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: #f0f2fb; color: #3b4adf; transition: background 0.15s; }
+  .campaign-show-header__back:hover { background: #e0e4f8; }
+  .campaign-show-header__title { font-size: 1.25rem; font-weight: 700; color: #1e2235; margin: 0; }
+  .campaign-show-header__subtitle { font-size: 0.8rem; color: #9097b5; margin: 0.15rem 0 0; }
+  .campaign-show-header__right { display: flex; gap: 0.5rem; }
+
+  /* Alert */
+  .campaign-show-alert { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 1.25rem; border-radius: 10px; margin-bottom: 1.5rem; }
+  .campaign-show-alert--danger { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+  .campaign-show-alert strong { display: block; font-size: 0.9rem; }
+  .campaign-show-alert p { margin: 0.25rem 0 0; font-size: 0.82rem; }
+
+  /* Stats */
+  .campaign-show-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  @media (max-width: 768px) { .campaign-show-stats { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .campaign-show-stats { grid-template-columns: 1fr; } }
+
+  .campaign-show-stat { display: flex; align-items: center; gap: 1rem; padding: 1.25rem; background: #fff; border: 1px solid #e4e7f0; border-radius: 12px; }
+  .campaign-show-stat__icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .campaign-show-stat__icon--total { background: #f0f2fb; color: #3b4adf; }
+  .campaign-show-stat__icon--sent { background: #d1fae5; color: #065f46; }
+  .campaign-show-stat__icon--pending { background: #fef3c7; color: #92400e; }
+  .campaign-show-stat__icon--failed { background: #fef2f2; color: #dc2626; }
+  .campaign-show-stat__content { display: flex; flex-direction: column; }
+  .campaign-show-stat__value { font-size: 1.5rem; font-weight: 700; color: #1e2235; line-height: 1; }
+  .campaign-show-stat__label { font-size: 0.78rem; color: #9097b5; margin-top: 0.25rem; }
+
+  /* Info */
+  .campaign-show-info { background: #fff; border: 1px solid #e4e7f0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .campaign-show-info__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
+  @media (max-width: 768px) { .campaign-show-info__grid { grid-template-columns: repeat(2, 1fr); } }
+  .campaign-show-info__item { display: flex; flex-direction: column; gap: 0.35rem; }
+  .campaign-show-info__label { font-size: 0.75rem; color: #9097b5; text-transform: uppercase; letter-spacing: 0.04em; }
+  .campaign-show-info__value { font-size: 0.9rem; font-weight: 500; color: #1e2235; }
+  .campaign-show-info__badge { display: inline-flex; align-items: center; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; width: fit-content; }
+  .campaign-show-info__badge--running { background: #d1fae5; color: #065f46; }
+  .campaign-show-info__badge--pending { background: #eff6ff; color: #1d4ed8; }
+  .campaign-show-info__badge--finished { background: #f3f4f6; color: #6b7280; }
+  .campaign-show-info__badge--inactive { background: #fef2f2; color: #dc2626; }
+  .campaign-show-info__message-box { background: #f8f9fc; border: 1px solid #e4e7f0; border-radius: 8px; padding: 1rem; font-size: 0.875rem; color: #3a4060; white-space: pre-wrap; line-height: 1.5; }
+
+  /* Filters */
+  .campaign-show-filters { display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: flex-end; background: #fff; border: 1px solid #e4e7f0; border-radius: 10px; padding: 1.1rem 1.5rem; margin-bottom: 1.5rem; }
+  .campaign-show-filters__field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 180px; }
+  .campaign-show-filters__field--small { flex: 0 0 150px; min-width: 150px; }
+  .campaign-show-filters__field label { font-size: 0.78rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
+  .campaign-show-filters__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #1e2235; background: #f8f9fc; outline: none; }
+  .campaign-show-filters__input:focus { border-color: #3b4adf; background: #fff; }
+  .campaign-show-filters__input--select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%239097b5' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem; cursor: pointer; }
+  .campaign-show-filters__actions { display: flex; gap: 0.5rem; }
+
+  /* Button */
+  .campaign-show-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
+  .campaign-show-btn:hover { opacity: 0.88; }
+  .campaign-show-btn--primary { background: #3b4adf; color: #fff; }
+  .campaign-show-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
+
+  /* Table */
+  .campaign-show-table-wrap { background: #fff; border: 1px solid #e4e7f0; border-radius: 12px; overflow: hidden; }
+  .campaign-show-table-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid #f0f2f8; }
+  .campaign-show-table-header__title { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #1e2235; font-size: 0.95rem; }
+  .campaign-show-table-header__count { font-size: 0.8rem; color: #9097b5; background: #f4f5fb; padding: 0.25rem 0.65rem; border-radius: 20px; }
+
+  .campaign-show-table { width: 100%; border-collapse: collapse; }
+  .campaign-show-table thead th { padding: 0.75rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: #9097b5; text-transform: uppercase; letter-spacing: 0.06em; background: #f8f9fc; border-bottom: 1px solid #e4e7f0; white-space: nowrap; text-align: left; }
+  .campaign-show-table tbody td { padding: 0.9rem 1.25rem; border-bottom: 1px solid #f0f2f8; font-size: 0.875rem; color: #3a4060; vertical-align: middle; }
+  .campaign-show-table tbody tr:last-child td { border-bottom: none; }
+  .campaign-show-table tbody tr:hover td { background: #f8f9fc; }
+  .campaign-show-table tfoot td { padding: 0.75rem 1.25rem; font-size: 0.8rem; color: #9097b5; border-top: 1px solid #f0f2f8; }
+
+  .campaign-show-table__customer { display: flex; align-items: center; gap: 0.75rem; }
+  .campaign-show-table__avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #3b4adf, #6674f5); color: #fff; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .campaign-show-table__name { font-weight: 600; color: #1e2235; font-size: 0.85rem; }
+  .campaign-show-table__email { font-size: 0.75rem; color: #9097b5; }
+  .campaign-show-table__order-link { color: #3b4adf; text-decoration: none; font-weight: 500; }
+  .campaign-show-table__order-link:hover { text-decoration: underline; }
+  .campaign-show-table__empty { color: #c5c9db; }
+  .campaign-show-table__date { font-size: 0.82rem; color: #6b7280; white-space: nowrap; }
+
+  .campaign-show-table__status { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+  .campaign-show-table__status--pending { background: #fef3c7; color: #92400e; }
+  .campaign-show-table__status--sent { background: #d1fae5; color: #065f46; }
+  .campaign-show-table__status--failed { background: #fef2f2; color: #dc2626; cursor: help; }
+  .campaign-show-table__status--cancelled { background: #f3f4f6; color: #6b7280; }
+
+  .campaign-show-table__message-btn { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 500; background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; cursor: pointer; transition: background 0.15s; }
+  .campaign-show-table__message-btn:hover { background: #e0e4f8; }
+
+  .campaign-show-table__empty-row { text-align: center; padding: 3rem !important; }
+  .campaign-show-table__empty-content { display: flex; flex-direction: column; align-items: center; gap: 1rem; color: #9097b5; }
+  .campaign-show-table__empty-content svg { opacity: 0.5; }
+  .campaign-show-table__empty-content p { margin: 0; }
+
+  /* Pagination */
+  .campaign-show-pagination { display: flex; list-style: none; gap: 0.4rem; padding: 1rem 1.5rem; margin: 0; justify-content: center; }
+  .campaign-show-pagination li a, .campaign-show-pagination li span { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 0.5rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500; border: 1px solid #e4e7f0; color: #3a4060; text-decoration: none; }
+  .campaign-show-pagination li.current span { background: #3b4adf; color: #fff; border-color: #3b4adf; }
+  .campaign-show-pagination li a:hover { background: #f0f2fb; }
+
+  /* Modal */
+  .campaign-show-modal { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; }
+  .campaign-show-modal.open { display: flex; }
+  .campaign-show-modal__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.4); }
+  .campaign-show-modal__content { position: relative; background: #fff; border-radius: 12px; width: 100%; max-width: 500px; margin: 1rem; box-shadow: 0 20px 50px rgba(0,0,0,0.2); animation: modalIn 0.2s ease; }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  .campaign-show-modal__header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid #f0f2f8; }
+  .campaign-show-modal__header h3 { margin: 0; font-size: 1rem; font-weight: 600; color: #1e2235; }
+  .campaign-show-modal__close { background: none; border: none; cursor: pointer; color: #9097b5; padding: 0.25rem; border-radius: 6px; transition: background 0.15s; }
+  .campaign-show-modal__close:hover { background: #f0f2f8; color: #3a4060; }
+  .campaign-show-modal__body { padding: 1.25rem; font-size: 0.9rem; color: #3a4060; white-space: pre-wrap; line-height: 1.6; max-height: 400px; overflow-y: auto; }
+</style>
+
+<script>
+function showMessage(btn) {
+  const message = btn.dataset.message;
+  document.getElementById('messageContent').textContent = message;
+  document.getElementById('messageModal').classList.add('open');
+}
+
+function closeMessage() {
+  document.getElementById('messageModal').classList.remove('open');
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeMessage();
+});
+</script>

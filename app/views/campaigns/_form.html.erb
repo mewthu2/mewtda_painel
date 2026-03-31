@@ -1,0 +1,352 @@
+<%= form_for(campaign, as: :campaign, html: { autocomplete: 'off' }, data: { disabled: read_only }) do |form| %>
+
+  <div class="cpform-wrapper">
+    <div class="cpform-card">
+
+      <div class="cpform-card__header">
+        <div class="cpform-card__header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="cpform-card__title"><%= campaign.new_record? ? 'Criar Campanha' : 'Editar Campanha' %></h2>
+          <p class="cpform-card__subtitle">Cliente: <%= current_client.name %></p>
+        </div>
+      </div>
+
+      <%# Alerta Zapi %>
+      <% unless current_client.zapi_configured? %>
+        <div class="cpform-alert cpform-alert--danger">
+          <div class="cpform-alert__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <div>
+            <strong>Atencao: Integracao Zapi nao configurada!</strong>
+            <p>Esta campanha nao sera executada ate que a integracao Zapi seja configurada no cliente.</p>
+          </div>
+        </div>
+      <% end %>
+
+      <% if campaign.errors.any? %>
+        <div class="cpform-errors">
+          <div class="cpform-errors__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <div>
+            <strong>Corrija os erros abaixo:</strong>
+            <ul>
+              <% campaign.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="cpform-card__body">
+
+        <%# Informacoes Basicas %>
+        <div class="cpform-section">
+          <div class="cpform-section__header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            Informacoes Basicas
+          </div>
+
+          <div class="cpform-row">
+            <div class="cpform-field">
+              <%= form.label :name, 'Nome da Campanha', class: 'cpform-field__label' %>
+              <%= form.text_field :name, class: 'cpform-field__input', required: true, placeholder: 'Ex: Cashback de Pascoa', disabled: read_only %>
+            </div>
+            <div class="cpform-field">
+              <%= form.label :kind, 'Tipo de Campanha', class: 'cpform-field__label' %>
+              <%= form.select :kind,
+                  [['Cashback', 'cashback'], ['Expiracao de Cashback', 'cashback_expiration']],
+                  {},
+                  class: 'cpform-field__input cpform-field__input--select',
+                  disabled: read_only,
+                  id: 'campaign_kind',
+                  onchange: 'updateCampaignLabels()' %>
+            </div>
+          </div>
+
+          <div class="cpform-field">
+            <%= form.label :active, 'Status', class: 'cpform-field__label' %>
+            <div class="cpform-toggle">
+              <%= form.check_box :active, class: 'cpform-toggle__input', disabled: read_only %>
+              <span class="cpform-toggle__label">Campanha ativa</span>
+            </div>
+          </div>
+        </div>
+
+        <%# Configuracao de Envio %>
+        <div class="cpform-section cpform-section--highlight">
+          <div class="cpform-section__header cpform-section__header--highlight">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0121 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+            Configuracao de Envio
+          </div>
+
+          <div class="cpform-field">
+            <%= form.label :days_after_purchase, id: 'label_days_after_purchase', class: 'cpform-field__label' do %>
+              <span id="label_text_days"><%= campaign.days_after_purchase_label.capitalize %></span>
+            <% end %>
+            <%= form.number_field :days_after_purchase, class: 'cpform-field__input cpform-field__input--half', min: 1, max: 365, disabled: read_only %>
+            <span class="cpform-field__hint" id="hint_days"></span>
+          </div>
+
+          <div class="cpform-row">
+            <div class="cpform-field">
+              <%= form.label :start_date, 'Data de Inicio', class: 'cpform-field__label' %>
+              <%= form.date_field :start_date, class: 'cpform-field__input', required: true, disabled: read_only %>
+            </div>
+            <div class="cpform-field">
+              <%= form.label :end_date, 'Data de Fim', class: 'cpform-field__label' %>
+              <%= form.date_field :end_date, class: 'cpform-field__input', required: true, disabled: read_only %>
+            </div>
+          </div>
+        </div>
+
+        <%# Mensagem %>
+        <div class="cpform-section cpform-section--message">
+          <div class="cpform-section__header cpform-section__header--message">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+            </svg>
+            <span id="message_section_title">
+              <% if campaign.cashback_expiration? %>
+                Mensagem de Lembrete de Expiracao
+              <% else %>
+                Mensagem de Cashback
+              <% end %>
+            </span>
+          </div>
+
+          <div class="cpform-field">
+            <%= form.label :message, 'Texto da Mensagem', class: 'cpform-field__label' %>
+            <%= form.text_area :message, class: 'cpform-field__textarea', rows: 7, required: true,
+                placeholder: 'Use as variaveis abaixo para personalizar a mensagem',
+                disabled: read_only %>
+          </div>
+
+          <div class="cpform-variables">
+            <span class="cpform-variables__title">Variaveis disponíveis:</span>
+            <div class="cpform-variables__list">
+              <code class="cpform-variables__item" title="Nome do cliente">{nome}</code>
+              <code class="cpform-variables__item" title="Codigo do cupom">{cupom}</code>
+              <code class="cpform-variables__item" title="Valor do desconto">{desconto}</code>
+              <code class="cpform-variables__item" title="Data de expiracao">{expiracao}</code>
+              <code class="cpform-variables__item" title="Numero do pedido">{pedido}</code>
+            </div>
+          </div>
+
+          <%# Hint contextual por tipo %>
+          <div id="hint_cashback" class="cpform-hint-box cpform-hint-box--blue" style="<%= 'display:none' if campaign.cashback_expiration? %>">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            <span>Esta mensagem e enviada apos a compra. Use <code>{cupom}</code> para exibir o codigo gerado automaticamente pelo Shopify e <code>{pedido}</code> para o numero do pedido.</span>
+          </div>
+
+          <div id="hint_expiration" class="cpform-hint-box cpform-hint-box--orange" style="<%= 'display:none' if campaign.cashback? %>">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Esta mensagem e enviada como lembrete antes do cupom expirar. Use <code>{expiracao}</code> para mostrar a data limite e <code>{cupom}</code> para o codigo do cupom.</span>
+          </div>
+        </div>
+
+        <%# Status (somente em edicao) %>
+        <% if campaign.persisted? %>
+          <div class="cpform-section">
+            <div class="cpform-section__header">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Status da Campanha
+            </div>
+
+            <div class="cpform-status-grid">
+              <div class="cpform-status-item">
+                <span class="cpform-status-item__label">Status</span>
+                <% case campaign.status %>
+                <% when :running %>
+                  <span class="cpform-status-item__value cpform-status-item__value--running">Em execucao</span>
+                <% when :pending %>
+                  <span class="cpform-status-item__value cpform-status-item__value--pending">Aguardando inicio</span>
+                <% when :finished %>
+                  <span class="cpform-status-item__value cpform-status-item__value--finished">Finalizada</span>
+                <% when :inactive %>
+                  <span class="cpform-status-item__value cpform-status-item__value--inactive">Inativa</span>
+                <% end %>
+              </div>
+              <div class="cpform-status-item">
+                <span class="cpform-status-item__label">Integracao Zapi</span>
+                <% if campaign.zapi_configured? %>
+                  <span class="cpform-status-item__value cpform-status-item__value--success">Configurada</span>
+                <% else %>
+                  <span class="cpform-status-item__value cpform-status-item__value--danger">Nao configurada</span>
+                <% end %>
+              </div>
+              <div class="cpform-status-item">
+                <span class="cpform-status-item__label">Total de notificacoes</span>
+                <span class="cpform-status-item__value"><%= campaign.actions_count %></span>
+              </div>
+              <div class="cpform-status-item">
+                <span class="cpform-status-item__label">Criada em</span>
+                <span class="cpform-status-item__value"><%= campaign.created_at.strftime('%d/%m/%Y %H:%M') %></span>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+      </div>
+
+      <div class="cpform-card__footer">
+        <%= link_to campaigns_path, class: 'cpform-btn cpform-btn--secondary' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+          </svg>
+          Voltar
+        <% end %>
+        <% if campaign.persisted? %>
+          <%= link_to campaign_path(campaign), class: 'cpform-btn cpform-btn--outline' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+            </svg>
+            Ver notificacoes
+          <% end %>
+        <% end %>
+        <% unless read_only %>
+          <%= form.button class: 'cpform-btn cpform-btn--primary',
+              data: { disable_with: campaign.new_record? ? 'Criando...' : 'Salvando...' } do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <%= campaign.new_record? ? 'Criar Campanha' : 'Salvar Alteracoes' %>
+          <% end %>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+
+<% end %>
+
+<style>
+  .cpform-wrapper { padding: 1.5rem 2rem; display: flex; justify-content: center; }
+
+  .cpform-card { background: #fff; border: 1px solid #e4e7f0; border-radius: 14px; box-shadow: 0 2px 12px rgba(30,40,100,0.07); width: 100%; overflow: hidden; }
+
+  .cpform-card__header { display: flex; align-items: center; gap: 1rem; padding: 1.5rem 1.75rem; border-bottom: 1px solid #f0f2f8; background: #f8f9fc; }
+  .cpform-card__header-icon { width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .cpform-card__title { font-size: 1.05rem; font-weight: 700; color: #1e2235; margin: 0; }
+  .cpform-card__subtitle { font-size: 0.8rem; color: #9097b5; margin: 0.15rem 0 0; }
+
+  .cpform-alert { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem 1.5rem; font-size: 0.85rem; }
+  .cpform-alert--danger { background: #fef2f2; border-bottom: 1px solid #fecaca; color: #991b1b; }
+  .cpform-alert__icon { flex-shrink: 0; color: #dc2626; margin-top: 1px; }
+  .cpform-alert strong { display: block; margin-bottom: 0.25rem; }
+  .cpform-alert p { margin: 0; }
+
+  .cpform-errors { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem 1.5rem; background: #fef2f2; border-bottom: 1px solid #fecaca; color: #991b1b; font-size: 0.85rem; }
+  .cpform-errors__icon { flex-shrink: 0; color: #dc2626; }
+  .cpform-errors ul { margin: 0.5rem 0 0 1rem; padding: 0; }
+  .cpform-errors li { margin: 0.25rem 0; }
+
+  .cpform-card__body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .cpform-section { background: #f8f9fc; border: 1px solid #e4e7f0; border-radius: 10px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+  .cpform-section--highlight { background: #eff6ff; border-color: #bfdbfe; }
+  .cpform-section--message { background: #f0fdf4; border-color: #bbf7d0; }
+  .cpform-section__header { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; color: #1e2235; margin-bottom: 0.5rem; }
+  .cpform-section__header--highlight { color: #1e40af; }
+  .cpform-section__header--message { color: #166534; }
+
+  .cpform-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .cpform-row { grid-template-columns: 1fr; } }
+
+  .cpform-field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .cpform-field__label { font-size: 0.8rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
+  .cpform-field__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.55rem 0.85rem; font-size: 0.9rem; color: #1e2235; background: #fff; outline: none; transition: border-color 0.15s; width: 100%; box-sizing: border-box; }
+  .cpform-field__input:focus { border-color: #3b4adf; }
+  .cpform-field__input:disabled { background: #f0f2f8; cursor: not-allowed; }
+  .cpform-field__input--select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%239097b5' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.85rem center; padding-right: 2.5rem; cursor: pointer; }
+  .cpform-field__input--half { max-width: 200px; }
+  .cpform-field__textarea { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.75rem 0.85rem; font-size: 0.9rem; color: #1e2235; background: #fff; outline: none; transition: border-color 0.15s; width: 100%; box-sizing: border-box; resize: vertical; font-family: inherit; line-height: 1.55; }
+  .cpform-field__textarea:focus { border-color: #3b4adf; }
+  .cpform-field__textarea:disabled { background: #f0f2f8; cursor: not-allowed; }
+  .cpform-field__hint { font-size: 0.75rem; color: #9097b5; }
+
+  .cpform-toggle { display: flex; align-items: center; gap: 0.75rem; }
+  .cpform-toggle__input { width: 18px; height: 18px; accent-color: #3b4adf; cursor: pointer; }
+  .cpform-toggle__label { font-size: 0.875rem; color: #3a4060; }
+
+  .cpform-variables { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; padding-top: 0.5rem; border-top: 1px dashed #bbf7d0; }
+  .cpform-variables__title { font-size: 0.78rem; font-weight: 600; color: #166534; }
+  .cpform-variables__list { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .cpform-variables__item { background: #fff; border: 1px solid #bbf7d0; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; color: #166534; cursor: default; }
+  .cpform-variables__item:hover { background: #dcfce7; }
+
+  .cpform-hint-box { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.85rem 1rem; border-radius: 8px; font-size: 0.82rem; line-height: 1.5; }
+  .cpform-hint-box code { background: rgba(0,0,0,0.08); padding: 0.1rem 0.3rem; border-radius: 3px; font-size: 0.78rem; }
+  .cpform-hint-box--blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+  .cpform-hint-box--orange { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+
+  .cpform-status-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  @media (max-width: 500px) { .cpform-status-grid { grid-template-columns: 1fr; } }
+  .cpform-status-item { display: flex; flex-direction: column; gap: 0.25rem; }
+  .cpform-status-item__label { font-size: 0.75rem; color: #9097b5; text-transform: uppercase; letter-spacing: 0.04em; }
+  .cpform-status-item__value { font-size: 0.9rem; font-weight: 500; color: #1e2235; }
+  .cpform-status-item__value--running { color: #065f46; }
+  .cpform-status-item__value--pending { color: #1d4ed8; }
+  .cpform-status-item__value--finished { color: #6b7280; }
+  .cpform-status-item__value--inactive { color: #dc2626; }
+  .cpform-status-item__value--success { color: #065f46; }
+  .cpform-status-item__value--danger { color: #dc2626; }
+
+  .cpform-card__footer { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; padding: 1.25rem 1.75rem; border-top: 1px solid #f0f2f8; background: #f8f9fc; }
+
+  .cpform-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
+  .cpform-btn:hover { opacity: 0.88; }
+  .cpform-btn--primary { background: #3b4adf; color: #fff; }
+  .cpform-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
+  .cpform-btn--outline { background: #fff; color: #3b4adf; border: 1px solid #3b4adf; }
+</style>
+
+<script>
+  function updateCampaignLabels() {
+    const kind = document.getElementById('campaign_kind').value;
+    const labelText = document.getElementById('label_text_days');
+    const hintDays = document.getElementById('hint_days');
+    const sectionTitle = document.getElementById('message_section_title');
+    const hintCashback = document.getElementById('hint_cashback');
+    const hintExpiration = document.getElementById('hint_expiration');
+
+    if (kind === 'cashback_expiration') {
+      labelText.textContent = 'Dias antes da expiracao';
+      hintDays.textContent = 'Quantos dias antes de expirar o cupom o cliente recebe o lembrete';
+      sectionTitle.textContent = 'Mensagem de Lembrete de Expiracao';
+      hintCashback.style.display = 'none';
+      hintExpiration.style.display = '';
+    } else {
+      labelText.textContent = 'Dias apos a compra';
+      hintDays.textContent = 'Quantos dias apos a compra o cliente recebe a mensagem de cashback';
+      sectionTitle.textContent = 'Mensagem de Cashback';
+      hintCashback.style.display = '';
+      hintExpiration.style.display = 'none';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    updateCampaignLabels();
+  });
+</script>

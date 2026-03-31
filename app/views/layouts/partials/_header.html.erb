@@ -33,17 +33,17 @@
       </span>
 
       <div class="crm-header__dropdown-nav">
-        <%= link_to orders_path, class: "crm-header__dropdown-link" do %>
+        <%= link_to orders_path, class: "crm-header__dropdown-link #{'active' if current_page?(orders_path)}" do %>
           <i class="fa-solid fa-box crm-fa"></i>
           Pedidos
         <% end %>
 
-        <%= link_to customers_path, class: "crm-header__dropdown-link" do %>
+        <%= link_to customers_path, class: "crm-header__dropdown-link #{'active' if current_page?(customers_path)}" do %>
           <i class="fa-solid fa-users crm-fa"></i>
           Clientes
         <% end %>
 
-        <%= link_to products_path, class: "crm-header__dropdown-link" do %>
+        <%= link_to products_path, class: "crm-header__dropdown-link #{'active' if current_page?(products_path)}" do %>
           <i class="fa-solid fa-bag-shopping crm-fa"></i>
           Produtos
         <% end %>
@@ -59,7 +59,7 @@
       </span>
 
       <div class="crm-header__dropdown-nav">
-        <%= link_to painel_path, class: "crm-header__dropdown-link" do %>
+        <%= link_to campaigns_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(campaigns_path)}" do %>
           <i class="fa-solid fa-bullseye crm-fa"></i>
           Campanhas
         <% end %>
@@ -81,12 +81,17 @@
         </span>
 
         <div class="crm-header__dropdown-nav">
-          <%= link_to users_path, class: "crm-header__dropdown-link" do %>
+          <%= link_to users_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(users_path)}" do %>
             <i class="fa-solid fa-user crm-fa"></i>
             Usuários
           <% end %>
 
-          <%= link_to profiles_path, class: "crm-header__dropdown-link" do %>
+          <%= link_to clients_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(clients_path)}" do %>
+            <i class="fa-solid fa-building crm-fa"></i>
+            Clientes
+          <% end %>
+
+          <%= link_to profiles_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(profiles_path)}" do %>
             <i class="fa-solid fa-id-badge crm-fa"></i>
             Perfis
           <% end %>
@@ -137,6 +142,11 @@
           <%= link_to users_path, class: 'crm-header__dropdown-item' do %>
             <i class="fa-solid fa-user crm-fa"></i>
             Usuários
+          <% end %>
+
+          <%= link_to clients_path, class: 'crm-header__dropdown-item' do %>
+            <i class="fa-solid fa-building crm-fa"></i>
+            Clientes
           <% end %>
 
           <%= link_to profiles_path, class: 'crm-header__dropdown-item' do %>
@@ -237,7 +247,6 @@
   position: relative;
 }
 
-/* Zona segura invisível para manter dropdown aberto */
 .crm-header__group::after {
   content: '';
   position: absolute;
@@ -317,12 +326,14 @@
   transition: background 0.12s, color 0.12s;
 }
 
-.crm-header__dropdown-link:hover {
+.crm-header__dropdown-link:hover,
+.crm-header__dropdown-link.active {
   background: #f5f7ff;
   color: #3b4adf;
 }
 
-.crm-header__dropdown-link:hover .crm-fa {
+.crm-header__dropdown-link:hover .crm-fa,
+.crm-header__dropdown-link.active .crm-fa {
   color: #3b4adf;
 }
 
@@ -496,7 +507,6 @@
   transform-origin: center;
 }
 
-/* Hamburger → X */
 .crm-header__hamburger.open .crm-hamburger__bar:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
@@ -562,7 +572,6 @@
     border-radius: 10px;
   }
 
-  /* GROUP label no mobile */
   .crm-header__group {
     width: 100%;
   }
@@ -579,7 +588,6 @@
     margin-left: auto;
   }
 
-  /* Dropdown vira accordion no mobile */
   .crm-header__dropdown-nav {
     position: static;
     box-shadow: none;
@@ -602,7 +610,6 @@
     transform: rotate(180deg);
   }
 
-  /* Remove hover dropdown no mobile */
   .crm-header__group:hover .crm-header__dropdown-nav {
     display: none;
   }
@@ -619,7 +626,6 @@
     transform: rotate(180deg) !important;
   }
 
-  /* Esconde select no mobile */
   .crm-header__client-select {
     display: none;
   }
@@ -647,7 +653,7 @@ function updateSelectedClient(clientId) {
 
 (function () {
 
-  /* ── USER DROPDOWN ── */
+  /* USER DROPDOWN */
   const menu     = document.getElementById('crm-user-menu');
   const dropdown = document.getElementById('crm-dropdown');
   const chevron  = menu ? menu.querySelector('.crm-user-chevron') : null;
@@ -680,7 +686,7 @@ function updateSelectedClient(clientId) {
     });
   }
 
-  /* ── HAMBURGER ── */
+  /* HAMBURGER */
   const hamburger = document.getElementById('crm-hamburger');
   const nav       = document.getElementById('crm-nav');
   const overlay   = document.getElementById('crm-nav-overlay');
@@ -711,7 +717,6 @@ function updateSelectedClient(clientId) {
     overlay.addEventListener('click', closeNav);
   }
 
-  /* ── MOBILE ACCORDION ── */
   const isMobile = () => window.innerWidth <= 768;
 
   document.querySelectorAll('[data-group-toggle]').forEach(function (toggle) {

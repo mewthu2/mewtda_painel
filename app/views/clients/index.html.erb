@@ -1,0 +1,218 @@
+<% title 'Clientes' %>
+
+<div class="clients-wrapper">
+
+  <%# Filtros %>
+  <%= form_tag(clients_path, method: 'get') do %>
+    <div class="clients-filters">
+      <div class="clients-filters__row">
+        <div class="clients-filters__field">
+          <label>Buscar</label>
+          <%= text_field_tag :search, params[:search], class: 'clients-filters__input', placeholder: 'Nome ou e-mail...' %>
+        </div>
+        <div class="clients-filters__field clients-filters__field--small">
+          <label>Status</label>
+          <%= select_tag :status,
+              options_for_select([['Todos', ''], ['Ativos', 'active'], ['Inativos', 'inactive']], params[:status]),
+              class: 'clients-filters__input clients-filters__input--select' %>
+        </div>
+        <div class="clients-filters__actions">
+          <%= button_tag class: 'clients-btn clients-btn--primary', name: '' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            Filtrar
+          <% end %>
+          <%= link_to clients_path, class: 'clients-btn clients-btn--secondary' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Limpar
+          <% end %>
+          <%= link_to new_client_path, class: 'clients-btn clients-btn--success' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Novo Cliente
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Tabela %>
+  <div class="clients-table-wrap">
+    <div class="clients-table-header">
+      <span class="clients-table-header__title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+        </svg>
+        Clientes
+      </span>
+      <span class="clients-table-header__count"><%= @clients.total_entries rescue @clients.count %> encontrados</span>
+    </div>
+
+    <table class="clients-table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>E-mail</th>
+          <th>Status</th>
+          <th>Shopify URL</th>
+          <th>Shopify Token</th>
+          <th>Usuários</th>
+          <th>Cadastrado em</th>
+          <th class="text-center">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @clients.each do |client| %>
+          <% initials = client.name.to_s.split(' ').first(2).map { |w| w[0] }.join.upcase %>
+          <tr>
+            <td>
+              <div class="clients-table__client">
+                <div class="clients-table__avatar"><%= initials.presence || '?' %></div>
+                <div>
+                  <div class="clients-table__name"><%= client.name %></div>
+                  <div class="clients-table__id">ID #<%= client.id %></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <a href="mailto:<%= client.email %>" class="clients-table__email"><%= client.email %></a>
+            </td>
+            <td>
+              <% if client.active? %>
+                <span class="clients-table__badge clients-table__badge--active">Ativo</span>
+              <% else %>
+                <span class="clients-table__badge clients-table__badge--inactive">Inativo</span>
+              <% end %>
+            </td>
+            <td>
+              <% if client.shopify_shop_url.present? %>
+                <a href="<%= client.shopify_shop_url %>" target="_blank" class="clients-table__shopify-url">
+                  <%= client.shopify_shop_url.gsub(/https?:\/\//, '').truncate(30) %>
+                </a>
+              <% else %>
+                <span class="clients-table__empty-field">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% if client.shopify_access_token.present? %>
+                <span class="clients-table__badge clients-table__badge--shopify">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  </svg>
+                  Configurado
+                </span>
+              <% else %>
+                <span class="clients-table__badge clients-table__badge--pending">Não configurado</span>
+              <% end %>
+            </td>
+            <td>
+              <span class="clients-table__users-count"><%= client.users.count %></span>
+            </td>
+            <td class="clients-table__date"><%= client.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+            <td class="text-center">
+              <div class="clients-table__actions">
+                <%= link_to edit_client_path(client), class: 'clients-btn clients-btn--icon' do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+                  </svg>
+                <% end %>
+                <%= link_to client_path(client), method: :delete, data: { confirm: 'Tem certeza que deseja excluir este cliente?' }, class: 'clients-btn clients-btn--icon clients-btn--danger' do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                  </svg>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @clients.empty? %>
+          <tr>
+            <td colspan="8" class="clients-table__empty">Nenhum cliente encontrado.</td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="8"><%= page_entries_info @clients rescue '' %></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <%= will_paginate @clients, list_classes: %w[clients-pagination] rescue nil %>
+  </div>
+
+</div>
+
+<style>
+  .clients-wrapper { padding: 1.5rem 2rem; }
+
+  .clients-filters {
+    background: #fff;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    padding: 1.1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .clients-filters__row { display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: flex-end; }
+  .clients-filters__field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 200px; }
+  .clients-filters__field--small { flex: 0 0 150px; min-width: 150px; }
+  .clients-filters__field label { font-size: 0.78rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
+  .clients-filters__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #1e2235; background: #f8f9fc; outline: none; transition: border-color 0.15s; }
+  .clients-filters__input:focus { border-color: #3b4adf; background: #fff; }
+  .clients-filters__input--select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%239097b5' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem; cursor: pointer; }
+  .clients-filters__actions { display: flex; gap: 0.5rem; align-items: flex-end; }
+
+  .clients-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
+  .clients-btn:hover { opacity: 0.88; }
+  .clients-btn--primary { background: #3b4adf; color: #fff; }
+  .clients-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
+  .clients-btn--success { background: #1d7a3e; color: #fff; }
+  .clients-btn--icon { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; padding: 0.4rem 0.6rem; font-size: 0.82rem; }
+  .clients-btn--danger { color: #dc2626; border-color: #fecaca; background: #fef2f2; }
+  .clients-btn--danger:hover { background: #fee2e2; }
+
+  .clients-table-wrap { background: #fff; border: 1px solid #e4e7f0; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden; }
+  .clients-table-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid #f0f2f8; }
+  .clients-table-header__title { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #1e2235; font-size: 0.95rem; }
+  .clients-table-header__count { font-size: 0.8rem; color: #9097b5; background: #f4f5fb; padding: 0.25rem 0.65rem; border-radius: 20px; }
+
+  .clients-table { width: 100%; border-collapse: collapse; }
+  .clients-table thead th { padding: 0.75rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: #9097b5; text-transform: uppercase; letter-spacing: 0.06em; background: #f8f9fc; border-bottom: 1px solid #e4e7f0; white-space: nowrap; text-align: left; }
+  .clients-table tbody td { padding: 0.9rem 1.25rem; border-bottom: 1px solid #f0f2f8; font-size: 0.875rem; color: #3a4060; vertical-align: middle; }
+  .clients-table tbody tr:last-child td { border-bottom: none; }
+  .clients-table tbody tr:hover td { background: #f8f9fc; }
+  .clients-table tfoot td { padding: 0.75rem 1.25rem; font-size: 0.8rem; color: #9097b5; border-top: 1px solid #f0f2f8; }
+  .clients-table__empty { text-align: center; color: #9097b5; padding: 3rem !important; }
+
+  .clients-table__client { display: flex; align-items: center; gap: 0.75rem; }
+  .clients-table__avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #5e8e3e, #7ab356); color: #fff; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .clients-table__name { font-weight: 600; color: #1e2235; }
+  .clients-table__id { font-size: 0.75rem; color: #9097b5; }
+  .clients-table__email { color: #3b4adf; text-decoration: none; font-size: 0.875rem; }
+  .clients-table__email:hover { text-decoration: underline; }
+  .clients-table__date { color: #6b7280; font-size: 0.82rem; white-space: nowrap; }
+
+  .clients-table__shopify-url { color: #5e8e3e; text-decoration: none; font-size: 0.82rem; font-family: monospace; }
+  .clients-table__shopify-url:hover { text-decoration: underline; }
+  .clients-table__empty-field { color: #c5c9db; font-size: 0.875rem; }
+  .clients-table__users-count { background: #eff6ff; color: #1d4ed8; padding: 0.15rem 0.5rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+
+  .clients-table__badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .clients-table__badge--active { background: #d1fae5; color: #065f46; }
+  .clients-table__badge--inactive { background: #f3f4f6; color: #6b7280; }
+  .clients-table__badge--shopify { background: #d1fae5; color: #065f46; }
+  .clients-table__badge--pending { background: #fef3c7; color: #92400e; }
+
+  .clients-table__actions { display: flex; gap: 0.35rem; justify-content: center; }
+
+  .clients-pagination { display: flex; list-style: none; gap: 0.4rem; padding: 1rem 1.5rem; margin: 0; justify-content: center; }
+  .clients-pagination li a, .clients-pagination li span { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 0.5rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500; border: 1px solid #e4e7f0; color: #3a4060; text-decoration: none; transition: all 0.15s; }
+  .clients-pagination li.current span { background: #3b4adf; color: #fff; border-color: #3b4adf; }
+  .clients-pagination li a:hover { background: #f0f2fb; border-color: #b0b8f0; }
+  .text-center { text-align: center; }
+</style>
