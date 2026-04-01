@@ -6,4 +6,5 @@ class Profile < ApplicationRecord
 
   ADMIN = 1
   USER = 2
+  AFFILIATE = 3
 end

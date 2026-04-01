@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_31_025451) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_01_023913) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -262,12 +262,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_31_025451) do
     t.datetime "updated_at", null: false
     t.bigint "profile_id"
     t.bigint "client_id"
+    t.string "utm_code"
     t.index ["client_id"], name: "index_users_on_client_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["profile_id"], name: "index_users_on_profile_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
+    t.index ["utm_code"], name: "index_users_on_utm_code", unique: true
   end
 
   add_foreign_key "campaign_actions", "campaigns"

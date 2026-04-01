@@ -19,6 +19,15 @@ Rails.application.routes.draw do
       resources :campaign_actions, only: [:index, :show], path: 'actions'
     end
 
+    resources :events, only: [:index] do
+      collection do
+        get  'session/:session_id', action: :session_detail, as: :session
+        post 'generate_link',       action: :generate_link,  as: :generate_link
+      end
+    end
+
+    resources :affiliates
+
     post 'update_selected_client', to: 'clients#update_selected_client'
     get '/', to: 'dashboard#index', as: :painel
     get '/session/:session_id', to: 'dashboard#session_detail', as: :painel_session

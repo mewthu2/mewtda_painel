@@ -1,0 +1,228 @@
+<% title 'Afiliados' %>
+
+<div class="affiliates-wrapper">
+
+  <%# Filtros %>
+  <%= form_tag(affiliates_path, method: 'get') do %>
+    <div class="affiliates-filters">
+      <div class="affiliates-filters__row">
+        <div class="affiliates-filters__field">
+          <label>Buscar</label>
+          <%= text_field_tag :search, params[:search], class: 'affiliates-filters__input', placeholder: 'Nome, e-mail ou código UTM...' %>
+        </div>
+        <div class="affiliates-filters__field affiliates-filters__field--small">
+          <label>Status</label>
+          <%= select_tag :status,
+              options_for_select([['Todos', ''], ['Ativos', 'active'], ['Inativos', 'inactive']], params[:status]),
+              class: 'affiliates-filters__input affiliates-filters__input--select' %>
+        </div>
+        <div class="affiliates-filters__actions">
+          <%= button_tag class: 'affiliates-btn affiliates-btn--primary', name: '' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            Filtrar
+          <% end %>
+          <%= link_to affiliates_path, class: 'affiliates-btn affiliates-btn--secondary' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Limpar
+          <% end %>
+          <%= link_to new_affiliate_path, class: 'affiliates-btn affiliates-btn--success' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Novo Afiliado
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Info do Cliente %>
+  <div class="affiliates-client-info">
+    <span class="affiliates-client-info__label">Cliente:</span>
+    <span class="affiliates-client-info__name"><%= current_client.name %></span>
+  </div>
+
+  <%# Tabela %>
+  <div class="affiliates-table-wrap">
+    <div class="affiliates-table-header">
+      <span class="affiliates-table-header__title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+        </svg>
+        Afiliados
+      </span>
+      <span class="affiliates-table-header__count"><%= @affiliates.total_entries rescue @affiliates.count %> encontrados</span>
+    </div>
+
+    <table class="affiliates-table">
+      <thead>
+        <tr>
+          <th>Afiliado</th>
+          <th>E-mail</th>
+          <th>Telefone</th>
+          <th>Código UTM</th>
+          <th>Cadastro</th>
+          <th class="text-center">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @affiliates.each do |affiliate| %>
+          <tr>
+            <td>
+              <div class="affiliates-table__affiliate">
+                <div class="affiliates-table__name"><%= affiliate.name %></div>
+                <div class="affiliates-table__id">ID #<%= affiliate.id %></div>
+              </div>
+            </td>
+            <td>
+              <span class="affiliates-table__email"><%= affiliate.email %></span>
+            </td>
+            <td>
+              <span class="affiliates-table__phone"><%= affiliate.phone.present? ? affiliate.phone : '-' %></span>
+            </td>
+            <td>
+              <% if affiliate.utm_code.present? %>
+                <span class="affiliates-table__badge affiliates-table__badge--utm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                  </svg>
+                  <%= affiliate.utm_code %>
+                </span>
+              <% else %>
+                <span class="affiliates-table__no-utm">Não definido</span>
+              <% end %>
+            </td>
+            <td>
+              <span class="affiliates-table__date"><%= affiliate.created_at.strftime('%d/%m/%Y') %></span>
+            </td>
+            <td class="text-center">
+              <div class="affiliates-table__actions">
+                <% if affiliate.utm_code.present? %>
+                  <%= link_to events_path(utm_code: affiliate.utm_code),
+                        class: 'affiliates-btn affiliates-btn--icon affiliates-btn--view',
+                        title: "Ver eventos de #{affiliate.name}" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  <% end %>
+                <% end %>
+                <%= link_to edit_affiliate_path(affiliate), class: 'affiliates-btn affiliates-btn--icon' do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+                  </svg>
+                <% end %>
+                <%= link_to affiliate_path(affiliate), method: :delete, data: { confirm: 'Tem certeza que deseja excluir este afiliado?' }, class: 'affiliates-btn affiliates-btn--icon affiliates-btn--danger' do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                  </svg>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @affiliates.empty? %>
+          <tr>
+            <td colspan="6" class="affiliates-table__empty">
+              <div class="affiliates-table__empty-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                </svg>
+                <p>Nenhum afiliado encontrado.</p>
+                <%= link_to new_affiliate_path, class: 'affiliates-btn affiliates-btn--primary' do %>
+                  Cadastrar primeiro afiliado
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+      <% if @affiliates.any? %>
+        <tfoot>
+          <tr>
+            <td colspan="6"><%= page_entries_info @affiliates rescue '' %></td>
+          </tr>
+        </tfoot>
+      <% end %>
+    </table>
+
+    <%= will_paginate @affiliates, list_classes: %w[affiliates-pagination] rescue nil %>
+  </div>
+
+</div>
+
+<style>
+  .affiliates-wrapper { padding: 1.5rem 2rem; }
+
+  .affiliates-client-info { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1.25rem; background: #f8f9fc; border: 1px solid #e4e7f0; border-radius: 8px; margin-bottom: 1.5rem; }
+  .affiliates-client-info__label { font-size: 0.8rem; color: #9097b5; }
+  .affiliates-client-info__name { font-weight: 600; color: #1e2235; }
+
+  .affiliates-filters {
+    background: #fff;
+    border: 1px solid #e4e7f0;
+    border-radius: 10px;
+    padding: 1.1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .affiliates-filters__row { display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: flex-end; }
+  .affiliates-filters__field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 180px; }
+  .affiliates-filters__field--small { flex: 0 0 140px; min-width: 140px; }
+  .affiliates-filters__field label { font-size: 0.78rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
+  .affiliates-filters__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #1e2235; background: #f8f9fc; outline: none; transition: border-color 0.15s; }
+  .affiliates-filters__input:focus { border-color: #3b4adf; background: #fff; }
+  .affiliates-filters__input--select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%239097b5' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem; cursor: pointer; }
+  .affiliates-filters__actions { display: flex; gap: 0.5rem; align-items: flex-end; }
+
+  .affiliates-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
+  .affiliates-btn:hover { opacity: 0.88; }
+  .affiliates-btn--primary { background: #3b4adf; color: #fff; }
+  .affiliates-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
+  .affiliates-btn--success { background: #1d7a3e; color: #fff; }
+  .affiliates-btn--icon { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; padding: 0.4rem 0.6rem; font-size: 0.82rem; }
+  .affiliates-btn--danger { color: #dc2626; border-color: #fecaca; background: #fef2f2; }
+  .affiliates-btn--danger:hover { background: #fee2e2; }
+  .affiliates-btn--view { color: #0369a1; border-color: #bae6fd; background: #f0f9ff; }
+  .affiliates-btn--view:hover { background: #e0f2fe; }
+
+  .affiliates-table-wrap { background: #fff; border: 1px solid #e4e7f0; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden; }
+  .affiliates-table-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid #f0f2f8; }
+  .affiliates-table-header__title { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #1e2235; font-size: 0.95rem; }
+  .affiliates-table-header__count { font-size: 0.8rem; color: #9097b5; background: #f4f5fb; padding: 0.25rem 0.65rem; border-radius: 20px; }
+
+  .affiliates-table { width: 100%; border-collapse: collapse; }
+  .affiliates-table thead th { padding: 0.75rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: #9097b5; text-transform: uppercase; letter-spacing: 0.06em; background: #f8f9fc; border-bottom: 1px solid #e4e7f0; white-space: nowrap; text-align: left; }
+  .affiliates-table tbody td { padding: 0.9rem 1.25rem; border-bottom: 1px solid #f0f2f8; font-size: 0.875rem; color: #3a4060; vertical-align: middle; }
+  .affiliates-table tbody tr:last-child td { border-bottom: none; }
+  .affiliates-table tbody tr:hover td { background: #f8f9fc; }
+  .affiliates-table tfoot td { padding: 0.75rem 1.25rem; font-size: 0.8rem; color: #9097b5; border-top: 1px solid #f0f2f8; }
+
+  .affiliates-table__affiliate { }
+  .affiliates-table__name { font-weight: 600; color: #1e2235; }
+  .affiliates-table__id { font-size: 0.75rem; color: #9097b5; }
+  .affiliates-table__email { color: #3b4adf; }
+  .affiliates-table__phone { color: #3a4060; }
+  .affiliates-table__date { color: #9097b5; font-size: 0.82rem; }
+
+  .affiliates-table__badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .affiliates-table__badge--utm { background: #eff6ff; color: #1d4ed8; }
+  .affiliates-table__no-utm { color: #9097b5; font-size: 0.82rem; font-style: italic; }
+
+  .affiliates-table__actions { display: flex; gap: 0.35rem; justify-content: center; }
+
+  .affiliates-table__empty { text-align: center; padding: 3rem !important; }
+  .affiliates-table__empty-content { display: flex; flex-direction: column; align-items: center; gap: 1rem; color: #9097b5; }
+  .affiliates-table__empty-content svg { opacity: 0.5; }
+  .affiliates-table__empty-content p { margin: 0; }
+
+  .affiliates-pagination { display: flex; list-style: none; gap: 0.4rem; padding: 1rem 1.5rem; margin: 0; justify-content: center; }
+  .affiliates-pagination li a, .affiliates-pagination li span { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 0.5rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500; border: 1px solid #e4e7f0; color: #3a4060; text-decoration: none; transition: all 0.15s; }
+  .affiliates-pagination li.current span { background: #3b4adf; color: #fff; border-color: #3b4adf; }
+  .affiliates-pagination li a:hover { background: #f0f2fb; border-color: #b0b8f0; }
+  .text-center { text-align: center; }
+</style>

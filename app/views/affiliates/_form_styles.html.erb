@@ -1,0 +1,57 @@
+<style>
+  /* ===== Layout full-tela igual ao index ===== */
+  .affiliates-wrapper { padding: 1.5rem 2rem; }
+
+  .affiliates-page-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+  .affiliates-page-header__left { display: flex; align-items: center; gap: 1rem; }
+  .affiliates-page-header__title { display: flex; align-items: center; gap: 0.6rem; font-size: 1.35rem; font-weight: 700; color: #1e2235; margin: 0; }
+  .affiliates-page-header__meta { display: flex; align-items: center; gap: 0.65rem; }
+  .affiliates-page-header__name { font-weight: 500; color: #3a4060; font-size: 0.9rem; }
+
+  /* ===== Wrap do form ocupa toda a largura ===== */
+  .affiliates-form-wrap { background: #fff; border: 1px solid #e4e7f0; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); overflow: hidden; }
+
+  .affiliates-form { padding: 0; }
+
+  .affiliates-form__errors { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 1rem 1.25rem; margin: 1.5rem; color: #991b1b; }
+  .affiliates-form__errors strong { display: block; margin-bottom: 0.5rem; }
+  .affiliates-form__errors ul { margin: 0; padding-left: 1.25rem; }
+  .affiliates-form__errors li { font-size: 0.875rem; }
+
+  .affiliates-form__section { padding: 1.5rem 2rem; border-bottom: 1px solid #f0f2f8; }
+  .affiliates-form__section:last-of-type { border-bottom: none; }
+  .affiliates-form__section-title { font-size: 1rem; font-weight: 600; color: #1e2235; margin: 0 0 0.5rem; }
+  .affiliates-form__section-desc { font-size: 0.85rem; color: #9097b5; margin: 0 0 1rem; }
+
+  .affiliates-form__row { margin-bottom: 1rem; }
+  .affiliates-form__row:last-child { margin-bottom: 0; }
+  .affiliates-form__row--two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .affiliates-form__row--three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+  .affiliates-form__field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .affiliates-form__field label { font-size: 0.78rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
+  .affiliates-form__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #1e2235; background: #f8f9fc; outline: none; transition: border-color 0.15s, background 0.15s; }
+  .affiliates-form__input:focus { border-color: #3b4adf; background: #fff; }
+  .affiliates-form__hint { font-size: 0.75rem; color: #9097b5; margin-top: 0.25rem; }
+  .affiliates-form__hint code { background: #f0f2fb; padding: 0.1rem 0.4rem; border-radius: 4px; font-family: monospace; color: #3b4adf; }
+
+  .affiliates-form__actions { display: flex; justify-content: flex-end; gap: 0.75rem; padding: 1.1rem 2rem; background: #f8f9fc; border-top: 1px solid #e4e7f0; }
+
+  /* ===== Botões (mesmo padrão do index) ===== */
+  .affiliates-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
+  .affiliates-btn:hover { opacity: 0.88; }
+  .affiliates-btn--primary { background: #3b4adf; color: #fff; }
+  .affiliates-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
+  .affiliates-btn--success { background: #1d7a3e; color: #fff; }
+
+  /* ===== Badge reutilizado do index ===== */
+  .affiliates-table__badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .affiliates-table__badge--utm { background: #eff6ff; color: #1d4ed8; }
+
+  @media (max-width: 640px) {
+    .affiliates-wrapper { padding: 1rem; }
+    .affiliates-form__section { padding: 1.25rem 1rem; }
+    .affiliates-form__row--two,
+    .affiliates-form__row--three { grid-template-columns: 1fr; }
+  }
+</style>

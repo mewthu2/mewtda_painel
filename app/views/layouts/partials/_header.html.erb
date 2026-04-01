@@ -10,7 +10,7 @@
     </button>
 
     <%= link_to painel_path, class: "crm-header__brand" do %>
-      <%= image_tag 'admin/logo-store', class: 'crm-header__logo' %>
+      <%= image_tag 'admin/logo-novo.png', class: 'crm-header__logo' %>
     <% end %>
 
   </div>
@@ -18,58 +18,73 @@
   <!-- NAV -->
   <nav class="crm-header__nav" id="crm-nav">
 
-    <!-- DASHBOARD -->
-    <%= link_to painel_path, class: "crm-header__nav-link #{'active' if current_page?(painel_path)}" do %>
-      <i class="fa-solid fa-chart-line crm-fa"></i>
-      Dashboard
+    <% if current_user.profile_id == Profile::AFFILIATE %>
+      <!-- AFILIADO: apenas seus eventos -->
+      <%= link_to events_path(utm_code: current_user.utm_code), class: "crm-header__nav-link #{'active' if request.path.start_with?(events_path)}" do %>
+        <i class="fa-solid fa-chart-line crm-fa"></i>
+        Meus Eventos
+      <% end %>
+    <% else %>
+      <!-- DASHBOARD -->
+      <%= link_to painel_path, class: "crm-header__nav-link #{'active' if current_page?(painel_path)}" do %>
+        <i class="fa-solid fa-chart-line crm-fa"></i>
+        Dashboard
+      <% end %>
+
+      <!-- OPERAÇÕES -->
+      <div class="crm-header__group" data-group>
+        <span class="crm-header__group-label" data-group-toggle>
+          <i class="fa-solid fa-gear crm-fa"></i>
+          Operações
+          <i class="fa-solid fa-chevron-down crm-group-chevron"></i>
+        </span>
+
+        <div class="crm-header__dropdown-nav">
+          <%= link_to orders_path, class: "crm-header__dropdown-link #{'active' if current_page?(orders_path)}" do %>
+            <i class="fa-solid fa-box crm-fa"></i>
+            Pedidos
+          <% end %>
+
+          <%= link_to customers_path, class: "crm-header__dropdown-link #{'active' if current_page?(customers_path)}" do %>
+            <i class="fa-solid fa-users crm-fa"></i>
+            Clientes
+          <% end %>
+
+          <%= link_to products_path, class: "crm-header__dropdown-link #{'active' if current_page?(products_path)}" do %>
+            <i class="fa-solid fa-bag-shopping crm-fa"></i>
+            Produtos
+          <% end %>
+        </div>
+      </div>
     <% end %>
 
-    <!-- OPERAÇÕES -->
-    <div class="crm-header__group" data-group>
-      <span class="crm-header__group-label" data-group-toggle>
-        <i class="fa-solid fa-gear crm-fa"></i>
-        Operações
-        <i class="fa-solid fa-chevron-down crm-group-chevron"></i>
-      </span>
+    <!-- MARKETING (oculto para afiliados) -->
+    <% unless current_user.profile_id == Profile::AFFILIATE %>
+      <div class="crm-header__group" data-group>
+        <span class="crm-header__group-label" data-group-toggle>
+          <i class="fa-solid fa-bullhorn crm-fa"></i>
+          Marketing
+          <i class="fa-solid fa-chevron-down crm-group-chevron"></i>
+        </span>
 
-      <div class="crm-header__dropdown-nav">
-        <%= link_to orders_path, class: "crm-header__dropdown-link #{'active' if current_page?(orders_path)}" do %>
-          <i class="fa-solid fa-box crm-fa"></i>
-          Pedidos
-        <% end %>
+        <div class="crm-header__dropdown-nav">
+          <%= link_to campaigns_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(campaigns_path)}" do %>
+            <i class="fa-solid fa-bullseye crm-fa"></i>
+            Campanhas
+          <% end %>
 
-        <%= link_to customers_path, class: "crm-header__dropdown-link #{'active' if current_page?(customers_path)}" do %>
-          <i class="fa-solid fa-users crm-fa"></i>
-          Clientes
-        <% end %>
+          <%= link_to affiliates_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(affiliates_path)}" do %>
+            <i class="fa-solid fa-user-group crm-fa"></i>
+            Afiliados
+          <% end %>
 
-        <%= link_to products_path, class: "crm-header__dropdown-link #{'active' if current_page?(products_path)}" do %>
-          <i class="fa-solid fa-bag-shopping crm-fa"></i>
-          Produtos
-        <% end %>
+          <%= link_to painel_path, class: "crm-header__dropdown-link" do %>
+            <i class="fa-solid fa-robot crm-fa"></i>
+            Automações
+          <% end %>
+        </div>
       </div>
-    </div>
-
-    <!-- MARKETING -->
-    <div class="crm-header__group" data-group>
-      <span class="crm-header__group-label" data-group-toggle>
-        <i class="fa-solid fa-bullhorn crm-fa"></i>
-        Marketing
-        <i class="fa-solid fa-chevron-down crm-group-chevron"></i>
-      </span>
-
-      <div class="crm-header__dropdown-nav">
-        <%= link_to campaigns_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(campaigns_path)}" do %>
-          <i class="fa-solid fa-bullseye crm-fa"></i>
-          Campanhas
-        <% end %>
-
-        <%= link_to painel_path, class: "crm-header__dropdown-link" do %>
-          <i class="fa-solid fa-robot crm-fa"></i>
-          Automações
-        <% end %>
-      </div>
-    </div>
+    <% end %>
 
     <!-- ADMIN -->
     <% if current_user.admin? %>
@@ -212,7 +227,7 @@
 }
 
 .crm-header__logo {
-  height: 70px;
+  width: 140px;
 }
 
 /* NAV */

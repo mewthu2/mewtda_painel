@@ -1,493 +1,502 @@
-<div class="login-page">
+<div class="lp">
 
-  <div class="login-brand">
-    <div class="login-brand__inner">
-      <%= image_tag 'admin/logo-store.png', class: 'login-brand__logo', alt: 'Logo' %>
-      <p class="login-brand__tagline">Gerencie seu negócio com inteligência</p>
+  <aside class="lp__panel" aria-hidden="true">
 
-      <div class="login-brand__typewriter">
-        <span class="login-brand__typewriter-prefix">Para sua loja:</span>
-        <span class="login-brand__typewriter-text" id="tw-text"></span><span class="login-brand__cursor"></span>
+    <svg class="lp__dots" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <defs>
+        <pattern id="dot-grid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="1" fill="#3b4adf" fill-opacity="0.12"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#dot-grid)"/>
+    </svg>
+
+    <div class="lp__line lp__line--left"></div>
+    <div class="lp__line lp__line--right"></div>
+
+    <div class="lp__panel-inner">
+
+      <%= image_tag 'admin/logo-novo.png', class: 'lp__brand-logo', alt: 'Logo' %>
+
+      <p class="lp__tagline">Gerencie seu negócio<br>com inteligência</p>
+
+      <div class="lp__pill">
+        <span class="lp__pill-dot"></span>
+        <span class="lp__pill-prefix">Para sua loja:</span>
+        <span class="lp__pill-text" id="tw-text"></span><span class="lp__cursor"></span>
       </div>
+
+
+
     </div>
-  </div>
+  </aside>
 
-  <div class="login-form-side">
-    <div class="login-card">
+  <main class="lp__form-side">
 
-      <div class="login-card__header">
-        <%= image_tag 'admin/logo-store.png', class: 'login-card__logo-mobile', alt: 'Logo' %>
-        <h1 class="login-card__title">Bem-vindo de volta</h1>
-        <p class="login-card__subtitle">Acesse sua conta para continuar</p>
-      </div>
+    <div class="lp__corner lp__corner--tl"></div>
+    <div class="lp__corner lp__corner--br"></div>
 
-      <div class="login-card__messages">
+    <div class="lp__card">
+
+      <%= image_tag 'admin/logo-novo.png', class: 'lp__card-logo-mobile', alt: 'Logo' %>
+
+      <header class="lp__card-header">
+        <div class="lp__card-badge">Acesso seguro</div>
+        <h1 class="lp__card-title">Bem-vindo de volta</h1>
+        <p class="lp__card-subtitle">Entre na sua conta para continuar gerenciando seu negócio</p>
+      </header>
+
+      <div class="lp__messages">
         <%= render 'layouts/partials/messages' %>
       </div>
 
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'login-card__form' }) do |f| %>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'lp__form' }) do |f| %>
 
-        <div class="login-field">
-          <label class="login-field__label">E-mail</label>
-          <div class="login-field__wrap">
-            <svg class="login-field__icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-            </svg>
+        <div class="lp__field">
+          <label class="lp__field-label" for="<%= resource_name %>_email">E-mail</label>
+          <div class="lp__field-wrap">
+            <span class="lp__field-icon">
+              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+              </svg>
+            </span>
             <%= f.email_field :email,
                 autocomplete: "email",
-                class: 'login-field__input',
+                id: "#{resource_name}_email",
+                class: 'lp__field-input',
                 placeholder: 'seu@email.com' %>
           </div>
         </div>
 
-        <div class="login-field">
-          <label class="login-field__label">Senha</label>
-          <div class="login-field__wrap">
-            <svg class="login-field__icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-            </svg>
+        <div class="lp__field">
+          <label class="lp__field-label" for="<%= resource_name %>_password">Senha</label>
+          <div class="lp__field-wrap">
+            <span class="lp__field-icon">
+              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+              </svg>
+            </span>
             <%= f.password_field :password,
                 autocomplete: "current-password",
-                class: 'login-field__input',
+                id: "#{resource_name}_password",
+                class: 'lp__field-input',
                 placeholder: '••••••••' %>
           </div>
         </div>
 
-        <% if devise_mapping.rememberable? %>
-          <div class="login-remember">
-            <label class="login-remember__label">
-              <%= f.check_box :remember_me, class: 'login-remember__check' %>
-              <span class="login-remember__box"></span>
-              <span class="login-remember__text">Lembrar de mim</span>
+        <div class="lp__row">
+          <% if devise_mapping.rememberable? %>
+            <label class="lp__remember">
+              <%= f.check_box :remember_me, class: 'lp__remember-input' %>
+              <span class="lp__remember-box"></span>
+              <span class="lp__remember-text">Lembrar de mim</span>
             </label>
-          </div>
-        <% end %>
+          <% end %>
 
-        <%= f.submit "Entrar", class: 'login-submit' %>
+        </div>
+
+        <%= f.submit "Entrar na plataforma", class: 'lp__submit' %>
 
       <% end %>
 
-      <div class="login-card__footer">
-        <% if devise_mapping.recoverable? %>
-          <%= link_to "Esqueceu sua senha?", new_password_path(resource_name), class: 'login-card__forgot' %>
-        <% end %>
-      </div>
+      <p class="lp__secure">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+        </svg>
+        Conexão criptografada · Dados protegidos
+      </p>
 
     </div>
-  </div>
+  </main>
 
 </div>
 
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  @media (min-width: 1024px) {
-    .login-page {
-      min-height: 100vh;
-    }
-  }
+.lp {
+  display: flex;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  background: #ffffff;
+}
 
-  .login-page {
-    display: flex;
-    align-items: stretch;
-  }
+.lp__panel {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  background: #ffffff;
+  overflow: hidden;
+  border-right: 1px solid #eef0f8;
+}
 
-  .login-brand {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem;
-    position: relative;
-    overflow: hidden;
-  }
+/* grade de pontos */
+.lp__dots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
 
-  .login-brand__canvas {
-    position: absolute;
-    inset: 0;
+.lp__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(59, 74, 223, 0.15) 30%,
+    rgba(59, 74, 223, 0.15) 70%,
+    transparent 100%
+  );
+}
+.lp__line--left  { left: 15%; }
+.lp__line--right { right: 15%; }
+
+.lp__panel-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+  text-align: center;
+  max-width: 440px;
+}
+
+.lp__brand-logo {
+  width: 380px;
+  max-width: 100%;
+  height: auto;
+}
+
+.lp__tagline {
+  font-size: 1.05rem;
+  color: #4a5380;
+  line-height: 1.65;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.lp__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f4f5fd;
+  border: 1px solid #dde1f8;
+  border-radius: 100px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.82rem;
+}
+.lp__pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+}
+.lp__pill-prefix {
+  color: #7a83aa;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+.lp__pill-text {
+  color: #3b4adf;
+  font-weight: 700;
+  min-width: 130px;
+  text-align: left;
+}
+.lp__cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  background: #3b4adf;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-left: 1px;
+  animation: lp-blink 0.7s step-end infinite;
+}
+@keyframes lp-blink {
+  0%,100% { opacity:1; }
+  50%      { opacity:0; }
+}
+
+.lp__form-side {
+  position: relative;
+  width: 48%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  background: #f8f9fc;
+  overflow: hidden;
+}
+
+.lp__corner {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 1px solid rgba(59, 74, 223, 0.12);
+  pointer-events: none;
+}
+.lp__corner--tl { top: -1px; left: -1px; border-right: none; border-bottom: none; border-radius: 0 0 8px 0; }
+.lp__corner--br { bottom: -1px; right: -1px; border-left: none; border-top: none; border-radius: 8px 0 0 0; }
+
+.lp__card {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  border: 1px solid #e4e7f0;
+  border-radius: 20px;
+  padding: 2.25rem 2rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(30,40,100,0.09), 0 1px 4px rgba(30,40,100,0.05);
+}
+
+.lp__card-logo-mobile {
+  display: none;
+  width: 240px;
+  height: auto;
+  margin: 0 auto 2rem;
+}
+
+.lp__card-header {
+  margin-bottom: 2rem;
+}
+
+.lp__card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #eef0fd;
+  color: #3b4adf;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 100px;
+  padding: 0.3rem 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.lp__card-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #0f1538;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.lp__card-subtitle {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #7a83aa;
+  line-height: 1.55;
+}
+
+.lp__messages {
+  margin-bottom: 1rem;
+}
+
+/* ── form ── */
+.lp__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.lp__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.lp__field-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #3a4170;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.lp__field-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lp__field-icon {
+  position: absolute;
+  left: 0.9rem;
+  color: #a0aac4;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.lp__field-input {
+  width: 100%;
+  padding: 0.82rem 1rem 0.82rem 2.7rem;
+  border: 1.5px solid #e4e7f0;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: #1b2255;
+  background: #f8f9fc;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.lp__field-input:focus {
+  border-color: #3b4adf;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59,74,223,0.09);
+}
+.lp__field-input::placeholder { color: #b8c0d8; }
+
+.lp__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.1rem 0;
+}
+
+.lp__remember {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #4a5380;
+  user-select: none;
+}
+.lp__remember-input { display: none; }
+.lp__remember-box {
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid #c8ceea;
+  border-radius: 5px;
+  background: #f8f9fc;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.lp__remember-input:checked + .lp__remember-box {
+  background: #3b4adf;
+  border-color: #3b4adf;
+}
+.lp__remember-input:checked + .lp__remember-box::after {
+  content: '';
+  position: absolute;
+  left: 4px; top: 1px;
+  width: 5px; height: 9px;
+  border: 2px solid #fff;
+  border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+
+.lp__forgot {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3b4adf;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.lp__forgot:hover { color: #2c3bbf; text-decoration: underline; }
+
+.lp__submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  background: #3b4adf;
+  color: #ffffff;
+  border: none;
+  padding: 0.95rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.18s, transform 0.1s, box-shadow 0.18s;
+}
+.lp__submit::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.lp__submit:hover {
+  background: #2d3ccc;
+  box-shadow: 0 6px 20px rgba(59,74,223,0.35);
+  transform: translateY(-2px);
+}
+.lp__submit:active { transform: translateY(0); }
+
+.lp__secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #aab0cc;
+}
+.lp__secure svg { flex-shrink: 0; }
+
+@media (max-width: 900px) {
+  .lp__panel   { display: none; }
+  .lp__form-side {
     width: 100%;
-    height: 100%;
-    pointer-events: none;
+    min-height: 100vh;
+    background: #f4f5fd;
   }
+  .lp__card-logo-mobile { display: block; }
+  .lp__card-header { text-align: center; }
+}
 
-  .login-brand__inner {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  .login-brand__logo {
-    width: 220px;
-    max-width: 100%;
-    height: auto;
-  }
-
-  .login-brand__tagline {
-    color: rgba(255,255,255,0.75);
-    font-size: 1rem;
-    font-weight: 400;
-    letter-spacing: 0.01em;
-    max-width: 300px;
-    line-height: 1.6;
-  }
-
-  .login-brand__typewriter {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 100px;
-    padding: 0.5rem 1.1rem;
-    backdrop-filter: blur(6px);
-    max-width: 500px;
-  }
-
-  .login-brand__typewriter-prefix {
-    white-space: nowrap;
-    color: rgba(255,255,255,0.45);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-
-  .login-brand__typewriter-text {
-    color: #7ee8a2;
-    font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: 0.01em;
-    min-width: 140px;
-  }
-
-  .login-brand__cursor {
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background: #7ee8a2;
-    margin-left: 1px;
-    vertical-align: middle;
-    border-radius: 2px;
-    animation: tw-blink 0.7s step-end infinite;
-    flex-shrink: 0;
-  }
-
-  @keyframes tw-blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
-  }
-
-  .login-form-side {
-    width: 50%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1.5rem;
-  }
-
-  .login-card {
-    background: #ffffff;
-    border: 1px solid #e4e7f0;
+@media (max-width: 480px) {
+  .lp__form-side { padding: 1.25rem; }
+  .lp__card {
+    padding: 1.75rem 1.25rem;
     border-radius: 16px;
-    padding: 2rem 1.75rem;
-    width: 100%;
-    max-width: 400px;
-    flex-shrink: 0;
-    box-shadow: 0 4px 24px rgba(30, 40, 100, 0.08);
   }
-
-  .login-card__logo-mobile {
-    display: none;
-    width: 100px;
-    height: auto;
-    margin-bottom: 1.25rem;
-  }
-
-  .login-card__header {
-    margin-bottom: 2rem;
-  }
-
-  .login-card__title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #1b2255;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-  }
-
-  .login-card__subtitle {
-    margin-top: 0.4rem;
-    font-size: 0.9rem;
-    color: #7a83aa;
-    line-height: 1.5;
-  }
-
-  .login-card__messages {
-    margin-bottom: 1.25rem;
-  }
-
-  .login-card__form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .login-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .login-field__label {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #4a5380;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .login-field__wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .login-field__icon {
-    position: absolute;
-    left: 0.85rem;
-    color: #9097b5;
-    pointer-events: none;
-    flex-shrink: 0;
-  }
-
-  .login-field__input {
-    width: 100%;
-    padding: 0.8rem 1rem 0.8rem 2.6rem;
-    border: 1.5px solid #e4e7f0;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    color: #1e2235;
-    background: #f8f9fc;
-    outline: none;
-    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-  }
-
-  .login-field__input:focus {
-    border-color: #3b4adf;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(59, 74, 223, 0.1);
-  }
-
-  .login-field__input::placeholder {
-    color: #b0b8d0;
-  }
-
-  /* ---- Lembrar ---- */
-  .login-remember {
-    margin: 0.25rem 0;
-  }
-
-  .login-remember__label {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    color: #4a5380;
-    user-select: none;
-  }
-
-  .login-remember__check {
-    display: none;
-  }
-
-  .login-remember__box {
-    width: 17px;
-    height: 17px;
-    border: 1.5px solid #c8ceea;
-    border-radius: 5px;
-    background: #f8f9fc;
-    position: relative;
-    flex-shrink: 0;
-    transition: all 0.15s;
-  }
-
-  .login-remember__check:checked + .login-remember__box {
-    background: #3b4adf;
-    border-color: #3b4adf;
-  }
-
-  .login-remember__check:checked + .login-remember__box::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 5px;
-    height: 9px;
-    border: 2px solid #fff;
-    border-top: none;
-    border-left: none;
-    transform: rotate(45deg);
-  }
-
-  .login-submit {
-    width: 100%;
-    margin-top: 0.5rem;
-    background: #3b4adf;
-    color: #ffffff;
-    border: none;
-    padding: 0.875rem 1.5rem;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    letter-spacing: 0.01em;
-    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-  }
-
-  .login-submit:hover {
-    background: #2f3bbf;
-    box-shadow: 0 4px 14px rgba(59, 74, 223, 0.3);
-    transform: translateY(-1px);
-  }
-
-  .login-submit:active {
-    transform: translateY(0);
-  }
-
-  .login-card__footer {
-    text-align: center;
-    margin-top: 1.5rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid #f0f2f8;
-  }
-
-  .login-card__forgot {
-    color: #3b4adf;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
-  .login-card__forgot:hover {
-    color: #2f3bbf;
-    text-decoration: underline;
-  }
-
-  @media (max-width: 768px) {
-    .login-page {
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    .login-brand {
-      display: none;
-    }
-
-    .login-form-side {
-      width: 100%;
-      min-height: 100vh;
-      padding: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 420px;
-      padding: 1.75rem 1.4rem;
-      border-radius: 14px;
-    }
-
-    .login-card__logo-mobile {
-      display: block;
-    }
-
-    .login-card__header {
-      text-align: center;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .login-card {
-      width: 100%;
-      padding: 1.5rem 1.2rem;
-      border-radius: 12px;
-    }
-
-    .login-field__input {
-      font-size: 16px; /* evita zoom automático no iOS */
-    }
-
-    .login-card__title {
-      font-size: 1.4rem;
-    }
-
-    .login-card__subtitle {
-      font-size: 0.85rem;
-    }
-  }
+  .lp__card-title { font-size: 1.45rem; }
+  .lp__field-input { font-size: 16px; }
+}
 </style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
   const words = [
-    "Shopify",
-    "Nuvemshop",
-    "WooCommerce",
-    "Loja Integrada",
-    "Magento",
-    "Tray",
-    "VTEX",
-    "Mercado Livre",
-    "Amazon",
-    "Magalu",
-    "Shopee",
-    "E-commerce próprio"
+    "Shopify", "Nuvemshop", "WooCommerce", "Loja Integrada",
+    "Magento", "Tray", "VTEX", "Mercado Livre",
+    "Amazon", "Magalu", "Shopee", "E-commerce próprio"
   ];
 
-  const element = document.getElementById("tw-text");
+  const el = document.getElementById("tw-text");
+  if (!el) return;
 
-  let wordIndex = 0;
-  let charIndex = 0;
-  let deleting = false;
+  let wIdx = 0, cIdx = 0, deleting = false;
 
-  function typeEffect() {
-    const currentWord = words[wordIndex];
-
+  function type() {
+    const word = words[wIdx];
     if (!deleting) {
-      element.textContent = currentWord.substring(0, charIndex + 1);
-      charIndex++;
-
-      if (charIndex === currentWord.length) {
-        deleting = true;
-        setTimeout(typeEffect, 1400);
-        return;
-      }
-
+      el.textContent = word.substring(0, ++cIdx);
+      if (cIdx === word.length) { deleting = true; return setTimeout(type, 1600); }
     } else {
-      element.textContent = currentWord.substring(0, charIndex - 1);
-      charIndex--;
-
-      if (charIndex === 0) {
-        deleting = false;
-        wordIndex = (wordIndex + 1) % words.length;
-      }
+      el.textContent = word.substring(0, --cIdx);
+      if (cIdx === 0) { deleting = false; wIdx = (wIdx + 1) % words.length; }
     }
-
-    const speed = deleting ? 45 : 75;
-    setTimeout(typeEffect, speed);
+    setTimeout(type, deleting ? 42 : 72);
   }
-
-  typeEffect();
-
+  type();
 });
 </script>

@@ -1,0 +1,78 @@
+<%= form_for @affiliate, url: form_url, html: { class: 'affiliates-form', method: form_method } do |f| %>
+  <% if @affiliate.errors.any? %>
+    <div class="affiliates-form__errors">
+      <strong>Erros encontrados:</strong>
+      <ul>
+        <% @affiliate.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="affiliates-form__section">
+    <h2 class="affiliates-form__section-title">Informações Básicas</h2>
+    
+    <div class="affiliates-form__row">
+      <div class="affiliates-form__field">
+        <label for="user_name">Nome *</label>
+        <%= f.text_field :name, class: 'affiliates-form__input', placeholder: 'Nome completo do afiliado', required: true %>
+      </div>
+    </div>
+
+    <div class="affiliates-form__row affiliates-form__row--two">
+      <div class="affiliates-form__field">
+        <label for="user_email">E-mail *</label>
+        <%= f.email_field :email, class: 'affiliates-form__input', placeholder: 'email@exemplo.com', required: true %>
+      </div>
+      <div class="affiliates-form__field">
+        <label for="user_phone">Telefone</label>
+        <%= f.text_field :phone, class: 'affiliates-form__input', placeholder: '(00) 00000-0000' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="affiliates-form__section">
+    <h2 class="affiliates-form__section-title">Código de Rastreamento</h2>
+    
+    <div class="affiliates-form__row">
+      <div class="affiliates-form__field">
+        <label for="user_utm_code">Código UTM *</label>
+        <%= f.text_field :utm_code, class: 'affiliates-form__input', placeholder: 'codigo-unico-afiliado', required: true %>
+        <span class="affiliates-form__hint">
+          Este código será usado para rastrear as vendas do afiliado via <code>utm_affiliate=<%= @affiliate.utm_code.presence || 'codigo' %></code>. 
+          Use apenas letras minúsculas, números e hífens.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="affiliates-form__section">
+    <h2 class="affiliates-form__section-title"><%= @affiliate.new_record? ? 'Senha de Acesso' : 'Alterar Senha' %></h2>
+    <p class="affiliates-form__section-desc">
+      <% if @affiliate.new_record? %>
+        Defina uma senha para o afiliado acessar o sistema. Se deixar em branco, uma senha temporária será gerada.
+      <% else %>
+        Deixe em branco se não quiser alterar a senha.
+      <% end %>
+    </p>
+    
+    <div class="affiliates-form__row affiliates-form__row--two">
+      <div class="affiliates-form__field">
+        <label for="user_password"><%= @affiliate.new_record? ? 'Senha' : 'Nova Senha' %></label>
+        <%= f.password_field :password, class: 'affiliates-form__input', placeholder: 'Mínimo 6 caracteres' %>
+      </div>
+      <div class="affiliates-form__field">
+        <label for="user_password_confirmation">Confirmar Senha</label>
+        <%= f.password_field :password_confirmation, class: 'affiliates-form__input', placeholder: 'Repita a senha' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="affiliates-form__actions">
+    <%= link_to affiliates_path, class: 'affiliates-btn affiliates-btn--secondary' do %>
+      Cancelar
+    <% end %>
+    <%= f.submit (@affiliate.new_record? ? 'Criar Afiliado' : 'Salvar Alterações'), class: "affiliates-btn #{@affiliate.new_record? ? 'affiliates-btn--success' : 'affiliates-btn--primary'}" %>
+  </div>
+<% end %>
