@@ -215,8 +215,18 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 200;
+  transition: background 0.25s ease, backdrop-filter 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.crm-header.scrolled {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom-color: rgba(230, 232, 245, 0.6);
+  box-shadow: 0 2px 16px rgba(30, 40, 100, 0.06);
 }
 
 /* LEFT */
@@ -576,6 +586,11 @@
     transition: transform 0.3s ease;
   }
 
+  /* overlay cobre a tela toda por baixo do drawer */
+  .crm-nav-overlay {
+    z-index: 160;
+  }
+
   .crm-header__nav.open {
     display: flex;
     transform: translateX(0);
@@ -743,6 +758,20 @@ function updateSelectedClient(clientId) {
       group.classList.toggle('mobile-open');
     });
   });
+
+  /* STICKY BLUR */
+  const header = document.querySelector('.crm-header');
+  if (header) {
+    const onScroll = function () {
+      if (window.scrollY > 10) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
 
 })();
 
