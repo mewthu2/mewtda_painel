@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_01_023913) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_01_134046) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -263,8 +263,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_01_023913) do
     t.bigint "profile_id"
     t.bigint "client_id"
     t.string "utm_code"
+    t.string "discount_code"
     t.index ["client_id"], name: "index_users_on_client_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["discount_code"], name: "index_users_on_discount_code"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["profile_id"], name: "index_users_on_profile_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

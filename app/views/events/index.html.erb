@@ -87,6 +87,7 @@
   }
   .ev-link-generator__title { font-size: 0.9rem; font-weight: 700; color: #0c4a6e; }
   .ev-link-generator__subtitle { font-size: 0.8rem; color: #0369a1; margin-top: 2px; }
+  .ev-link-generator__meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
   .ev-link-generator__code {
     background: #e0f2fe;
     color: #0369a1;
@@ -95,6 +96,19 @@
     font-family: monospace;
     font-size: 11px;
     border: 1px solid #bae6fd;
+  }
+  .ev-link-generator__discount {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fef9c3;
+    color: #a16207;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid #fde68a;
   }
   .ev-link-generator__body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
   .ev-link-generator__input-row { display: flex; gap: 0.75rem; align-items: stretch; }
@@ -760,6 +774,7 @@
   .ev-badge--count   { background: #0f172a; color: #fff; }
   .ev-badge--abandoned { background: #fee2e2; color: #dc2626; }
   .ev-badge--device  { background: #f1f5f9; color: #64748b; font-size: 10px; }
+  .ev-badge--discount { background: #fef9c3; color: #a16207; border: 1px solid #fde68a; font-family: monospace; }
 
   .ev-modal-overlay {
     display: none;
@@ -895,7 +910,15 @@
     </h1>
     <p class="ev-header__subtitle">
       <% if @utm_code.present? && @affiliate %>
-        Exibindo eventos com <code style="background:#f0f9ff;color:#0369a1;padding:1px 6px;border-radius:4px;font-size:12px;border:1px solid #bae6fd;">utm_affiliate=<%= @utm_code %></code> &mdash; Afiliado: <strong><%= @affiliate.name %></strong>
+        Exibindo eventos com <code style="background:#f0f9ff;color:#0369a1;padding:1px 6px;border-radius:4px;font-size:12px;border:1px solid #bae6fd;">utm_affiliate=<%= @utm_code %></code>
+        &mdash; Afiliado: <strong><%= @affiliate.name %></strong>
+        <% if @affiliate.discount_code.present? %>
+          &mdash; Cupom:
+          <span class="ev-badge ev-badge--discount" style="font-size:12px; vertical-align:middle;">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:inline;vertical-align:middle;margin-right:2px"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            <%= @affiliate.discount_code %>
+          </span>
+        <% end %>
       <% elsif @utm_code.present? %>
         Exibindo eventos com <code style="background:#f0f9ff;color:#0369a1;padding:1px 6px;border-radius:4px;font-size:12px;border:1px solid #bae6fd;">utm_affiliate=<%= @utm_code %></code>
       <% elsif @client %>
@@ -970,6 +993,23 @@
             <code class="ev-link-generator__code">utm_affiliate=<%= @utm_code %></code>
             para <strong><%= @affiliate.name %></strong>
           </div>
+          <% if @affiliate.discount_code.present? %>
+            <div class="ev-link-generator__meta">
+              <span style="font-size:11px; color:#64748b;">Cupom de desconto:</span>
+              <span class="ev-link-generator__discount">
+                <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <%= @affiliate.discount_code %>
+              </span>
+              <button
+                type="button"
+                onclick="navigator.clipboard.writeText('<%= @affiliate.discount_code %>').then(function(){ var el = document.getElementById('ev-discount-copy-label'); el.textContent = 'Copiado!'; setTimeout(function(){ el.textContent = 'Copiar cupom'; }, 2000); })"
+                style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:1px solid #fde68a;border-radius:4px;background:#fff;color:#a16207;font-size:11px;cursor:pointer;"
+              >
+                <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                <span id="ev-discount-copy-label">Copiar cupom</span>
+              </button>
+            </div>
+          <% end %>
         </div>
       </div>
 

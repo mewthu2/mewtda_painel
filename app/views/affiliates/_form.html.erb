@@ -45,6 +45,17 @@
         </span>
       </div>
     </div>
+
+    <div class="affiliates-form__row">
+      <div class="affiliates-form__field">
+        <label for="user_discount_code">Cupom de Desconto</label>
+        <%= f.text_field :discount_code, class: 'affiliates-form__input', placeholder: 'Ex: AFILIADO10' %>
+        <span class="affiliates-form__hint">
+          Código de cupom exclusivo do afiliado. Será exibido no painel e pode ser divulgado pelo afiliado para seus clientes.
+          Use letras maiúsculas, números e hífens (ex: <code>JOAO10</code>, <code>PARCEIRO-20</code>).
+        </span>
+      </div>
+    </div>
   </div>
 
   <div class="affiliates-form__section">

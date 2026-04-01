@@ -14,7 +14,10 @@ class AffiliatesController < ApplicationController
 
     if params[:search].present?
       search_term = "%#{params[:search]}%"
-      @affiliates = @affiliates.where('users.name ILIKE ? OR users.email ILIKE ? OR users.utm_code ILIKE ?', search_term, search_term, search_term)
+      @affiliates = @affiliates.where(
+        'users.name ILIKE ? OR users.email ILIKE ? OR users.utm_code ILIKE ? OR users.discount_code ILIKE ?',
+        search_term, search_term, search_term, search_term
+      )
     end
 
     if params[:status].present?
@@ -49,7 +52,15 @@ class AffiliatesController < ApplicationController
   def edit; end
 
   def update
-    if @affiliate.update(affiliate_params)
+    update_params = affiliate_params
+    
+    # Remove password params if blank (keeps existing password)
+    if update_params[:password].blank?
+      update_params.delete(:password)
+      update_params.delete(:password_confirmation)
+    end
+
+    if @affiliate.update(update_params)
       redirect_to affiliates_path, notice: 'Afiliado atualizado com sucesso.'
     else
       render :edit, status: :unprocessable_entity
@@ -81,7 +92,7 @@ class AffiliatesController < ApplicationController
   end
 
   def affiliate_params
-    params.require(:user).permit(:name, :email, :phone, :utm_code, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :phone, :utm_code, :discount_code, :password, :password_confirmation)
   end
 
   def generate_temporary_password
