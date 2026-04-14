@@ -43,12 +43,14 @@
             </button>
           </div>
 
-          <%= link_to customers_path(params.permit(:search, :phone, :min_orders, :product_name, :inactive_days).merge(maderite: params[:maderite].present? ? nil : '1')),
-              class: "customers-btn customers-btn--quick #{'customers-btn--quick-active' if params[:maderite].present?}" do %>
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
-            </svg>
-            Coleção Maderite
+          <% if current_user&.client_id == 1 %>
+            <%= link_to customers_path(params.permit(:search, :phone, :min_orders, :product_name, :inactive_days).merge(maderite: params[:maderite].present? ? nil : '1')),
+                class: "customers-btn customers-btn--quick #{'customers-btn--quick-active' if params[:maderite].present?}" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+              </svg>
+              Coleção Maderite
+            <% end %>
           <% end %>
         </div>
 

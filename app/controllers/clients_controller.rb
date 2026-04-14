@@ -53,6 +53,7 @@ class ClientsController < ApplicationController
 
     client = Client.find_by(id: params[:client_id], active: true)
 
+    current_user.update(client_id: client&.id)
     if client
       session[:selected_client_id] = client.id
       render json: { success: true, client_name: client.name }

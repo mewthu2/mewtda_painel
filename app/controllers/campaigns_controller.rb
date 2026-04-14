@@ -94,6 +94,9 @@ class CampaignsController < ApplicationController
   end
 
   def campaign_params
-    params.require(:campaign).permit(:name, :kind, :message, :days_after_purchase, :start_date, :end_date, :active)
+    params.require(:campaign).permit(
+      :name, :kind, :message, :days_after_purchase, :start_date, :end_date, :active,
+      :filter_inactive_days, :filter_min_orders, :filter_product_name, :filter_maderite
+    )
   end
 end

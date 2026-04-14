@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_01_134046) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_14_160917) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -66,8 +66,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_01_134046) do
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "filters", default: {}, null: false
     t.index ["client_id", "kind"], name: "index_campaigns_on_client_id_and_kind"
     t.index ["client_id"], name: "index_campaigns_on_client_id"
+    t.index ["filters"], name: "index_campaigns_on_filters", using: :gin
     t.index ["start_date", "end_date"], name: "index_campaigns_on_start_date_and_end_date"
   end
 
