@@ -1,0 +1,1352 @@
+<% title 'Virtual Try-On - FASHN.AI' %>
+
+<style>
+  .tryon-page { padding: 24px 28px; min-height: 100vh; }
+  @media (max-width: 600px) { .tryon-page { padding: 16px; } }
+
+  .tryon-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px 24px;
+  }
+  @media (max-width: 600px) {
+    .tryon-header { padding: 14px 16px; flex-direction: column; align-items: flex-start; }
+  }
+  .tryon-header__left { display: flex; flex-direction: column; gap: 4px; }
+  .tryon-header__title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.4px;
+    line-height: 1.2;
+  }
+  .tryon-header__subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+  }
+  .tryon-header__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Tabs */
+  .tryon-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    background: #f1f5f9;
+    padding: 6px;
+    border-radius: 12px;
+    width: fit-content;
+  }
+  .tryon-tab {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tryon-tab:hover { color: #334155; }
+  .tryon-tab.active {
+    background: #fff;
+    color: #0f172a;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .tryon-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 1000px) { .tryon-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 700px) { .tryon-grid { grid-template-columns: 1fr; } }
+
+  .tryon-grid--ptm {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 700px) { .tryon-grid--ptm { grid-template-columns: 1fr; } }
+
+  .tryon-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .tryon-card--result {
+    border-color: #22c55e;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  }
+  .tryon-card--full {
+    grid-column: span 2;
+  }
+  @media (max-width: 700px) { .tryon-card--full { grid-column: span 1; } }
+  .tryon-card__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tryon-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .tryon-card__icon--product { background: #dbeafe; color: #2563eb; }
+  .tryon-card__icon--model { background: #fce7f3; color: #db2777; }
+  .tryon-card__icon--result { background: #dcfce7; color: #16a34a; }
+  .tryon-card__icon--face { background: #fef3c7; color: #d97706; }
+  .tryon-card__icon--settings { background: #f1f5f9; color: #475569; }
+  .tryon-card__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+  .tryon-card__desc {
+    font-size: 12px;
+    color: #64748b;
+  }
+  .tryon-card__optional {
+    font-size: 10px;
+    color: #94a3b8;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+
+  .tryon-upload {
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f8fafc;
+    position: relative;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .tryon-upload--small { min-height: 120px; padding: 20px 16px; }
+  .tryon-upload:hover {
+    border-color: #3b82f6;
+    background: #f0f9ff;
+  }
+  .tryon-upload.has-image {
+    padding: 12px;
+    border-style: solid;
+    border-color: #22c55e;
+    background: #f0fdf4;
+  }
+  .tryon-upload__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+  }
+  .tryon-upload--small .tryon-upload__icon {
+    width: 36px;
+    height: 36px;
+  }
+  .tryon-upload__text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+  }
+  .tryon-upload__hint {
+    font-size: 12px;
+    color: #94a3b8;
+  }
+  .tryon-upload__input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .tryon-upload__preview {
+    width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  .tryon-upload--small .tryon-upload__preview {
+    max-height: 150px;
+  }
+  .tryon-upload__remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+  .tryon-upload__remove:hover { background: #dc2626; }
+
+  .tryon-result {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .tryon-result__empty {
+    text-align: center;
+    color: #64748b;
+  }
+  .tryon-result__empty-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    color: #94a3b8;
+  }
+  .tryon-result__image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .tryon-result__gallery {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .tryon-result__gallery img {
+    max-width: 200px;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .tryon-result__gallery img:hover { transform: scale(1.05); }
+
+  .tryon-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .tryon-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+  }
+  .tryon-btn--primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #fff;
+  }
+  .tryon-btn--primary:hover { opacity: 0.9; }
+  .tryon-btn--primary:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+  }
+  .tryon-btn--secondary {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+  }
+  .tryon-btn--secondary:hover { background: #e2e8f0; }
+
+  .tryon-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 24px;
+  }
+  .tryon-status__spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .tryon-status__text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+  }
+  .tryon-status__hint {
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  .tryon-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 16px;
+    color: #dc2626;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .tryon-info {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .tryon-info__title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0369a1;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tryon-info__list {
+    font-size: 12px;
+    color: #0c4a6e;
+    margin: 0;
+    padding-left: 20px;
+  }
+  .tryon-info__list li { margin-bottom: 4px; }
+
+  /* Settings Form */
+  .tryon-settings {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .tryon-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tryon-field__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+  }
+  .tryon-field__input,
+  .tryon-field__select {
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.15s;
+    background: #fff;
+  }
+  .tryon-field__input:focus,
+  .tryon-field__select:focus {
+    outline: none;
+    border-color: #3b82f6;
+  }
+  .tryon-field__textarea {
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+  }
+  .tryon-field--full {
+    grid-column: 1 / -1;
+  }
+
+  /* Section Hidden */
+  .tryon-section { display: none !important; }
+  .tryon-section.active { display: block !important; }
+</style>
+
+<div class="tryon-page">
+  <div class="tryon-header">
+    <div class="tryon-header__left">
+      <div class="tryon-header__title">Virtual Try-On & Product to Model</div>
+      <div class="tryon-header__subtitle">Experimente roupas virtualmente com IA</div>
+    </div>
+    <div class="tryon-header__badge">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      FASHN.AI
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tryon-tabs">
+    <button class="tryon-tab active" data-section="tryon">
+      <i class="fa-solid fa-shirt"></i>
+      Try-On Max
+    </button>
+    <button class="tryon-tab" data-section="ptm">
+      <i class="fa-solid fa-user-plus"></i>
+      Product to Model
+    </button>
+    <button class="tryon-tab" data-section="v16">
+      <i class="fa-solid fa-bolt"></i>
+      Try-On v1.6
+      <span style="background: #dcfce7; color: #16a34a; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-left: 2px;">E-COMMERCE</span>
+    </button>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SECTION: TRY-ON -->
+  <!-- ============================================ -->
+  <div class="tryon-section active" data-tab="tryon">
+    <div class="tryon-info">
+      <div class="tryon-info__title">
+        <i class="fa-solid fa-lightbulb"></i>
+        Try-On: Vestir produto em uma pessoa
+      </div>
+      <ul class="tryon-info__list">
+        <li>Use imagens de alta qualidade (minimo 512x512 pixels)</li>
+        <li>A imagem do produto deve mostrar a roupa claramente</li>
+        <li>A imagem da modelo deve mostrar a pessoa de frente, com corpo visivel</li>
+      </ul>
+    </div>
+
+    <div class="tryon-grid">
+      <!-- Produto -->
+      <div class="tryon-card">
+        <div class="tryon-card__header">
+          <div class="tryon-card__icon tryon-card__icon--product">
+            <i class="fa-solid fa-shirt" style="font-size: 18px;"></i>
+          </div>
+          <div>
+            <div class="tryon-card__title">Imagem do Produto</div>
+            <div class="tryon-card__desc">Roupa, acessorio ou calcado</div>
+          </div>
+        </div>
+        <div class="tryon-upload" id="tryon-product-upload">
+          <div class="tryon-upload__icon">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 20px;"></i>
+          </div>
+          <div class="tryon-upload__text">Arraste ou clique para enviar</div>
+          <div class="tryon-upload__hint">PNG, JPG ate 10MB</div>
+          <input type="file" class="tryon-upload__input" id="tryon-product-input" accept="image/*">
+        </div>
+      </div>
+
+      <!-- Modelo -->
+      <div class="tryon-card">
+        <div class="tryon-card__header">
+          <div class="tryon-card__icon tryon-card__icon--model">
+            <i class="fa-solid fa-user" style="font-size: 18px;"></i>
+          </div>
+          <div>
+            <div class="tryon-card__title">Sua Foto</div>
+            <div class="tryon-card__desc">Pessoa que vai vestir o produto</div>
+          </div>
+        </div>
+        <div class="tryon-upload" id="tryon-model-upload">
+          <div class="tryon-upload__icon">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 20px;"></i>
+          </div>
+          <div class="tryon-upload__text">Arraste ou clique para enviar</div>
+          <div class="tryon-upload__hint">PNG, JPG ate 10MB</div>
+          <input type="file" class="tryon-upload__input" id="tryon-model-input" accept="image/*">
+        </div>
+      </div>
+
+      <!-- Resultado -->
+      <div class="tryon-card tryon-card--result">
+        <div class="tryon-card__header">
+          <div class="tryon-card__icon tryon-card__icon--result">
+            <i class="fa-solid fa-sparkles" style="font-size: 18px;"></i>
+          </div>
+          <div>
+            <div class="tryon-card__title">Resultado</div>
+            <div class="tryon-card__desc">Imagem gerada pela IA</div>
+          </div>
+        </div>
+        <div class="tryon-result" id="tryon-result-area">
+          <div class="tryon-result__empty">
+            <div class="tryon-result__empty-icon">
+              <i class="fa-solid fa-image" style="font-size: 24px;"></i>
+            </div>
+            <div>Envie as imagens e clique em "Gerar Try-On"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tryon-actions">
+      <button class="tryon-btn tryon-btn--primary" id="tryon-generate-btn" disabled>
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        Gerar Try-On
+      </button>
+      <button class="tryon-btn tryon-btn--secondary" id="tryon-reset-btn">
+        <i class="fa-solid fa-rotate-left"></i>
+        Limpar
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SECTION: PRODUCT TO MODEL -->
+  <!-- ============================================ -->
+  <div class="tryon-section" data-tab="ptm">
+    <div class="tryon-info">
+      <div class="tryon-info__title">
+        <i class="fa-solid fa-lightbulb"></i>
+        Product to Model: Gerar pessoa vestindo o produto
+      </div>
+      <ul class="tryon-info__list">
+        <li>Apenas a imagem do produto e obrigatoria</li>
+        <li>Adicione uma foto de modelo para vestir nela (opcional)</li>
+        <li>Use face reference para manter a identidade do rosto</li>
+        <li>Use o prompt para descrever a pessoa ou o cenario</li>
+      </ul>
+    </div>
+
+    <div class="tryon-grid tryon-grid--ptm">
+      <!-- Coluna Esquerda: Uploads -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Produto (obrigatorio) -->
+        <div class="tryon-card">
+          <div class="tryon-card__header">
+            <div class="tryon-card__icon tryon-card__icon--product">
+              <i class="fa-solid fa-shirt" style="font-size: 18px;"></i>
+            </div>
+            <div>
+              <div class="tryon-card__title">Imagem do Produto</div>
+              <div class="tryon-card__desc">Roupa, acessorio ou calcado</div>
+            </div>
+          </div>
+          <div class="tryon-upload" id="ptm-product-upload">
+            <div class="tryon-upload__icon">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size: 20px;"></i>
+            </div>
+            <div class="tryon-upload__text">Arraste ou clique para enviar</div>
+            <div class="tryon-upload__hint">PNG, JPG ate 10MB</div>
+            <input type="file" class="tryon-upload__input" id="ptm-product-input" accept="image/*">
+          </div>
+        </div>
+
+        <!-- Modelo (opcional) -->
+        <div class="tryon-card">
+          <div class="tryon-card__header">
+            <div class="tryon-card__icon tryon-card__icon--model">
+              <i class="fa-solid fa-user" style="font-size: 18px;"></i>
+            </div>
+            <div>
+              <div class="tryon-card__title">Imagem do Modelo</div>
+              <div class="tryon-card__desc">Pessoa que vai vestir o produto</div>
+            </div>
+            <span class="tryon-card__optional">Opcional</span>
+          </div>
+          <div class="tryon-upload tryon-upload--small" id="ptm-model-upload">
+            <div class="tryon-upload__icon">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size: 16px;"></i>
+            </div>
+            <div class="tryon-upload__text">Enviar foto</div>
+            <input type="file" class="tryon-upload__input" id="ptm-model-input" accept="image/*">
+          </div>
+        </div>
+
+        <!-- Face Reference (opcional) -->
+        <div class="tryon-card">
+          <div class="tryon-card__header">
+            <div class="tryon-card__icon tryon-card__icon--face">
+              <i class="fa-solid fa-face-smile" style="font-size: 18px;"></i>
+            </div>
+            <div>
+              <div class="tryon-card__title">Face Reference</div>
+              <div class="tryon-card__desc">Rosto para manter identidade</div>
+            </div>
+            <span class="tryon-card__optional">Opcional +3 creditos</span>
+          </div>
+          <div class="tryon-upload tryon-upload--small" id="ptm-face-upload">
+            <div class="tryon-upload__icon">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size: 16px;"></i>
+            </div>
+            <div class="tryon-upload__text">Enviar rosto</div>
+            <input type="file" class="tryon-upload__input" id="ptm-face-input" accept="image/*">
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna Direita: Settings + Resultado -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Settings -->
+        <div class="tryon-card">
+          <div class="tryon-card__header">
+            <div class="tryon-card__icon tryon-card__icon--settings">
+              <i class="fa-solid fa-sliders" style="font-size: 18px;"></i>
+            </div>
+            <div>
+              <div class="tryon-card__title">Configuracoes</div>
+              <div class="tryon-card__desc">Ajuste os parametros da geracao</div>
+            </div>
+          </div>
+          <div class="tryon-settings">
+            <div class="tryon-field tryon-field--full">
+              <label class="tryon-field__label">Prompt (descricao da pessoa/cenario)</label>
+              <textarea class="tryon-field__textarea" id="ptm-prompt" placeholder="Ex: professional woman in office, studio lighting, white background"></textarea>
+            </div>
+            <div class="tryon-field">
+              <label class="tryon-field__label">Aspect Ratio</label>
+              <select class="tryon-field__select" id="ptm-aspect-ratio">
+                <option value="">Auto</option>
+                <option value="1:1">1:1 (Quadrado)</option>
+                <option value="3:4">3:4 (Retrato)</option>
+                <option value="4:3">4:3 (Paisagem)</option>
+                <option value="9:16">9:16 (Stories)</option>
+                <option value="16:9">16:9 (Widescreen)</option>
+                <option value="2:3">2:3</option>
+                <option value="3:2">3:2</option>
+                <option value="4:5">4:5 (Instagram)</option>
+                <option value="5:4">5:4</option>
+              </select>
+            </div>
+            <div class="tryon-field">
+              <label class="tryon-field__label">Resolucao</label>
+              <select class="tryon-field__select" id="ptm-resolution">
+                <option value="1k">1K (~1MP) - 1-3 creditos</option>
+                <option value="2k">2K (~4MP) - 2-4 creditos</option>
+                <option value="4k">4K (~16MP) - 3-5 creditos</option>
+              </select>
+            </div>
+            <div class="tryon-field">
+              <label class="tryon-field__label">Modo de Geracao</label>
+              <select class="tryon-field__select" id="ptm-generation-mode">
+                <option value="">Auto</option>
+                <option value="fast">Fast (mais rapido)</option>
+                <option value="balanced">Balanced</option>
+                <option value="quality">Quality (melhor qualidade)</option>
+              </select>
+            </div>
+            <div class="tryon-field">
+              <label class="tryon-field__label">Numero de Imagens</label>
+              <select class="tryon-field__select" id="ptm-num-images">
+                <option value="1">1 imagem</option>
+                <option value="2">2 imagens</option>
+                <option value="3">3 imagens</option>
+                <option value="4">4 imagens</option>
+              </select>
+            </div>
+            <div class="tryon-field">
+              <label class="tryon-field__label">Face Reference Mode</label>
+              <select class="tryon-field__select" id="ptm-face-mode">
+                <option value="match_reference">Match Reference</option>
+                <option value="match_base">Match Base</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resultado -->
+        <div class="tryon-card tryon-card--result">
+          <div class="tryon-card__header">
+            <div class="tryon-card__icon tryon-card__icon--result">
+              <i class="fa-solid fa-sparkles" style="font-size: 18px;"></i>
+            </div>
+            <div>
+              <div class="tryon-card__title">Resultado</div>
+              <div class="tryon-card__desc">Imagens geradas pela IA</div>
+            </div>
+          </div>
+          <div class="tryon-result" id="ptm-result-area">
+            <div class="tryon-result__empty">
+              <div class="tryon-result__empty-icon">
+                <i class="fa-solid fa-image" style="font-size: 24px;"></i>
+              </div>
+              <div>Envie o produto e clique em "Gerar"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tryon-actions">
+      <button class="tryon-btn tryon-btn--primary" id="ptm-generate-btn" disabled>
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        Gerar Product to Model
+      </button>
+      <button class="tryon-btn tryon-btn--secondary" id="ptm-reset-btn">
+        <i class="fa-solid fa-rotate-left"></i>
+        Limpar
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SECTION: TRY-ON V1.6 (E-COMMERCE) -->
+  <!-- ============================================ -->
+  <div class="tryon-section" data-tab="v16">
+    <div class="tryon-info" style="background: #f0fdf4; border-color: #86efac;">
+      <div class="tryon-info__title" style="color: #16a34a;">
+        <i class="fa-solid fa-bolt"></i>
+        Try-On v1.6: Rapido e otimizado para e-commerce
+      </div>
+      <ul class="tryon-info__list" style="color: #14532d;">
+        <li>Processamento em 5-8 segundos (modo performance/balanced)</li>
+        <li>1 credito por imagem gerada</li>
+        <li>Resolucao fixa de 864x1296 pixels</li>
+        <li>Suporta tops, bottoms e one-pieces com classificacao automatica</li>
+      </ul>
+    </div>
+
+    <div class="tryon-grid">
+      <!-- Modelo -->
+      <div class="tryon-card">
+        <div class="tryon-card__header">
+          <div class="tryon-card__icon tryon-card__icon--model">
+            <i class="fa-solid fa-user" style="font-size: 18px;"></i>
+          </div>
+          <div>
+            <div class="tryon-card__title">Foto da Pessoa</div>
+            <div class="tryon-card__desc">Modelo que vai vestir a peca</div>
+          </div>
+        </div>
+        <div class="tryon-upload" id="v16-model-upload">
+          <div class="tryon-upload__icon">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 20px;"></i>
+          </div>
+          <div class="tryon-upload__text">Arraste ou clique para enviar</div>
+          <div class="tryon-upload__hint">PNG, JPG ate 10MB</div>
+          <input type="file" class="tryon-upload__input" id="v16-model-input" accept="image/*">
+        </div>
+      </div>
+
+      <!-- Garment -->
+      <div class="tryon-card">
+        <div class="tryon-card__header">
+          <div class="tryon-card__icon tryon-card__icon--product">
+            <i class="fa-solid fa-shirt" style="font-size: 18px;"></i>
+          </div>
+          <div>
+            <div class="tryon-card__title">Imagem da Peca (Garment)</div>
+            <div class="tryon-card__desc">Foto do produto a ser vestido</div>
+          </div>
+        </div>
+        <div class="tryon-upload" id="v16-garment-upload">
+          <div class="tryon-upload__icon">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 20px;"></i>
+          </div>
+          <div class="tryon-upload__text">Arraste ou clique para enviar</div>
+          <div class="tryon-upload__hint">PNG, JPG ate 10MB</div>
+          <input type="file" class="tryon-upload__input" id="v16-garment-input" accept="image/*">
+        </div>
+      </div>
+
+      <!-- Resultado -->
+      <div class="tryon-card tryon-card--result">
+        <div class="tryon-card__header">
+          <div class="tryon-card__icon tryon-card__icon--result">
+            <i class="fa-solid fa-sparkles" style="font-size: 18px;"></i>
+          </div>
+          <div>
+            <div class="tryon-card__title">Resultado</div>
+            <div class="tryon-card__desc">Imagem gerada pela IA</div>
+          </div>
+        </div>
+        <div class="tryon-result" id="v16-result-area">
+          <div class="tryon-result__empty">
+            <div class="tryon-result__empty-icon">
+              <i class="fa-solid fa-image" style="font-size: 24px;"></i>
+            </div>
+            <div>Envie as imagens e clique em "Gerar"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings v1.6 -->
+    <div class="tryon-card" style="margin-bottom: 20px;">
+      <div class="tryon-card__header">
+        <div class="tryon-card__icon tryon-card__icon--settings">
+          <i class="fa-solid fa-sliders" style="font-size: 18px;"></i>
+        </div>
+        <div>
+          <div class="tryon-card__title">Configuracoes</div>
+          <div class="tryon-card__desc">Parametros especificos do v1.6</div>
+        </div>
+      </div>
+      <div class="tryon-settings">
+        <div class="tryon-field">
+          <label class="tryon-field__label">Categoria da Peca</label>
+          <select class="tryon-field__select" id="v16-category">
+            <option value="auto">Auto (detectar automaticamente)</option>
+            <option value="tops">Tops (camisas, blusas, jaquetas)</option>
+            <option value="bottoms">Bottoms (calcas, shorts, saias)</option>
+            <option value="one-pieces">One-pieces (vestidos, macacoes)</option>
+          </select>
+        </div>
+        <div class="tryon-field">
+          <label class="tryon-field__label">Modo de Operacao</label>
+          <select class="tryon-field__select" id="v16-mode">
+            <option value="performance">Performance (5s) - 1 credito</option>
+            <option value="balanced" selected>Balanced (8s) - 1 credito</option>
+            <option value="quality">Quality (12-17s) - 1 credito</option>
+          </select>
+        </div>
+        <div class="tryon-field">
+          <label class="tryon-field__label">Tipo de Foto da Peca</label>
+          <select class="tryon-field__select" id="v16-garment-photo-type">
+            <option value="auto">Auto (detectar automaticamente)</option>
+            <option value="flat-lay">Flat-lay / Ghost mannequin</option>
+            <option value="model">Modelo vestindo a peca</option>
+          </select>
+        </div>
+        <div class="tryon-field">
+          <label class="tryon-field__label">Numero de Amostras</label>
+          <select class="tryon-field__select" id="v16-num-samples">
+            <option value="1">1 imagem</option>
+            <option value="2">2 imagens</option>
+            <option value="3">3 imagens</option>
+            <option value="4">4 imagens</option>
+          </select>
+        </div>
+        <div class="tryon-field">
+          <label class="tryon-field__label">Formato de saida</label>
+          <select class="tryon-field__select" id="v16-output-format">
+            <option value="png">PNG (maxima qualidade)</option>
+            <option value="jpeg">JPEG (mais rapido)</option>
+          </select>
+        </div>
+        <div class="tryon-field">
+          <label class="tryon-field__label">Moderacao de Conteudo</label>
+          <select class="tryon-field__select" id="v16-moderation">
+            <option value="permissive">Permissive (padrao)</option>
+            <option value="conservative">Conservative (mais restrito)</option>
+            <option value="none">None (sem moderacao)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="tryon-actions">
+      <button class="tryon-btn tryon-btn--primary" id="v16-generate-btn" disabled style="background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);">
+        <i class="fa-solid fa-bolt"></i>
+        Gerar Try-On v1.6
+      </button>
+      <button class="tryon-btn tryon-btn--secondary" id="v16-reset-btn">
+        <i class="fa-solid fa-rotate-left"></i>
+        Limpar
+      </button>
+    </div>
+  </div>
+
+  <div class="tryon-error" id="error-box" style="display: none; margin-top: 20px;"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const tabs = document.querySelectorAll('.tryon-tab');
+  const sections = document.querySelectorAll('.tryon-section');
+  const errorBox = document.getElementById('error-box');
+
+  // Tab switching
+  tabs.forEach(tab => {
+    tab.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetTab = this.dataset.section;
+      console.log("[v0] Clicado em tab:", targetTab);
+      
+      // Remove active de todos os tabs
+      tabs.forEach(t => t.classList.remove('active'));
+      // Add active ao tab clicado
+      this.classList.add('active');
+      
+      // Remove active de todas as sections
+      sections.forEach(s => s.classList.remove('active'));
+      // Add active à section correspondente
+      const targetSection = document.querySelector('[data-tab="' + targetTab + '"]');
+      if (targetSection) {
+        targetSection.classList.add('active');
+        console.log("[v0] Section ativada:", targetTab);
+      }
+      
+      errorBox.style.display = 'none';
+    });
+  });
+
+  // ============================================
+  // UPLOAD HELPER
+  // ============================================
+  function setupUpload(uploadEl, inputEl, onFileChange, smallClass = false) {
+    inputEl.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      onFileChange(file);
+
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        uploadEl.innerHTML = `
+          <img src="${ev.target.result}" class="tryon-upload__preview">
+          <button type="button" class="tryon-upload__remove">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        `;
+        uploadEl.classList.add('has-image');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    uploadEl.addEventListener('click', function(e) {
+      if (e.target.closest('.tryon-upload__remove')) {
+        e.preventDefault();
+        e.stopPropagation();
+        onFileChange(null);
+        const iconSize = smallClass ? '16px' : '20px';
+        const text = smallClass ? 'Enviar foto' : 'Arraste ou clique para enviar';
+        uploadEl.innerHTML = `
+          <div class="tryon-upload__icon">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size: ${iconSize};"></i>
+          </div>
+          <div class="tryon-upload__text">${text}</div>
+          ${smallClass ? '' : '<div class="tryon-upload__hint">PNG, JPG ate 10MB</div>'}
+          <input type="file" class="tryon-upload__input" accept="image/*">
+        `;
+        uploadEl.classList.remove('has-image');
+        const newInput = uploadEl.querySelector('input');
+        setupUpload(uploadEl, newInput, onFileChange, smallClass);
+      }
+    });
+
+    // Drag and drop
+    uploadEl.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      uploadEl.style.borderColor = '#3b82f6';
+      uploadEl.style.background = '#eff6ff';
+    });
+    uploadEl.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      uploadEl.style.borderColor = '';
+      uploadEl.style.background = '';
+    });
+    uploadEl.addEventListener('drop', function(e) {
+      e.preventDefault();
+      uploadEl.style.borderColor = '';
+      uploadEl.style.background = '';
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        inputEl.files = e.dataTransfer.files;
+        inputEl.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+
+  // ============================================
+  // TRY-ON MODE
+  // ============================================
+  let tryonProductFile = null;
+  let tryonModelFile = null;
+
+  const tryonProductUpload = document.getElementById('tryon-product-upload');
+  const tryonProductInput = document.getElementById('tryon-product-input');
+  const tryonModelUpload = document.getElementById('tryon-model-upload');
+  const tryonModelInput = document.getElementById('tryon-model-input');
+  const tryonGenerateBtn = document.getElementById('tryon-generate-btn');
+  const tryonResetBtn = document.getElementById('tryon-reset-btn');
+  const tryonResultArea = document.getElementById('tryon-result-area');
+
+  function updateTryonBtn() {
+    tryonGenerateBtn.disabled = !(tryonProductFile && tryonModelFile);
+  }
+
+  setupUpload(tryonProductUpload, tryonProductInput, (f) => { tryonProductFile = f; updateTryonBtn(); });
+  setupUpload(tryonModelUpload, tryonModelInput, (f) => { tryonModelFile = f; updateTryonBtn(); });
+
+  tryonResetBtn.addEventListener('click', () => {
+    tryonProductFile = null;
+    tryonModelFile = null;
+    tryonProductInput.value = '';
+    tryonModelInput.value = '';
+    resetUpload(tryonProductUpload, 'tryon-product-input', 'Arraste ou clique para enviar');
+    resetUpload(tryonModelUpload, 'tryon-model-input', 'Arraste ou clique para enviar');
+    tryonResultArea.innerHTML = `
+      <div class="tryon-result__empty">
+        <div class="tryon-result__empty-icon"><i class="fa-solid fa-image" style="font-size: 24px;"></i></div>
+        <div>Envie as imagens e clique em "Gerar Try-On"</div>
+      </div>
+    `;
+    errorBox.style.display = 'none';
+    updateTryonBtn();
+  });
+
+  tryonGenerateBtn.addEventListener('click', async () => {
+    if (!tryonProductFile || !tryonModelFile) return;
+    errorBox.style.display = 'none';
+    tryonGenerateBtn.disabled = true;
+    tryonGenerateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+    showLoading(tryonResultArea);
+
+    const formData = new FormData();
+    formData.append('mode', 'tryon');
+    formData.append('product_image', tryonProductFile);
+    formData.append('model_image', tryonModelFile);
+
+    try {
+      const response = await fetch('<%= try_on_index_path %>', {
+        method: 'POST',
+        headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+        body: formData
+      });
+      const data = await response.json();
+      if (!response.ok || data.error) throw new Error(data.error || 'Erro ao processar imagens');
+      pollStatus(data.prediction_id, tryonResultArea, () => {
+        tryonGenerateBtn.disabled = false;
+        tryonGenerateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Try-On';
+      });
+    } catch (error) {
+      showError(error.message, tryonResultArea);
+      tryonGenerateBtn.disabled = false;
+      tryonGenerateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Try-On';
+    }
+  });
+
+  // ============================================
+  // PRODUCT TO MODEL MODE
+  // ============================================
+  let ptmProductFile = null;
+  let ptmModelFile = null;
+  let ptmFaceFile = null;
+
+  const ptmProductUpload = document.getElementById('ptm-product-upload');
+  const ptmProductInput = document.getElementById('ptm-product-input');
+  const ptmModelUpload = document.getElementById('ptm-model-upload');
+  const ptmModelInput = document.getElementById('ptm-model-input');
+  const ptmFaceUpload = document.getElementById('ptm-face-upload');
+  const ptmFaceInput = document.getElementById('ptm-face-input');
+  const ptmGenerateBtn = document.getElementById('ptm-generate-btn');
+  const ptmResetBtn = document.getElementById('ptm-reset-btn');
+  const ptmResultArea = document.getElementById('ptm-result-area');
+
+  function updatePtmBtn() {
+    ptmGenerateBtn.disabled = !ptmProductFile;
+  }
+
+  setupUpload(ptmProductUpload, ptmProductInput, (f) => { ptmProductFile = f; updatePtmBtn(); });
+  setupUpload(ptmModelUpload, ptmModelInput, (f) => { ptmModelFile = f; }, true);
+  setupUpload(ptmFaceUpload, ptmFaceInput, (f) => { ptmFaceFile = f; }, true);
+
+  ptmResetBtn.addEventListener('click', () => {
+    ptmProductFile = null;
+    ptmModelFile = null;
+    ptmFaceFile = null;
+    resetUpload(ptmProductUpload, 'ptm-product-input', 'Arraste ou clique para enviar');
+    resetUploadSmall(ptmModelUpload, 'ptm-model-input', 'Enviar foto');
+    resetUploadSmall(ptmFaceUpload, 'ptm-face-input', 'Enviar rosto');
+    document.getElementById('ptm-prompt').value = '';
+    document.getElementById('ptm-aspect-ratio').value = '';
+    document.getElementById('ptm-resolution').value = '1k';
+    document.getElementById('ptm-generation-mode').value = '';
+    document.getElementById('ptm-num-images').value = '1';
+    document.getElementById('ptm-face-mode').value = 'match_reference';
+    ptmResultArea.innerHTML = `
+      <div class="tryon-result__empty">
+        <div class="tryon-result__empty-icon"><i class="fa-solid fa-image" style="font-size: 24px;"></i></div>
+        <div>Envie o produto e clique em "Gerar"</div>
+      </div>
+    `;
+    errorBox.style.display = 'none';
+    updatePtmBtn();
+  });
+
+  ptmGenerateBtn.addEventListener('click', async () => {
+    if (!ptmProductFile) return;
+    errorBox.style.display = 'none';
+    ptmGenerateBtn.disabled = true;
+    ptmGenerateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+    showLoading(ptmResultArea);
+
+    const formData = new FormData();
+    formData.append('mode', 'product_to_model');
+    formData.append('product_image', ptmProductFile);
+
+    if (ptmModelFile) formData.append('model_image', ptmModelFile);
+    if (ptmFaceFile) formData.append('face_reference', ptmFaceFile);
+
+    const prompt = document.getElementById('ptm-prompt').value.trim();
+    const aspectRatio = document.getElementById('ptm-aspect-ratio').value;
+    const resolution = document.getElementById('ptm-resolution').value;
+    const generationMode = document.getElementById('ptm-generation-mode').value;
+    const numImages = document.getElementById('ptm-num-images').value;
+    const faceMode = document.getElementById('ptm-face-mode').value;
+
+    if (prompt) formData.append('prompt', prompt);
+    if (aspectRatio) formData.append('aspect_ratio', aspectRatio);
+    if (resolution) formData.append('resolution', resolution);
+    if (generationMode) formData.append('generation_mode', generationMode);
+    if (numImages) formData.append('num_images', numImages);
+    if (ptmFaceFile && faceMode) formData.append('face_reference_mode', faceMode);
+
+    try {
+      const response = await fetch('<%= try_on_index_path %>', {
+        method: 'POST',
+        headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+        body: formData
+      });
+      const data = await response.json();
+      if (!response.ok || data.error) throw new Error(data.error || 'Erro ao processar imagens');
+      pollStatus(data.prediction_id, ptmResultArea, () => {
+        ptmGenerateBtn.disabled = false;
+        ptmGenerateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Product to Model';
+      });
+    } catch (error) {
+      showError(error.message, ptmResultArea);
+      ptmGenerateBtn.disabled = false;
+      ptmGenerateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Product to Model';
+    }
+  });
+
+  // ============================================
+  // HELPERS
+  // ============================================
+  // ============================================
+  // TRY-ON V1.6 MODE
+  // ============================================
+  let v16ModelFile = null;
+  let v16GarmentFile = null;
+
+  const v16ModelUpload = document.getElementById('v16-model-upload');
+  const v16ModelInput = document.getElementById('v16-model-input');
+  const v16GarmentUpload = document.getElementById('v16-garment-upload');
+  const v16GarmentInput = document.getElementById('v16-garment-input');
+  const v16GenerateBtn = document.getElementById('v16-generate-btn');
+  const v16ResetBtn = document.getElementById('v16-reset-btn');
+  const v16ResultArea = document.getElementById('v16-result-area');
+
+  function updateV16Btn() {
+    v16GenerateBtn.disabled = !(v16ModelFile && v16GarmentFile);
+  }
+
+  setupUpload(v16ModelUpload, v16ModelInput, (f) => { v16ModelFile = f; updateV16Btn(); });
+  setupUpload(v16GarmentUpload, v16GarmentInput, (f) => { v16GarmentFile = f; updateV16Btn(); });
+
+  v16ResetBtn.addEventListener('click', () => {
+    v16ModelFile = null;
+    v16GarmentFile = null;
+    resetUpload(v16ModelUpload, 'v16-model-input', 'Arraste ou clique para enviar');
+    resetUpload(v16GarmentUpload, 'v16-garment-input', 'Arraste ou clique para enviar');
+    document.getElementById('v16-category').value = 'auto';
+    document.getElementById('v16-mode').value = 'balanced';
+    document.getElementById('v16-garment-photo-type').value = 'auto';
+    document.getElementById('v16-num-samples').value = '1';
+    document.getElementById('v16-output-format').value = 'png';
+    document.getElementById('v16-moderation').value = 'permissive';
+    v16ResultArea.innerHTML = `
+      <div class="tryon-result__empty">
+        <div class="tryon-result__empty-icon"><i class="fa-solid fa-image" style="font-size: 24px;"></i></div>
+        <div>Envie as imagens e clique em "Gerar"</div>
+      </div>
+    `;
+    errorBox.style.display = 'none';
+    updateV16Btn();
+  });
+
+  v16GenerateBtn.addEventListener('click', async () => {
+    if (!v16ModelFile || !v16GarmentFile) return;
+    errorBox.style.display = 'none';
+    v16GenerateBtn.disabled = true;
+    v16GenerateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+    showLoading(v16ResultArea);
+
+    const formData = new FormData();
+    formData.append('mode', 'tryon_v16');
+    formData.append('model_image', v16ModelFile);
+    formData.append('garment_image', v16GarmentFile);
+    formData.append('v16_category', document.getElementById('v16-category').value);
+    formData.append('v16_mode', document.getElementById('v16-mode').value);
+    formData.append('v16_garment_photo_type', document.getElementById('v16-garment-photo-type').value);
+    formData.append('v16_num_samples', document.getElementById('v16-num-samples').value);
+    formData.append('v16_output_format', document.getElementById('v16-output-format').value);
+    formData.append('v16_moderation', document.getElementById('v16-moderation').value);
+
+    try {
+      const response = await fetch('<%= try_on_index_path %>', {
+        method: 'POST',
+        headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+        body: formData
+      });
+      const data = await response.json();
+      if (!response.ok || data.error) throw new Error(data.error || 'Erro ao processar imagens');
+      pollStatus(data.prediction_id, v16ResultArea, () => {
+        v16GenerateBtn.disabled = false;
+        v16GenerateBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Gerar Try-On v1.6';
+      });
+    } catch (error) {
+      showError(error.message, v16ResultArea);
+      v16GenerateBtn.disabled = false;
+      v16GenerateBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Gerar Try-On v1.6';
+    }
+  });
+
+  function resetUpload(uploadEl, inputId, text) {
+    uploadEl.innerHTML = `
+      <div class="tryon-upload__icon"><i class="fa-solid fa-cloud-arrow-up" style="font-size: 20px;"></i></div>
+      <div class="tryon-upload__text">${text}</div>
+      <div class="tryon-upload__hint">PNG, JPG ate 10MB</div>
+      <input type="file" class="tryon-upload__input" id="${inputId}" accept="image/*">
+    `;
+    uploadEl.classList.remove('has-image');
+    const newInput = document.getElementById(inputId);
+    if (inputId.startsWith('tryon-product')) {
+      setupUpload(uploadEl, newInput, (f) => { tryonProductFile = f; updateTryonBtn(); });
+    } else if (inputId.startsWith('tryon-model')) {
+      setupUpload(uploadEl, newInput, (f) => { tryonModelFile = f; updateTryonBtn(); });
+    } else if (inputId.startsWith('ptm-product')) {
+      setupUpload(uploadEl, newInput, (f) => { ptmProductFile = f; updatePtmBtn(); });
+    } else if (inputId.startsWith('v16-model')) {
+      setupUpload(uploadEl, newInput, (f) => { v16ModelFile = f; updateV16Btn(); });
+    } else if (inputId.startsWith('v16-garment')) {
+      setupUpload(uploadEl, newInput, (f) => { v16GarmentFile = f; updateV16Btn(); });
+    }
+  }
+
+  function resetUploadSmall(uploadEl, inputId, text) {
+    uploadEl.innerHTML = `
+      <div class="tryon-upload__icon"><i class="fa-solid fa-cloud-arrow-up" style="font-size: 16px;"></i></div>
+      <div class="tryon-upload__text">${text}</div>
+      <input type="file" class="tryon-upload__input" id="${inputId}" accept="image/*">
+    `;
+    uploadEl.classList.remove('has-image');
+    const newInput = document.getElementById(inputId);
+    if (inputId === 'ptm-model-input') {
+      setupUpload(uploadEl, newInput, (f) => { ptmModelFile = f; }, true);
+    } else if (inputId === 'ptm-face-input') {
+      setupUpload(uploadEl, newInput, (f) => { ptmFaceFile = f; }, true);
+    }
+  }
+
+  function showLoading(resultArea) {
+    resultArea.innerHTML = `
+      <div class="tryon-status">
+        <div class="tryon-status__spinner"></div>
+        <div class="tryon-status__text">Processando imagens...</div>
+        <div class="tryon-status__hint">Isso pode levar de 20 a 120 segundos</div>
+      </div>
+    `;
+  }
+
+  function showError(message, resultArea) {
+    errorBox.textContent = message;
+    errorBox.style.display = 'block';
+    resultArea.innerHTML = `
+      <div class="tryon-result__empty">
+        <div class="tryon-result__empty-icon" style="background: #fef2f2; color: #ef4444;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px;"></i>
+        </div>
+        <div style="color: #dc2626;">Erro ao processar. Tente novamente.</div>
+      </div>
+    `;
+  }
+
+  async function pollStatus(predictionId, resultArea, onComplete) {
+    const maxAttempts = 60;
+    let attempts = 0;
+
+    const poll = async () => {
+      attempts++;
+      try {
+        const response = await fetch(`<%= status_try_on_index_path %>?prediction_id=${predictionId}`, {
+          headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content }
+        });
+        const data = await response.json();
+
+        if (data.error) throw new Error(data.error);
+
+        if (data.status === 'completed' && data.output && data.output.length > 0) {
+          showResult(data.output, resultArea);
+          onComplete();
+          return;
+        }
+
+        if (data.status === 'failed') throw new Error('Falha ao gerar imagem. Tente novamente.');
+        if (attempts >= maxAttempts) throw new Error('Tempo limite excedido. Tente novamente.');
+
+        resultArea.innerHTML = `
+          <div class="tryon-status">
+            <div class="tryon-status__spinner"></div>
+            <div class="tryon-status__text">Status: ${data.status || 'processando'}...</div>
+            <div class="tryon-status__hint">Tentativa ${attempts} de ${maxAttempts}</div>
+          </div>
+        `;
+
+        setTimeout(poll, 2000);
+      } catch (error) {
+        showError(error.message, resultArea);
+        onComplete();
+      }
+    };
+
+    poll();
+  }
+
+  function showResult(outputs, resultArea) {
+    if (outputs.length === 1) {
+      resultArea.innerHTML = `
+        <img src="${outputs[0]}" class="tryon-result__image" alt="Resultado">
+        <a href="${outputs[0]}" download="fashn-result.png" class="tryon-btn tryon-btn--secondary" style="margin-top: 12px;">
+          <i class="fa-solid fa-download"></i> Baixar Imagem
+        </a>
+      `;
+    } else {
+      let html = '<div class="tryon-result__gallery">';
+      outputs.forEach((url, i) => {
+        html += `<a href="${url}" download="fashn-result-${i+1}.png" target="_blank"><img src="${url}" alt="Resultado ${i+1}"></a>`;
+      });
+      html += '</div>';
+      resultArea.innerHTML = html;
+    }
+  }
+});
+</script>

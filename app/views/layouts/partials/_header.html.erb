@@ -115,6 +115,11 @@
             <i class="fa-solid fa-bolt crm-fa"></i>
             Sidekiq
           <% end %>
+
+          <%= link_to try_on_index_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(try_on_index_path)}" do %>
+            <i class="fa-solid fa-wand-magic-sparkles crm-fa"></i>
+            Try-On Virtual
+          <% end %>
         </div>
       </div>
     <% end %>
@@ -174,6 +179,12 @@
             Sidekiq
           <% end %>
 
+          <% if current_user&.profile_id == 1 %>
+            <%= link_to try_on_index_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(try_on_index_path)}" do %>
+              <i class="fa-solid fa-wand-magic-sparkles crm-fa"></i>
+              Try-On Virtual
+            <% end %>
+          <% end %>
           <div class="crm-header__dropdown-sep"></div>
         <% end %>
 

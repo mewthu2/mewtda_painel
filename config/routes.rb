@@ -14,6 +14,12 @@ Rails.application.routes.draw do
       mount Sidekiq::Web => '/sidekiq'
     end
 
+    resources :try_on, only: [:index, :create] do
+      collection do
+        get :status
+      end
+    end
+
     resources :clients
     resources :campaigns do
       resources :campaign_actions, only: [:index, :show], path: 'actions'
