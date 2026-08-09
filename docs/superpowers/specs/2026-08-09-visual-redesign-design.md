@@ -1,7 +1,7 @@
 # Redesign visual (dart.dev) + nova página institucional — Design Spec
 
 **Data:** 2026-08-09
-**Status:** aguardando revisão do usuário
+**Status:** aprovado
 
 ## Objetivo
 
