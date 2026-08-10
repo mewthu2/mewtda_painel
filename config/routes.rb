@@ -41,7 +41,16 @@ Rails.application.routes.draw do
     get '/shopify/auth', to: 'shopify_auth#auth'
     get '/shopify/callback', to: 'shopify_auth#callback'
 
+    get    'clients/:id/google_ads/connect',    to: 'google_ads#connect',    as: :client_google_ads_connect
+    get    'google_ads/callback',                to: 'google_ads#callback',   as: :google_ads_callback
+    delete 'clients/:id/google_ads/disconnect', to: 'google_ads#disconnect', as: :client_google_ads_disconnect
+
     resources :dashboard, only: [:index]
+
+    get  'vendas',               to: 'sales_dashboard#index',          as: :sales_dashboard
+    post 'vendas/sync_ad_costs', to: 'sales_dashboard#sync_ad_costs', as: :sync_ad_costs_sales_dashboard
+
+    resource :settings, path: 'configuracoes', controller: 'settings', only: [:edit, :update]
 
     resources :orders, only: [:index] do
       collection do
