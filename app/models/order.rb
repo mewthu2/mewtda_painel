@@ -11,6 +11,7 @@ class Order < ApplicationRecord
   scope :by_staff,  lambda { |s| where('staff_name ILIKE ?', "%#{s}%") if s.present? }
   scope :by_date_from, lambda { |d| where('shopify_creation_date >= ?', d.to_date.beginning_of_day) if d.present? }
   scope :by_date_to,   lambda { |d| where('shopify_creation_date <= ?', d.to_date.end_of_day) if d.present? }
+  scope :not_cancelled, -> { where(cancelled_at: nil) }
 
   # Helpers
   def total

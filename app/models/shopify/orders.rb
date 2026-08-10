@@ -98,7 +98,12 @@ class Shopify::Orders
         location_id: location.id,
         shopify_creation_date: shopify_created_at,
         customer_id: customer&.id,
-        client_id: client.id
+        client_id: client.id,
+        tags: shopify_order['tags'],
+        subtotal_price: shopify_order['subtotal_price'],
+        total_discounts: shopify_order['total_discounts'],
+        total_price: shopify_order['total_price'],
+        cancelled_at: shopify_order['cancelled_at'].presence && Time.parse(shopify_order['cancelled_at'])
       )
 
       order.created_at = shopify_created_at if order.new_record?

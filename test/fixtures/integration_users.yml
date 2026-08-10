@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: Integration User One
+  slug: integration-user-one
+  api_secret: secret-one
+  active: true
+  client: one
+
+two:
+  name: Integration User Two
+  slug: integration-user-two
+  api_secret: secret-two
+  active: true
+  client: two

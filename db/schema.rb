@@ -10,12 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_14_160917) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_08_120004) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
+
+  create_table "ad_cost_snapshots", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "platform", null: false
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.decimal "cost", precision: 12, scale: 2, default: "0.0", null: false
+    t.datetime "fetched_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id", "platform", "year", "month"], name: "index_ad_cost_snapshots_on_client_platform_month", unique: true
+    t.index ["client_id"], name: "index_ad_cost_snapshots_on_client_id"
+  end
 
   create_table "attempts", force: :cascade do |t|
     t.bigint "kinds"
@@ -84,6 +97,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_14_160917) do
     t.string "zapi_instance_id"
     t.string "zapi_instance_token"
     t.string "zapi_client_token"
+    t.boolean "sales_dashboard_enabled", default: false, null: false
+    t.string "meta_access_token"
+    t.string "meta_ad_account_id"
+    t.string "google_ads_customer_id"
+    t.string "google_ads_refresh_token"
+    t.datetime "google_ads_connected_at"
     t.index ["shopify_shop_url"], name: "index_clients_on_shopify_shop_url", unique: true
   end
 
@@ -173,6 +192,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_14_160917) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "client_id"
+    t.decimal "subtotal_price", precision: 12, scale: 2
+    t.decimal "total_discounts", precision: 12, scale: 2
+    t.decimal "total_price", precision: 12, scale: 2
+    t.datetime "cancelled_at"
+    t.index ["cancelled_at"], name: "index_orders_on_cancelled_at"
     t.index ["client_id", "shopify_order_id"], name: "index_orders_on_client_id_and_shopify_order_id", unique: true
     t.index ["client_id"], name: "index_orders_on_client_id"
     t.index ["customer_id"], name: "index_orders_on_customer_id"
@@ -276,6 +300,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_14_160917) do
     t.index ["utm_code"], name: "index_users_on_utm_code", unique: true
   end
 
+  add_foreign_key "ad_cost_snapshots", "clients"
   add_foreign_key "campaign_actions", "campaigns"
   add_foreign_key "campaign_actions", "customers"
   add_foreign_key "campaign_actions", "orders"

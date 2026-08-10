@@ -118,7 +118,7 @@
             Perfis
           <% end %>
 
-          <%= link_to '/painel/sidekiq', class: "crm-header__dropdown-link", target: '_blank' do %>
+          <%= link_to '/crm/sidekiq', class: "crm-header__dropdown-link", target: '_blank' do %>
             <i class="fa-solid fa-bolt crm-fa"></i>
             Sidekiq
           <% end %>
@@ -181,7 +181,7 @@
             Perfis
           <% end %>
 
-          <%= link_to '/painel/sidekiq', class: 'crm-header__dropdown-item', target: '_blank' do %>
+          <%= link_to '/crm/sidekiq', class: 'crm-header__dropdown-item', target: '_blank' do %>
             <i class="fa-solid fa-bolt crm-fa"></i>
             Sidekiq
           <% end %>
@@ -694,7 +694,7 @@
 function updateSelectedClient(clientId) {
   if (!clientId) return;
 
-  fetch('/painel/update_selected_client', {
+  fetch('/crm/update_selected_client', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

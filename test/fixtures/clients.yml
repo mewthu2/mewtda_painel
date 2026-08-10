@@ -4,10 +4,8 @@ one:
   name: MyString
   email: MyString
   active: false
-  user: one
 
 two:
   name: MyString
   email: MyString
   active: false
-  user: two

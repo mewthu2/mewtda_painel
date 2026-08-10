@@ -235,7 +235,7 @@
     overlay.classList.add('is-open');
     document.body.style.overflow = 'hidden';
 
-    fetch('/painel/customers/' + customerId + '/details', {
+    fetch('/crm/customers/' + customerId + '/details', {
       headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
     })
     .then(function(r) { return r.json(); })

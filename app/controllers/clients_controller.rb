@@ -34,6 +34,8 @@ class ClientsController < ApplicationController
   def edit; end
 
   def update
+    params[:client].delete(:meta_access_token) if params[:client][:meta_access_token].blank?
+
     if @client.update(client_params)
       redirect_to clients_path, notice: 'Cliente atualizado com sucesso.'
     else
@@ -69,6 +71,11 @@ class ClientsController < ApplicationController
   end
 
   def client_params
-    params.require(:client).permit(:name, :email, :active, :shopify_shop_url, :shopify_access_token, :zapi_instance_id, :zapi_instance_token, :zapi_client_token)
+    params.require(:client).permit(
+      :name, :email, :active, :shopify_shop_url, :shopify_access_token,
+      :zapi_instance_id, :zapi_instance_token, :zapi_client_token,
+      :sales_dashboard_enabled, :meta_access_token, :meta_ad_account_id,
+      :google_ads_customer_id
+    )
   end
 end
