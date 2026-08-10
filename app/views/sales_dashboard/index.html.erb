@@ -1,0 +1,106 @@
+<%# app/views/sales_dashboard/index.html.erb %>
+<% title 'Dashboard de Vendas' %>
+
+<style>
+  .sd-page { padding: 24px 28px; min-height: 100vh; }
+  .sd-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; background: #3b4adf; border-radius: 14px; padding: 18px 24px; }
+  .sd-header__title { font-size: 20px; font-weight: 800; color: #fff; }
+  .sd-header__subtitle { font-size: 13px; color: #dbe0ff; }
+  .sd-month-nav { display: flex; align-items: center; gap: 10px; }
+  .sd-month-nav__btn { background: #fff; color: #3b4adf; border-radius: 8px; padding: 6px 12px; text-decoration: none; font-weight: 600; font-size: 13px; }
+  .sd-month-nav__label { color: #fff; font-weight: 700; min-width: 140px; text-align: center; }
+  .sd-tag-filter { margin-bottom: 20px; }
+  .sd-tag-filter input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+  .sd-tag-filter button { border: none; background: #3b4adf; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; margin-left: 6px; }
+  .sd-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .sd-kpi { background: #fff; border: 1px solid #e4e7f0; border-radius: 12px; padding: 18px; }
+  .sd-kpi__label { font-size: 12px; color: #9097b5; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+  .sd-kpi__value { font-size: 26px; font-weight: 800; color: #1e2235; margin-top: 6px; }
+  .sd-kpi__hint { font-size: 12px; color: #9097b5; margin-top: 4px; }
+  .sd-alert { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fef3c7; color: #92400e; border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; font-size: 14px; }
+  .sd-alert button { border: none; background: #92400e; color: #fff; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .sd-alert__link { color: #92400e; font-weight: 700; text-decoration: underline; margin-left: 8px; }
+</style>
+
+<div class="sd-page">
+  <div class="sd-header">
+    <div>
+      <div class="sd-header__title">Dashboard de Vendas<%= " — #{@client.name}" if @client %></div>
+      <div class="sd-header__subtitle">Ticket médio, faturamento, conversão, ROAS e CAC do mês</div>
+    </div>
+
+    <% if @client %>
+      <% current_month = Date.new(@year, @month, 1) %>
+      <div class="sd-month-nav">
+        <%= link_to '‹', sales_dashboard_path(year: (current_month - 1.month).year, month: (current_month - 1.month).month, tag: @tag), class: 'sd-month-nav__btn' %>
+        <span class="sd-month-nav__label"><%= month_label(current_month) %></span>
+        <%= link_to '›', sales_dashboard_path(year: (current_month + 1.month).year, month: (current_month + 1.month).month, tag: @tag), class: 'sd-month-nav__btn' %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @empty_state %>
+    <p><%= @empty_message %></p>
+  <% else %>
+    <div class="sd-tag-filter">
+      <%= form_with url: sales_dashboard_path, method: :get, local: true do %>
+        <%= hidden_field_tag :year, @year %>
+        <%= hidden_field_tag :month, @month %>
+        <%= text_field_tag :tag, @tag, placeholder: 'Filtrar por tag (ex.: VendedoraElo)' %>
+        <%= button_tag 'Filtrar' %>
+      <% end %>
+    </div>
+
+    <% unless @metrics[:ad_cost_available] %>
+      <div class="sd-alert">
+        <span>
+          <% if @metrics[:configured_platforms].empty? %>
+            Nenhuma integração de anúncio configurada para este cliente.
+            <%= link_to 'Configurar integração', current_user.admin? ? edit_client_path(@client) : edit_settings_path, class: 'sd-alert__link' %>
+          <% else %>
+            Custos de anúncio não configurados para este mês.
+          <% end %>
+        </span>
+        <% if current_user.admin? && @metrics[:configured_platforms].any? %>
+          <%= button_to 'Sincronizar custos', sync_ad_costs_sales_dashboard_path(year: @year, month: @month), method: :post %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="sd-kpi-grid">
+      <div class="sd-kpi">
+        <div class="sd-kpi__label">Ticket Médio</div>
+        <div class="sd-kpi__value"><%= @metrics[:avg_ticket] ? currency(@metrics[:avg_ticket]) : '—' %></div>
+      </div>
+
+      <div class="sd-kpi">
+        <div class="sd-kpi__label">Faturamento</div>
+        <div class="sd-kpi__value"><%= currency(@metrics[:revenue]) %></div>
+        <div class="sd-kpi__hint">Bruto: <%= currency(@metrics[:gross_sales]) %> · Descontos: <%= currency(@metrics[:discounts]) %></div>
+      </div>
+
+      <div class="sd-kpi">
+        <div class="sd-kpi__label">Taxa de Conversão</div>
+        <div class="sd-kpi__value"><%= @metrics[:conversion_rate] ? "#{@metrics[:conversion_rate]}%" : '—' %></div>
+      </div>
+
+      <div class="sd-kpi">
+        <div class="sd-kpi__label">ROAS Faturado</div>
+        <div class="sd-kpi__value"><%= @tag.blank? && @metrics[:roas] ? "#{@metrics[:roas]}x" : '—' %></div>
+        <% if @tag.present? %>
+          <div class="sd-kpi__hint">Não disponível com filtro de tag ativo</div>
+        <% end %>
+      </div>
+
+      <div class="sd-kpi">
+        <div class="sd-kpi__label">CAC</div>
+        <div class="sd-kpi__value"><%= @tag.blank? && @metrics[:cac] ? currency(@metrics[:cac]) : '—' %></div>
+        <% if @tag.present? %>
+          <div class="sd-kpi__hint">Não disponível com filtro de tag ativo</div>
+        <% else %>
+          <div class="sd-kpi__hint"><%= @metrics[:new_customers_count] %> clientes novos</div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -31,6 +31,13 @@
         Dashboard
       <% end %>
 
+      <% if current_user.admin? || current_user.client&.sales_dashboard_enabled? %>
+        <%= link_to sales_dashboard_path, class: "crm-header__nav-link #{'active' if current_page?(sales_dashboard_path)}" do %>
+          <i class="fa-solid fa-sack-dollar crm-fa"></i>
+          Vendas
+        <% end %>
+      <% end %>
+
       <!-- OPERAÇÕES -->
       <div class="crm-header__group" data-group>
         <span class="crm-header__group-label" data-group-toggle>
@@ -184,6 +191,12 @@
               <i class="fa-solid fa-wand-magic-sparkles crm-fa"></i>
               Try-On Virtual
             <% end %>
+          <% end %>
+          <div class="crm-header__dropdown-sep"></div>
+        <% elsif current_user.profile_id != Profile::AFFILIATE %>
+          <%= link_to edit_settings_path, class: 'crm-header__dropdown-item' do %>
+            <i class="fa-solid fa-gear crm-fa"></i>
+            Configurações
           <% end %>
           <div class="crm-header__dropdown-sep"></div>
         <% end %>
