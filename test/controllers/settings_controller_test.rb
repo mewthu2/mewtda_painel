@@ -83,6 +83,18 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     assert_no_match 'Outra Loja', response.body
   end
 
+  test 'a common user does not see the active toggle or linked users list' do
+    client = Client.create!(name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    user = build_user(client: client)
+    sign_in user
+
+    get edit_settings_path
+
+    assert_response :success
+    assert_no_match 'Cliente ativo', response.body
+    assert_no_match 'Usuários Vinculados', response.body
+  end
+
   test 'submitting a blank meta_access_token preserves the existing stored token' do
     client = Client.create!(
       name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com",

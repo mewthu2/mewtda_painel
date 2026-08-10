@@ -1,0 +1,64 @@
+require 'test_helper'
+
+class ClientsControllerTest < ActionDispatch::IntegrationTest
+  def build_admin
+    # No profiles.yml fixture exists, so the admin profile (id 1, referenced by
+    # User#admin? via profile_id == 1) must be created here to satisfy the
+    # users.profile_id foreign key constraint.
+    admin_profile = Profile.find_or_create_by!(id: Profile::ADMIN) { |p| p.name = 'Admin' }
+
+    User.create!(
+      name: 'Admin', email: "admin-#{SecureRandom.hex(4)}@example.com",
+      password: 'password123', password_confirmation: 'password123', profile_id: admin_profile.id
+    )
+  end
+
+  test 'admin can enable the sales dashboard and set Meta/Google Ads fields' do
+    admin = build_admin
+    client = Client.create!(name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    sign_in admin
+
+    patch client_path(client), params: {
+      client: {
+        name: client.name,
+        email: client.email,
+        sales_dashboard_enabled: '1',
+        meta_access_token: 'token123',
+        meta_ad_account_id: 'act_1',
+        google_ads_customer_id: '1234567890'
+      }
+    }
+
+    client.reload
+    assert client.sales_dashboard_enabled?
+    assert_equal 'token123', client.meta_access_token
+    assert_equal 'act_1', client.meta_ad_account_id
+    assert_equal '1234567890', client.google_ads_customer_id
+  end
+
+  test 'admin still sees the active toggle when editing a client' do
+    admin = build_admin
+    client = Client.create!(name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    sign_in admin
+
+    get edit_client_path(client)
+
+    assert_response :success
+    assert_match 'Cliente ativo', response.body
+  end
+
+  test 'submitting a blank meta_access_token preserves the existing stored token' do
+    admin = build_admin
+    client = Client.create!(
+      name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com",
+      meta_access_token: 'existing-token', meta_ad_account_id: 'act_1'
+    )
+    sign_in admin
+
+    patch client_path(client), params: {
+      client: { name: client.name, email: client.email, meta_access_token: '' }
+    }
+
+    assert_equal 'existing-token', client.reload.meta_access_token
+  end
+end
