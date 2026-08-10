@@ -26,7 +26,7 @@
 - **Sem redirect de compatibilidade** para `/painel/*` — a URL antiga simplesmente deixa de existir (decisão explícita do usuário).
 - **Sidebar/topbar**: os grupos e itens de navegação são exatamente os que já existem hoje em `_header.html.erb` (Dashboard, Vendas, Operações > Pedidos/Clientes/Produtos, Marketing > Campanhas/Afiliados/Automações, Admin > Usuários/Clientes/Perfis/Sidekiq/Try-On Virtual), incluindo o link morto "Automações" e a duplicidade de nome "Clientes" — mantidos como estão, fora de escopo.
 - **Bootstrap 5, jQuery, DataTables continuam em uso** onde já são usados — este trabalho não reescreve JS/framework, só aparência e roteamento.
-- **Fora de escopo deste plano:** a migração visual (remoção de `<style>` inline, adoção das novas classes de componente) das ~24 views autenticadas existentes que já têm estilo inline hoje (`clients/*`, `customers/index`, `orders/index`, `products/index`, `campaigns/*`, `affiliates/*`, `profiles/*`, `users/*`, `events/index`, `attempts/*`, `try_on/index`, `dashboard/index`, `sales_dashboard/index`, `devise/*` exceto a tela de login que já foi redesenhada). Motivo: mapeamento de arquivos nesta etapa de planejamento mostrou que essas 24 views somam mais de 8.000 linhas de ERB/CSS inline específico de cada tela — escrever diffs reais e verificados para cada uma exige ler o conteúdo atual de cada arquivo, o que excede o escopo responsável de um único documento de plano. A Task 16 deste plano entrega um levantamento arquivo-a-arquivo que vira a base de um plano de execução separado, gerado depois que a fundação abaixo estiver no ar e revisada no navegador (mesmo padrão de verificação que o spec já define: cada página é conferida manualmente, claro e escuro).
+- **Fora de escopo deste plano:** a migração visual (remoção de `<style>` inline, adoção das novas classes de componente) das ~24 views autenticadas existentes que já têm estilo inline hoje (`clients/*`, `customers/index`, `orders/index`, `products/index`, `campaigns/*`, `affiliates/*`, `profiles/*`, `users/*`, `events/index`, `attempts/*`, `try_on/index`, `dashboard/index`, `sales_dashboard/index`, `devise/*` exceto a tela de login que já foi redesenhada). Motivo: mapeamento de arquivos nesta etapa de planejamento mostrou que essas 24 views somam mais de 8.000 linhas de ERB/CSS inline específico de cada tela — escrever diffs reais e verificados para cada uma exige ler o conteúdo atual de cada arquivo, o que excede o escopo responsável de um único documento de plano. A Task 15 deste plano entrega um levantamento arquivo-a-arquivo que vira a base de um plano de execução separado, gerado depois que a fundação abaixo estiver no ar e revisada no navegador (mesmo padrão de verificação que o spec já define: cada página é conferida manualmente, claro e escuro).
 
 ---
 
@@ -2051,43 +2051,13 @@ git commit -m "feat: build public institutional page at root"
 
 ---
 
-### Task 13: Remover CSS órfão do redesign antigo do header/sidebar
-
-**Files:**
-- Delete: `app/assets/stylesheets/layouts/header.scss` (já removido do require na Task 9, arquivo físico ainda presente)
-
-**Interfaces:**
-- Consumes: nada.
-- Produces: repositório sem arquivo morto — `header.scss` não é mais referenciado por nenhum `require` depois da Task 9 (que trocou por `topbar.scss`), então o arquivo físico fica órfão até esta task remover.
-
-- [ ] **Step 1: Confirmar que não há mais nenhuma referência**
-
-Run: `grep -rn "layouts/header" app/assets/stylesheets/`
-Expected: nenhum resultado (a Task 9 já trocou o único `require`).
-
-- [ ] **Step 2: Remover o arquivo**
-
-```bash
-git rm app/assets/stylesheets/layouts/header.scss
-```
-
-(Nota: se a Task 9 já executou esse `git rm` no seu próprio commit, esta task vira um no-op — confirmar com `git status` antes de rodar de novo.)
-
-- [ ] **Step 3: Commit** (pular se a Task 9 já cobriu isso)
-
-```bash
-git commit -m "chore: remove orphaned header.scss superseded by topbar.scss"
-```
-
----
-
-### Task 14: Verificação final da fundação (rotas + design system + navegação + institucional)
+### Task 13: Verificação final da fundação (rotas + design system + navegação + institucional)
 
 **Files:** nenhum arquivo novo — task de verificação.
 
 **Interfaces:**
-- Consumes: todas as tasks anteriores (1-13).
-- Produces: confirmação de que a fundação está pronta para servir de base à Task 16 (levantamento da migração visual das views restantes).
+- Consumes: todas as tasks anteriores (1-12).
+- Produces: confirmação de que a fundação está pronta para servir de base à Task 15 (levantamento da migração visual das views restantes).
 
 - [ ] **Step 1: Rodar a suíte completa de testes**
 
@@ -2118,11 +2088,11 @@ Expected: `41 runs, ..., 0 failures, 0 errors` — mesmo total de testes do base
 Run: `grep -rn "painel" config/routes.rb app/controllers/ app/views/ | grep -v "mewtda_painel\|mewtda-painel"`
 Expected: nenhum resultado (as ocorrências em `config/cable.yml`/`config/database.yml`/`config/environments/production.rb` são nomes de banco/canal, não rotas — fora de escopo, não tocar).
 
-Este é o ponto de checkpoint antes de decidir seguir para a Task 16 (levantamento da migração visual restante) ou pausar aqui.
+Este é o ponto de checkpoint antes de decidir seguir para a Task 15 (levantamento da migração visual restante) ou pausar aqui.
 
 ---
 
-### Task 15: Confirmar independência de outras referências de infraestrutura a "painel" (fora de escopo, só documentar)
+### Task 14: Confirmar independência de outras referências de infraestrutura a "painel" (fora de escopo, só documentar)
 
 **Files:** nenhuma modificação — task de documentação/registro.
 
@@ -2140,7 +2110,7 @@ As seguintes ocorrências de "painel" continuam no código de propósito, por n�
 
 ---
 
-### Task 16: Levantamento para o plano de migração visual das 24 views autenticadas restantes
+### Task 15: Levantamento para o plano de migração visual das 24 views autenticadas restantes
 
 **Files:**
 - Create: `docs/superpowers/plans/TODO-crm-views-visual-migration-inventory.md`
