@@ -1,13 +1,13 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  root to: redirect('/painel')
+  root to: 'home#index'
 
   namespace :integrations do
     match 'shopify/events', to: 'shopify_events#create', via: [:post, :options]
   end
 
-  scope '/painel' do
+  scope '/crm' do
     devise_for :user, skip: [:registrations]
 
     authenticate :user do
@@ -35,8 +35,8 @@ Rails.application.routes.draw do
     resources :affiliates
 
     post 'update_selected_client', to: 'clients#update_selected_client'
-    get '/', to: 'dashboard#index', as: :painel
-    get '/session/:session_id', to: 'dashboard#session_detail', as: :painel_session
+    get '/', to: 'dashboard#index', as: :crm
+    get '/session/:session_id', to: 'dashboard#session_detail', as: :crm_session
 
     get '/shopify/auth', to: 'shopify_auth#auth'
     get '/shopify/callback', to: 'shopify_auth#callback'
