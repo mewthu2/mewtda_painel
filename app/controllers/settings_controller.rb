@@ -19,7 +19,7 @@ class SettingsController < ApplicationController
     @client = current_user.client
 
     unless @client
-      redirect_to painel_path, alert: 'Você não está vinculado a nenhum cliente.'
+      redirect_to crm_path, alert: 'Você não está vinculado a nenhum cliente.'
     end
   end
 

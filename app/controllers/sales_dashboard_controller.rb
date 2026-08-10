@@ -42,7 +42,7 @@ class SalesDashboardController < ApplicationController
     return if current_user.admin?
     return if @client&.sales_dashboard_enabled?
 
-    redirect_to painel_path, alert: 'Dashboard de vendas não habilitado para este cliente.'
+    redirect_to crm_path, alert: 'Dashboard de vendas não habilitado para este cliente.'
   end
 
   def load_metrics

@@ -43,7 +43,7 @@ class TryOnController < ApplicationController
 
   def require_admin!
     unless current_user.admin?
-      redirect_to painel_path, alert: 'Acesso negado. Apenas administradores podem acessar esta funcionalidade.'
+      redirect_to crm_path, alert: 'Acesso negado. Apenas administradores podem acessar esta funcionalidade.'
     end
   end
 

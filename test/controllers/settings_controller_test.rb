@@ -21,7 +21,7 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
 
     get edit_settings_path
 
-    assert_redirected_to painel_path
+    assert_redirected_to crm_path
     assert_equal 'Você não está vinculado a nenhum cliente.', flash[:alert]
   end
 
