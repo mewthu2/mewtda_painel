@@ -8,20 +8,20 @@
 
       <div class="customers-filters__row">
         <div class="customers-filters__field">
-          <label>Buscar</label>
-          <%= text_field_tag :search, params[:search], class: 'customers-filters__input', placeholder: 'Nome ou e-mail...' %>
+          <label class="crm-label">Buscar</label>
+          <%= text_field_tag :search, params[:search], class: 'crm-input', placeholder: 'Nome ou e-mail...' %>
         </div>
         <div class="customers-filters__field">
-          <label>Telefone</label>
-          <%= text_field_tag :phone, params[:phone], class: 'customers-filters__input', placeholder: '+55...' %>
+          <label class="crm-label">Telefone</label>
+          <%= text_field_tag :phone, params[:phone], class: 'crm-input', placeholder: '+55...' %>
         </div>
         <div class="customers-filters__field customers-filters__field--sm">
-          <label>Min. de compras</label>
-          <%= number_field_tag :min_orders, params[:min_orders], class: 'customers-filters__input', placeholder: 'Ex: 3', min: 1 %>
+          <label class="crm-label">Min. de compras</label>
+          <%= number_field_tag :min_orders, params[:min_orders], class: 'crm-input', placeholder: 'Ex: 3', min: 1 %>
         </div>
         <div class="customers-filters__field">
-          <label>Comprou o produto</label>
-          <%= text_field_tag :product_name, params[:product_name], class: 'customers-filters__input', placeholder: 'Nome do produto...' %>
+          <label class="crm-label">Comprou o produto</label>
+          <%= text_field_tag :product_name, params[:product_name], class: 'crm-input', placeholder: 'Nome do produto...' %>
         </div>
       </div>
 
@@ -31,10 +31,10 @@
 
           <div class="customers-filters__inactive-wrap">
             <%= number_field_tag :inactive_days, params[:inactive_days],
-                class: "customers-filters__input customers-filters__input--days #{'is-active' if params[:inactive_days].present?}",
+                class: "crm-input customers-filters__input--days #{'is-active' if params[:inactive_days].present?}",
                 placeholder: 'Dias', min: 1, id: 'inactive_days_field' %>
             <button type="submit" name="inactive_days_submit" value="1"
-                    class="customers-btn customers-btn--quick <%= 'customers-btn--quick-active' if params[:inactive_days].present? %>"
+                    class="crm-btn customers-btn--quick <%= 'customers-btn--quick-active' if params[:inactive_days].present? %>"
                     id="inactive_btn">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -45,7 +45,7 @@
 
           <% if current_user&.client_id == 1 %>
             <%= link_to customers_path(params.permit(:search, :phone, :min_orders, :product_name, :inactive_days).merge(maderite: params[:maderite].present? ? nil : '1')),
-                class: "customers-btn customers-btn--quick #{'customers-btn--quick-active' if params[:maderite].present?}" do %>
+                class: "crm-btn customers-btn--quick #{'customers-btn--quick-active' if params[:maderite].present?}" do %>
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
               </svg>
@@ -55,20 +55,20 @@
         </div>
 
         <div class="customers-filters__actions">
-          <%= button_tag class: 'customers-btn customers-btn--primary', name: '' do %>
+          <%= button_tag class: 'crm-btn crm-btn--primary', name: '' do %>
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z" />
             </svg>
             Filtrar
           <% end %>
           <%= link_to export_xlsx_customers_path(params.permit(:search, :phone, :min_orders, :product_name, :inactive_days, :maderite)),
-              class: 'customers-btn customers-btn--export' do %>
+              class: 'crm-btn customers-btn--export' do %>
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
             Exportar XLSX
           <% end %>
-          <%= link_to customers_path, class: 'customers-btn customers-btn--secondary' do %>
+          <%= link_to customers_path, class: 'crm-btn crm-btn--secondary' do %>
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -82,7 +82,7 @@
 
   <%# Tabela %>
   <div class="customers-table-wrap">
-    <table class="customers-table">
+    <table class="crm-table">
       <thead>
         <tr>
           <th>Cliente</th>
@@ -112,7 +112,7 @@
                 <% if customer.email.present? %>
                   <a href="mailto:<%= customer.email %>" class="customers-link"><%= customer.email %></a>
                 <% else %>
-                  <span class="customers-badge customers-badge--empty">—</span>
+                  <span class="crm-tag crm-tag--neutral">—</span>
                 <% end %>
               </td>
               <td>
@@ -124,7 +124,7 @@
                     <%= customer.phone %>
                   </a>
                 <% else %>
-                  <span class="customers-badge customers-badge--empty">—</span>
+                  <span class="crm-tag crm-tag--neutral">—</span>
                 <% end %>
               </td>
               <td class="text-center">
@@ -132,7 +132,7 @@
               </td>
               <td class="text-center"><%= customer.created_at.strftime('%d/%m/%Y') %></td>
               <td class="text-center">
-                <button class="customers-btn customers-btn--details"
+                <button class="crm-btn customers-btn--details"
                         onclick="openCustomerModal('<%= customer.id %>')">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" />

@@ -88,7 +88,7 @@ class GoogleAdsControllerTest < ActionDispatch::IntegrationTest
 
     get client_google_ads_connect_path(other_client)
 
-    assert_redirected_to root_path
+    assert_redirected_to crm_path
   end
 
   test 'callback redirects a common user to their own settings page' do
@@ -118,7 +118,7 @@ class GoogleAdsControllerTest < ActionDispatch::IntegrationTest
 
     get google_ads_callback_url(code: 'auth-code', state: state)
 
-    assert_redirected_to root_path
+    assert_redirected_to crm_path
     assert_nil other_client.reload.google_ads_refresh_token
   end
 

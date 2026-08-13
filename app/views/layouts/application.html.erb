@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for?(:title) ? "#{yield(:title)} - Mewtda - Painel" : 'Mewtda - Painel' %></title>
+    <title><%= content_for?(:title) ? "#{yield(:title)} - Mewtda" : 'Mewtda' %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-cache-control" content="no-cache">
     <meta name="turbolinks-visit-control" content="reload">
-    
+
+    <script>
+      (function () {
+        if (localStorage.getItem('crm-theme') === 'dark') {
+          document.documentElement.classList.add('theme-dark');
+        }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..72,400..700&display=swap" rel="stylesheet">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag 'admin', media: 'all', 'data-turbo-track': 'reload'  %>
@@ -29,7 +40,12 @@
       <% if current_user.present? %>
         <%= render 'layouts/partials/header' %>
       <% end %>
-      <%= render 'layouts/partials/content' %>
+      <div class="crm-shell__body">
+        <% if current_user.present? %>
+          <%= render 'layouts/partials/sidebar' %>
+        <% end %>
+        <%= render 'layouts/partials/content' %>
+      </div>
       <% if current_user.present? %>
         <%= render 'layouts/partials/footer' %>
       <% end %>

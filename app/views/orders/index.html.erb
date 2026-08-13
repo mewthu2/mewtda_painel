@@ -6,35 +6,35 @@
     <div class="orders-filters">
 
       <div class="orders-filters__field">
-        <label>Buscar</label>
-        <%= text_field_tag :search, params[:search], class: 'orders-filters__input', placeholder: 'Nº do pedido...' %>
+        <label class="crm-label">Buscar</label>
+        <%= text_field_tag :search, params[:search], class: 'crm-input', placeholder: 'Nº do pedido...' %>
       </div>
 
       <div class="orders-filters__field">
-        <label>Data início</label>
-        <%= date_field_tag :date_from, params[:date_from], class: 'orders-filters__input' %>
+        <label class="crm-label">Data início</label>
+        <%= date_field_tag :date_from, params[:date_from], class: 'crm-input' %>
       </div>
 
       <div class="orders-filters__field">
-        <label>Data fim</label>
-        <%= date_field_tag :date_to, params[:date_to], class: 'orders-filters__input' %>
+        <label class="crm-label">Data fim</label>
+        <%= date_field_tag :date_to, params[:date_to], class: 'crm-input' %>
       </div>
 
       <div class="orders-filters__actions">
-        <%= button_tag class: 'orders-btn orders-btn--primary', name: '' do %>
+        <%= button_tag class: 'crm-btn crm-btn--primary', name: '' do %>
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z" />
           </svg>
           Filtrar
         <% end %>
         <%= link_to export_xlsx_orders_path(params.permit(:search, :kinds, :staff_name, :date_from, :date_to)),
-            class: 'orders-btn orders-btn--export' do %>
+            class: 'crm-btn orders-btn--export' do %>
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
           </svg>
           Exportar XLSX
         <% end %>
-        <%= link_to orders_path, class: 'orders-btn orders-btn--secondary' do %>
+        <%= link_to orders_path, class: 'crm-btn crm-btn--secondary' do %>
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -46,7 +46,7 @@
   <% end %>
 
   <div class="orders-table-wrap">
-    <table class="orders-table">
+    <table class="crm-table">
       <thead>
         <tr>
           <th>Pedido</th>
@@ -93,7 +93,7 @@
                     <%= full_name.presence || '—' %>
                   </span>
                 <% else %>
-                  <span class="orders-badge orders-badge--empty">—</span>
+                  <span class="crm-tag crm-tag--neutral">—</span>
                 <% end %>
               </td>
 
@@ -106,7 +106,7 @@
                     <%= customer.phone %>
                   </a>
                 <% else %>
-                  <span class="orders-badge orders-badge--empty">—</span>
+                  <span class="crm-tag crm-tag--neutral">—</span>
                 <% end %>
               </td>
 
@@ -118,7 +118,7 @@
                 <% if total > 0 %>
                   <strong class="orders-table__total">R$ <%= number_with_precision(total, precision: 2, delimiter: '.', separator: ',') %></strong>
                 <% else %>
-                  <span class="orders-badge orders-badge--empty">—</span>
+                  <span class="crm-tag crm-tag--neutral">—</span>
                 <% end %>
               </td>
 
@@ -131,7 +131,7 @@
 
               <td class="text-center">
                 <button
-                  class="orders-btn-detail"
+                  class="crm-btn orders-btn-detail"
                   onclick="openOrderModal(this)"
                   data-order-number="<%= order.shopify_order_number %>"
                   data-order-id="<%= order.shopify_order_id %>"
@@ -189,7 +189,7 @@
         <h2 class="order-modal__title" id="order-modal-title"></h2>
       </div>
       <div style="display:flex; align-items:center; gap:0.75rem;">
-        <a id="order-modal-shopify-link" href="#" target="_blank" rel="noopener noreferrer" class="orders-btn orders-btn--primary" style="font-size:0.8rem; padding:0.4rem 0.9rem;">
+        <a id="order-modal-shopify-link" href="#" target="_blank" rel="noopener noreferrer" class="crm-btn crm-btn--primary" style="font-size:0.8rem; padding:0.4rem 0.9rem;">
           <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
           </svg>

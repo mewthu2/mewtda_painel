@@ -1,23 +1,23 @@
 <%= form_for(user, as: :user, html: { autocomplete: 'off' }, data: { disabled: read_only }) do |form| %>
 
-  <div class="uform-wrapper">
-    <div class="uform-card">
+  <div class="users-form-page">
+    <div class="crm-card users-form-page__card">
 
-      <div class="uform-card__header">
-        <div class="uform-card__header-icon">
+      <div class="users-form-page__header">
+        <div class="users-form-page__header-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
           </svg>
         </div>
         <div>
-          <h2 class="uform-card__title"><%= user.new_record? ? 'Criar Usuário' : 'Editar Usuário' %></h2>
-          <p class="uform-card__subtitle">Informações do usuário</p>
+          <h2 class="users-form-page__title"><%= user.new_record? ? 'Criar Usuário' : 'Editar Usuário' %></h2>
+          <p class="users-form-page__subtitle">Informações do usuário</p>
         </div>
       </div>
 
       <% if user.errors.any? %>
-        <div class="uform-errors">
-          <div class="uform-errors__icon">
+        <div class="users-form-page__errors">
+          <div class="users-form-page__errors-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
             </svg>
@@ -33,93 +33,93 @@
         </div>
       <% end %>
 
-      <div class="uform-card__body">
+      <div class="users-form-page__body">
 
-        <div class="uform-field">
-          <%= form.label :name, 'Nome', class: 'uform-field__label' %>
-          <%= form.text_field :name, class: 'uform-field__input', required: true, placeholder: 'Nome completo' %>
+        <div class="users-form-page__field">
+          <%= form.label :name, 'Nome', class: 'crm-label' %>
+          <%= form.text_field :name, class: 'crm-input', required: true, placeholder: 'Nome completo' %>
         </div>
 
-        <div class="uform-field">
-          <%= form.label :email, 'E-mail', class: 'uform-field__label' %>
-          <%= form.email_field :email, class: 'uform-field__input', required: true, placeholder: 'email@exemplo.com' %>
+        <div class="users-form-page__field">
+          <%= form.label :email, 'E-mail', class: 'crm-label' %>
+          <%= form.email_field :email, class: 'crm-input', required: true, placeholder: 'email@exemplo.com' %>
         </div>
 
         <% if user.new_record? %>
-          <div class="uform-row">
-            <div class="uform-field">
-              <%= form.label :password, 'Senha', class: 'uform-field__label' %>
-              <%= form.password_field :password, class: 'uform-field__input', required: true, placeholder: 'Mínimo 6 caracteres' %>
+          <div class="users-form-page__row">
+            <div class="users-form-page__field">
+              <%= form.label :password, 'Senha', class: 'crm-label' %>
+              <%= form.password_field :password, class: 'crm-input', required: true, placeholder: 'Mínimo 6 caracteres' %>
             </div>
-            <div class="uform-field">
-              <%= form.label :password_confirmation, 'Confirmar Senha', class: 'uform-field__label' %>
-              <%= form.password_field :password_confirmation, class: 'uform-field__input', required: true, placeholder: 'Repita a senha' %>
+            <div class="users-form-page__field">
+              <%= form.label :password_confirmation, 'Confirmar Senha', class: 'crm-label' %>
+              <%= form.password_field :password_confirmation, class: 'crm-input', required: true, placeholder: 'Repita a senha' %>
             </div>
           </div>
         <% end %>
 
-        <div class="uform-row">
-          <div class="uform-field">
-            <%= form.label :profile_id, 'Perfil', class: 'uform-field__label' %>
+        <div class="users-form-page__row">
+          <div class="users-form-page__field">
+            <%= form.label :profile_id, 'Perfil', class: 'crm-label' %>
             <%= form.collection_select :profile_id, @profiles || [], :id, :name,
                 { include_blank: 'Selecione um perfil' },
-                { class: 'uform-field__input uform-field__input--select' } %>
+                { class: 'crm-input users-form-page__select' } %>
           </div>
-          <div class="uform-field">
-            <%= form.label :client_id, 'Cliente', class: 'uform-field__label' %>
+          <div class="users-form-page__field">
+            <%= form.label :client_id, 'Cliente', class: 'crm-label' %>
             <%= form.collection_select :client_id, @clients || [], :id, :name,
                 { include_blank: 'Selecione um cliente' },
-                { class: 'uform-field__input uform-field__input--select' } %>
+                { class: 'crm-input users-form-page__select' } %>
           </div>
         </div>
 
         <% if user.client.present? %>
-          <div class="uform-section">
-            <div class="uform-section__header">
+          <div class="users-form-page__section">
+            <div class="users-form-page__section-header">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
               </svg>
               Configurações Shopify do Cliente: <%= user.client.name %>
             </div>
-            <div class="uform-row">
-              <div class="uform-field">
-                <label class="uform-field__label">URL da Loja</label>
-                <div class="uform-field__readonly">
+            <div class="users-form-page__row">
+              <div class="users-form-page__field">
+                <label class="crm-label">URL da Loja</label>
+                <div class="users-form-page__readonly">
                   <% if user.client.shopify_shop_url.present? %>
                     <a href="<%= user.client.shopify_shop_url %>" target="_blank"><%= user.client.shopify_shop_url %></a>
                   <% else %>
-                    <span class="uform-field__empty">Não configurado</span>
+                    <span class="users-form-page__empty">Não configurado</span>
                   <% end %>
                 </div>
               </div>
-              <div class="uform-field">
-                <label class="uform-field__label">Token de Acesso</label>
-                <div class="uform-field__readonly">
+              <div class="users-form-page__field">
+                <label class="crm-label">Token de Acesso</label>
+                <div class="users-form-page__readonly">
                   <% if user.client.shopify_access_token.present? %>
-                    <span class="uform-field__badge uform-field__badge--success">Configurado</span>
+                    <span class="crm-tag crm-tag--success">Configurado</span>
                   <% else %>
-                    <span class="uform-field__badge uform-field__badge--warning">Não configurado</span>
+                    <span class="crm-tag crm-tag--warning">Não configurado</span>
                   <% end %>
                 </div>
               </div>
             </div>
-            <p class="uform-section__hint">
-              Para editar as configurações Shopify, <%= link_to 'edite o cliente', edit_client_path(user.client), class: 'uform-link' %>.
+            <p class="users-form-page__section-hint">
+              Para editar as configurações Shopify, <%= link_to 'edite o cliente', edit_client_path(user.client), class: 'users-form-page__link' %>.
             </p>
           </div>
         <% end %>
 
       </div>
 
-      <div class="uform-card__footer">
-        <%= link_to users_path, class: 'uform-btn uform-btn--secondary' do %>
+      <div class="users-form-page__footer">
+        <%= link_to users_path, class: 'crm-btn crm-btn--secondary' do %>
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
           </svg>
           Voltar
         <% end %>
         <% unless read_only %>
-          <%= form.button class: 'uform-btn uform-btn--primary',
+          <%= form.button class: 'crm-btn crm-btn--primary',
               data: { disable_with: user.new_record? ? 'Criando...' : 'Salvando...' } do %>
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -133,53 +133,3 @@
   </div>
 
 <% end %>
-
-<style>
-  .uform-wrapper { padding: 1.5rem 2rem; display: flex; justify-content: center; }
-
-  .uform-card { background: #fff; border: 1px solid #e4e7f0; border-radius: 14px; box-shadow: 0 2px 12px rgba(30,40,100,0.07); width: 100%; overflow: hidden; }
-
-  .uform-card__header { display: flex; align-items: center; gap: 1rem; padding: 1.5rem 1.75rem; border-bottom: 1px solid #f0f2f8; background: #f8f9fc; }
-  .uform-card__header-icon { width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #3b4adf, #6674f5); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .uform-card__title { font-size: 1.05rem; font-weight: 700; color: #1e2235; margin: 0; }
-  .uform-card__subtitle { font-size: 0.8rem; color: #9097b5; margin: 0.15rem 0 0; }
-
-  .uform-errors { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem 1.5rem; background: #fef2f2; border-bottom: 1px solid #fecaca; color: #991b1b; font-size: 0.85rem; }
-  .uform-errors__icon { flex-shrink: 0; color: #dc2626; }
-  .uform-errors ul { margin: 0.5rem 0 0 1rem; padding: 0; }
-  .uform-errors li { margin: 0.25rem 0; }
-
-  .uform-card__body { padding: 1.75rem; display: flex; flex-direction: column; gap: 1.25rem; }
-
-  .uform-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  @media (max-width: 520px) { .uform-row { grid-template-columns: 1fr; } }
-
-  .uform-field { display: flex; flex-direction: column; gap: 0.35rem; }
-  .uform-field__label { font-size: 0.8rem; font-weight: 600; color: #5a6380; text-transform: uppercase; letter-spacing: 0.04em; }
-  .uform-field__input { border: 1px solid #e4e7f0; border-radius: 8px; padding: 0.55rem 0.85rem; font-size: 0.9rem; color: #1e2235; background: #f8f9fc; outline: none; transition: border-color 0.15s, background 0.15s; width: 100%; box-sizing: border-box; }
-  .uform-field__input:focus { border-color: #3b4adf; background: #fff; }
-  .uform-field__input--select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%239097b5' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.85rem center; padding-right: 2.5rem; cursor: pointer; }
-
-  .uform-field__readonly { padding: 0.55rem 0.85rem; background: #f0f2f8; border-radius: 8px; font-size: 0.85rem; color: #5a6380; min-height: 38px; display: flex; align-items: center; }
-  .uform-field__readonly a { color: #3b4adf; text-decoration: none; }
-  .uform-field__readonly a:hover { text-decoration: underline; }
-  .uform-field__empty { color: #9097b5; font-style: italic; }
-
-  .uform-field__badge { display: inline-flex; align-items: center; padding: 0.2rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-  .uform-field__badge--success { background: #d1fae5; color: #065f46; }
-  .uform-field__badge--warning { background: #fef3c7; color: #92400e; }
-
-  .uform-section { background: #f8f9fc; border: 1px solid #e4e7f0; border-radius: 10px; padding: 1.25rem; margin-top: 0.5rem; }
-  .uform-section__header { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.9rem; color: #1e2235; margin-bottom: 1rem; }
-  .uform-section__hint { font-size: 0.78rem; color: #9097b5; margin-top: 1rem; margin-bottom: 0; }
-
-  .uform-link { color: #3b4adf; text-decoration: none; font-weight: 500; }
-  .uform-link:hover { text-decoration: underline; }
-
-  .uform-card__footer { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; padding: 1.25rem 1.75rem; border-top: 1px solid #f0f2f8; background: #f8f9fc; }
-
-  .uform-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.15s; }
-  .uform-btn:hover { opacity: 0.88; }
-  .uform-btn--primary { background: #3b4adf; color: #fff; }
-  .uform-btn--secondary { background: #f0f2fb; color: #3b4adf; border: 1px solid #dde1f5; }
-</style>

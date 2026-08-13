@@ -83,7 +83,7 @@ class CampaignsController < ApplicationController
 
   def require_client!
     unless current_client.present?
-      redirect_to root_path, alert: 'Você precisa estar vinculado a um cliente para acessar campanhas.'
+      redirect_to crm_path, alert: 'Você precisa estar vinculado a um cliente para acessar campanhas.'
     end
   end
 

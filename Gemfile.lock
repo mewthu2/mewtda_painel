@@ -112,6 +112,8 @@ GEM
       railties (>= 6.1)
     drb (2.2.1)
     erubi (1.13.0)
+    et-orbi (1.4.1)
+      tzinfo
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-arm-linux-gnu)
     ffi (1.17.0-arm64-darwin)
@@ -120,6 +122,9 @@ GEM
     ffi (1.17.0-x86_64-linux-gnu)
     font-awesome-sass (6.7.2)
       sassc (~> 2.0)
+    fugit (1.13.0)
+      et-orbi (~> 1.4)
+      raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
     hash_diff (1.1.1)
@@ -201,6 +206,7 @@ GEM
     public_suffix (6.0.1)
     puma (6.4.2)
       nio4r (~> 2.0)
+    raabro (1.5.0)
     racc (1.8.1)
     rack (3.1.7)
     rack-cors (2.0.1)
@@ -294,6 +300,10 @@ GEM
       logger
       rack (>= 2.2.4)
       redis-client (>= 0.22.2)
+    sidekiq-cron (1.12.0)
+      fugit (~> 1.8)
+      globalid (>= 1.0.1)
+      sidekiq (>= 6)
     sorbet-runtime (0.5.12024)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
@@ -375,6 +385,7 @@ DEPENDENCIES
   selenium-webdriver
   shopify_api
   sidekiq (~> 7.2)
+  sidekiq-cron (~> 1.12)
   stimulus-rails
   turbo-rails
   tzinfo-data

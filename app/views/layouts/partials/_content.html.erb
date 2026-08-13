@@ -1,5 +1,5 @@
-<section>
-  <div class="container-fluid" style="min-height: 100vh; display: flex; flex-direction: column;">
+<section style="flex: 1; min-width: 0;">
+  <div class="container-fluid" style="min-height: calc(100vh - 64px); display: flex; flex-direction: column;">
     <div id="modal-holder"></div>
     <% if controller.controller_name != 'sessions' %>
       <%= render 'layouts/partials/messages' %>

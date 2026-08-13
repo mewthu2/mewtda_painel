@@ -1,0 +1,25 @@
+.crm-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius);
+  padding: 0.55rem 0.75rem;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.crm-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-tint);
+}
+
+.crm-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--fg-alt);
+  margin-bottom: 0.35rem;
+}

@@ -1,7 +1,7 @@
 <% title 'Tentativas de Integração' %>
 
-<div class="card bg-secondary" style="overflow-x:scroll;">
-  <table class="table table-dark table-hover table-responsive" id="attemps-table">
+<div class="crm-card" style="overflow-x:scroll;">
+  <table class="table crm-table" id="attemps-table">
     <thead>
       <tr>
         <th class="text-center"><%= Attempt.human_attribute_name :id %></th>
@@ -21,7 +21,7 @@
           <td class="text-center"><%= attempt.id %></td>
           <td class="text-center" style="min-width:12em;">
             <%= attempt.bling_order_id  %> -
-            <span class="badge bg-primary" style="cursor: pointer;" onclick="window.open('<%=ENV.fetch('TINY_SELLS_URL')%>#edit/<%= attempt.bling_order_id  %>', '_blank');">
+            <span class="crm-tag crm-tag--neutral" style="cursor: pointer;" onclick="window.open('<%=ENV.fetch('TINY_SELLS_URL')%>#edit/<%= attempt.bling_order_id  %>', '_blank');">
               Ver no Bling
             </span>
           </td>
@@ -32,7 +32,7 @@
           <td class="text-center"><%= attempt.error %></td>
           <td class="text-center">
             <% if attempt.xml_nota.present? %>
-              <button class="btn btn-primary" onclick="copiarConteudo(<%= attempt.id %>)">Copiar XML</button>
+              <button class="crm-btn crm-btn--primary" onclick="copiarConteudo(<%= attempt.id %>)">Copiar XML</button>
             <% end %>
             <span class="content<%= attempt.id %>" style="display:none">
               <%= attempt.xml_nota %>

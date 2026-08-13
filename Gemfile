@@ -30,6 +30,9 @@ gem 'i18n'
 # Simple, efficient background processing for Ruby.
 gem 'sidekiq', '~> 7.2'
 
+# Scheduled/recurring jobs for Sidekiq (daily ad cost sync).
+gem 'sidekiq-cron', '~> 1.12'
+
 # Makes http fun again! Ain't no party like a httparty, because a httparty don't stop.
 gem 'httparty'
 

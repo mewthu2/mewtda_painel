@@ -13,13 +13,33 @@
  *= require bootstrap
  *= require datatables/media/css/jquery.dataTables.min.css
  *= require layouts/global
+ *= require tokens
  *= require layouts/wrapper
  *= require layouts/utils
- *= require layouts/header
+ *= require components/button
+ *= require components/input
+ *= require components/table
+ *= require components/card
+ *= require components/tag
+ *= require layouts/topbar
+ *= require layouts/sidebar
+ *= require layouts/footer
  *= require layouts/chosen
  *= require layouts/products
  *= require layouts/orders
  *= require layouts/customers
+ *= require pages/clients
+ *= require pages/institutional
+ *= require pages/dashboard
+ *= require pages/events
+ *= require pages/try_on
+ *= require pages/sales_dashboard
+ *= require pages/profiles
+ *= require pages/users
+ *= require pages/campaigns
+ *= require pages/affiliates
+ *= require pages/auth
+ *= require pages/home_dashboard
  *= require_self
  */
  $fa-font-path: '@fortawesome/fontawesome-free/webfonts';

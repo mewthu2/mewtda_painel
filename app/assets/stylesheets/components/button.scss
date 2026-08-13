@@ -1,0 +1,35 @@
+.crm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s, filter .15s;
+  text-decoration: none;
+}
+
+.crm-btn--primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.crm-btn--primary:hover {
+  filter: brightness(0.92);
+}
+
+.crm-btn--secondary {
+  background: transparent;
+  border-color: var(--outline);
+  color: var(--fg);
+}
+
+.crm-btn--secondary:hover {
+  background: var(--primary-tint);
+  border-color: var(--primary);
+  color: var(--primary);
+}

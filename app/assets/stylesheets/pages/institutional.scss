@@ -1,0 +1,78 @@
+.crm-institutional {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.crm-institutional__hero {
+  text-align: center;
+  padding-bottom: 3rem;
+}
+
+.crm-institutional__logo {
+  width: 160px;
+  margin-bottom: 1.5rem;
+}
+
+.crm-institutional__headline {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 0.75rem;
+}
+
+.crm-institutional__subheadline {
+  font-size: 1.05rem;
+  color: var(--fg-alt);
+  max-width: 520px;
+  margin: 0 auto 2rem;
+}
+
+.crm-institutional__cta {
+  font-size: 1rem;
+  padding: 0.75rem 1.75rem;
+}
+
+.crm-institutional__features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.crm-institutional__feature {
+  text-align: center;
+}
+
+.crm-institutional__feature-icon {
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.crm-institutional__feature h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 0.5rem;
+}
+
+.crm-institutional__feature p {
+  font-size: 0.9rem;
+  color: var(--fg-alt);
+  line-height: 1.5;
+}
+
+.crm-institutional__footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--outline);
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--fg-alt);
+}
+
+@media (max-width: 768px) {
+  .crm-institutional__features {
+    grid-template-columns: 1fr;
+  }
+}

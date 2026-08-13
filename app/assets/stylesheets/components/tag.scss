@@ -1,0 +1,14 @@
+.crm-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.crm-tag--success { background: #e6f4ea; color: #1d7a3e; }
+.crm-tag--danger  { background: #fce8e6; color: #c5221f; }
+.crm-tag--warning { background: #fef7e0; color: #b06000; }
+.crm-tag--neutral { background: var(--outline); color: var(--fg-alt); }
+.crm-tag--info    { background: var(--primary-tint); color: var(--primary); }

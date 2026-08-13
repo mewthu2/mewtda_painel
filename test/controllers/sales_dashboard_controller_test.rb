@@ -22,7 +22,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
 
     get sales_dashboard_path
 
-    assert_redirected_to painel_path
+    assert_redirected_to crm_path
   end
 
   test 'allows a non-admin client user when the dashboard is enabled' do
@@ -114,7 +114,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
 
     post sync_ad_costs_sales_dashboard_path
 
-    assert_redirected_to root_path
+    assert_redirected_to crm_path
   end
 
   test 'does not crash on an out-of-range month param' do

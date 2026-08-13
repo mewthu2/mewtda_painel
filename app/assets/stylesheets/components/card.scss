@@ -1,0 +1,28 @@
+.crm-card {
+  background: var(--bg);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.crm-kpi-card {
+  background: var(--bg);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+
+.crm-kpi-card__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--fg-alt);
+}
+
+.crm-kpi-card__value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-top: 0.25rem;
+}

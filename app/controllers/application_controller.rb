@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   def require_admin!
     unless current_user&.admin?
-      redirect_to root_path, alert: 'Acesso restrito a administradores.'
+      redirect_to crm_path, alert: 'Acesso restrito a administradores.'
     end
   end
 
@@ -25,7 +25,8 @@ class ApplicationController < ActionController::Base
     # NÃO roda para Devise (login, logout, etc)
     return if devise_controller?
 
-    # Permite events
+    # Permite events; a home (logado) agora mostra prévia de vendas da loja,
+    # que não é relevante para afiliados
     return if controller_name == 'events'
 
     redirect_to events_path(utm_code: current_user.utm_code)

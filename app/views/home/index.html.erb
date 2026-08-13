@@ -1,1 +1,36 @@
-<% title 'Home' %>
+<% title 'Mewtda' %>
+
+<div class="crm-institutional">
+
+  <section class="crm-institutional__hero">
+    <%= image_tag 'admin/logo-novo.png', class: 'crm-institutional__logo', alt: 'Mewtda' %>
+    <h1 class="crm-institutional__headline">Gerencie seu negócio com inteligência</h1>
+    <p class="crm-institutional__subheadline">
+      A Mewtda ajuda lojas a centralizar pedidos, clientes e campanhas em um só lugar.
+    </p>
+    <%= link_to 'Entrar', new_user_session_path, class: 'crm-btn crm-btn--primary crm-institutional__cta' %>
+  </section>
+
+  <section class="crm-institutional__features">
+    <div class="crm-card crm-institutional__feature">
+      <i class="fa-solid fa-chart-line crm-institutional__feature-icon"></i>
+      <h2>O que é</h2>
+      <p>Um painel único para acompanhar vendas, pedidos e o desempenho das suas campanhas.</p>
+    </div>
+    <div class="crm-card crm-institutional__feature">
+      <i class="fa-solid fa-users crm-institutional__feature-icon"></i>
+      <h2>Pra quem é</h2>
+      <p>Lojas que vendem por Shopify e precisam de visibilidade sobre clientes e pedidos.</p>
+    </div>
+    <div class="crm-card crm-institutional__feature">
+      <i class="fa-solid fa-bullseye crm-institutional__feature-icon"></i>
+      <h2>Como ajuda</h2>
+      <p>Automação de eventos, afiliados e acompanhamento de campanhas de marketing.</p>
+    </div>
+  </section>
+
+  <footer class="crm-institutional__footer">
+    &copy; <%= Date.today.year %> Mewtda
+  </footer>
+
+</div>

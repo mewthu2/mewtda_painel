@@ -1,0 +1,52 @@
+:root {
+  --primary: #1967d2;
+  --bg: #ffffff;
+  --fg: #212121;
+  --fg-alt: #6a6f71;
+  --chrome-bg: #1c2834;
+  --chrome-fg: #F3F4F6;
+  --outline: #e7e8ed;
+  --primary-tint: rgba(25, 103, 210, .08);
+  --radius: 0.45rem;
+}
+
+:root.theme-dark {
+  --primary: #47b0f8;
+  --bg: #121317;
+  --fg: #dcdcdc;
+  --fg-alt: #a8acad;
+  --chrome-bg: #0c1116;
+  --chrome-fg: #F3F4F6;
+  --outline: #2c313a;
+  --primary-tint: rgba(71, 176, 248, .12);
+}
+
+body {
+  font-family: 'Google Sans Flex', 'Roboto', ui-sans-serif, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.crm-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--chrome-fg);
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.crm-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.crm-theme-toggle .fa-sun { display: none; }
+.crm-theme-toggle .fa-moon { display: block; }
+
+:root.theme-dark .crm-theme-toggle .fa-sun { display: block; }
+:root.theme-dark .crm-theme-toggle .fa-moon { display: none; }

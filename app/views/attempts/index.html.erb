@@ -2,38 +2,34 @@
   <% title 'Tentativas de Integração' %>
 </div>
 
-<div class="row d-flex justify-content-center">
-  <div class="btn-group mb-3" role="group">
-    <%= link_to attempts_path(kinds: params[:kinds], status: :success, search: params[:search]), class: 'btn btn-success text-light' do %> success <i class="fas fa-check"></i><% end %>
-    <%= link_to attempts_path(kinds: params[:kinds], status: :fail, search: params[:search]), class: 'btn btn-danger text-light' do %> fail <i class="fas fa-times"></i><% end %>
-    <%= link_to attempts_path(kinds: params[:kinds], status: :error, search: params[:search]), class: 'btn btn-secondary text-light' do %> error <i class="fa-solid fa-wrench"></i><% end %>
-  </div>
+<div class="d-flex justify-content-center gap-2 mb-3">
+  <%= link_to attempts_path(kinds: params[:kinds], status: :success, search: params[:search]), class: 'crm-tag crm-tag--success' do %> success <i class="fas fa-check"></i><% end %>
+  <%= link_to attempts_path(kinds: params[:kinds], status: :fail, search: params[:search]), class: 'crm-tag crm-tag--danger' do %> fail <i class="fas fa-times"></i><% end %>
+  <%= link_to attempts_path(kinds: params[:kinds], status: :error, search: params[:search]), class: 'crm-tag crm-tag--warning' do %> error <i class="fa-solid fa-wrench"></i><% end %>
 </div>
 
 <%= form_tag(attempts_path, method: 'get') do %>
-  <div class="card mb-lg advanced-search-form bg-dark text-light" id="filters">
+  <div class="crm-card advanced-search-form mb-lg" id="filters">
     <%= hidden_field_tag :status, {}, value: params[:status] %>
     <%= hidden_field_tag :kinds, {}, value: params[:kinds] %>
-    <div class="card-header text-info">
+    <div class="fw-bold border-bottom pb-2 mb-3">
       Pesquisa avançada
     </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col-sm-12">
-          <%= label_tag :search, 'Procurar' %>
-          <%= text_field_tag :search, params[:search], class: 'form-control', placeholder: 'Pesquise por número pedido Bling/Nota Fiscal ou por erro' %>
-        </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <%= label_tag :search, 'Procurar', class: 'crm-label' %>
+        <%= text_field_tag :search, params[:search], class: 'crm-input', placeholder: 'Pesquise por número pedido Bling/Nota Fiscal ou por erro' %>
       </div>
     </div>
-    <div class="card-footer">
-      <%= button_tag class: 'btn btn-secondary text-info', name: '' do %><i class="fa fa-search text-info"></i> Pesquisar<% end %>
+    <div class="border-top pt-3 mt-3">
+      <%= button_tag class: 'crm-btn crm-btn--secondary', name: '' do %><i class="fa fa-search"></i> Pesquisar<% end %>
     </div>
   </div>
 <% end %>
 
 <div class="row">
   <div class="col-12">
-    <table class="table table-dark table-hover table-responsive" style="overflow-x: scroll;" id="attemps-table">
+    <table class="crm-table" style="overflow-x: scroll;" id="attemps-table">
       <thead>
         <tr>
           <th width="50" class="text-center"><i class="fa fa-ellipsis-v"></i></th>
@@ -53,7 +49,7 @@
           <tr>
             <td>
               <% if params[:status] == 'success' %>
-                <%= link_to reprocess_attempts_path(attempt_id: attempt.id), class: 'btn btn-sm btn-secondary text-info' do %> 
+                <%= link_to reprocess_attempts_path(attempt_id: attempt.id), class: 'crm-btn crm-btn--secondary' do %>
                   <i class="fa-solid fa-repeat"></i>
                 <% end %>
               <% end %>
@@ -61,7 +57,7 @@
             <td class="text-center"><%= attempt.id %></td>
             <td class="text-center">
               <%= attempt.bling_order_id %> - 
-              <span class="badge bg-primary" style="cursor: pointer;" onclick="window.open('<%=ENV.fetch('TINY_SELLS_URL')%>#edit/<%= attempt.tiny_order_id %>', '_blank');">
+              <span class="crm-tag crm-tag--neutral" style="cursor: pointer;" onclick="window.open('<%=ENV.fetch('TINY_SELLS_URL')%>#edit/<%= attempt.tiny_order_id %>', '_blank');">
                 Ver no Bling
               </span>
             </td>
@@ -69,8 +65,8 @@
             <td class="text-center"><%= attempt.kinds %></td>
             <td class="text-center"><%= attempt.status %></td>
             <td class="text-center"><%= attempt.status_code %> - <%= attempt.message %></td>
-            <td class="text-center"><%= attempt.error.present? ? attempt.error : "<span class='badge bg-secondary'>x</span>".html_safe %></td>
-            <td class="text-center"><%= attempt.message.present? ? attempt.message : "<span class='badge bg-secondary'>x</span>".html_safe %></td>
+            <td class="text-center"><%= attempt.error.present? ? attempt.error : "<span class='crm-tag crm-tag--neutral'>x</span>".html_safe %></td>
+            <td class="text-center"><%= attempt.message.present? ? attempt.message : "<span class='crm-tag crm-tag--neutral'>x</span>".html_safe %></td>
             <td class="text-center"><%= attempt.created_at.strftime('%d/%m/%Y %H:%M') %></td>
           </tr>
         <% end %>

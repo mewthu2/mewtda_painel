@@ -18,7 +18,7 @@ class GoogleAdsController < ApplicationController
     client = Client.find(client_id)
 
     unless authorized_for?(client)
-      return redirect_to root_path, alert: 'Acesso restrito.'
+      return redirect_to crm_path, alert: 'Acesso restrito.'
     end
 
     response = HTTParty.post(
@@ -60,7 +60,7 @@ class GoogleAdsController < ApplicationController
   def authorize_client_owner!
     return if authorized_for?(@client)
 
-    redirect_to root_path, alert: 'Acesso restrito.'
+    redirect_to crm_path, alert: 'Acesso restrito.'
   end
 
   def authorized_for?(client)

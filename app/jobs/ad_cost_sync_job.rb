@@ -34,3 +34,4 @@ class AdCostSyncJob < ApplicationJob
     Result.new(platform, :error, e.message)
   end
 end
+A s

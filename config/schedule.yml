@@ -1,0 +1,4 @@
+daily_ad_cost_sync:
+  cron: "0 6 * * * America/Sao_Paulo"
+  class: "DailyAdCostSyncJob"
+  queue: default
