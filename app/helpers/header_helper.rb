@@ -8,7 +8,7 @@ module HeaderHelper
 
     items = [{ label: 'Trackeamento site', url: crm_path, icon: 'fa-solid fa-chart-line' }]
 
-    if user.admin? || user.client&.sales_dashboard_enabled?
+    if user.admin? || user.client.present?
       items << { label: 'Vendas', url: sales_dashboard_path, icon: 'fa-solid fa-sack-dollar' }
     end
 

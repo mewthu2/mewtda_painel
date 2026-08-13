@@ -167,25 +167,6 @@
           <% end %>
         </div>
 
-        <%# Dashboard de Vendas %>
-        <div class="cform-section">
-          <div class="cform-section__header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5l3-3 4 4 8-8" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18" />
-            </svg>
-            Dashboard de Vendas
-          </div>
-
-          <div class="cform-field">
-            <%= form.label :sales_dashboard_enabled, 'Dashboard de Vendas', class: 'crm-label' %>
-            <div class="cform-toggle">
-              <%= form.check_box :sales_dashboard_enabled, class: 'cform-toggle__input', disabled: read_only %>
-              <span class="cform-toggle__label">Habilitado para este cliente</span>
-            </div>
-          </div>
-        </div>
-
         <%# Integração Meta Ads %>
         <div class="cform-section">
           <div class="cform-section__header">

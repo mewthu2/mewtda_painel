@@ -27,7 +27,7 @@ class SettingsController < ApplicationController
     params.require(:client).permit(
       :name, :email, :shopify_shop_url, :shopify_access_token,
       :zapi_instance_id, :zapi_instance_token, :zapi_client_token,
-      :sales_dashboard_enabled, :meta_access_token, :meta_ad_account_id,
+      :meta_access_token, :meta_ad_account_id,
       :google_ads_customer_id
     )
   end
