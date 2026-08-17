@@ -92,6 +92,26 @@
 .cform-alert--success { background: #e6f4ea; color: #1d7a3e; }
 .cform-alert--warning { background: #fef7e0; color: #b06000; }
 
+.cform-accordion { background: var(--bg); border: 1px solid var(--outline); border-radius: var(--radius); overflow: hidden; }
+.cform-accordion[open] > .cform-accordion__summary { border-bottom: 1px solid var(--outline); }
+
+.cform-accordion__summary {
+  display: flex; align-items: center; gap: 0.6rem; padding: 1.15rem 1.25rem;
+  font-weight: 600; font-size: 0.9rem; color: var(--fg); cursor: pointer; list-style: none;
+}
+.cform-accordion__summary::-webkit-details-marker { display: none; }
+.cform-accordion__summary-icon { flex-shrink: 0; display: flex; }
+.cform-accordion__summary-title { flex: 1; }
+
+.cform-accordion__status { font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; white-space: nowrap; }
+.cform-accordion__status--ok { background: #e6f4ea; color: #1d7a3e; }
+.cform-accordion__status--pending { background: #fef7e0; color: #b06000; }
+
+.cform-accordion__chevron { flex-shrink: 0; color: var(--fg-alt); transition: transform 0.15s ease; }
+.cform-accordion[open] .cform-accordion__chevron { transform: rotate(180deg); }
+
+.cform-accordion__body { padding: 1rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+
 .cform-users-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .cform-user-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: var(--bg); border: 1px solid var(--outline); border-radius: var(--radius); }
 .cform-user-item__avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }

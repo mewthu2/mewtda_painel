@@ -13,7 +13,7 @@
         Trackeamento site
       <% end %>
 
-      <% if current_user.admin? || current_user.client&.sales_dashboard_enabled? %>
+      <% if current_user.admin? || current_user.client.present? %>
         <%= link_to sales_dashboard_path, class: "crm-sidebar__link #{'active' if current_page?(sales_dashboard_path)}" do %>
           <i class="fa-solid fa-sack-dollar crm-fa"></i>
           Vendas

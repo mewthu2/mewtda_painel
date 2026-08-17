@@ -24,9 +24,8 @@ class HeaderHelperTest < ActionView::TestCase
     assert_equal ['Meus Eventos'], items.map { |i| i[:label] }
   end
 
-  test 'common user without sales dashboard enabled does not see Vendas' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: false)
-    user = build_user(client: client)
+  test 'common user without a client does not see Vendas' do
+    user = build_user
 
     labels = searchable_nav_items(user).map { |i| i[:label] }
 
@@ -36,14 +35,14 @@ class HeaderHelperTest < ActionView::TestCase
     assert_includes labels, 'Configurações'
   end
 
-  test 'common user with sales dashboard enabled sees Vendas' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: true)
+  test 'common user with a client sees Vendas' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     user = build_user(client: client)
 
     assert_includes searchable_nav_items(user).map { |i| i[:label] }, 'Vendas'
   end
 
-  test 'admin sees admin-only items and Vendas regardless of the client toggle' do
+  test 'admin sees admin-only items and Vendas even without a client' do
     admin = build_user(admin: true)
 
     labels = searchable_nav_items(admin).map { |i| i[:label] }

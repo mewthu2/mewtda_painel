@@ -13,7 +13,7 @@ class ClientsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
-  test 'admin can enable the sales dashboard and set Meta/Google Ads fields' do
+  test 'admin can set Meta/Google Ads fields' do
     admin = build_admin
     client = Client.create!(name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com")
     sign_in admin
@@ -22,7 +22,6 @@ class ClientsControllerTest < ActionDispatch::IntegrationTest
       client: {
         name: client.name,
         email: client.email,
-        sales_dashboard_enabled: '1',
         meta_access_token: 'token123',
         meta_ad_account_id: 'act_1',
         google_ads_customer_id: '1234567890'
@@ -30,7 +29,6 @@ class ClientsControllerTest < ActionDispatch::IntegrationTest
     }
 
     client.reload
-    assert client.sales_dashboard_enabled?
     assert_equal 'token123', client.meta_access_token
     assert_equal 'act_1', client.meta_ad_account_id
     assert_equal '1234567890', client.google_ads_customer_id

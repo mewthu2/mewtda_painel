@@ -15,9 +15,8 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
-  test 'redirects a non-admin client user when the dashboard is disabled' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: false)
-    user = build_user(client: client)
+  test 'redirects a non-admin user without a client' do
+    user = build_user
     sign_in user
 
     get sales_dashboard_path
@@ -25,8 +24,8 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to crm_path
   end
 
-  test 'allows a non-admin client user when the dashboard is enabled' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: true)
+  test 'allows a non-admin client user' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     user = build_user(client: client)
     sign_in user
 
@@ -35,9 +34,8 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'always allows an admin regardless of the toggle' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: false)
-    admin = build_user(admin: true, client: client)
+  test 'always allows an admin regardless of client' do
+    admin = build_user(admin: true)
     sign_in admin
 
     get sales_dashboard_path
@@ -46,7 +44,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'renders the metrics for the requested month' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: true)
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     user = build_user(client: client)
     Order.create!(client: client, shopify_order_id: SecureRandom.hex(6), shopify_creation_date: Time.zone.local(2026, 3, 10), total_price: 250, subtotal_price: 250, total_discounts: 0)
     sign_in user
@@ -59,7 +57,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
 
   test 'shows a not-synced warning when a platform is configured but has no snapshot yet' do
     client = Client.create!(
-      name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: true,
+      name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com",
       meta_access_token: 'token', meta_ad_account_id: 'act_1'
     )
     user = build_user(client: client)
@@ -72,7 +70,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'shows a no-integration warning when no ad platform is configured at all' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: true)
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     user = build_user(client: client)
     sign_in user
 
@@ -83,7 +81,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'the no-integration warning links a common user to their own settings page' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: true)
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     user = build_user(client: client)
     sign_in user
 
@@ -94,7 +92,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'the no-integration warning links an admin to the client edit page' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: true)
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     admin = build_user(admin: true, client: client)
     sign_in admin
 
@@ -106,7 +104,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
 
   test 'blocks a non-admin from triggering sync_ad_costs even when the dashboard is enabled' do
     client = Client.create!(
-      name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: true,
+      name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com",
       meta_access_token: 'token', meta_ad_account_id: 'act_1'
     )
     user = build_user(client: client)
@@ -118,7 +116,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'does not crash on an out-of-range month param' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com", sales_dashboard_enabled: true)
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     user = build_user(client: client)
     sign_in user
 

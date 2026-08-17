@@ -67,162 +67,202 @@
         </div>
 
         <%# Configurações Shopify %>
-        <div class="cform-section">
-          <div class="cform-section__header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <% shopify_configured = client.shopify_shop_url.present? && client.shopify_access_token.present? %>
+        <details class="cform-accordion">
+          <summary class="cform-accordion__summary">
+            <svg class="cform-accordion__summary-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
               <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
-            Integração Shopify
-          </div>
+            <span class="cform-accordion__summary-title">Integração Shopify</span>
+            <span class="cform-accordion__status <%= shopify_configured ? 'cform-accordion__status--ok' : 'cform-accordion__status--pending' %>">
+              <%= shopify_configured ? 'Configurado' : 'Pendente' %>
+            </span>
+            <svg class="cform-accordion__chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
 
-          <div class="cform-field">
-            <%= form.label :shopify_shop_url, 'URL da Loja Shopify', class: 'crm-label' %>
-            <%= form.text_field :shopify_shop_url, class: 'crm-input', placeholder: 'https://sua-loja.myshopify.com', disabled: read_only %>
-            <span class="cform-field__hint">URL completa da loja Shopify</span>
-          </div>
+          <div class="cform-accordion__body">
+            <div class="cform-field">
+              <%= form.label :shopify_shop_url, 'URL da Loja Shopify', class: 'crm-label' %>
+              <%= form.text_field :shopify_shop_url, class: 'crm-input', placeholder: 'https://sua-loja.myshopify.com', disabled: read_only %>
+              <span class="cform-field__hint">URL completa da loja Shopify</span>
+            </div>
 
-          <div class="cform-field">
-            <%= form.label :shopify_access_token, 'Token de Acesso', class: 'crm-label' %>
-            <div class="cform-field__input-wrapper">
-              <%= form.password_field :shopify_access_token, class: 'crm-input cform-field__input--password', placeholder: client.shopify_access_token.present? ? '••••••••••••••••' : 'shpat_xxxxxxxxxxxxxxxx', disabled: read_only, value: '' %>
-              <% if client.shopify_access_token.present? %>
-                <span class="crm-tag crm-tag--success">Configurado</span>
+            <div class="cform-field">
+              <%= form.label :shopify_access_token, 'Token de Acesso', class: 'crm-label' %>
+              <div class="cform-field__input-wrapper">
+                <%= form.password_field :shopify_access_token, class: 'crm-input cform-field__input--password', placeholder: client.shopify_access_token.present? ? '••••••••••••••••' : 'shpat_xxxxxxxxxxxxxxxx', disabled: read_only, value: '' %>
+                <% if client.shopify_access_token.present? %>
+                  <span class="crm-tag crm-tag--success">Configurado</span>
+                <% end %>
+              </div>
+              <span class="cform-field__hint">Deixe em branco para manter o token atual. Token da API Admin do Shopify.</span>
+            </div>
+
+            <% if client.persisted? %>
+              <% if shopify_configured %>
+                <div class="cform-alert cform-alert--success">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Integração Shopify configurada e pronta para uso.</span>
+                </div>
+              <% else %>
+                <div class="cform-alert cform-alert--warning">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                  </svg>
+                  <span>Configure a URL e o Token para ativar a integração Shopify.</span>
+                </div>
               <% end %>
-            </div>
-            <span class="cform-field__hint">Deixe em branco para manter o token atual. Token da API Admin do Shopify.</span>
+            <% end %>
           </div>
-
-          <% if client.persisted? && client.shopify_shop_url.present? && client.shopify_access_token.present? %>
-            <div class="cform-alert cform-alert--success">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>Integração Shopify configurada e pronta para uso.</span>
-            </div>
-          <% elsif client.persisted? %>
-            <div class="cform-alert cform-alert--warning">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-              </svg>
-              <span>Configure a URL e o Token para ativar a integração Shopify.</span>
-            </div>
-          <% end %>
-        </div>
+        </details>
 
         <%# Configurações Zapi %>
-        <div class="cform-section">
-          <div class="cform-section__header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <% zapi_configured = client.zapi_instance_id.present? && client.zapi_instance_token.present? && client.zapi_client_token.present? %>
+        <details class="cform-accordion">
+          <summary class="cform-accordion__summary">
+            <svg class="cform-accordion__summary-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="9" y1="9" x2="15" y2="9"></line>
               <line x1="9" y1="15" x2="15" y2="15"></line>
             </svg>
-            Integração Zapi
-          </div>
+            <span class="cform-accordion__summary-title">Integração Zapi</span>
+            <span class="cform-accordion__status <%= zapi_configured ? 'cform-accordion__status--ok' : 'cform-accordion__status--pending' %>">
+              <%= zapi_configured ? 'Configurado' : 'Pendente' %>
+            </span>
+            <svg class="cform-accordion__chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
 
-          <div class="cform-field">
-            <%= form.label :zapi_instance_id, 'ID da Instância', class: 'crm-label' %>
-            <%= form.text_field :zapi_instance_id, class: 'crm-input', placeholder: 'ID da instância Zapi', disabled: read_only %>
-            <span class="cform-field__hint">ID único da instância Zapi</span>
-          </div>
-
-          <div class="cform-row">
+          <div class="cform-accordion__body">
             <div class="cform-field">
-              <%= form.label :zapi_instance_token, 'Token da Instância', class: 'crm-label' %>
-              <div class="cform-field__input-wrapper">
-                <%= form.password_field :zapi_instance_token, class: 'crm-input cform-field__input--password', placeholder: client.zapi_instance_token.present? ? '••••••••••••••••' : 'Token da instância', disabled: read_only, value: '' %>
-                <% if client.zapi_instance_token.present? %>
-                  <span class="crm-tag crm-tag--success">Configurado</span>
-                <% end %>
-              </div>
-              <span class="cform-field__hint">Deixe em branco para manter o token atual.</span>
+              <%= form.label :zapi_instance_id, 'ID da Instância', class: 'crm-label' %>
+              <%= form.text_field :zapi_instance_id, class: 'crm-input', placeholder: 'ID da instância Zapi', disabled: read_only %>
+              <span class="cform-field__hint">ID único da instância Zapi</span>
             </div>
-            <div class="cform-field">
-              <%= form.label :zapi_client_token, 'Token do Cliente', class: 'crm-label' %>
-              <div class="cform-field__input-wrapper">
-                <%= form.password_field :zapi_client_token, class: 'crm-input cform-field__input--password', placeholder: client.zapi_client_token.present? ? '••••••••••••••••' : 'Token do cliente', disabled: read_only, value: '' %>
-                <% if client.zapi_client_token.present? %>
-                  <span class="crm-tag crm-tag--success">Configurado</span>
-                <% end %>
-              </div>
-              <span class="cform-field__hint">Deixe em branco para manter o token atual.</span>
-            </div>
-          </div>
 
-          <% if client.persisted? && client.zapi_instance_id.present? && client.zapi_instance_token.present? && client.zapi_client_token.present? %>
-            <div class="cform-alert cform-alert--success">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>Integração Zapi configurada e pronta para uso.</span>
+            <div class="cform-row">
+              <div class="cform-field">
+                <%= form.label :zapi_instance_token, 'Token da Instância', class: 'crm-label' %>
+                <div class="cform-field__input-wrapper">
+                  <%= form.password_field :zapi_instance_token, class: 'crm-input cform-field__input--password', placeholder: client.zapi_instance_token.present? ? '••••••••••••••••' : 'Token da instância', disabled: read_only, value: '' %>
+                  <% if client.zapi_instance_token.present? %>
+                    <span class="crm-tag crm-tag--success">Configurado</span>
+                  <% end %>
+                </div>
+                <span class="cform-field__hint">Deixe em branco para manter o token atual.</span>
+              </div>
+              <div class="cform-field">
+                <%= form.label :zapi_client_token, 'Token do Cliente', class: 'crm-label' %>
+                <div class="cform-field__input-wrapper">
+                  <%= form.password_field :zapi_client_token, class: 'crm-input cform-field__input--password', placeholder: client.zapi_client_token.present? ? '••••••••••••••••' : 'Token do cliente', disabled: read_only, value: '' %>
+                  <% if client.zapi_client_token.present? %>
+                    <span class="crm-tag crm-tag--success">Configurado</span>
+                  <% end %>
+                </div>
+                <span class="cform-field__hint">Deixe em branco para manter o token atual.</span>
+              </div>
             </div>
-          <% elsif client.persisted? %>
-            <div class="cform-alert cform-alert--warning">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-              </svg>
-              <span>Configure os campos para ativar a integração Zapi.</span>
-            </div>
-          <% end %>
-        </div>
+
+            <% if client.persisted? %>
+              <% if zapi_configured %>
+                <div class="cform-alert cform-alert--success">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Integração Zapi configurada e pronta para uso.</span>
+                </div>
+              <% else %>
+                <div class="cform-alert cform-alert--warning">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                  </svg>
+                  <span>Configure os campos para ativar a integração Zapi.</span>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </details>
 
         <%# Integração Meta Ads %>
-        <div class="cform-section">
-          <div class="cform-section__header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <% meta_configured = client.meta_access_token.present? && client.meta_ad_account_id.present? %>
+        <details class="cform-accordion">
+          <summary class="cform-accordion__summary">
+            <svg class="cform-accordion__summary-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3" />
             </svg>
-            Integração Meta Ads
-          </div>
+            <span class="cform-accordion__summary-title">Integração Meta Ads</span>
+            <span class="cform-accordion__status <%= meta_configured ? 'cform-accordion__status--ok' : 'cform-accordion__status--pending' %>">
+              <%= meta_configured ? 'Configurado' : 'Pendente' %>
+            </span>
+            <svg class="cform-accordion__chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
 
-          <div class="cform-row">
-            <div class="cform-field">
-              <%= form.label :meta_ad_account_id, 'ID da Conta de Anúncio', class: 'crm-label' %>
-              <%= form.text_field :meta_ad_account_id, class: 'crm-input', placeholder: 'act_1234567890', disabled: read_only %>
-            </div>
-            <div class="cform-field">
-              <%= form.label :meta_access_token, 'Token de Acesso', class: 'crm-label' %>
-              <div class="cform-field__input-wrapper">
-                <%= form.password_field :meta_access_token, class: 'crm-input cform-field__input--password', placeholder: client.meta_access_token.present? ? '••••••••••••••••' : 'Token de longa duração (System User)', disabled: read_only, value: '' %>
-                <% if client.meta_access_token.present? %>
-                  <span class="crm-tag crm-tag--success">Configurado</span>
-                <% end %>
+          <div class="cform-accordion__body">
+            <div class="cform-row">
+              <div class="cform-field">
+                <%= form.label :meta_ad_account_id, 'ID da Conta de Anúncio', class: 'crm-label' %>
+                <%= form.text_field :meta_ad_account_id, class: 'crm-input', placeholder: 'act_1234567890', disabled: read_only %>
               </div>
-              <span class="cform-field__hint">Deixe em branco para manter o token atual.</span>
+              <div class="cform-field">
+                <%= form.label :meta_access_token, 'Token de Acesso', class: 'crm-label' %>
+                <div class="cform-field__input-wrapper">
+                  <%= form.password_field :meta_access_token, class: 'crm-input cform-field__input--password', placeholder: client.meta_access_token.present? ? '••••••••••••••••' : 'Token de longa duração (System User)', disabled: read_only, value: '' %>
+                  <% if client.meta_access_token.present? %>
+                    <span class="crm-tag crm-tag--success">Configurado</span>
+                  <% end %>
+                </div>
+                <span class="cform-field__hint">Deixe em branco para manter o token atual.</span>
+              </div>
             </div>
           </div>
-        </div>
+        </details>
 
         <%# Integração Google Ads %>
-        <div class="cform-section">
-          <div class="cform-section__header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <% google_configured = client.google_ads_connected_at.present? %>
+        <details class="cform-accordion">
+          <summary class="cform-accordion__summary">
+            <svg class="cform-accordion__summary-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
               <circle cx="12" cy="12" r="9" />
             </svg>
-            Integração Google Ads
-          </div>
+            <span class="cform-accordion__summary-title">Integração Google Ads</span>
+            <span class="cform-accordion__status <%= google_configured ? 'cform-accordion__status--ok' : 'cform-accordion__status--pending' %>">
+              <%= google_configured ? 'Configurado' : 'Pendente' %>
+            </span>
+            <svg class="cform-accordion__chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
 
-          <div class="cform-field">
-            <%= form.label :google_ads_customer_id, 'Customer ID', class: 'crm-label' %>
-            <%= form.text_field :google_ads_customer_id, class: 'crm-input', placeholder: '1234567890', disabled: read_only %>
-            <span class="cform-field__hint">ID de 10 dígitos da conta Google Ads do cliente, sem hífens.</span>
-          </div>
+          <div class="cform-accordion__body">
+            <div class="cform-field">
+              <%= form.label :google_ads_customer_id, 'Customer ID', class: 'crm-label' %>
+              <%= form.text_field :google_ads_customer_id, class: 'crm-input', placeholder: '1234567890', disabled: read_only %>
+              <span class="cform-field__hint">ID de 10 dígitos da conta Google Ads do cliente, sem hífens.</span>
+            </div>
 
-          <% if client.persisted? %>
-            <% if client.google_ads_connected_at.present? %>
-              <div class="cform-alert cform-alert--success">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Conectado em <%= l(client.google_ads_connected_at, format: '%d/%m/%Y %H:%M') %>.</span>
-                <%= button_to 'Desconectar', client_google_ads_disconnect_path(client), method: :delete, class: 'crm-btn crm-btn--secondary', form: { style: 'margin-left: auto;' } %>
-              </div>
-            <% else %>
-              <%= link_to 'Conectar Google Ads', client_google_ads_connect_path(client), class: 'crm-btn crm-btn--primary' %>
+            <% if client.persisted? %>
+              <% if google_configured %>
+                <div class="cform-alert cform-alert--success">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Conectado em <%= l(client.google_ads_connected_at, format: '%d/%m/%Y %H:%M') %>.</span>
+                  <%= button_to 'Desconectar', client_google_ads_disconnect_path(client), method: :delete, class: 'crm-btn crm-btn--secondary', form: { style: 'margin-left: auto;' } %>
+                </div>
+              <% else %>
+                <%= link_to 'Conectar Google Ads', client_google_ads_connect_path(client), class: 'crm-btn crm-btn--primary' %>
+              <% end %>
             <% end %>
-          <% end %>
-        </div>
+          </div>
+        </details>
 
         <%# Usuários Vinculados (somente em edição, admin) %>
         <% if current_user.admin? && client.persisted? && client.users.any? %>

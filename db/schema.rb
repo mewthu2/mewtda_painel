@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_08_120004) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_13_202923) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -97,7 +97,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_08_120004) do
     t.string "zapi_instance_id"
     t.string "zapi_instance_token"
     t.string "zapi_client_token"
-    t.boolean "sales_dashboard_enabled", default: false, null: false
     t.string "meta_access_token"
     t.string "meta_ad_account_id"
     t.string "google_ads_customer_id"
