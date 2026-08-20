@@ -1,4 +1,4 @@
-<%= form_for(client, as: :client, html: { autocomplete: 'off' }, data: { disabled: read_only }) do |form| %>
+<%= form_for(client, as: :client, url: local_assigns[:form_url] || client, html: { autocomplete: 'off' }, data: { disabled: read_only }) do |form| %>
 
   <div class="cform-wrapper">
     <div class="cform-card">

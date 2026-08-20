@@ -2,7 +2,7 @@ module GoogleAds
   class MonthlyCostFetcher
     class FetchError < StandardError; end
 
-    API_VERSION = 'v17'.freeze
+    API_VERSION = 'v25'.freeze
     TOKEN_URL = 'https://oauth2.googleapis.com/token'.freeze
     REQUEST_TIMEOUT = 15
 
@@ -47,6 +47,7 @@ module GoogleAds
         headers: {
           'Authorization' => "Bearer #{access_token}",
           'developer-token' => ENV['GOOGLE_ADS_DEVELOPER_TOKEN'],
+          'login-customer-id' => ENV['GOOGLE_ADS_LOGIN_CUSTOMER_ID'].to_s.delete('-'),
           'Content-Type' => 'application/json'
         },
         body: {

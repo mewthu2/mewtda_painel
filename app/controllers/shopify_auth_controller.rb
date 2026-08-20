@@ -1,9 +1,11 @@
 class ShopifyAuthController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:auth, :callback]
+
   def auth
     shop = params[:shop]
 
     redirect_to(
-      "https://#{shop}/admin/oauth/authorize?client_id=#{ENV['SHOPIFY_API_KEY']}&scope=read_orders,read_products,create_orders&redirect_uri=#{shopify_callback_url}&state=123",
+      "https://#{shop}/admin/oauth/authorize?client_id=#{ENV['SHOPIFY_API_KEY']}&scope=read_orders,write_orders,read_products&redirect_uri=#{shopify_callback_url}&state=123",
       allow_other_host: true
     )
   end
