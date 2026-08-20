@@ -1,3 +1,17 @@
 <% title 'Editar Usuário' %>
 
 <%= render 'users/form', user: @user, read_only: false %>
+
+<div class="users-form-page">
+  <div class="crm-card users-form-page__card" style="margin-top: 16px;">
+    <div class="users-form-page__section-header">
+      Resetar Senha
+    </div>
+    <p class="users-form-page__section-hint">
+      Define a senha deste usuário como <strong><%= UsersController::DEFAULT_RESET_PASSWORD %></strong>. O usuário poderá trocá-la depois em "Minha Conta".
+    </p>
+    <%= button_to 'Resetar Senha', reset_password_user_path(@user), method: :patch,
+        class: 'crm-btn crm-btn--secondary',
+        form: { onsubmit: "return confirm('Resetar a senha de #{j @user.name} para o padrão?');" } %>
+  </div>
+</div>

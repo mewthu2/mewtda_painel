@@ -72,6 +72,13 @@
 
         <div class="crm-header__dropdown-sep"></div>
 
+        <%= link_to edit_account_path, class: 'crm-header__dropdown-item' do %>
+          <i class="fa-solid fa-key crm-fa"></i>
+          Minha Conta
+        <% end %>
+
+        <div class="crm-header__dropdown-sep"></div>
+
         <% if current_user.admin? %>
           <%= link_to users_path, class: 'crm-header__dropdown-item' do %>
             <i class="fa-solid fa-user crm-fa"></i>

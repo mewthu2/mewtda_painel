@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     post 'vendas/sync_ad_costs', to: 'sales_dashboard#sync_ad_costs', as: :sync_ad_costs_sales_dashboard
 
     resource :settings, path: 'configuracoes', controller: 'settings', only: [:edit, :update]
+    resource :account, path: 'minha-conta', controller: 'account', only: [:edit, :update]
 
     resources :orders, only: [:index] do
       collection do
@@ -76,7 +77,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :users
+    resources :users do
+      member do
+        patch :reset_password
+      end
+    end
     resources :profiles
 
     resources :attempts, only: [:index] do

@@ -1,6 +1,8 @@
 class UsersController < ApplicationController
+  DEFAULT_RESET_PASSWORD = 'mudar@123'.freeze
+
   before_action :authenticate_user!
-  before_action :set_user, only: %i[show edit update destroy]
+  before_action :set_user, only: %i[show edit update destroy reset_password]
   before_action :load_refferences, only: %i[show edit new create]
   before_action :require_admin!
 
@@ -37,6 +39,11 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
     redirect_to users_path, notice: 'Usuário excluído com sucesso.'
+  end
+
+  def reset_password
+    @user.update!(password: DEFAULT_RESET_PASSWORD, password_confirmation: DEFAULT_RESET_PASSWORD)
+    redirect_to users_path, notice: "Senha de #{@user.name} resetada para o padrão (#{DEFAULT_RESET_PASSWORD})."
   end
 
   private
