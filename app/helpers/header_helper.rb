@@ -21,7 +21,10 @@ module HeaderHelper
       { label: 'Automações', url: crm_path, icon: 'fa-solid fa-robot' }
     ]
 
-    items += user.admin? ? admin_nav_items : [{ label: 'Configurações', url: edit_settings_path, icon: 'fa-solid fa-gear' }]
+    items += user.admin? ? admin_nav_items : [
+      { label: 'Configurações', url: edit_settings_path, icon: 'fa-solid fa-gear' },
+      { label: 'Custos de Anúncio', url: ad_costs_path, icon: 'fa-solid fa-money-bill-wave' }
+    ]
 
     items
   end
@@ -37,6 +40,7 @@ module HeaderHelper
       { label: 'Usuários', url: users_path, icon: 'fa-solid fa-user' },
       { label: 'Clientes', url: clients_path, icon: 'fa-solid fa-building' },
       { label: 'Perfis', url: profiles_path, icon: 'fa-solid fa-id-badge' },
+      { label: 'Custos de Anúncio', url: ad_costs_path, icon: 'fa-solid fa-money-bill-wave' },
       { label: 'Sidekiq', url: '/crm/sidekiq', icon: 'fa-solid fa-bolt' },
       { label: 'Try-On Virtual', url: try_on_index_path, icon: 'fa-solid fa-wand-magic-sparkles' }
     ]

@@ -63,6 +63,46 @@
   color: var(--primary);
 }
 
+.crm-sidebar__submenu {
+  display: flex;
+  flex-direction: column;
+}
+
+.crm-sidebar__submenu summary.crm-sidebar__link {
+  cursor: pointer;
+  list-style: none;
+}
+
+.crm-sidebar__submenu summary.crm-sidebar__link::-webkit-details-marker {
+  display: none;
+}
+
+.crm-sidebar__submenu-chevron {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--fg-alt);
+  transition: transform .15s;
+}
+
+.crm-sidebar__submenu[open] .crm-sidebar__submenu-chevron {
+  transform: rotate(180deg);
+}
+
+.crm-sidebar__submenu-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 2px;
+  padding-left: 16px;
+  border-left: 1px solid var(--outline);
+  margin-left: 20px;
+}
+
+.crm-sidebar__link--sub {
+  font-size: 13px;
+  padding: 7px 12px;
+}
+
 @media (max-width: 768px) {
   .crm-sidebar {
     display: none;

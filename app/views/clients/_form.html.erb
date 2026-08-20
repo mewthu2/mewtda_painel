@@ -86,8 +86,8 @@
           <div class="cform-accordion__body">
             <div class="cform-field">
               <%= form.label :shopify_shop_url, 'URL da Loja Shopify', class: 'crm-label' %>
-              <%= form.text_field :shopify_shop_url, class: 'crm-input', placeholder: 'https://sua-loja.myshopify.com', disabled: read_only %>
-              <span class="cform-field__hint">URL completa da loja Shopify</span>
+              <%= form.text_field :shopify_shop_url, class: 'crm-input', placeholder: 'sua-loja.myshopify.com', disabled: read_only %>
+              <span class="cform-field__hint">Domínio da loja, sem "https://" (ex.: dunas-beachwear.myshopify.com)</span>
             </div>
 
             <div class="cform-field">
@@ -98,8 +98,37 @@
                   <span class="crm-tag crm-tag--success">Configurado</span>
                 <% end %>
               </div>
-              <span class="cform-field__hint">Deixe em branco para manter o token atual. Token da API Admin do Shopify.</span>
+              <span class="cform-field__hint">Preenchido automaticamente ao conectar via OAuth, ou cole manualmente um token de app customizado.</span>
             </div>
+
+            <% if current_user.admin? %>
+              <div class="cform-field">
+                <%= form.label :shopify_api_key, 'Client ID do App Shopify', class: 'crm-label' %>
+                <%= form.text_field :shopify_api_key, class: 'crm-input', placeholder: 'Client ID do app criado no Partner Dashboard', disabled: read_only %>
+              </div>
+
+              <div class="cform-field">
+                <%= form.label :shopify_api_secret, 'Client Secret do App Shopify', class: 'crm-label' %>
+                <div class="cform-field__input-wrapper">
+                  <%= form.password_field :shopify_api_secret, class: 'crm-input cform-field__input--password', placeholder: client.shopify_api_secret.present? ? '••••••••••••••••' : 'Client Secret do app', disabled: read_only, value: '' %>
+                  <% if client.shopify_api_secret.present? %>
+                    <span class="crm-tag crm-tag--success">Configurado</span>
+                  <% end %>
+                </div>
+                <span class="cform-field__hint">Deixe em branco para manter o valor atual. Cada cliente deve ter seu próprio app Shopify no Partner Dashboard.</span>
+              </div>
+
+              <% if client.persisted? && client.shopify_app_configured? %>
+                <div class="cform-field">
+                  <span class="cform-field__hint">
+                    App URL a cadastrar no Partner Dashboard deste app: <code><%= client_shopify_auth_url(client) %></code>
+                  </span>
+                  <% if client.shopify_shop_url.present? %>
+                    <%= link_to 'Conectar via OAuth', client_shopify_auth_path(client, shop: client.shopify_shop_url), class: 'crm-btn crm-btn--primary', style: 'margin-top: 8px;' %>
+                  <% end %>
+                </div>
+              <% end %>
+            <% end %>
 
             <% if client.persisted? %>
               <% if shopify_configured %>

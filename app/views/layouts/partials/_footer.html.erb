@@ -16,9 +16,16 @@
       <span class="crm-footer__title">Sistema</span>
 
       <%= link_to crm_path, class: "crm-footer__link" do %>Dashboard<% end %>
-      <%= link_to customers_path, class: "crm-footer__link" do %>Clientes<% end %>
+      <% if current_user.admin? || current_user.client.present? %>
+        <%= link_to sales_dashboard_path, class: "crm-footer__link" do %>Vendas<% end %>
+        <%= link_to ad_costs_path, class: "crm-footer__link" do %>Custos de Anúncio<% end %>
+      <% end %>
       <%= link_to orders_path, class: "crm-footer__link" do %>Pedidos<% end %>
+      <%= link_to customers_path, class: "crm-footer__link" do %>Clientes<% end %>
       <%= link_to products_path, class: "crm-footer__link" do %>Produtos<% end %>
+      <%= link_to campaigns_path, class: "crm-footer__link" do %>Campanhas<% end %>
+      <%= link_to affiliates_path, class: "crm-footer__link" do %>Afiliados<% end %>
+      <%= link_to edit_account_path, class: "crm-footer__link" do %>Minha Conta<% end %>
 
     </div>
 
@@ -28,7 +35,9 @@
       <span class="crm-footer__title">Administração</span>
 
       <%= link_to users_path, class: "crm-footer__link" do %>Usuários<% end %>
+      <%= link_to clients_path, class: "crm-footer__link" do %>Clientes (Admin)<% end %>
       <%= link_to profiles_path, class: "crm-footer__link" do %>Perfis<% end %>
+      <%= link_to try_on_index_path, class: "crm-footer__link" do %>Try-On Virtual<% end %>
       <%= link_to "/crm/sidekiq", class: "crm-footer__link" do %>Sidekiq<% end %>
 
     </div>

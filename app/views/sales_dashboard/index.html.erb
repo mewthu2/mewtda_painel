@@ -34,15 +34,12 @@
       <div class="sd-alert">
         <span>
           <% if @metrics[:configured_platforms].empty? %>
-            Nenhuma integração de anúncio configurada para este cliente.
-            <%= link_to 'Configurar integração', current_user.admin? ? edit_client_path(@client) : edit_settings_path, class: 'sd-alert__link' %>
+            Nenhum custo de anúncio cadastrado para este cliente.
           <% else %>
-            Custos de anúncio não configurados para este mês.
+            Nenhum custo de anúncio cadastrado para este período.
           <% end %>
         </span>
-        <% if current_user.admin? && @metrics[:configured_platforms].any? %>
-          <%= button_to 'Sincronizar custos', sync_ad_costs_sales_dashboard_path(year: @year, month: @month), method: :post, class: 'crm-btn sd-alert__btn' %>
-        <% end %>
+        <%= link_to 'Cadastrar custo', new_ad_cost_path, class: 'crm-btn sd-alert__btn' %>
       </div>
     <% end %>
 

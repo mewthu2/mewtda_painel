@@ -2,7 +2,7 @@ module Meta
   class MonthlyCostFetcher
     class FetchError < StandardError; end
 
-    GRAPH_API_VERSION = 'v20.0'.freeze
+    GRAPH_API_VERSION = 'v26.0'.freeze
     REQUEST_TIMEOUT = 15
 
     def initialize(client:, year:, month:)

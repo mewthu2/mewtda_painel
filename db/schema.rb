@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_13_202923) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_20_210519) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -28,6 +28,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_13_202923) do
     t.datetime "updated_at", null: false
     t.index ["client_id", "platform", "year", "month"], name: "index_ad_cost_snapshots_on_client_platform_month", unique: true
     t.index ["client_id"], name: "index_ad_cost_snapshots_on_client_id"
+  end
+
+  create_table "ad_costs", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "platform", null: false
+    t.string "name", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.decimal "amount", precision: 12, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id", "platform"], name: "index_ad_costs_on_client_id_and_platform"
+    t.index ["client_id", "start_date", "end_date"], name: "index_ad_costs_on_client_id_and_start_date_and_end_date"
+    t.index ["client_id"], name: "index_ad_costs_on_client_id"
   end
 
   create_table "attempts", force: :cascade do |t|
@@ -102,6 +116,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_13_202923) do
     t.string "google_ads_customer_id"
     t.string "google_ads_refresh_token"
     t.datetime "google_ads_connected_at"
+    t.string "shopify_api_key"
+    t.string "shopify_api_secret"
     t.index ["shopify_shop_url"], name: "index_clients_on_shopify_shop_url", unique: true
   end
 
@@ -300,6 +316,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_13_202923) do
   end
 
   add_foreign_key "ad_cost_snapshots", "clients"
+  add_foreign_key "ad_costs", "clients"
   add_foreign_key "campaign_actions", "campaigns"
   add_foreign_key "campaign_actions", "customers"
   add_foreign_key "campaign_actions", "orders"

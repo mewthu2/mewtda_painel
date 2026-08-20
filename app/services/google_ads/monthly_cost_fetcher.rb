@@ -47,7 +47,6 @@ module GoogleAds
         headers: {
           'Authorization' => "Bearer #{access_token}",
           'developer-token' => ENV['GOOGLE_ADS_DEVELOPER_TOKEN'],
-          'login-customer-id' => ENV['GOOGLE_ADS_LOGIN_CUSTOMER_ID'].to_s.delete('-'),
           'Content-Type' => 'application/json'
         },
         body: {

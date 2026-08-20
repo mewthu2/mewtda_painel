@@ -66,8 +66,12 @@
       <div class="crm-header__dropdown" id="crm-dropdown">
 
         <div class="crm-header__dropdown-header">
-          <strong><%= current_user.name %></strong><br>
-          <span><%= current_user.admin? ? 'Administrador' : 'Usuário' %></span>
+          <div class="crm-header__dropdown-avatar"><%= current_user.name.first.upcase %></div>
+          <div class="crm-header__dropdown-header-info">
+            <strong><%= current_user.name %></strong>
+            <span class="crm-header__dropdown-role"><%= current_user.admin? ? 'Administrador' : 'Usuário' %></span>
+            <span class="crm-header__dropdown-email"><%= current_user.email %></span>
+          </div>
         </div>
 
         <div class="crm-header__dropdown-sep"></div>
@@ -95,13 +99,18 @@
             Perfis
           <% end %>
 
+          <%= link_to ad_costs_path, class: 'crm-header__dropdown-item' do %>
+            <i class="fa-solid fa-money-bill-wave crm-fa"></i>
+            Custos de Anúncio
+          <% end %>
+
           <%= link_to '/crm/sidekiq', class: 'crm-header__dropdown-item', target: '_blank' do %>
             <i class="fa-solid fa-bolt crm-fa"></i>
             Sidekiq
           <% end %>
 
           <% if current_user&.profile_id == 1 %>
-            <%= link_to try_on_index_path, class: "crm-header__dropdown-link #{'active' if request.path.start_with?(try_on_index_path)}" do %>
+            <%= link_to try_on_index_path, class: "crm-header__dropdown-item #{'active' if request.path.start_with?(try_on_index_path)}" do %>
               <i class="fa-solid fa-wand-magic-sparkles crm-fa"></i>
               Try-On Virtual
             <% end %>
@@ -111,6 +120,11 @@
           <%= link_to edit_settings_path, class: 'crm-header__dropdown-item' do %>
             <i class="fa-solid fa-gear crm-fa"></i>
             Configurações
+          <% end %>
+
+          <%= link_to ad_costs_path, class: 'crm-header__dropdown-item' do %>
+            <i class="fa-solid fa-money-bill-wave crm-fa"></i>
+            Custos de Anúncio
           <% end %>
           <div class="crm-header__dropdown-sep"></div>
         <% end %>

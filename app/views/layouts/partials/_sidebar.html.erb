@@ -14,10 +14,30 @@
       <% end %>
 
       <% if current_user.admin? || current_user.client.present? %>
-        <%= link_to sales_dashboard_path, class: "crm-sidebar__link #{'active' if current_page?(sales_dashboard_path)}" do %>
-          <i class="fa-solid fa-sack-dollar crm-fa"></i>
-          Vendas
-        <% end %>
+        <% vendas_active = current_page?(sales_dashboard_path) || request.path.start_with?(ad_costs_path) %>
+        <details class="crm-sidebar__submenu" <%= 'open' if vendas_active %>>
+          <summary class="crm-sidebar__link crm-sidebar__link--parent">
+            <i class="fa-solid fa-sack-dollar crm-fa"></i>
+            Vendas
+            <i class="fa-solid fa-chevron-down crm-sidebar__submenu-chevron"></i>
+          </summary>
+          <div class="crm-sidebar__submenu-body">
+            <%= link_to sales_dashboard_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if current_page?(sales_dashboard_path)}" do %>
+              <i class="fa-solid fa-chart-pie crm-fa"></i>
+              Dashboard Principal
+            <% end %>
+
+            <%= link_to ad_costs_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if current_page?(ad_costs_path)}" do %>
+              <i class="fa-solid fa-list crm-fa"></i>
+              Custos
+            <% end %>
+
+            <%= link_to new_ad_cost_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if current_page?(new_ad_cost_path)}" do %>
+              <i class="fa-solid fa-plus crm-fa"></i>
+              Cadastrar Custo
+            <% end %>
+          </div>
+        </details>
       <% end %>
 
       <div class="crm-sidebar__group">

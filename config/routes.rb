@@ -38,7 +38,7 @@ Rails.application.routes.draw do
     get '/', to: 'dashboard#index', as: :crm
     get '/session/:session_id', to: 'dashboard#session_detail', as: :crm_session
 
-    get '/shopify/auth', to: 'shopify_auth#auth'
+    get 'clients/:id/shopify/auth', to: 'shopify_auth#auth', as: :client_shopify_auth
     get '/shopify/callback', to: 'shopify_auth#callback'
 
     get    'clients/:id/google_ads/connect',    to: 'google_ads#connect',    as: :client_google_ads_connect
@@ -49,6 +49,8 @@ Rails.application.routes.draw do
 
     get  'vendas',               to: 'sales_dashboard#index',          as: :sales_dashboard
     post 'vendas/sync_ad_costs', to: 'sales_dashboard#sync_ad_costs', as: :sync_ad_costs_sales_dashboard
+
+    resources :ad_costs, except: [:show]
 
     resource :settings, path: 'configuracoes', controller: 'settings', only: [:edit, :update]
     resource :account, path: 'minha-conta', controller: 'account', only: [:edit, :update]

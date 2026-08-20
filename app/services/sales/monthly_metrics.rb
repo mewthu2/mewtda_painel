@@ -75,24 +75,19 @@ module Sales
     end
 
     def configured_platforms
-      platforms = []
-      platforms << 'google_ads' if client.google_ads_configured?
-      platforms << 'meta' if client.meta_configured?
-      platforms
+      client.ad_costs.distinct.pluck(:platform)
     end
 
-    def ad_cost_snapshots
-      AdCostSnapshot.where(client_id: client.id, year: year, month: month)
+    def ad_costs_in_period
+      client.ad_costs.overlapping(period.first.to_date, period.last.to_date)
     end
 
     def ad_cost_available?
-      return false if configured_platforms.empty?
-
-      configured_platforms.all? { |platform| ad_cost_snapshots.exists?(platform: platform) }
+      ad_costs_in_period.exists?
     end
 
     def ad_cost
-      ad_cost_snapshots.where(platform: configured_platforms).sum(:cost)
+      ad_costs_in_period.sum(:amount)
     end
 
     def roas
