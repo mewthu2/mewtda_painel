@@ -255,7 +255,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <span>Conectado em <%= l(client.google_ads_connected_at, format: '%d/%m/%Y %H:%M') %>.</span>
-                  <%= button_to 'Desconectar', client_google_ads_disconnect_path(client), method: :delete, class: 'crm-btn crm-btn--secondary', form: { style: 'margin-left: auto;' } %>
+                  <button type="submit" form="google-ads-disconnect-form" class="crm-btn crm-btn--secondary" style="margin-left: auto;" onclick="return confirm('Tem certeza que deseja desconectar o Google Ads?');">Desconectar</button>
                 </div>
               <% else %>
                 <%= link_to 'Conectar Google Ads', client_google_ads_connect_path(client), class: 'crm-btn crm-btn--primary' %>
@@ -317,4 +317,9 @@
     </div>
   </div>
 
+<% end %>
+
+<% if client.persisted? && client.google_ads_connected_at.present? %>
+  <%= form_tag client_google_ads_disconnect_path(client), method: :delete, id: 'google-ads-disconnect-form', style: 'display: none;' do %>
+  <% end %>
 <% end %>
