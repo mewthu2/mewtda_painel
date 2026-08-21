@@ -206,6 +206,16 @@
       </div>
     </div>
 
+    <div class="sd-chart-card">
+      <div class="sd-chart-card__title">Detalhe por Dia</div>
+      <div class="sd-chart-card__subtitle">Clique em um dia para ver o resumo</div>
+      <div class="sd-day-buttons">
+        <% @goal_daily[:days].each do |d| %>
+          <button type="button" class="sd-day-btn" data-day="<%= d %>">Dia <%= d %></button>
+        <% end %>
+      </div>
+    </div>
+
     <div class="sd-charts-grid">
       <div class="sd-chart-card">
         <div class="sd-chart-card__title">Vendas por dia</div>
@@ -240,6 +250,36 @@
         <% else %>
           <p class="sd-chart-empty">Nenhum custo cadastrado neste período.</p>
         <% end %>
+      </div>
+    </div>
+
+    <div id="sd-day-modal-overlay" class="sd-modal-overlay" role="dialog" aria-modal="true">
+      <div class="sd-modal">
+        <div class="sd-modal__head">
+          <div>
+            <h2 class="sd-modal__title">Dia <span id="sd-day-modal-day"></span></h2>
+            <p class="sd-modal__subtitle" id="sd-day-modal-date"></p>
+          </div>
+          <button type="button" id="sd-day-modal-close" class="sd-modal__close">&times;</button>
+        </div>
+        <div class="sd-modal__body">
+          <div class="sd-modal__grid" id="sd-day-modal-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sd-orders-modal-overlay" class="sd-modal-overlay" role="dialog" aria-modal="true">
+      <div class="sd-modal">
+        <div class="sd-modal__head">
+          <div>
+            <h2 class="sd-modal__title">Pedidos do Dia <span id="sd-orders-modal-day"></span></h2>
+            <p class="sd-modal__subtitle" id="sd-orders-modal-date"></p>
+          </div>
+          <button type="button" id="sd-orders-modal-close" class="sd-modal__close">&times;</button>
+        </div>
+        <div class="sd-modal__body">
+          <div class="sd-order-list" id="sd-orders-modal-list"></div>
+        </div>
       </div>
     </div>
   <% end %>
@@ -293,7 +333,11 @@ document.addEventListener("DOMContentLoaded", function () {
     conversionRate: <%= raw @goal_daily[:conversion_rate_by_day].to_json %>,
     roas: <%= raw @goal_daily[:roas_by_day].to_json %>,
     cac: <%= raw @goal_daily[:cac_by_day].to_json %>,
-    taggedRevenue: <%= raw @goal_daily[:tagged_revenue_by_day].to_json %>
+    taggedRevenue: <%= raw @goal_daily[:tagged_revenue_by_day].to_json %>,
+    ordersCount: <%= raw @goal_daily[:orders_count_by_day].to_json %>,
+    totalRevenue: <%= raw @goal_daily[:total_revenue_by_day].to_json %>,
+    sessions: <%= raw @goal_daily[:sessions_by_day].to_json %>,
+    checkoutCompleted: <%= raw @goal_daily[:checkout_completed_count_by_day].to_json %>
   };
 
   var goalColors = { normal: primary, done: '#16a34a', over: '#dc2626', empty: gridColor };
@@ -345,6 +389,129 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }).render();
   });
+
+  var dayModalYear = <%= @year %>;
+  var dayModalMonth = <%= @month %>;
+  var monthNames = [
+    'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+    'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+  ];
+
+  function fmtCurrency(v) { return 'R$ ' + (v || 0).toFixed(2).replace('.', ','); }
+  function fmtPercent(v) { return v === null || v === undefined ? '—' : v.toFixed(1) + '%'; }
+  function fmtMultiplier(v) { return v === null || v === undefined ? '—' : v.toFixed(2) + 'x'; }
+
+  function dayMetricCard(label, value, opts) {
+    opts = opts || {};
+    var cls = 'sd-modal__metric' + (opts.clickable ? ' sd-modal__metric--clickable' : '');
+    var attr = opts.clickable ? ' data-open-orders="1"' : '';
+    return '<div class="' + cls + '"' + attr + '>' +
+      '<span class="sd-modal__metric-label">' + label + '</span>' +
+      '<span class="sd-modal__metric-value">' + value + '</span>' +
+    '</div>';
+  }
+
+  var currentDayModalDay = null;
+
+  function openDayModal(day) {
+    var idx = goalDaily.days.indexOf(day);
+    if (idx === -1) return;
+
+    currentDayModalDay = day;
+    document.getElementById('sd-day-modal-day').textContent = day;
+    document.getElementById('sd-day-modal-date').textContent =
+      day + ' de ' + monthNames[dayModalMonth - 1] + ' de ' + dayModalYear;
+
+    var avgTicket = goalDaily.avgTicket[idx];
+    var conversion = goalDaily.conversionRate[idx];
+    var roas = goalDaily.roas[idx];
+    var cac = goalDaily.cac[idx];
+
+    var cards = [
+      dayMetricCard('Faturamento', fmtCurrency(goalDaily.totalRevenue[idx])),
+      dayMetricCard('Pedidos', goalDaily.ordersCount[idx], { clickable: true }),
+      dayMetricCard('Ticket Médio', avgTicket === null ? '—' : fmtCurrency(avgTicket)),
+      dayMetricCard('Acessos', goalDaily.sessions[idx]),
+      dayMetricCard('Checkouts Completos', goalDaily.checkoutCompleted[idx]),
+      dayMetricCard('Taxa de Conversão', fmtPercent(conversion))
+    ];
+
+    if (roas !== null && roas !== undefined) cards.push(dayMetricCard('ROAS', fmtMultiplier(roas)));
+    if (cac !== null && cac !== undefined) cards.push(dayMetricCard('CAC', fmtCurrency(cac)));
+
+    document.getElementById('sd-day-modal-grid').innerHTML = cards.join('');
+    document.getElementById('sd-day-modal-overlay').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDayModal() {
+    document.getElementById('sd-day-modal-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.sd-day-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () { openDayModal(parseInt(btn.dataset.day, 10)); });
+  });
+
+  var dayModalOverlay = document.getElementById('sd-day-modal-overlay');
+  if (dayModalOverlay) {
+    document.getElementById('sd-day-modal-close').addEventListener('click', closeDayModal);
+    dayModalOverlay.addEventListener('click', function (e) { if (e.target === this) closeDayModal(); });
+  }
+
+  var ordersForDayUrl = '<%= orders_for_day_sales_dashboard_path %>';
+
+  function orderRow(order) {
+    return '<div class="sd-order-row">' +
+      '<span class="sd-order-row__number">#' + (order.number || order.id) + '</span>' +
+      '<span class="sd-order-row__time">' + (order.time || '—') + '</span>' +
+      '<span class="sd-order-row__customer">' + order.customer + '</span>' +
+      '<span class="sd-order-row__total">' + fmtCurrency(order.total) + '</span>' +
+    '</div>';
+  }
+
+  function openOrdersModal(day) {
+    document.getElementById('sd-orders-modal-day').textContent = day;
+    document.getElementById('sd-orders-modal-date').textContent =
+      day + ' de ' + monthNames[dayModalMonth - 1] + ' de ' + dayModalYear;
+    document.getElementById('sd-orders-modal-list').innerHTML =
+      '<p class="sd-chart-empty">Carregando...</p>';
+    document.getElementById('sd-orders-modal-overlay').style.display = 'block';
+
+    var url = ordersForDayUrl + '?year=' + dayModalYear + '&month=' + dayModalMonth + '&day=' + day;
+    fetch(url, { headers: { 'Accept': 'application/json' } })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        var list = document.getElementById('sd-orders-modal-list');
+        if (!data.orders || data.orders.length === 0) {
+          list.innerHTML = '<p class="sd-chart-empty">Nenhum pedido neste dia.</p>';
+          return;
+        }
+        list.innerHTML = data.orders.map(orderRow).join('');
+      })
+      .catch(function () {
+        document.getElementById('sd-orders-modal-list').innerHTML =
+          '<p class="sd-chart-empty">Erro ao carregar os pedidos. Tente novamente.</p>';
+      });
+  }
+
+  function closeOrdersModal() {
+    document.getElementById('sd-orders-modal-overlay').style.display = 'none';
+  }
+
+  var dayModalGrid = document.getElementById('sd-day-modal-grid');
+  if (dayModalGrid) {
+    dayModalGrid.addEventListener('click', function (e) {
+      var card = e.target.closest('[data-open-orders]');
+      if (card && currentDayModalDay !== null) openOrdersModal(currentDayModalDay);
+    });
+  }
+
+  var ordersModalOverlay = document.getElementById('sd-orders-modal-overlay');
+  if (ordersModalOverlay) {
+    document.getElementById('sd-orders-modal-close').addEventListener('click', closeOrdersModal);
+    ordersModalOverlay.addEventListener('click', function (e) { if (e.target === this) closeOrdersModal(); });
+  }
 
   var platformChartEl = document.querySelector('#sd-platform-chart');
   if (platformChartEl) {

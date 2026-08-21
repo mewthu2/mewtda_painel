@@ -71,6 +71,20 @@ class Sales::DailyBreakdownTest < ActiveSupport::TestCase
     assert result[:orders_by_day].all?(&:zero?)
   end
 
+  test 'buckets a late-night order by its local (Brasília) day, not by the UTC-stored date' do
+    # 23:39 em Brasília (-03:00) é gravado no banco como "2026-03-16 02:39"
+    # (UTC-equivalente, sem timezone). Sem o ajuste de -3h, DATE() na consulta
+    # SQL trunca usando esse valor bruto e o pedido "vaza" pro dia 16.
+    create_order(shopify_creation_date: Time.zone.local(2026, 3, 15, 23, 39), total_price: 100)
+
+    result = call
+
+    assert_equal 100.0, result[:revenue_by_day][14].to_f # índice 14 = dia 15
+    assert_equal 1, result[:orders_by_day][14]
+    assert_equal 0.0, result[:revenue_by_day][15].to_f # dia 16 deve ficar vazio
+    assert_equal 0, result[:orders_by_day][15]
+  end
+
   test 'caps days at today when the requested month is the current month' do
     travel_to Time.zone.local(2026, 3, 10) do
       create_order(shopify_creation_date: Time.zone.local(2026, 3, 5), total_price: 100)

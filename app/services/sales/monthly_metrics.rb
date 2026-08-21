@@ -154,19 +154,18 @@ module Sales
         .count(:session_id)
     end
 
-    # Sessões que completaram o checkout / sessões totais — mesma definição do
-    # Shopify. Só usada aqui pra meta (não é mais um card próprio no dashboard).
-    def checkout_completed_sessions
-      ShopifyEvent
-        .where(client_id: client.id, kind: 'checkout_completed', created_at: period)
-        .distinct
-        .count(:session_id)
+    # Pedidos reais do período inteiro (sem filtro de tag) / sessões totais.
+    # Usa o pedido de fato — sincronizado da API da Shopify — em vez do evento
+    # de pixel "checkout_completed", que é disparado por JS no navegador do
+    # cliente e sabidamente perde conversões (ad blocker, timing do redirect).
+    def period_orders_count
+      Order.not_cancelled.where(client_id: client.id, shopify_creation_date: period).count
     end
 
     def conversion_rate
       return nil if unique_sessions.zero?
 
-      (checkout_completed_sessions.to_f / unique_sessions * 100).round(2)
+      (period_orders_count.to_f / unique_sessions * 100).round(2)
     end
 
     # Faturamento (Bruto − Descontos) só dos pedidos com a tag configurada na meta

@@ -19,7 +19,11 @@ module Sales
         conversion_rate_by_day: conversion_rate_by_day,
         roas_by_day: roas_by_day,
         cac_by_day: cac_by_day,
-        tagged_revenue_by_day: tagged_revenue_by_day
+        tagged_revenue_by_day: tagged_revenue_by_day,
+        orders_count_by_day: orders_count_by_day,
+        total_revenue_by_day: total_revenue_by_day,
+        sessions_by_day: sessions_series('page_viewed'),
+        checkout_completed_count_by_day: sessions_series('checkout_completed')
       }
     end
 
@@ -52,10 +56,12 @@ module Sales
     end
 
     def order_totals_by_day
+      local_date = Sales::LocalDate.sql('shopify_creation_date')
+
       @order_totals_by_day ||= orders_scope
-                               .group('DATE(shopify_creation_date)')
+                               .group(Arel.sql(local_date))
                                .pluck(Arel.sql(
-                                        'DATE(shopify_creation_date), SUM(subtotal_price), ' \
+                                        "#{local_date}, SUM(subtotal_price), " \
                                         'SUM(total_shipping_price), SUM(total_price), COUNT(*)'
                                       ))
                                .each_with_object({}) do |(date, net, shipping, total, count), memo|
@@ -76,6 +82,19 @@ module Sales
       end
     end
 
+    def orders_count_by_day
+      days.map { |d| order_totals_by_day.dig(d, :count) || 0 }
+    end
+
+    # Faturamento total do dia (líquido + frete) — mesma base do card
+    # "Faturamento" no topo do dashboard, usada no modal de detalhe do dia.
+    def total_revenue_by_day
+      days.map do |d|
+        entry = order_totals_by_day[d]
+        entry ? (entry[:net] + entry[:shipping]).round(2) : 0.0
+      end
+    end
+
     def tagged_orders_scope
       return orders_scope.none if tag.blank?
 
@@ -83,9 +102,11 @@ module Sales
     end
 
     def tagged_totals_by_day
+      local_date = Sales::LocalDate.sql('shopify_creation_date')
+
       @tagged_totals_by_day ||= tagged_orders_scope
-                                .group('DATE(shopify_creation_date)')
-                                .pluck(Arel.sql('DATE(shopify_creation_date), SUM(subtotal_price)'))
+                                .group(Arel.sql(local_date))
+                                .pluck(Arel.sql("#{local_date}, SUM(subtotal_price)"))
                                 .each_with_object({}) { |(date, net), memo| memo[date.day] = net.to_f }
     end
 
@@ -96,7 +117,7 @@ module Sales
     def sessions_by_day(kind)
       ShopifyEvent
         .where(client_id: client.id, kind: kind, created_at: period)
-        .pluck(Arel.sql('DATE(created_at)'), :session_id)
+        .pluck(Arel.sql(Sales::LocalDate.sql('created_at')), :session_id)
         .group_by { |date, _| date.day }
         .transform_values { |rows| rows.map { |_, sid| sid }.uniq.size }
     end
@@ -109,13 +130,20 @@ module Sales
       @checkout_completed_by_day ||= sessions_by_day('checkout_completed')
     end
 
+    def sessions_series(kind)
+      totals = kind == 'page_viewed' ? page_viewed_by_day : checkout_completed_by_day
+      days.map { |d| totals[d] || 0 }
+    end
+
+    # Pedidos reais do dia (não o evento de pixel "checkout_completed", que
+    # perde conversões por ad blocker/timing) / acessos do dia.
     def conversion_rate_by_day
       days.map do |d|
         pv = page_viewed_by_day[d] || 0
         next nil if pv.zero?
 
-        cc = checkout_completed_by_day[d] || 0
-        (cc.to_f / pv * 100).round(2)
+        orders = order_totals_by_day.dig(d, :count) || 0
+        (orders.to_f / pv * 100).round(2)
       end
     end
 
@@ -155,7 +183,7 @@ module Sales
                                 .group('customers.id')
                                 .having('MIN(orders.shopify_creation_date) BETWEEN ? AND ?', period.first, period.last)
                                 .pluck(Arel.sql('MIN(orders.shopify_creation_date)'))
-                                .group_by { |date| date.to_date.day }
+                                .group_by { |date| date.in_time_zone(Sales::LocalDate::TIME_ZONE).to_date.day }
                                 .transform_values(&:size)
     end
 

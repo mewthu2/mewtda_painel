@@ -110,6 +110,33 @@ class SalesDashboardController < ApplicationController
                 alert: "Falha ao processar: #{e.message}"
   end
 
+  def orders_for_day
+    unless @client
+      return render json: { error: 'Nenhum cliente selecionado.' }, status: :unprocessable_entity
+    end
+
+    date = Date.new(requested_year, requested_month, params[:day].to_i)
+    orders = Order.not_cancelled
+                  .where(client_id: @client.id, shopify_creation_date: date.beginning_of_day..date.end_of_day)
+                  .includes(:customer)
+                  .order(shopify_creation_date: :asc)
+
+    render json: {
+      orders: orders.map do |o|
+        {
+          id: o.id,
+          number: o.shopify_order_number,
+          time: o.shopify_creation_date&.strftime('%H:%M'),
+          customer: o.customer_name,
+          total: o.total_price.to_f,
+          tags: o.tags
+        }
+      end
+    }
+  rescue Date::Error, ArgumentError
+    render json: { error: 'Dia inválido.' }, status: :unprocessable_entity
+  end
+
   private
 
   def ensure_dashboard_access!

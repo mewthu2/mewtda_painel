@@ -177,18 +177,16 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     create_order(total_price: 300)
     create_page_view('s1')
     create_page_view('s2')
-    ShopifyEvent.create!(
-      client: @client, integration_user: @integration_user, kind: 'checkout_completed',
-      session_id: 's1', created_at: Time.zone.local(2026, 3, 15)
-    )
 
     result = call
 
     assert_equal 200.0, result[:avg_ticket].to_f
     assert_equal 200.0, result[:avg_ticket_target_progress_pct]
     assert_equal 0.0, result[:avg_ticket_target_remaining].to_f
-    assert_equal 50.0, result[:conversion_rate]
-    assert_equal 100.0, result[:conversion_rate_target_progress_pct]
+    # conversion_rate usa pedidos reais (2) / acessos (2) = 100%, não o evento
+    # de pixel "checkout_completed" — esse não entra mais na conta.
+    assert_equal 100.0, result[:conversion_rate]
+    assert_equal 200.0, result[:conversion_rate_target_progress_pct]
   end
 
   test 'cac_target is a ceiling: status is :under when actual CAC is at or below the target' do

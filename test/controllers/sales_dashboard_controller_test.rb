@@ -116,4 +116,25 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test 'orders_for_day returns only the orders created on the requested local day' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    user = build_user(client: client)
+    # 23:39 em Brasília (-03:00) cai em 2026-03-15 no calendário local, mesmo
+    # armazenado como "2026-03-16 02:39" (UTC-equivalente) no banco.
+    Order.create!(client: client, shopify_order_id: SecureRandom.hex(6), shopify_order_number: '1001',
+                  shopify_creation_date: Time.zone.local(2026, 3, 15, 23, 39),
+                  total_price: 300, subtotal_price: 300, total_discounts: 0)
+    sign_in user
+
+    get orders_for_day_sales_dashboard_path(year: 2026, month: 3, day: 15)
+    body15 = JSON.parse(response.body)
+
+    get orders_for_day_sales_dashboard_path(year: 2026, month: 3, day: 16)
+    body16 = JSON.parse(response.body)
+
+    assert_equal 1, body15['orders'].size
+    assert_equal '1001', body15['orders'].first['number']
+    assert_equal 0, body16['orders'].size
+  end
 end
