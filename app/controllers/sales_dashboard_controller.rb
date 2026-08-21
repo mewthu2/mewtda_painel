@@ -53,6 +53,7 @@ class SalesDashboardController < ApplicationController
     @tag = params[:tag].presence
 
     @metrics = Sales::MonthlyMetrics.new(client: @client, year: @year, month: @month, tag: @tag).call
+    @daily = Sales::DailyBreakdown.new(client: @client, year: @year, month: @month).call
   end
 
   # Os parâmetros vêm da URL e podem ser editados à mão: sem limites, valores

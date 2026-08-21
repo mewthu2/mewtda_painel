@@ -4,12 +4,12 @@ class Shopify::Orders
 
   class << self
 
-    def sync_shopify_orders_to_rails(session:, client:, limit: 100, status: 'any', time_range: :all)
+    def sync_shopify_orders_to_rails(session:, client:, limit: 100, status: 'any', time_range: :all, created_at_min: nil, created_at_max: nil)
       api_client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
       total = 0
 
-      created_at_min =
+      created_at_min ||=
         case time_range.to_sym
         when :last_3_days
           3.days.ago.iso8601
@@ -19,13 +19,16 @@ class Shopify::Orders
           nil
         end
 
+      order_fields = 'id,name,created_at,line_items,note_attributes,customer,total_price,subtotal_price,total_discounts,total_tax,total_shipping_price_set,tags,cancelled_at'
+
       query_params = {
         limit: limit,
         status: status,
-        fields: 'id,name,created_at,line_items,note_attributes,customer'
+        fields: order_fields
       }
 
       query_params[:created_at_min] = created_at_min if created_at_min.present?
+      query_params[:created_at_max] = created_at_max if created_at_max.present?
 
       # Busca ou cria a location do client
       @location = Location.find_or_create_by!(slug: client.name.parameterize) do |loc|
@@ -46,6 +49,8 @@ class Shopify::Orders
             client: client
           )
           total += 1
+        rescue StandardError => e
+          Rails.logger.error "[Shopify::Orders] Falha ao sincronizar pedido #{shopify_order['name']} (client #{client.id}): #{e.class} #{e.message}"
         end
 
         break unless response.next_page_info
@@ -53,12 +58,82 @@ class Shopify::Orders
         response = api_client.get(
           path: 'orders',
           query: {
+            limit: limit,
+            fields: order_fields,
             page_info: response.next_page_info
           }
         )
       end
 
       Rails.logger.info "[Shopify::Orders] Sincronizados #{total} pedidos para client #{client.id} (#{client.name})"
+      total
+    end
+
+    # Sincroniza reembolsos processados num período, independente da data de criação do
+    # pedido — reflete exatamente a linha "Sales reversals" do relatório Total Sales do
+    # Shopify, que também bucketiza reembolsos pela data em que foram processados.
+    # updated_at_min/max é usado (não created_at) porque um reembolso atualiza o pedido,
+    # então isso pega pedidos antigos que só tiveram movimento (reembolso) no período.
+    def sync_refunds_to_rails(session:, client:, processed_at_min:, processed_at_max:, limit: 250)
+      api_client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+      total = 0
+
+      range_start = Time.zone.parse(processed_at_min)
+      range_end = Time.zone.parse(processed_at_max)
+
+      refund_fields = 'id,name,refunds'
+
+      response = api_client.get(
+        path: 'orders',
+        query: {
+          limit: limit,
+          status: 'any',
+          fields: refund_fields,
+          updated_at_min: processed_at_min,
+          updated_at_max: processed_at_max
+        }
+      )
+
+      loop do
+        response.body['orders'].each do |shopify_order|
+          Array(shopify_order['refunds']).each do |refund|
+            next if refund['processed_at'].blank?
+
+            processed_at = Time.parse(refund['processed_at'])
+            next unless processed_at.between?(range_start, range_end)
+
+            amount = Array(refund['transactions']).sum { |t| t['amount'].to_f }
+            next if amount.zero?
+
+            order = Order.find_by(shopify_order_id: shopify_order['id'].to_s, client_id: client.id)
+
+            r = Refund.find_or_initialize_by(client_id: client.id, shopify_refund_id: refund['id'].to_s)
+            r.assign_attributes(
+              order_id: order&.id,
+              shopify_order_id: shopify_order['id'].to_s,
+              processed_at: processed_at,
+              amount: amount
+            )
+            r.save! if r.changed?
+            total += 1
+          end
+        rescue StandardError => e
+          Rails.logger.error "[Shopify::Orders] Falha ao sincronizar reembolsos do pedido #{shopify_order['name']} (client #{client.id}): #{e.class} #{e.message}"
+        end
+
+        break unless response.next_page_info
+
+        response = api_client.get(
+          path: 'orders',
+          query: {
+            limit: limit,
+            fields: refund_fields,
+            page_info: response.next_page_info
+          }
+        )
+      end
+
+      Rails.logger.info "[Shopify::Orders] Sincronizados #{total} reembolsos para client #{client.id} (#{client.name})"
       total
     end
 
@@ -91,6 +166,10 @@ class Shopify::Orders
         client_id: client.id
       )
 
+      # Usa os valores originais do pedido (não os current_*) porque o Shopify calcula
+      # "Gross sales"/"Discounts" com base no valor histórico de criação do pedido, e
+      # trata reembolsos à parte, pela data em que o reembolso foi processado (não pela
+      # data do pedido) — ver Shopify::Orders.sync_refunds_to_rails.
       order.assign_attributes(
         shopify_order_number: shopify_order_number,
         staff_id: staff_id.presence || order.staff_id,
@@ -103,6 +182,8 @@ class Shopify::Orders
         subtotal_price: shopify_order['subtotal_price'],
         total_discounts: shopify_order['total_discounts'],
         total_price: shopify_order['total_price'],
+        total_tax: shopify_order['total_tax'],
+        total_shipping_price: shopify_order.dig('total_shipping_price_set', 'shop_money', 'amount'),
         cancelled_at: shopify_order['cancelled_at'].presence && Time.parse(shopify_order['cancelled_at'])
       )
 

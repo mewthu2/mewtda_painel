@@ -242,6 +242,7 @@
     .then(function(data) {
       var customer = data.customer;
       var orders   = data.orders || [];
+      var shopifyStore = data.shopify_store;
       var name     = customer.name || 'Sem nome';
 
       var initials = name.split(' ').slice(0,2).map(function(w){ return w[0] || ''; }).join('').toUpperCase();
@@ -260,7 +261,7 @@
         list.innerHTML = '<p class="cmodal__empty">Nenhum pedido encontrado para este cliente.</p>';
       } else {
         orders.forEach(function(order) {
-          var shopifyUrl = 'https://admin.shopify.com/store/henrribrasil/orders/' + order.shopify_id;
+          var shopifyUrl = 'https://admin.shopify.com/store/' + shopifyStore + '/orders/' + order.shopify_id;
           var total      = order.total > 0 ? 'R$ ' + parseFloat(order.total).toFixed(2).replace('.', ',') : '—';
           var items      = order.items || [];
 

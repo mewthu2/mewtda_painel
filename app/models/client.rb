@@ -2,6 +2,7 @@ class Client < ApplicationRecord
   has_many :users, dependent: :nullify
   has_many :campaigns, dependent: :destroy
   has_many :ad_costs, dependent: :destroy
+  has_many :refunds, dependent: :destroy
 
   encrypts :meta_access_token, :google_ads_refresh_token, :shopify_api_secret
 
@@ -16,6 +17,10 @@ class Client < ApplicationRecord
 
   def shopify_configured?
     shopify_shop_url.present? && shopify_access_token.present?
+  end
+
+  def shopify_admin_handle
+    shopify_shop_url.to_s.sub(%r{\Ahttps?://}, '').split('.').first
   end
 
   def shopify_app_configured?

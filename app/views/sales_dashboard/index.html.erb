@@ -49,15 +49,43 @@
         <div class="crm-kpi-card__value"><%= @metrics[:avg_ticket] ? currency(@metrics[:avg_ticket]) : '—' %></div>
       </div>
 
-      <div class="crm-kpi-card">
+      <div class="crm-kpi-card sd-kpi-card--wide">
         <div class="crm-kpi-card__label">Faturamento</div>
         <div class="crm-kpi-card__value"><%= currency(@metrics[:revenue]) %></div>
-        <div class="sd-kpi__hint">Bruto: <%= currency(@metrics[:gross_sales]) %> · Descontos: <%= currency(@metrics[:discounts]) %></div>
-      </div>
-
-      <div class="crm-kpi-card">
-        <div class="crm-kpi-card__label">Taxa de Conversão</div>
-        <div class="crm-kpi-card__value"><%= @metrics[:conversion_rate] ? "#{@metrics[:conversion_rate]}%" : '—' %></div>
+        <div class="sd-breakdown">
+          <div class="sd-breakdown__row">
+            <span class="sd-breakdown__label">Bruto</span>
+            <span class="sd-breakdown__value"><%= currency(@metrics[:gross_sales]) %></span>
+          </div>
+          <div class="sd-breakdown__row sd-breakdown__row--neg">
+            <span class="sd-breakdown__label">− Descontos</span>
+            <span class="sd-breakdown__value"><%= currency(@metrics[:discounts]) %></span>
+          </div>
+          <div class="sd-breakdown__row sd-breakdown__row--subtotal">
+            <span class="sd-breakdown__label">= Líquido de produtos</span>
+            <span class="sd-breakdown__value"><%= currency(@metrics[:net_of_discounts]) %></span>
+          </div>
+          <div class="sd-breakdown__row sd-breakdown__row--neg">
+            <span class="sd-breakdown__label">− Reembolsos</span>
+            <span class="sd-breakdown__value"><%= currency(@metrics[:reversals]) %></span>
+          </div>
+          <div class="sd-breakdown__row sd-breakdown__row--subtotal">
+            <span class="sd-breakdown__label">= Líquido</span>
+            <span class="sd-breakdown__value"><%= currency(@metrics[:net_sales]) %></span>
+          </div>
+          <div class="sd-breakdown__row sd-breakdown__row--pos">
+            <span class="sd-breakdown__label">+ Frete</span>
+            <span class="sd-breakdown__value"><%= currency(@metrics[:shipping]) %></span>
+          </div>
+          <div class="sd-breakdown__row sd-breakdown__row--pos">
+            <span class="sd-breakdown__label">+ Impostos</span>
+            <span class="sd-breakdown__value"><%= currency(@metrics[:taxes]) %></span>
+          </div>
+          <div class="sd-breakdown__row sd-breakdown__row--total">
+            <span class="sd-breakdown__label">= Faturamento</span>
+            <span class="sd-breakdown__value"><%= currency(@metrics[:revenue]) %></span>
+          </div>
+        </div>
       </div>
 
       <div class="crm-kpi-card">
@@ -78,5 +106,106 @@
         <% end %>
       </div>
     </div>
+
+    <div class="sd-charts-grid">
+      <div class="sd-chart-card">
+        <div class="sd-chart-card__title">Vendas por dia</div>
+        <div class="sd-chart-card__subtitle">Faturamento e pedidos ao longo do mês</div>
+        <% if @daily[:has_data] %>
+          <div id="sd-daily-chart" style="height: 260px;"></div>
+        <% else %>
+          <p class="sd-chart-empty">Sem vendas registradas neste período ainda.</p>
+        <% end %>
+      </div>
+
+      <div class="sd-chart-card">
+        <div class="sd-chart-card__title">Investimento por Plataforma</div>
+        <div class="sd-chart-card__subtitle">Google Ads x Meta Ads no período</div>
+        <% if @metrics[:ad_cost_by_platform].present? %>
+          <div id="sd-platform-chart" style="height: 180px;"></div>
+          <div class="sd-platform-legend">
+            <% @metrics[:ad_cost_by_platform].each do |platform, amount| %>
+              <div class="sd-platform-legend__item">
+                <span class="sd-platform-badge sd-platform-badge--<%= platform %>">
+                  <% if platform == 'google_ads' %>
+                    <i class="fa-brands fa-google"></i>
+                  <% else %>
+                    <i class="fa-brands fa-meta"></i>
+                  <% end %>
+                </span>
+                <span class="sd-platform-legend__name"><%= AdCost::PLATFORM_LABELS[platform] || platform %></span>
+                <span class="sd-platform-legend__value"><%= currency(amount) %></span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="sd-chart-empty">Nenhum custo cadastrado neste período.</p>
+        <% end %>
+      </div>
+    </div>
   <% end %>
 </div>
+
+<% if @client && !@empty_state %>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var root = document.documentElement;
+  var isDark = root.classList.contains('theme-dark');
+  var style = getComputedStyle(root);
+  var primary = style.getPropertyValue('--primary').trim();
+  var gridColor = style.getPropertyValue('--outline').trim();
+  var tooltipTheme = isDark ? 'dark' : 'light';
+
+  var days = <%= raw @daily[:days].to_json %>;
+  var revenue = <%= raw @daily[:revenue_by_day].to_json %>;
+  var orders = <%= raw @daily[:orders_by_day].to_json %>;
+
+  var dailyChartEl = document.querySelector('#sd-daily-chart');
+  if (dailyChartEl) {
+    new ApexCharts(dailyChartEl, {
+      chart: { toolbar: { show: false }, fontFamily: 'inherit', height: 260, type: 'line' },
+      series: [
+        { name: 'Faturamento', type: 'area', data: revenue },
+        { name: 'Pedidos', type: 'column', data: orders }
+      ],
+      xaxis: { categories: days, labels: { formatter: function (d) { return 'Dia ' + d; } } },
+      colors: [primary, '#a78bfa'],
+      grid: { borderColor: gridColor },
+      stroke: { width: [2, 0], curve: 'smooth' },
+      fill: { type: ['gradient', 'solid'], gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05 } },
+      plotOptions: { bar: { columnWidth: '40%', borderRadius: 3 } },
+      legend: { show: true, position: 'top' },
+      tooltip: {
+        theme: tooltipTheme,
+        y: {
+          formatter: function (v, opts) {
+            if (opts.seriesIndex === 0) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+            return v + ' pedido(s)';
+          }
+        }
+      }
+    }).render();
+  }
+
+  var platformChartEl = document.querySelector('#sd-platform-chart');
+  if (platformChartEl) {
+    var platformLabels = <%= raw @metrics[:ad_cost_by_platform].keys.map { |p| AdCost::PLATFORM_LABELS[p] || p }.to_json %>;
+    var platformValues = <%= raw @metrics[:ad_cost_by_platform].values.map(&:to_f).to_json %>;
+    var platformColors = <%= raw @metrics[:ad_cost_by_platform].keys.map { |p| p == 'google_ads' ? '#4285F4' : '#0866FF' }.to_json %>;
+
+    new ApexCharts(platformChartEl, {
+      chart: { toolbar: { show: false }, fontFamily: 'inherit', height: 180, type: 'donut' },
+      series: platformValues,
+      labels: platformLabels,
+      colors: platformColors,
+      legend: { show: false },
+      dataLabels: { enabled: true, formatter: function (val) { return val.toFixed(1) + '%'; } },
+      tooltip: {
+        theme: tooltipTheme,
+        y: { formatter: function (v) { return 'R$ ' + v.toFixed(2).replace('.', ','); } }
+      }
+    }).render();
+  }
+});
+</script>
+<% end %>

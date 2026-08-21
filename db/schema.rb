@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_20_210519) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_21_031312) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -211,6 +211,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_20_210519) do
     t.decimal "total_discounts", precision: 12, scale: 2
     t.decimal "total_price", precision: 12, scale: 2
     t.datetime "cancelled_at"
+    t.decimal "total_shipping_price", precision: 12, scale: 2, default: "0.0", null: false
+    t.decimal "total_tax", precision: 12, scale: 2, default: "0.0", null: false
     t.index ["cancelled_at"], name: "index_orders_on_cancelled_at"
     t.index ["client_id", "shopify_order_id"], name: "index_orders_on_client_id_and_shopify_order_id", unique: true
     t.index ["client_id"], name: "index_orders_on_client_id"
@@ -249,6 +251,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_20_210519) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "refunds", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.bigint "order_id"
+    t.string "shopify_refund_id", null: false
+    t.string "shopify_order_id", null: false
+    t.datetime "processed_at", null: false
+    t.decimal "amount", precision: 12, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id", "processed_at"], name: "index_refunds_on_client_id_and_processed_at"
+    t.index ["client_id", "shopify_refund_id"], name: "index_refunds_on_client_id_and_shopify_refund_id", unique: true
+    t.index ["client_id"], name: "index_refunds_on_client_id"
+    t.index ["order_id"], name: "index_refunds_on_order_id"
   end
 
   create_table "shopify_events", force: :cascade do |t|
@@ -329,6 +346,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_20_210519) do
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "locations"
   add_foreign_key "products", "clients"
+  add_foreign_key "refunds", "clients"
+  add_foreign_key "refunds", "orders"
   add_foreign_key "shopify_events", "clients"
   add_foreign_key "shopify_events", "integration_users"
   add_foreign_key "users", "clients"

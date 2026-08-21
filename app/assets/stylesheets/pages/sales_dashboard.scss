@@ -24,6 +24,46 @@
 
 .sd-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .sd-kpi__hint { font-size: 12px; color: var(--fg-alt); margin-top: 4px; }
+.sd-kpi-card--wide { grid-column: span 2; }
+
+@media (max-width: 700px) {
+  .sd-kpi-card--wide { grid-column: span 1; }
+}
+
+.sd-breakdown {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sd-breakdown__row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--fg-alt);
+  padding: 2px 0;
+}
+
+.sd-breakdown__row--neg { color: #dc2626; }
+.sd-breakdown__row--pos { color: #16a34a; }
+
+.sd-breakdown__row--subtotal {
+  border-top: 1px dashed var(--outline);
+  margin-top: 2px;
+  padding-top: 6px;
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.sd-breakdown__row--total {
+  border-top: 1px solid var(--outline);
+  margin-top: 2px;
+  padding-top: 6px;
+  color: var(--fg);
+  font-weight: 700;
+  font-size: 13px;
+}
 
 .sd-alert {
   display: flex;
@@ -39,3 +79,73 @@
 }
 .sd-alert__btn { background: #92400e; color: #fff; border: none; }
 .sd-alert__btn:hover { filter: brightness(0.92); }
+
+.sd-charts-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .sd-charts-grid { grid-template-columns: 1fr; }
+}
+
+.sd-chart-card {
+  background: var(--bg);
+  border: 1px solid var(--outline);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.sd-chart-card__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 4px;
+}
+
+.sd-chart-card__subtitle {
+  font-size: 12px;
+  color: var(--fg-alt);
+  margin-bottom: 16px;
+}
+
+.sd-chart-empty {
+  font-size: 13px;
+  color: var(--fg-alt);
+  text-align: center;
+  padding: 40px 0;
+}
+
+.sd-platform-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.sd-platform-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.sd-platform-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+  font-size: 12px;
+}
+
+.sd-platform-badge--google_ads { background: linear-gradient(135deg, #4285F4, #34A853); }
+.sd-platform-badge--meta { background: #0866FF; }
+
+.sd-platform-legend__name { flex: 1; color: var(--fg); font-weight: 600; }
+.sd-platform-legend__value { color: var(--fg-alt); font-variant-numeric: tabular-nums; }

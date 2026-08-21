@@ -72,7 +72,7 @@
             <tr>
 
               <td>
-                <% shopify_url = "https://admin.shopify.com/store/henrribrasil/orders/#{order.shopify_order_id}" %>
+                <% shopify_url = "https://admin.shopify.com/store/#{order.client.shopify_admin_handle}/orders/#{order.shopify_order_id}" %>
                 <%= link_to shopify_url, target: '_blank', rel: 'noopener noreferrer', class: 'orders-table__order-link' do %>
                   <span class="orders-badge orders-badge--order">
                     <%= order.shopify_order_number.present? ? order.shopify_order_number : "##{order.shopify_order_id}" %>
@@ -135,6 +135,7 @@
                   onclick="openOrderModal(this)"
                   data-order-number="<%= order.shopify_order_number %>"
                   data-order-id="<%= order.shopify_order_id %>"
+                  data-shopify-store="<%= order.client.shopify_admin_handle %>"
                   data-created="<%= order.shopify_creation_date.strftime('%d/%m/%Y às %H:%M') %>"
                   data-customer-name="<%= [customer&.first_name, customer&.last_name].compact.join(' ').presence || customer&.name || '—' %>"
                   data-customer-email="<%= customer&.email.presence || '—' %>"
@@ -241,6 +242,7 @@
     function openOrderModal(btn) {
       var overlay = document.getElementById('order-modal-overlay');
       var orderId = btn.dataset.orderId;
+      var shopifyStore = btn.dataset.shopifyStore;
 
       document.getElementById('order-modal-title').textContent   = btn.dataset.orderNumber || '#' + orderId;
       document.getElementById('order-modal-date').textContent    = btn.dataset.created;
@@ -249,7 +251,7 @@
       document.getElementById('order-modal-email').textContent   = btn.dataset.customerEmail;
       document.getElementById('order-modal-phone').textContent   = btn.dataset.customerPhone;
       document.getElementById('order-modal-shopify-link').href   =
-        'https://admin.shopify.com/store/henrribrasil/orders/' + orderId;
+        'https://admin.shopify.com/store/' + shopifyStore + '/orders/' + orderId;
 
       var items = [];
       try { items = JSON.parse(btn.dataset.items.replace(/&quot;/g, '"')); } catch(e) {}

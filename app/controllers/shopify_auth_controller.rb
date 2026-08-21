@@ -44,7 +44,7 @@ class ShopifyAuthController < ApplicationController
 
     client.update!(shopify_shop_url: shop, shopify_access_token: token)
 
-    render json: { shop:, connected: true }
+    redirect_to edit_client_path(client), notice: 'Shopify conectado com sucesso.'
   rescue ActiveSupport::MessageVerifier::InvalidSignature, ActiveRecord::RecordNotFound
     render plain: 'Estado inválido na conexão com o Shopify.', status: :unprocessable_entity
   end

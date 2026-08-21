@@ -18,6 +18,7 @@ class CustomersController < ApplicationController
                      .order(shopify_creation_date: :desc)
 
     render json: {
+      shopify_store: Client.find_by(id: current_client_id)&.shopify_admin_handle,
       customer: {
         id:         customer.id,
         name:       [customer.first_name, customer.last_name].compact.join(' ').presence || customer.name.presence || 'Sem nome',
