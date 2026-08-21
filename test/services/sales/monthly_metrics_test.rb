@@ -48,30 +48,15 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     assert_equal 2, result[:orders_count]
   end
 
-  test 'excludes cancelled orders from revenue via an implicit reversal, but still counts their gross value' do
+  test 'excludes cancelled orders entirely from revenue and order count' do
     create_order(total_price: 100)
     create_order(total_price: 500, cancelled_at: Time.zone.local(2026, 3, 20))
 
     result = call
 
-    assert_equal 600.0, result[:net_of_discounts].to_f
-    assert_equal 500.0, result[:reversals].to_f
+    assert_equal 100.0, result[:net_of_discounts].to_f
     assert_equal 100.0, result[:revenue].to_f
     assert_equal 1, result[:orders_count]
-  end
-
-  test 'a real refund on a non-cancelled order is reverted by processed_at, not by order creation date' do
-    order = create_order(total_price: 300)
-    @client.refunds.create!(
-      order: order, shopify_refund_id: SecureRandom.hex(6), shopify_order_id: order.shopify_order_id,
-      processed_at: Time.zone.local(2026, 3, 25), amount: 120
-    )
-
-    result = call
-
-    assert_equal 300.0, result[:net_of_discounts].to_f
-    assert_equal 120.0, result[:reversals].to_f
-    assert_equal 180.0, result[:revenue].to_f
   end
 
   test 'avg_ticket is revenue divided by orders_count, nil when there are no orders' do
@@ -85,7 +70,7 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     assert_nil result[:avg_ticket]
   end
 
-  test 'tag filter restricts the order scope and ignores reversals' do
+  test 'tag filter restricts the order scope' do
     create_order(total_price: 100, tags: 'VendedoraElo, promo')
     create_order(total_price: 300, tags: 'outra-tag')
     create_page_view('s1')

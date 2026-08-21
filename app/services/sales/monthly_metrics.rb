@@ -13,8 +13,6 @@ module Sales
         gross_sales: gross_sales,
         discounts: discounts,
         net_of_discounts: net_of_discounts,
-        reversals: reversals,
-        net_sales: net_sales,
         shipping: shipping,
         orders_count: orders_count,
         avg_ticket: avg_ticket,
@@ -61,73 +59,36 @@ module Sales
       start..start.end_of_month
     end
 
-    # Pedidos NÃO cancelados: usado pra contagem de pedidos e ticket médio (volume real).
+    # Pedidos NÃO cancelados: base de tudo (faturamento, contagem, ticket médio).
+    # Reembolsos/cancelamentos não entram mais na conta — só simplesmente ignora
+    # o pedido cancelado, sem tentar reconciliar com o relatório do Shopify.
     def orders_scope
       scope = Order.not_cancelled.where(client_id: client.id, shopify_creation_date: period)
       scope = scope.where('tags ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(tag)}%") if tag.present?
       scope
     end
 
-    # TODOS os pedidos criados no período, incluindo cancelados: o relatório "Total
-    # Sales" do Shopify conta o valor original de todo pedido no Bruto, mesmo cancelado,
-    # e reverte esse valor separadamente (ver #reversals) — não simplesmente ignora.
-    def all_orders_scope
-      scope = Order.where(client_id: client.id, shopify_creation_date: period)
-      scope = scope.where('tags ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(tag)}%") if tag.present?
-      scope
-    end
-
-    # Fórmula "Total Sales" do Shopify: net sales + frete (BR não usa Shopify Tax).
     def revenue
-      net_sales + shipping
+      net_of_discounts + shipping
     end
 
     # subtotal_price do Shopify já vem líquido de descontos (não é o "bruto" de fato).
-    # Reconstituímos o valor bruto somando o desconto de volta, pra a UI conseguir
-    # mostrar o caminho completo: Bruto - Descontos = Líquido de produtos - Reembolsos = Líquido.
+    # Reconstituímos o valor bruto somando o desconto de volta, pra a UI mostrar
+    # o caminho completo: Bruto - Descontos = Faturamento.
     def gross_sales
       net_of_discounts + discounts
     end
 
     def net_of_discounts
-      all_orders_scope.sum(:subtotal_price)
+      orders_scope.sum(:subtotal_price)
     end
 
     def discounts
-      all_orders_scope.sum(:total_discounts)
-    end
-
-    # Duas fontes de reversão, cada uma pela data em que o evento aconteceu (não a
-    # data de criação do pedido) — mesmo critério do "Sales reversals" do Shopify:
-    #   1. Reembolsos reais (dinheiro devolvido) processados no período.
-    #   2. Pedidos cancelados no período que nunca chegaram a ser cobrados (sem
-    #      transação de reembolso, porque não tinha o que devolver) — sem isso, o
-    #      valor deles ficaria contado no Bruto sem nunca ser revertido.
-    # Não dá pra atribuir reversão a uma tag específica, então com filtro de tag ativo
-    # essa dedução é ignorada (mesma limitação já existente em ROAS/CAC).
-    def reversals
-      return 0 if tag.present?
-
-      refund_reversals + cancelled_without_refund_reversals
-    end
-
-    def refund_reversals
-      client.refunds.where(processed_at: period).sum(:amount)
-    end
-
-    def cancelled_without_refund_reversals
-      Order
-        .where(client_id: client.id, cancelled_at: period)
-        .where.not(id: client.refunds.where.not(order_id: nil).select(:order_id))
-        .sum(:subtotal_price)
-    end
-
-    def net_sales
-      net_of_discounts - reversals
+      orders_scope.sum(:total_discounts)
     end
 
     def shipping
-      all_orders_scope.sum(:total_shipping_price)
+      orders_scope.sum(:total_shipping_price)
     end
 
     def orders_count
@@ -209,13 +170,12 @@ module Sales
     end
 
     # Faturamento (Bruto − Descontos) só dos pedidos com a tag configurada na meta
-    # (ex.: nome de uma vendedora) — não dá pra atribuir reembolso a uma tag
-    # específica, então usa o mesmo valor bruto de net_of_discounts, sem reversão.
+    # (ex.: nome de uma vendedora).
     def tagged_revenue
       goal_tag = goal&.tagged_revenue_tag
       return nil if goal_tag.blank?
 
-      all_orders_scope
+      orders_scope
         .where('tags ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(goal_tag)}%")
         .sum(:subtotal_price)
     end

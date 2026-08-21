@@ -6,28 +6,27 @@
     else "#{v}x"
     end
   end
+  goal_status = progress_pct.nil? ? 'empty' : (progress_pct >= 100 ? 'done' : 'normal')
 %>
 
-<div class="sd-goal-row">
-  <div class="sd-goal-row__header">
-    <span class="sd-goal-row__label"><%= label %></span>
-    <span class="sd-goal-row__comparison">
+<div class="sd-goal-chart" data-goal-chart data-chart-id="<%= chart_id %>" data-metric="<%= metric %>"
+     data-format="<%= format %>" data-reference="<%= reference %>" data-status="<%= goal_status %>"
+     data-label="<%= label %>">
+  <div class="sd-goal-chart__header">
+    <span class="sd-goal-chart__label"><%= label %></span>
+    <span class="sd-goal-chart__comparison">
       <strong><%= progress_pct ? format_value.call(current.to_f.round(2)) : '—' %></strong> de <%= format_value.call(target.to_f.round(2)) %>
     </span>
   </div>
 
-  <div class="sd-goal-bar">
-    <div class="sd-goal-bar__fill <%= 'sd-goal-bar__fill--done' if progress_pct && progress_pct >= 100 %>" style="width: <%= [progress_pct.to_f, 100].min %>%;"></div>
-  </div>
+  <div class="sd-goal-chart__canvas" id="<%= chart_id %>"></div>
 
-  <div class="sd-goal-row__footer">
+  <div class="sd-goal-chart__footer">
     <% if progress_pct.nil? %>
       <span class="sd-goal-row__pct">Sem dado suficiente ainda</span>
     <% elsif progress_pct >= 100 %>
-      <span class="sd-goal-row__pct"><%= progress_pct %>% da meta</span>
       <span class="sd-goal-row__remaining sd-goal-row__remaining--done">Meta batida! 🎉</span>
     <% else %>
-      <span class="sd-goal-row__pct"><%= progress_pct %>% da meta</span>
       <span class="sd-goal-row__remaining">Faltam <%= format_value.call(remaining.to_f.round(2)) %></span>
     <% end %>
   </div>

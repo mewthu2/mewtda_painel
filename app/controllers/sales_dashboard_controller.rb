@@ -3,7 +3,7 @@ class SalesDashboardController < ApplicationController
 
   before_action :set_client
   before_action :ensure_dashboard_access!
-  before_action :require_admin!, only: [:sync_ad_costs]
+  before_action :require_admin!, only: %i[sync_ad_costs process_now]
   before_action :load_metrics, only: %i[index export_xlsx]
 
   def index; end
@@ -23,9 +23,7 @@ class SalesDashboardController < ApplicationController
       [],
       ['Bruto', @metrics[:gross_sales]],
       ['Descontos', -@metrics[:discounts]],
-      ['Líquido de produtos', @metrics[:net_of_discounts]],
-      ['Reembolsos', -@metrics[:reversals]],
-      ['Líquido', @metrics[:net_sales]],
+      ['Faturamento (líquido)', @metrics[:net_of_discounts]],
       ['Frete', @metrics[:shipping]],
       ['Faturamento', @metrics[:revenue]],
       [],
@@ -80,6 +78,38 @@ class SalesDashboardController < ApplicationController
     end
   end
 
+  # Sincroniza os pedidos do mês em exibição na hora, sob demanda (em vez de
+  # esperar o job agendado). Reembolsos não entram mais aqui — saíram da
+  # equação do faturamento, então não há motivo pra sincronizar isso agora.
+  def process_now
+    unless @client
+      return redirect_to sales_dashboard_path, alert: 'Nenhum cliente selecionado.'
+    end
+
+    unless @client.shopify_configured?
+      return redirect_to sales_dashboard_path(year: requested_year, month: requested_month),
+                         alert: 'Shopify não configurado para este cliente.'
+    end
+
+    year = requested_year
+    month = requested_month
+    month_start = Time.zone.local(year, month, 1).beginning_of_day
+    month_end = month_start.end_of_month
+
+    session = ShopifyAPI::Auth::Session.new(shop: @client.shopify_shop_url, access_token: @client.shopify_access_token)
+
+    orders_count = Shopify::Orders.sync_shopify_orders_to_rails(
+      session: session, client: @client, limit: 250, status: 'any',
+      created_at_min: month_start.iso8601, created_at_max: month_end.iso8601
+    )
+
+    redirect_to sales_dashboard_path(year: year, month: month), notice: "#{orders_count} pedidos processados."
+  rescue StandardError => e
+    Rails.logger.error("[SalesDashboardController#process_now] client #{@client&.id}: #{e.class} #{e.message}")
+    redirect_to sales_dashboard_path(year: requested_year, month: requested_month),
+                alert: "Falha ao processar: #{e.message}"
+  end
+
   private
 
   def ensure_dashboard_access!
@@ -98,6 +128,9 @@ class SalesDashboardController < ApplicationController
 
     @metrics = Sales::MonthlyMetrics.new(client: @client, year: @year, month: @month, tag: @tag).call
     @daily = Sales::DailyBreakdown.new(client: @client, year: @year, month: @month).call
+    @goal_daily = Sales::GoalDailyBreakdown.new(
+      client: @client, year: @year, month: @month, tag: @metrics[:tagged_revenue_tag]
+    ).call
   end
 
   # Os parâmetros vêm da URL e podem ser editados à mão: sem limites, valores

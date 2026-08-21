@@ -29,8 +29,6 @@ $sd-header-blue: #14509e;
   color: rgba(255, 255, 255, 0.7);
 }
 
-.sd-header__sync-sep { opacity: 0.6; }
-
 .sd-month-nav { display: flex; align-items: center; gap: 10px; }
 .sd-month-nav__btn { background: #fff; color: $sd-header-blue; border-radius: 8px; padding: 6px 12px; text-decoration: none; font-weight: 600; font-size: 13px; }
 .sd-month-nav__label { color: #fff; font-weight: 700; min-width: 140px; text-align: center; }
@@ -189,48 +187,38 @@ $sd-header-blue: #14509e;
   margin-bottom: 16px;
 }
 
-.sd-goal-row { margin-bottom: 18px; }
-.sd-goal-row:last-child { margin-bottom: 0; }
+.sd-goals-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
 
-.sd-goal-row__header {
+.sd-goal-chart {
+  padding: 12px;
+  border: 1px solid var(--outline);
+  border-radius: 12px;
+}
+
+.sd-goal-chart__header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  gap: 8px;
   margin-bottom: 6px;
   font-size: 13px;
 }
 
-.sd-goal-row__label { font-weight: 700; color: var(--fg); }
-.sd-goal-row__comparison { color: var(--fg-alt); }
-.sd-goal-row__comparison strong { color: var(--fg); }
+.sd-goal-chart__label { font-weight: 700; color: var(--fg); }
+.sd-goal-chart__comparison { color: var(--fg-alt); font-size: 12px; white-space: nowrap; }
+.sd-goal-chart__comparison strong { color: var(--fg); }
 
-.sd-goal-bar {
-  height: 10px;
-  border-radius: 999px;
-  background: var(--outline);
-  overflow: hidden;
-}
+.sd-goal-chart__canvas { height: 240px; }
 
-.sd-goal-bar__fill {
-  height: 100%;
-  border-radius: 999px;
-  background: var(--primary);
-  transition: width 0.3s ease;
-}
-
-.sd-goal-bar__fill--done { background: #16a34a; }
-.sd-goal-bar__fill--over { background: #dc2626; }
-
-.sd-goal-row__pct--over { color: #dc2626; font-weight: 700; }
-.sd-goal-row__remaining--over { color: #dc2626; font-weight: 700; }
-
-.sd-goal-row__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 6px;
+.sd-goal-chart__footer {
+  margin-top: 4px;
   font-size: 12px;
   color: var(--fg-alt);
 }
 
 .sd-goal-row__remaining--done { color: #16a34a; font-weight: 700; }
+.sd-goal-row__remaining--over { color: #dc2626; font-weight: 700; }

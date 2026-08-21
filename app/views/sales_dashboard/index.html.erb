@@ -12,10 +12,6 @@
           <span title="<%= @client.orders_synced_at&.strftime('%d/%m/%Y %H:%M') %>">
             Pedidos: <%= @client.orders_synced_at ? "#{time_ago_in_words(@client.orders_synced_at)} atrás" : 'nunca sincronizado' %>
           </span>
-          <span class="sd-header__sync-sep">·</span>
-          <span title="<%= @client.refunds_synced_at&.strftime('%d/%m/%Y %H:%M') %>">
-            Reembolsos: <%= @client.refunds_synced_at ? "#{time_ago_in_words(@client.refunds_synced_at)} atrás" : 'nunca sincronizado' %>
-          </span>
         </div>
       <% end %>
     </div>
@@ -27,6 +23,15 @@
         <span class="sd-month-nav__label"><%= month_label(current_month) %></span>
         <%= link_to '›', sales_dashboard_path(year: (current_month + 1.month).year, month: (current_month + 1.month).month), class: 'sd-month-nav__btn' %>
       </div>
+      <% if current_user.admin? %>
+        <%= button_to process_now_sales_dashboard_path(year: @year, month: @month), method: :post,
+            class: 'sd-export-btn', title: 'Sincroniza os pedidos deste mês agora',
+            form: { data: { turbo: false } },
+            data: { disable_with: 'Processando... pode levar alguns minutos' } do %>
+          <i class="fa-solid fa-rotate"></i>
+          Processar Agora
+        <% end %>
+      <% end %>
       <%= link_to export_xlsx_sales_dashboard_path(year: @year, month: @month), class: 'sd-export-btn' do %>
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -66,16 +71,8 @@
             <span class="sd-breakdown__value"><%= currency(@metrics[:discounts]) %></span>
           </div>
           <div class="sd-breakdown__row sd-breakdown__row--subtotal">
-            <span class="sd-breakdown__label">= Líquido de produtos</span>
+            <span class="sd-breakdown__label">= Faturamento (líquido)</span>
             <span class="sd-breakdown__value"><%= currency(@metrics[:net_of_discounts]) %></span>
-          </div>
-          <div class="sd-breakdown__row sd-breakdown__row--neg">
-            <span class="sd-breakdown__label">− Reembolsos</span>
-            <span class="sd-breakdown__value"><%= currency(@metrics[:reversals]) %></span>
-          </div>
-          <div class="sd-breakdown__row sd-breakdown__row--subtotal">
-            <span class="sd-breakdown__label">= Líquido</span>
-            <span class="sd-breakdown__value"><%= currency(@metrics[:net_sales]) %></span>
           </div>
           <div class="sd-breakdown__row sd-breakdown__row--pos">
             <span class="sd-breakdown__label">+ Frete</span>
@@ -115,46 +112,51 @@
         <p class="sd-chart-empty">Nenhuma meta definida para este mês.</p>
       <% end %>
 
+      <% days_in_month = @goal_daily[:days_in_month] %>
+      <div class="sd-goals-grid">
       <% if @metrics[:revenue_target].present? %>
-        <%= render 'sales_dashboard/goal_progress',
+        <%= render 'sales_dashboard/goal_progress', chart_id: 'goal-gauge-revenue', metric: 'revenue',
             label: 'Faturamento (Bruto − Descontos)', format: :currency,
+            reference: (@metrics[:revenue_target].to_f / days_in_month).round(2),
             current: @metrics[:net_of_discounts], target: @metrics[:revenue_target],
             progress_pct: @metrics[:revenue_target_progress_pct], remaining: @metrics[:revenue_target_remaining] %>
       <% end %>
 
       <% if @metrics[:avg_ticket_target].present? %>
-        <%= render 'sales_dashboard/goal_progress',
-            label: 'Ticket Médio', format: :currency,
+        <%= render 'sales_dashboard/goal_progress', chart_id: 'goal-gauge-avg-ticket', metric: 'avgTicket',
+            label: 'Ticket Médio', format: :currency, reference: @metrics[:avg_ticket_target],
             current: @metrics[:avg_ticket] || 0, target: @metrics[:avg_ticket_target],
             progress_pct: @metrics[:avg_ticket_target_progress_pct], remaining: @metrics[:avg_ticket_target_remaining] %>
       <% end %>
 
       <% if @metrics[:conversion_rate_target].present? %>
-        <%= render 'sales_dashboard/goal_progress',
-            label: 'Taxa de Conversão', format: :percent,
+        <%= render 'sales_dashboard/goal_progress', chart_id: 'goal-gauge-conversion', metric: 'conversionRate',
+            label: 'Taxa de Conversão', format: :percent, reference: @metrics[:conversion_rate_target],
             current: @metrics[:conversion_rate] || 0, target: @metrics[:conversion_rate_target],
             progress_pct: @metrics[:conversion_rate_target_progress_pct], remaining: @metrics[:conversion_rate_target_remaining] %>
       <% end %>
 
       <% if @metrics[:roas_target].present? %>
-        <%= render 'sales_dashboard/goal_progress',
-            label: 'ROAS Faturado', format: :multiplier,
+        <%= render 'sales_dashboard/goal_progress', chart_id: 'goal-gauge-roas', metric: 'roas',
+            label: 'ROAS Faturado', format: :multiplier, reference: @metrics[:roas_target],
             current: @metrics[:roas] || 0, target: @metrics[:roas_target],
             progress_pct: @metrics[:roas_target_progress_pct], remaining: @metrics[:roas_target_remaining] %>
       <% end %>
 
       <% if @metrics[:cac_target].present? %>
-        <%= render 'sales_dashboard/goal_ceiling',
+        <%= render 'sales_dashboard/goal_ceiling', chart_id: 'goal-gauge-cac', metric: 'cac',
             label: 'CAC', current: @metrics[:cac], target: @metrics[:cac_target],
             status: @metrics[:cac_target_status], diff: @metrics[:cac_target_diff] %>
       <% end %>
 
       <% if @metrics[:tagged_revenue_target].present? %>
-        <%= render 'sales_dashboard/goal_progress',
+        <%= render 'sales_dashboard/goal_progress', chart_id: 'goal-gauge-tagged', metric: 'taggedRevenue',
             label: "Vendas — tag \"#{@metrics[:tagged_revenue_tag]}\"", format: :currency,
+            reference: (@metrics[:tagged_revenue_target].to_f / days_in_month).round(2),
             current: @metrics[:tagged_revenue] || 0, target: @metrics[:tagged_revenue_target],
             progress_pct: @metrics[:tagged_revenue_target_progress_pct], remaining: @metrics[:tagged_revenue_target_remaining] %>
       <% end %>
+      </div>
     </div>
 
     <div class="sd-charts-grid">
@@ -236,6 +238,66 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }).render();
   }
+
+  var goalDaily = {
+    days: <%= raw @goal_daily[:days].to_json %>,
+    revenue: <%= raw @goal_daily[:revenue_by_day].to_json %>,
+    avgTicket: <%= raw @goal_daily[:avg_ticket_by_day].to_json %>,
+    conversionRate: <%= raw @goal_daily[:conversion_rate_by_day].to_json %>,
+    roas: <%= raw @goal_daily[:roas_by_day].to_json %>,
+    cac: <%= raw @goal_daily[:cac_by_day].to_json %>,
+    taggedRevenue: <%= raw @goal_daily[:tagged_revenue_by_day].to_json %>
+  };
+
+  var goalColors = { normal: primary, done: '#16a34a', over: '#dc2626', empty: gridColor };
+  var goalFormatters = {
+    currency: function (v) { return 'R$ ' + v.toFixed(2).replace('.', ','); },
+    percent: function (v) { return v.toFixed(1) + '%'; },
+    multiplier: function (v) { return v.toFixed(2) + 'x'; }
+  };
+
+  document.querySelectorAll('[data-goal-chart]').forEach(function (row) {
+    var el = document.getElementById(row.dataset.chartId);
+    if (!el) return;
+
+    var series = goalDaily[row.dataset.metric] || [];
+    var reference = parseFloat(row.dataset.reference);
+    var color = goalColors[row.dataset.status] || primary;
+    var formatter = goalFormatters[row.dataset.format] || function (v) { return v; };
+
+    var annotations = isNaN(reference) ? {} : {
+      yaxis: [{
+        y: reference,
+        borderColor: gridColor,
+        strokeDashArray: 4,
+        label: {
+          text: 'Meta: ' + formatter(reference),
+          style: { color: gridColor, background: 'transparent', fontSize: '10px' },
+          position: 'right'
+        }
+      }]
+    };
+
+    new ApexCharts(el, {
+      chart: { toolbar: { show: false }, fontFamily: 'inherit', height: 240, type: 'area' },
+      series: [{ name: row.dataset.label, data: series }],
+      xaxis: {
+        categories: goalDaily.days,
+        labels: { formatter: function (d) { return 'Dia ' + d; } }
+      },
+      yaxis: { labels: { formatter: formatter } },
+      colors: [color],
+      grid: { borderColor: gridColor },
+      stroke: { width: 2, curve: 'smooth' },
+      fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05 } },
+      annotations: annotations,
+      legend: { show: false },
+      tooltip: {
+        theme: tooltipTheme,
+        y: { formatter: function (v) { return v === null ? '—' : formatter(v); } }
+      }
+    }).render();
+  });
 
   var platformChartEl = document.querySelector('#sd-platform-chart');
   if (platformChartEl) {
