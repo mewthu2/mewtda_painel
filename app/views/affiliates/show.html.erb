@@ -176,7 +176,7 @@
                     <div class="aff-top-list__sku">SKU: <%= product[:sku] %></div>
                   <% end %>
                   <% if product[:price].present? %>
-                    <div class="aff-top-list__price"><%= number_to_currency(product[:price], unit: 'R$ ', separator: ',', delimiter: '.') %></div>
+                    <div class="aff-top-list__price"><%= number_to_currency(product[:price], unit: 'R$', separator: ',', delimiter: '.') %></div>
                   <% end %>
                 </div>
                 <span class="aff-top-list__count"><%= product[:count] %></span>

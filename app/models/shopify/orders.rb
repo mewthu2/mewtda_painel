@@ -71,6 +71,8 @@ class Shopify::Orders
         )
       end
 
+      client.update!(orders_synced_at: Time.current)
+
       Rails.logger.info "[Shopify::Orders] Sincronizados #{total} pedidos para client #{client.id} (#{client.name})"
       total
     end
@@ -141,6 +143,8 @@ class Shopify::Orders
           }
         )
       end
+
+      client.update!(refunds_synced_at: Time.current)
 
       Rails.logger.info "[Shopify::Orders] Sincronizados #{total} reembolsos para client #{client.id} (#{client.name})"
       total

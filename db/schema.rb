@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_21_164907) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_21_175734) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -120,6 +120,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_164907) do
     t.datetime "google_ads_connected_at"
     t.string "shopify_api_key"
     t.string "shopify_api_secret"
+    t.datetime "orders_synced_at"
+    t.datetime "refunds_synced_at"
     t.index ["shopify_shop_url"], name: "index_clients_on_shopify_shop_url", unique: true
   end
 

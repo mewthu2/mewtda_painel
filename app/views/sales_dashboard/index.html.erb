@@ -6,6 +6,18 @@
     <div>
       <div class="sd-header__title">Dashboard de Vendas<%= " — #{@client.name}" if @client %></div>
       <div class="sd-header__subtitle">Ticket médio, faturamento, conversão, ROAS e CAC do mês</div>
+      <% if @client %>
+        <div class="sd-header__sync-info">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span title="<%= @client.orders_synced_at&.strftime('%d/%m/%Y %H:%M') %>">
+            Pedidos: <%= @client.orders_synced_at ? "#{time_ago_in_words(@client.orders_synced_at)} atrás" : 'nunca sincronizado' %>
+          </span>
+          <span class="sd-header__sync-sep">·</span>
+          <span title="<%= @client.refunds_synced_at&.strftime('%d/%m/%Y %H:%M') %>">
+            Reembolsos: <%= @client.refunds_synced_at ? "#{time_ago_in_words(@client.refunds_synced_at)} atrás" : 'nunca sincronizado' %>
+          </span>
+        </div>
+      <% end %>
     </div>
 
     <% if @client %>

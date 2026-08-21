@@ -30,6 +30,12 @@ gem 'rest-client'
 # Ruby internationalization and localization (i18n) solution.
 gem 'i18n'
 
+# Traduções prontas do Rails (datas, validações do ActiveRecord, números etc.)
+# pra pt-BR — o config/locales/pt-BR.yml deste projeto é só um stub, então sem
+# isso qualquer texto padrão do Rails (ex.: time_ago_in_words, mensagens de
+# validação) quebra com "Translation missing".
+gem 'rails-i18n'
+
 # Simple, efficient background processing for Ruby.
 gem 'sidekiq', '~> 7.2'
 

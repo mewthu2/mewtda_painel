@@ -277,7 +277,7 @@
                     <span class="db-top-list__sku">SKU: <%= p[:sku] %></span>
                   <% elsif p[:price].present? && p[:price].to_f > 0 %>
                     <span class="db-top-list__price">
-                      <%= number_to_currency(p[:price], unit: "R$ ", separator: ",", delimiter: ".") %>
+                      <%= number_to_currency(p[:price], unit: "R$", separator: ",", delimiter: ".") %>
                     </span>
                   <% end %>
                 </div>
@@ -317,7 +317,7 @@
                     <span class="db-top-list__sku">SKU: <%= p[:sku] %></span>
                   <% elsif p[:price].present? && p[:price].to_f > 0 %>
                     <span class="db-top-list__price">
-                      <%= number_to_currency(p[:price], unit: "R$ ", separator: ",", delimiter: ".") %>
+                      <%= number_to_currency(p[:price], unit: "R$", separator: ",", delimiter: ".") %>
                     </span>
                   <% end %>
                 </div>

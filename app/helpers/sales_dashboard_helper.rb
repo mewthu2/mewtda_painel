@@ -1,6 +1,6 @@
 module SalesDashboardHelper
   def currency(value)
-    number_to_currency(value, unit: 'R$ ', separator: ',', delimiter: '.')
+    number_to_currency(value, unit: 'R$', separator: ',', delimiter: '.')
   end
 
   def month_label(date)
