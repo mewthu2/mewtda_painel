@@ -14,7 +14,7 @@
       <% end %>
 
       <% if current_user.admin? || current_user.client.present? %>
-        <% vendas_active = current_page?(sales_dashboard_path) || request.path.start_with?(ad_costs_path) %>
+        <% vendas_active = current_page?(sales_dashboard_path) || request.path.start_with?(ad_costs_path) || current_page?(edit_goal_path) %>
         <details class="crm-sidebar__submenu" <%= 'open' if vendas_active %>>
           <summary class="crm-sidebar__link crm-sidebar__link--parent">
             <i class="fa-solid fa-sack-dollar crm-fa"></i>
@@ -35,6 +35,11 @@
             <%= link_to new_ad_cost_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if current_page?(new_ad_cost_path)}" do %>
               <i class="fa-solid fa-plus crm-fa"></i>
               Cadastrar Custo
+            <% end %>
+
+            <%= link_to edit_goal_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if current_page?(edit_goal_path)}" do %>
+              <i class="fa-solid fa-bullseye crm-fa"></i>
+              Metas
             <% end %>
           </div>
         </details>

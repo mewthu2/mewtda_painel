@@ -1,6 +1,6 @@
 class Shopify::CreateCashbackDiscount
   def self.call(order:)
-    session =  ShopifyAPI::Auth::Session.new(
+    session = ShopifyAPI::Auth::Session.new(
       shop: ENV.fetch('HENRRI_SHOP_URL'),
       access_token: ENV.fetch('HENRRI_OAUTH_SECRET')
     )

@@ -63,9 +63,9 @@ class TryOnController < ApplicationController
     model_base64 = image_to_base64(model_image)
 
     response = call_fashn_api('tryon-max', {
-      product_image: product_base64,
-      model_image: model_base64
-    })
+                                product_image: product_base64,
+                                model_image: model_base64
+                              })
 
     if response[:error]
       render json: { error: response[:error] }, status: :unprocessable_entity

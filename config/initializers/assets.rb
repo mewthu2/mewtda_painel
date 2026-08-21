@@ -18,7 +18,7 @@ Rails.application.config.assets.precompile += %w[admin/views/*.css]
 Rails.application.config.assets.precompile += %w[admin/views/*.js]
 Rails.application.config.assets.precompile += %w[views/admin/college_exam/form.js]
 Rails.application.config.assets.precompile += %w[views/admin/solicitations/form.js]
-Rails.application.config.assets.precompile += %w( actiontext.css )
+Rails.application.config.assets.precompile += %w(actiontext.css)
 
 # If you have additional asset types, add them here:
 # Rails.application.config.assets.precompile += %w( admin/images/*.png )

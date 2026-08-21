@@ -10,7 +10,7 @@ module Shopify
 
     def query(graphql_query)
       response = @client.query(query: graphql_query)
-      
+
       unless response.body.is_a?(Hash)
         raise StandardError, 'Resposta inválida da API Shopify'
       end

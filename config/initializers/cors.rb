@@ -3,8 +3,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     origins '*'
 
     resource '*',
-      headers: :any,
-      methods: [:get, :post, :options, :put, :patch, :delete],
-      max_age: 600
+             headers: :any,
+             methods: [:get, :post, :options, :put, :patch, :delete],
+             max_age: 600
   end
 end

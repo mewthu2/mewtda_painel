@@ -19,9 +19,9 @@ class GoogleAds::MonthlyCostFetcherTest < ActiveSupport::TestCase
         FakeResponse.new(true, { 'access_token' => 'access-123' })
       else
         FakeResponse.new(true, [
-          { 'results' => [{ 'metrics' => { 'costMicros' => '2000000' } }] },
-          { 'results' => [{ 'metrics' => { 'costMicros' => '500000' } }] }
-        ])
+                           { 'results' => [{ 'metrics' => { 'costMicros' => '2000000' } }] },
+                           { 'results' => [{ 'metrics' => { 'costMicros' => '500000' } }] }
+                         ])
       end
     end
 

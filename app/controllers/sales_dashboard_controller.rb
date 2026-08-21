@@ -62,7 +62,8 @@ class SalesDashboardController < ApplicationController
     results = AdCostSyncJob.new.perform(client_id: @client.id, year: year, month: month)
 
     if results.empty?
-      redirect_to sales_dashboard_path(year: year, month: month), alert: 'Nenhuma integração de anúncio configurada para este cliente.'
+      redirect_to sales_dashboard_path(year: year, month: month),
+                  alert: 'Nenhuma integração de anúncio configurada para este cliente.'
     elsif results.any? { |r| r.status == :error }
       failed = results.select { |r| r.status == :error }
       failed.each do |result|
@@ -72,8 +73,8 @@ class SalesDashboardController < ApplicationController
         )
       end
 
-      redirect_to sales_dashboard_path(year: year, month: month),
-                  alert: "Falha ao sincronizar: #{failed.map(&:platform).join(', ')}. Verifique as credenciais configuradas."
+      alert = "Falha ao sincronizar: #{failed.map(&:platform).join(', ')}. Verifique as credenciais configuradas."
+      redirect_to sales_dashboard_path(year: year, month: month), alert: alert
     else
       redirect_to sales_dashboard_path(year: year, month: month), notice: 'Custos sincronizados com sucesso.'
     end

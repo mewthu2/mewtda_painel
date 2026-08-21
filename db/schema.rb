@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_21_031312) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_21_164907) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -94,6 +94,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_031312) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "filters", default: {}, null: false
+    t.integer "max_sends"
+    t.integer "interval_days"
     t.index ["client_id", "kind"], name: "index_campaigns_on_client_id_and_kind"
     t.index ["client_id"], name: "index_campaigns_on_client_id"
     t.index ["filters"], name: "index_campaigns_on_filters", using: :gin
@@ -152,6 +154,23 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_031312) do
     t.jsonb "addresses", default: [], null: false
     t.index ["email"], name: "index_customers_on_email"
     t.index ["shopify_customer_id"], name: "index_customers_on_shopify_customer_id", unique: true
+  end
+
+  create_table "goals", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.decimal "revenue_target", precision: 12, scale: 2
+    t.decimal "roas_target", precision: 6, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "avg_ticket_target", precision: 12, scale: 2
+    t.decimal "conversion_rate_target", precision: 6, scale: 2
+    t.decimal "cac_target", precision: 12, scale: 2
+    t.decimal "tagged_revenue_target", precision: 12, scale: 2
+    t.string "tagged_revenue_tag"
+    t.index ["client_id", "year", "month"], name: "index_goals_on_client_id_and_year_and_month", unique: true
+    t.index ["client_id"], name: "index_goals_on_client_id"
   end
 
   create_table "integration_users", force: :cascade do |t|
@@ -213,6 +232,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_031312) do
     t.datetime "cancelled_at"
     t.decimal "total_shipping_price", precision: 12, scale: 2, default: "0.0", null: false
     t.decimal "total_tax", precision: 12, scale: 2, default: "0.0", null: false
+    t.string "tracking_number"
+    t.string "tracking_company"
+    t.string "tracking_url"
+    t.datetime "fulfilled_at"
     t.index ["cancelled_at"], name: "index_orders_on_cancelled_at"
     t.index ["client_id", "shopify_order_id"], name: "index_orders_on_client_id_and_shopify_order_id", unique: true
     t.index ["client_id"], name: "index_orders_on_client_id"
@@ -338,6 +361,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_031312) do
   add_foreign_key "campaign_actions", "customers"
   add_foreign_key "campaign_actions", "orders"
   add_foreign_key "campaigns", "clients"
+  add_foreign_key "goals", "clients"
   add_foreign_key "integration_users", "clients"
   add_foreign_key "locations", "clients"
   add_foreign_key "order_items", "orders"

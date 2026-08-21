@@ -11,6 +11,7 @@ class AddTrackingFieldsToShopifyEvents < ActiveRecord::Migration[7.2]
 
     add_index :shopify_events, :event_name unless index_exists?(:shopify_events, :event_name)
     add_index :shopify_events, :shop_domain unless index_exists?(:shopify_events, :shop_domain)
-    add_index :shopify_events, [:session_id, :event_name] unless index_exists?(:shopify_events, [:session_id, :event_name])
+    add_index :shopify_events, [:session_id, :event_name] unless index_exists?(:shopify_events,
+                                                                               [:session_id, :event_name])
   end
 end

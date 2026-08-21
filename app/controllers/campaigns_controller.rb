@@ -4,7 +4,9 @@ class CampaignsController < ApplicationController
   before_action :set_campaign, only: %i[show edit update destroy]
 
   def index
-    @campaigns = current_client.campaigns.order(created_at: :desc).paginate(page: params[:page], per_page: params_per_page(params[:per_page]))
+    @campaigns = current_client.campaigns
+                               .order(created_at: :desc)
+                               .paginate(page: params[:page], per_page: params_per_page(params[:per_page]))
 
     if params[:search].present?
       search_term = "%#{params[:search]}%"
@@ -39,7 +41,8 @@ class CampaignsController < ApplicationController
 
     if params[:search].present?
       search_term = "%#{params[:search]}%"
-      @campaign_actions = @campaign_actions.joins(:customer).where('customers.name ILIKE ? OR customers.email ILIKE ?', search_term, search_term)
+      @campaign_actions = @campaign_actions.joins(:customer).where('customers.name ILIKE ? OR customers.email ILIKE ?',
+                                                                   search_term, search_term)
     end
   end
 
@@ -96,7 +99,8 @@ class CampaignsController < ApplicationController
   def campaign_params
     params.require(:campaign).permit(
       :name, :kind, :message, :days_after_purchase, :start_date, :end_date, :active,
-      :filter_inactive_days, :filter_min_orders, :filter_product_name, :filter_maderite
+      :filter_inactive_days, :filter_min_orders, :filter_product_name, :filter_maderite,
+      :max_sends, :interval_days
     )
   end
 end

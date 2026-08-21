@@ -3,6 +3,7 @@ class Client < ApplicationRecord
   has_many :campaigns, dependent: :destroy
   has_many :ad_costs, dependent: :destroy
   has_many :refunds, dependent: :destroy
+  has_many :goals, dependent: :destroy
 
   encrypts :meta_access_token, :google_ads_refresh_token, :shopify_api_secret
 

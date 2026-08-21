@@ -16,7 +16,7 @@ class CustomerNotificationJob < ApplicationJob
         expiring_message(customer, coupon_code)
       end
 
-    Zapi::Client.send_text(
+    Zapi::Client.new(order.client).send_text(
       phone: format_phone(phone),
       message:
     )
@@ -26,29 +26,29 @@ class CustomerNotificationJob < ApplicationJob
 
   def purchase_message(customer, coupon)
     <<~MSG
-    🎉 Obrigado pela sua compra!
+      🎉 Obrigado pela sua compra!
 
-    Você ganhou *8% de cashback* para a próxima compra.
+      Você ganhou *8% de cashback* para a próxima compra.
 
-    Seu cupom:
-    #{coupon}
+      Seu cupom:
+      #{coupon}
 
-    ⏳ Válido por 30 dias.
+      ⏳ Válido por 30 dias.
 
-    Aproveite!
+      Aproveite!
     MSG
   end
 
   def expiring_message(customer, coupon)
     <<~MSG
-    ⏰ Seu cupom está quase expirando!
+      ⏰ Seu cupom está quase expirando!
 
-    Cupom:
-    #{coupon}
+      Cupom:
+      #{coupon}
 
-    Use hoje e ganhe *8% de desconto*.
+      Use hoje e ganhe *8% de desconto*.
 
-    Não perca 😉
+      Não perca 😉
     MSG
   end
 

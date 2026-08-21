@@ -35,7 +35,7 @@
         <div class="campaigns-filters__field campaigns-filters__field--small">
           <label class="crm-label">Tipo</label>
           <%= select_tag :kind,
-              options_for_select([['Todos', ''], ['Cashback', 'cashback']], params[:kind]),
+              options_for_select([['Todos', ''], ['Cashback', 'cashback'], ['Expiracao de Cashback', 'cashback_expiration'], ['Notificacao de Marketing', 'marketing_notification'], ['Rastreio de Pedido', 'shipping_tracking']], params[:kind]),
               class: 'crm-input campaigns-filters__input--select' %>
         </div>
         <div class="campaigns-filters__actions">

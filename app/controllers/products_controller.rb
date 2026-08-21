@@ -5,8 +5,8 @@ class ProductsController < ApplicationController
 
   def index
     @products = @products_scope
-                  .order(created_at: :desc)
-                  .paginate(page: params[:page], per_page: params_per_page(params[:per_page]))
+                .order(created_at: :desc)
+                .paginate(page: params[:page], per_page: params_per_page(params[:per_page]))
   end
 
   def export_xlsx
@@ -16,7 +16,8 @@ class ProductsController < ApplicationController
     worksheet = workbook[0]
     worksheet.sheet_name = 'Produtos'
 
-    headers = ['ID', 'SKU', 'Nome', 'Fornecedor', 'Cor/Variação 1', 'Tamanho/Variação 2', 'Variação 3', 'Preço (R$)', 'Custo (R$)', 'ID Shopify', 'Criado em']
+    headers = ['ID', 'SKU', 'Nome', 'Fornecedor', 'Cor/Variação 1', 'Tamanho/Variação 2', 'Variação 3', 'Preço (R$)',
+               'Custo (R$)', 'ID Shopify', 'Criado em']
     headers.each_with_index { |h, i| worksheet.add_cell(0, i, h) }
 
     row = 1
@@ -60,10 +61,13 @@ class ProductsController < ApplicationController
 
   def set_filter_scope
     @products_scope = Product.where(client_id: @client_id)
-    @products_scope = @products_scope.where(vendor: params[:vendor])                                    if params[:vendor].present?
-    @products_scope = @products_scope.where(option1: params[:option1])                                  if params[:option1].present?
-    @products_scope = @products_scope.where(option2: params[:option2])                                  if params[:option2].present?
-    @products_scope = @products_scope.where('shopify_product_name ILIKE ?', "%#{params[:search]}%")     if params[:search].present?
+    @products_scope = @products_scope.where(vendor: params[:vendor]) if params[:vendor].present?
+    @products_scope = @products_scope.where(option1: params[:option1]) if params[:option1].present?
+    @products_scope = @products_scope.where(option2: params[:option2]) if params[:option2].present?
+
+    if params[:search].present?
+      @products_scope = @products_scope.where('shopify_product_name ILIKE ?', "%#{params[:search]}%")
+    end
   end
 
   def load_form_references

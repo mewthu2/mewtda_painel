@@ -53,7 +53,7 @@ class AffiliatesController < ApplicationController
 
   def update
     update_params = affiliate_params
-    
+
     # Remove password params if blank (keeps existing password)
     if update_params[:password].blank?
       update_params.delete(:password)
@@ -108,42 +108,45 @@ class AffiliatesController < ApplicationController
     return unless @affiliate&.utm_code.present?
 
     @period = params[:period].presence || "30"
-    
+
     range = case @period
-      when "7"  then 7.days.ago..Time.current
-      when "15" then 15.days.ago..Time.current
-      when "30" then 30.days.ago..Time.current
-      when "90" then 90.days.ago..Time.current
-      else 30.days.ago..Time.current
-    end
+            when "7"  then 7.days.ago..Time.current
+            when "15" then 15.days.ago..Time.current
+            when "30" then 30.days.ago..Time.current
+            when "90" then 90.days.ago..Time.current
+            else 30.days.ago..Time.current
+            end
 
     # Busca eventos que contenham utm_affiliate no context.document.location.search ou href
     utm_pattern = "%utm_affiliate=#{@affiliate.utm_code}%"
-    
+
+    search_or_href = "context->'document'->'location'->>'search' ILIKE ? " \
+                      "OR context->'document'->'location'->>'href' ILIKE ?"
+
     @base_scope = ShopifyEvent
-      .where(client_id: current_client.id, created_at: range)
-      .where("context->'document'->'location'->>'search' ILIKE ? OR context->'document'->'location'->>'href' ILIKE ?", utm_pattern, utm_pattern)
+                  .where(client_id: current_client.id, created_at: range)
+                  .where(search_or_href, utm_pattern, utm_pattern)
 
     # KPIs principais
     @total_events = @base_scope.count
     @unique_sessions = @base_scope.distinct.count(:session_id)
-    
+
     # Contagem por tipo de evento
     @event_counts = @base_scope.group(:kind).count
-    
+
     @counts = {
-      page_viewed:        @event_counts["page_viewed"] || 0,
-      product_viewed:     @event_counts["product_viewed"] || 0,
-      added_to_cart:      @event_counts["product_added_to_cart"] || 0,
-      checkout_started:   @event_counts["checkout_started"] || 0,
+      page_viewed: @event_counts["page_viewed"] || 0,
+      product_viewed: @event_counts["product_viewed"] || 0,
+      added_to_cart: @event_counts["product_added_to_cart"] || 0,
+      checkout_started: @event_counts["checkout_started"] || 0,
       checkout_completed: @event_counts["checkout_completed"] || 0
     }
 
     # Taxas de conversão
     page = @counts[:page_viewed].to_f
     @conversion = {
-      product_viewed:     page.zero? ? 0 : (@counts[:product_viewed] / page * 100).round(2),
-      added_to_cart:      page.zero? ? 0 : (@counts[:added_to_cart] / page * 100).round(2),
+      product_viewed: page.zero? ? 0 : (@counts[:product_viewed] / page * 100).round(2),
+      added_to_cart: page.zero? ? 0 : (@counts[:added_to_cart] / page * 100).round(2),
       checkout_completed: page.zero? ? 0 : (@counts[:checkout_completed] / page * 100).round(2)
     }
 
@@ -158,6 +161,7 @@ class AffiliatesController < ApplicationController
       .each do |row|
         ua = JSON.parse(row.nav)["userAgent"] rescue nil
         next unless ua
+
         if ua =~ /Mobile|Android.*Mobile|iPhone|iPod/i
           @devices[:mobile] += 1
         elsif ua =~ /iPad|Android(?!.*Mobile)|Tablet/i
@@ -177,27 +181,28 @@ class AffiliatesController < ApplicationController
       .each do |row|
         ref = row.ref
         next if ref.blank?
+
         begin
           host = URI.parse(ref).host&.gsub(/^www\./, '') || "direto"
         rescue
           host = "outro"
         end
         source = case host
-          when /google/i          then "Google"
-          when /facebook|fb/i     then "Facebook"
-          when /instagram/i       then "Instagram"
-          when /tiktok/i          then "TikTok"
-          when /youtube/i         then "YouTube"
-          else host.truncate(20)
-        end
+                 when /google/i          then "Google"
+                 when /facebook|fb/i     then "Facebook"
+                 when /instagram/i       then "Instagram"
+                 when /tiktok/i          then "TikTok"
+                 when /youtube/i         then "YouTube"
+                 else host.truncate(20)
+                 end
         @referrers[source] += 1
       end
     @referrers = @referrers.sort_by { |_, v| -v }.first(5).to_h
 
     # Eventos por hora
     hourly_query = @base_scope
-      .group("EXTRACT(HOUR FROM created_at - INTERVAL '3 hours')::int")
-      .count
+                   .group("EXTRACT(HOUR FROM created_at - INTERVAL '3 hours')::int")
+                   .count
     @hourly_events = (0..23).map { |h| [h, hourly_query[h] || 0] }.to_h
 
     # Sessões recentes do afiliado
@@ -242,9 +247,9 @@ class AffiliatesController < ApplicationController
               (product_id.present? ? "ID #{product_id}" : "Produto")
 
       {
-        id:    product_id,
+        id: product_id,
         title: title,
-        sku:   variant_data["sku"],
+        sku: variant_data["sku"],
         image: product&.image_url || image_src,
         price: product&.price || price,
         count: count
@@ -276,13 +281,13 @@ class AffiliatesController < ApplicationController
       last_at = row[:last_at]
 
       {
-        session_id:   row[:session_id],
-        started_at:   started_at,
-        last_at:      last_at,
+        session_id: row[:session_id],
+        started_at: started_at,
+        last_at: last_at,
         duration_min: started_at && last_at ? ((last_at - started_at) / 60).round(1) : 0,
-        event_count:  row[:event_count].to_i,
-        kinds:        kinds,
-        converted:    converted
+        event_count: row[:event_count].to_i,
+        kinds: kinds,
+        converted: converted
       }
     end
   end

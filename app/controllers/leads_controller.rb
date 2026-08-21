@@ -32,7 +32,7 @@ class LeadsController < ApplicationController
     end
 
     send_data csv,
-      filename: "leads-#{Date.today}.csv",
-      type: 'text/csv'
+              filename: "leads-#{Date.today}.csv",
+              type: 'text/csv'
   end
 end

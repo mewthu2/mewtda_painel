@@ -3,14 +3,25 @@ class Zapi::Client
 
   base_uri 'https://api.z-api.io'
 
-  INSTANCE_ID = ENV.fetch('ZAPI_INSTANCE_ID')
-  INSTANCE_TOKEN = ENV.fetch('ZAPI_INSTANCE_TOKEN')
-  CLIENT_TOKEN = ENV.fetch('ZAPI_CLIENT_TOKEN')
+  # Usa as credenciais Zapi cadastradas no cliente (painel > cadastro do cliente
+  # > Integração Zapi). Cai pra credencial global do .env só se o cliente não
+  # tiver configurado a própria instância — mantém retrocompatibilidade com
+  # quem ainda depende da instância compartilhada.
+  def initialize(client)
+    @instance_id = client&.zapi_instance_id.presence || ENV['ZAPI_INSTANCE_ID']
+    @instance_token = client&.zapi_instance_token.presence || ENV['ZAPI_INSTANCE_TOKEN']
+    @client_token = client&.zapi_client_token.presence || ENV['ZAPI_CLIENT_TOKEN']
+  end
 
-  def self.send_text(phone:, message:)
-    response = post(
-      "/instances/#{INSTANCE_ID}/token/#{INSTANCE_TOKEN}/send-text",
-      headers:,
+  def send_text(phone:, message:)
+    unless @instance_id.present? && @instance_token.present? && @client_token.present?
+      Rails.logger.error('[ZAPI] credenciais não configuradas para este cliente')
+      return nil
+    end
+
+    response = self.class.post(
+      "/instances/#{@instance_id}/token/#{@instance_token}/send-text",
+      headers: headers,
       body: {
         phone:,
         message:
@@ -23,10 +34,12 @@ class Zapi::Client
     nil
   end
 
-  def self.headers
+  private
+
+  def headers
     {
       'Content-Type' => 'application/json',
-      'Client-Token' => CLIENT_TOKEN
+      'Client-Token' => @client_token
     }
   end
 end

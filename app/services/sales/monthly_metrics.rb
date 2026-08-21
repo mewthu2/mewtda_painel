@@ -24,7 +24,31 @@ module Sales
         configured_platforms: configured_platforms,
         roas: roas,
         new_customers_count: new_customers_count,
-        cac: cac
+        cac: cac,
+        conversion_rate: conversion_rate,
+        # Meta de "Faturamento" = Bruto − Descontos (net_of_discounts), não o Faturamento
+        # (Total Sales) do card acima — assim o cliente define a meta com um número
+        # simples, sem precisar prever reembolsos/frete do mês que ainda vai acontecer.
+        revenue_target: goal&.revenue_target,
+        revenue_target_progress_pct: progress_pct(net_of_discounts, goal&.revenue_target),
+        revenue_target_remaining: remaining(net_of_discounts, goal&.revenue_target),
+        roas_target: goal&.roas_target,
+        roas_target_progress_pct: progress_pct(roas, goal&.roas_target),
+        roas_target_remaining: remaining(roas, goal&.roas_target),
+        avg_ticket_target: goal&.avg_ticket_target,
+        avg_ticket_target_progress_pct: progress_pct(avg_ticket, goal&.avg_ticket_target),
+        avg_ticket_target_remaining: remaining(avg_ticket, goal&.avg_ticket_target),
+        conversion_rate_target: goal&.conversion_rate_target,
+        conversion_rate_target_progress_pct: progress_pct(conversion_rate, goal&.conversion_rate_target),
+        conversion_rate_target_remaining: remaining(conversion_rate, goal&.conversion_rate_target),
+        cac_target: goal&.cac_target,
+        cac_target_status: ceiling_status(cac, goal&.cac_target),
+        cac_target_diff: ceiling_diff(cac, goal&.cac_target),
+        tagged_revenue_tag: goal&.tagged_revenue_tag,
+        tagged_revenue: tagged_revenue,
+        tagged_revenue_target: goal&.tagged_revenue_target,
+        tagged_revenue_target_progress_pct: progress_pct(tagged_revenue, goal&.tagged_revenue_target),
+        tagged_revenue_target_remaining: remaining(tagged_revenue, goal&.tagged_revenue_target)
       }
     end
 
@@ -160,6 +184,72 @@ module Sales
       return nil if new_customers_count.zero?
 
       (ad_cost / new_customers_count).round(2)
+    end
+
+    def unique_sessions
+      ShopifyEvent
+        .where(client_id: client.id, kind: 'page_viewed', created_at: period)
+        .distinct
+        .count(:session_id)
+    end
+
+    # Sessões que completaram o checkout / sessões totais — mesma definição do
+    # Shopify. Só usada aqui pra meta (não é mais um card próprio no dashboard).
+    def checkout_completed_sessions
+      ShopifyEvent
+        .where(client_id: client.id, kind: 'checkout_completed', created_at: period)
+        .distinct
+        .count(:session_id)
+    end
+
+    def conversion_rate
+      return nil if unique_sessions.zero?
+
+      (checkout_completed_sessions.to_f / unique_sessions * 100).round(2)
+    end
+
+    # Faturamento (Bruto − Descontos) só dos pedidos com a tag configurada na meta
+    # (ex.: nome de uma vendedora) — não dá pra atribuir reembolso a uma tag
+    # específica, então usa o mesmo valor bruto de net_of_discounts, sem reversão.
+    def tagged_revenue
+      goal_tag = goal&.tagged_revenue_tag
+      return nil if goal_tag.blank?
+
+      all_orders_scope
+        .where('tags ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(goal_tag)}%")
+        .sum(:subtotal_price)
+    end
+
+    def goal
+      return @goal if defined?(@goal)
+
+      @goal = client.goals.find_by(year: year, month: month)
+    end
+
+    def progress_pct(actual, target)
+      return nil if target.blank? || target.to_f.zero? || actual.nil?
+
+      ((actual.to_f / target.to_f) * 100).round(1)
+    end
+
+    def remaining(actual, target)
+      return nil if target.blank? || actual.nil?
+
+      [target.to_f - actual.to_f, 0].max.round(2)
+    end
+
+    # CAC é "quanto menor, melhor" — ao contrário das outras metas. :under quer
+    # dizer que o custo de aquisição está dentro (ou abaixo) do teto definido.
+    def ceiling_status(actual, target)
+      return nil if target.blank? || actual.nil?
+
+      actual.to_f <= target.to_f ? :under : :over
+    end
+
+    def ceiling_diff(actual, target)
+      return nil if target.blank? || actual.nil?
+
+      (target.to_f - actual.to_f).abs.round(2)
     end
   end
 end

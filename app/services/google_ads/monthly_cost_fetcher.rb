@@ -50,7 +50,8 @@ module GoogleAds
           'Content-Type' => 'application/json'
         },
         body: {
-          query: "SELECT metrics.cost_micros FROM customer WHERE segments.date BETWEEN '#{since.iso8601}' AND '#{until_date.iso8601}'"
+          query: "SELECT metrics.cost_micros FROM customer " \
+                 "WHERE segments.date BETWEEN '#{since.iso8601}' AND '#{until_date.iso8601}'"
         }.to_json,
         timeout: REQUEST_TIMEOUT
       )

@@ -3,7 +3,7 @@ class OrdersUpdateJob < ApplicationJob
 
   def perform(action:, client_id:, **options)
     @client = Client.find(client_id)
-    
+
     unless @client.active?
       Rails.logger.warn "[OrdersUpdateJob] Client #{client_id} está inativo. Ignorando job."
       return

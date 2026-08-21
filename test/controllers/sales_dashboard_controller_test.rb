@@ -46,7 +46,9 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
   test 'renders the metrics for the requested month' do
     client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     user = build_user(client: client)
-    Order.create!(client: client, shopify_order_id: SecureRandom.hex(6), shopify_creation_date: Time.zone.local(2026, 3, 10), total_price: 250, subtotal_price: 250, total_discounts: 0)
+    Order.create!(client: client, shopify_order_id: SecureRandom.hex(6),
+                  shopify_creation_date: Time.zone.local(2026, 3, 10),
+                  total_price: 250, subtotal_price: 250, total_discounts: 0)
     sign_in user
 
     get sales_dashboard_path(year: 2026, month: 3)
@@ -55,10 +57,11 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
     assert_match 'R$ 250,00', response.body
   end
 
-  test 'shows a not-synced warning when a platform is configured but has no snapshot yet' do
-    client = Client.create!(
-      name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com",
-      meta_access_token: 'token', meta_ad_account_id: 'act_1'
+  test 'shows a not-registered warning when the client has ad costs but not for this period' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    client.ad_costs.create!(
+      platform: 'meta', name: 'Campanha Fevereiro',
+      start_date: Date.new(2026, 2, 1), end_date: Date.new(2026, 2, 28), amount: 100
     )
     user = build_user(client: client)
     sign_in user
@@ -66,10 +69,10 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
     get sales_dashboard_path(year: 2026, month: 3)
 
     assert_response :success
-    assert_match 'Custos de anúncio não configurados', response.body
+    assert_match 'Nenhum custo de anúncio cadastrado para este período', response.body
   end
 
-  test 'shows a no-integration warning when no ad platform is configured at all' do
+  test 'shows a no-cost warning when no ad cost was ever registered for the client' do
     client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     user = build_user(client: client)
     sign_in user
@@ -77,10 +80,10 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
     get sales_dashboard_path(year: 2026, month: 3)
 
     assert_response :success
-    assert_match 'Nenhuma integração de anúncio configurada', response.body
+    assert_match 'Nenhum custo de anúncio cadastrado para este cliente', response.body
   end
 
-  test 'the no-integration warning links a common user to their own settings page' do
+  test 'the no-cost warning links to the ad cost registration screen' do
     client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
     user = build_user(client: client)
     sign_in user
@@ -88,18 +91,7 @@ class SalesDashboardControllerTest < ActionDispatch::IntegrationTest
     get sales_dashboard_path(year: 2026, month: 3)
 
     assert_response :success
-    assert_match %r{href="#{Regexp.escape(edit_settings_path)}"}, response.body
-  end
-
-  test 'the no-integration warning links an admin to the client edit page' do
-    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
-    admin = build_user(admin: true, client: client)
-    sign_in admin
-
-    get sales_dashboard_path(year: 2026, month: 3)
-
-    assert_response :success
-    assert_match %r{href="#{Regexp.escape(edit_client_path(client))}"}, response.body
+    assert_match %r{href="#{Regexp.escape(new_ad_cost_path)}"}, response.body
   end
 
   test 'blocks a non-admin from triggering sync_ad_costs even when the dashboard is enabled' do

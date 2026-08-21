@@ -16,7 +16,12 @@ module ClientScoped
 
     unless @client
       @empty_state = true
-      @empty_message = current_user.admin? ? 'Nenhum cliente selecionado. Selecione um cliente no menu superior.' : 'Você não está vinculado a nenhum cliente.'
+      @empty_message =
+        if current_user.admin?
+          'Nenhum cliente selecionado. Selecione um cliente no menu superior.'
+        else
+          'Você não está vinculado a nenhum cliente.'
+        end
     end
   end
 end

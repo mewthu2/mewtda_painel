@@ -7,7 +7,8 @@ class UsersController < ApplicationController
   before_action :require_admin!
 
   def index
-    @users = User.includes(:client, :profile).paginate(page: params[:page], per_page: params_per_page(params[:per_page]))
+    @users = User.includes(:client, :profile).paginate(page: params[:page],
+                                                       per_page: params_per_page(params[:per_page]))
   end
 
   def show; end
@@ -21,7 +22,7 @@ class UsersController < ApplicationController
     if @user.save
       redirect_to users_path, notice: 'Usuário criado com sucesso.'
     else
-      render :new, status: :unprocessable_entity  # Corrigido para renderizar o form
+      render :new, status: :unprocessable_entity
     end
   end
 

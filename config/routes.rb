@@ -41,17 +41,18 @@ Rails.application.routes.draw do
     get 'clients/:id/shopify/auth', to: 'shopify_auth#auth', as: :client_shopify_auth
     get '/shopify/callback', to: 'shopify_auth#callback'
 
-    get    'clients/:id/google_ads/connect',    to: 'google_ads#connect',    as: :client_google_ads_connect
-    get    'google_ads/callback',                to: 'google_ads#callback',   as: :google_ads_callback
+    get    'clients/:id/google_ads/connect', to: 'google_ads#connect', as: :client_google_ads_connect
+    get    'google_ads/callback', to: 'google_ads#callback', as: :google_ads_callback
     delete 'clients/:id/google_ads/disconnect', to: 'google_ads#disconnect', as: :client_google_ads_disconnect
 
     resources :dashboard, only: [:index]
 
-    get  'vendas',               to: 'sales_dashboard#index',          as: :sales_dashboard
+    get  'vendas',               to: 'sales_dashboard#index', as: :sales_dashboard
     get  'vendas/export_xlsx',   to: 'sales_dashboard#export_xlsx',   as: :export_xlsx_sales_dashboard
     post 'vendas/sync_ad_costs', to: 'sales_dashboard#sync_ad_costs', as: :sync_ad_costs_sales_dashboard
 
     resources :ad_costs, except: [:show]
+    resource :goal, only: %i[edit update]
 
     resource :settings, path: 'configuracoes', controller: 'settings', only: [:edit, :update]
     resource :account, path: 'minha-conta', controller: 'account', only: [:edit, :update]

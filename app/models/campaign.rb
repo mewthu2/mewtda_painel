@@ -5,19 +5,25 @@ class Campaign < ApplicationRecord
   enum kind: {
     cashback: 0,
     cashback_expiration: 1,
-    marketing_notification: 2
+    marketing_notification: 2,
+    shipping_tracking: 3
   }
 
   validates :name, presence: true
   validates :kind, presence: true
   validates :message, presence: true
-  validates :days_after_purchase, presence: true, numericality: { greater_than: 0 }, unless: :marketing_notification?
+  validates :days_after_purchase, presence: true, numericality: { greater_than: 0 }, unless: -> {
+    marketing_notification? || shipping_tracking?
+  }
+  validates :max_sends, presence: true, numericality: { greater_than: 0 }, if: :shipping_tracking?
+  validates :interval_days, presence: true, numericality: { greater_than: 0 }, if: :shipping_tracking?
   validates :start_date, presence: true
   validates :end_date, presence: true
   validate :end_date_after_start_date
 
   # Accessors para os filtros armazenados no campo jsonb :filters
-  # Exemplo de estrutura: { "inactive_days" => "30", "min_orders" => "2", "product_name" => "Camiseta", "maderite" => "1" }
+  # Exemplo de estrutura:
+  # { "inactive_days" => "30", "min_orders" => "2", "product_name" => "Camiseta", "maderite" => "1" }
   %w[inactive_days min_orders product_name maderite].each do |key|
     define_method(:"filter_#{key}")        { filters[key] }
     define_method(:"filter_#{key}=") { |v| self.filters = filters.merge(key => v.presence) }
@@ -44,20 +50,23 @@ class Campaign < ApplicationRecord
     return :inactive unless active?
     return :pending  if start_date > Date.current
     return :finished if end_date < Date.current
+
     :running
   end
 
   def kind_label
     case kind
-    when 'cashback'              then 'Cashback'
-    when 'cashback_expiration'   then 'Expiração de Cashback'
+    when 'cashback'               then 'Cashback'
+    when 'cashback_expiration'    then 'Expiração de Cashback'
     when 'marketing_notification' then 'Notificação de Marketing'
+    when 'shipping_tracking'      then 'Rastreio de Pedido'
     else kind
     end
   end
 
   def days_after_purchase_label
-    return nil if marketing_notification?
+    return nil if marketing_notification? || shipping_tracking?
+
     cashback_expiration? ? 'dias antes da expiração' : 'dias após a compra'
   end
 
@@ -83,6 +92,7 @@ class Campaign < ApplicationRecord
 
   def end_date_after_start_date
     return if start_date.blank? || end_date.blank?
+
     errors.add(:end_date, 'deve ser posterior à data de início') if end_date < start_date
   end
 end

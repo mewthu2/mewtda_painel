@@ -55,11 +55,11 @@ module Sales
 
     def totals_by_day
       @totals_by_day ||= orders_scope
-                          .group("DATE(shopify_creation_date)")
-                          .pluck(Arel.sql("DATE(shopify_creation_date), SUM(total_price), COUNT(*)"))
-                          .each_with_object({}) do |(date, revenue, orders), memo|
-                            memo[date.day] = { revenue: revenue, orders: orders }
-                          end
+                         .group("DATE(shopify_creation_date)")
+                         .pluck(Arel.sql("DATE(shopify_creation_date), SUM(total_price), COUNT(*)"))
+                         .each_with_object({}) do |(date, revenue, orders), memo|
+        memo[date.day] = { revenue: revenue, orders: orders }
+      end
     end
 
     def revenue_total

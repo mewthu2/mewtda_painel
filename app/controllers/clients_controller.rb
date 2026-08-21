@@ -4,7 +4,8 @@ class ClientsController < ApplicationController
   before_action :require_admin!, except: [:update_selected_client]
 
   def index
-    @clients = Client.order(created_at: :desc).paginate(page: params[:page], per_page: params_per_page(params[:per_page]))
+    @clients = Client.order(created_at: :desc).paginate(page: params[:page],
+                                                        per_page: params_per_page(params[:per_page]))
 
     if params[:search].present?
       search_term = "%#{params[:search]}%"

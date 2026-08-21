@@ -4,7 +4,10 @@ class CampaignAction < ApplicationRecord
   belongs_to :order, optional: true
 
   enum kind: {
-    cashback: 0
+    cashback: 0,
+    cashback_expiration: 1,
+    marketing_notification: 2,
+    shipping_tracking: 3
   }
 
   enum status: {

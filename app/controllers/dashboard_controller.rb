@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DashboardController < ApplicationController
   include ClientScoped
 
@@ -11,25 +13,25 @@ class DashboardController < ApplicationController
     return render json: { error: 'Sem cliente' }, status: :unprocessable_entity unless @client
 
     events = ShopifyEvent
-      .where(client_id: @client.id, session_id: params[:session_id])
-      .order(:created_at)
+             .where(client_id: @client.id, session_id: params[:session_id])
+             .order(:created_at)
 
     render json: {
-      session_id:  params[:session_id],
+      session_id: params[:session_id],
       shop_domain: events.first&.shop_domain,
-      started_at:  events.first&.created_at,
-      last_at:     events.last&.created_at,
+      started_at: events.first&.created_at,
+      last_at: events.last&.created_at,
       event_count: events.count,
       events: events.map do |e|
         {
-          id:         e.id,
-          kind:       e.kind,
+          id: e.id,
+          kind: e.kind,
           event_name: e.event_name,
           event_type: e.event_type,
-          event_id:   e.event_id,
+          event_id: e.event_id,
           created_at: e.created_at,
-          data:       e.data,
-          context:    e.context
+          data: e.data,
+          context: e.context
         }
       end
     }
@@ -38,7 +40,7 @@ class DashboardController < ApplicationController
   private
 
   def load_form_references
-    @period     = params[:period].presence || "1"
+    @period = params[:period].presence || "1"
     @filter_year  = params[:year].presence&.to_i
     @filter_month = params[:month].presence&.to_i
 
@@ -60,11 +62,11 @@ class DashboardController < ApplicationController
       @using_month_filter = true
     else
       range = case @period
-        when "7"  then 7.days.ago..Time.current
-        when "15" then 15.days.ago..Time.current
-        when "30" then 30.days.ago..Time.current
-        else           Time.current.beginning_of_day..Time.current
-      end
+              when "7"  then 7.days.ago..Time.current
+              when "15" then 15.days.ago..Time.current
+              when "30" then 30.days.ago..Time.current
+              else Time.current.beginning_of_day..Time.current
+              end
 
       days_count = { "7" => 7, "15" => 15, "30" => 30 }[@period] || 1
       prev_range = (range.first - days_count.days)..(range.first - 1.second)
@@ -79,19 +81,19 @@ class DashboardController < ApplicationController
     prev_counts_query = prev_scope.where(kind: funnel_kinds).group(:kind).count
 
     @counts = {
-      page_viewed:        counts_query["page_viewed"] || 0,
-      product_viewed:     counts_query["product_viewed"] || 0,
-      added_to_cart:      counts_query["product_added_to_cart"] || 0,
-      checkout_started:   counts_query["checkout_started"] || 0,
-      checkout_completed: counts_query["checkout_completed"] || 0
+      page_viewed: counts_query['page_viewed'] || 0,
+      product_viewed: counts_query['product_viewed'] || 0,
+      added_to_cart: counts_query['product_added_to_cart'] || 0,
+      checkout_started: counts_query['checkout_started'] || 0,
+      checkout_completed: counts_query['checkout_completed'] || 0
     }
 
     @prev_counts = {
-      page_viewed:        prev_counts_query["page_viewed"] || 0,
-      product_viewed:     prev_counts_query["product_viewed"] || 0,
-      added_to_cart:      prev_counts_query["product_added_to_cart"] || 0,
-      checkout_started:   prev_counts_query["checkout_started"] || 0,
-      checkout_completed: prev_counts_query["checkout_completed"] || 0
+      page_viewed: prev_counts_query['page_viewed'] || 0,
+      product_viewed: prev_counts_query['product_viewed'] || 0,
+      added_to_cart: prev_counts_query['product_added_to_cart'] || 0,
+      checkout_started: prev_counts_query['checkout_started'] || 0,
+      checkout_completed: prev_counts_query['checkout_completed'] || 0
     }
 
     if @counts.values.sum.zero? && @prev_counts.values.sum.zero?
@@ -105,16 +107,28 @@ class DashboardController < ApplicationController
     page = @counts[:page_viewed].to_f
 
     @conversion = {
-      product_viewed:     page.zero? ? 0 : (@counts[:product_viewed]     / page * 100).round(2),
-      added_to_cart:      page.zero? ? 0 : (@counts[:added_to_cart]      / page * 100).round(2),
-      checkout_started:   page.zero? ? 0 : (@counts[:checkout_started]   / page * 100).round(2),
+      product_viewed: page.zero? ? 0 : (@counts[:product_viewed] / page * 100).round(2),
+      added_to_cart: page.zero? ? 0 : (@counts[:added_to_cart] / page * 100).round(2),
+      checkout_started: page.zero? ? 0 : (@counts[:checkout_started] / page * 100).round(2),
       checkout_completed: page.zero? ? 0 : (@counts[:checkout_completed] / page * 100).round(2)
     }
 
     @dropoff = {
-      page_to_product:  @counts[:page_viewed] > 0 ? (100 - (@counts[:product_viewed].to_f / @counts[:page_viewed] * 100)).round(1) : 0,
-      product_to_cart:  @counts[:product_viewed] > 0 ? (100 - (@counts[:added_to_cart].to_f / @counts[:product_viewed] * 100)).round(1) : 0,
-      cart_to_checkout: @counts[:added_to_cart] > 0 ? (100 - (@counts[:checkout_completed].to_f / @counts[:added_to_cart] * 100)).round(1) : 0
+      page_to_product: if @counts[:page_viewed] > 0
+                         (100 - (@counts[:product_viewed].to_f / @counts[:page_viewed] * 100)).round(1)
+                       else
+                         0
+                       end,
+      product_to_cart: if @counts[:product_viewed] > 0
+                         (100 - (@counts[:added_to_cart].to_f / @counts[:product_viewed] * 100)).round(1)
+                       else
+                         0
+                       end,
+      cart_to_checkout: if @counts[:added_to_cart] > 0
+                          (100 - (@counts[:checkout_completed].to_f / @counts[:added_to_cart] * 100)).round(1)
+                        else
+                          0
+                        end
     }
 
     @unique_sessions       = base_scope.distinct.count(:session_id)
@@ -131,6 +145,7 @@ class DashboardController < ApplicationController
       .each do |row|
         ua = JSON.parse(row.nav)["userAgent"] rescue nil
         next unless ua
+
         if ua =~ /Mobile|Android.*Mobile|iPhone|iPod/i
           @devices[:mobile] += 1
         elsif ua =~ /iPad|Android(?!.*Mobile)|Tablet/i
@@ -144,14 +159,14 @@ class DashboardController < ApplicationController
     @top_products_carted = fetch_top_products(base_scope, "product_added_to_cart")
 
     hourly_query = base_scope
-      .group("EXTRACT(HOUR FROM created_at - INTERVAL '3 hours')::int")
-      .count
+                   .group("EXTRACT(HOUR FROM created_at - INTERVAL '3 hours')::int")
+                   .count
 
     @hourly_events = (0..23).map { |h| [h, hourly_query[h] || 0] }.to_h
 
     weekday_query = base_scope
-      .group("EXTRACT(DOW FROM created_at - INTERVAL '3 hours')::int")
-      .count
+                    .group("EXTRACT(DOW FROM created_at - INTERVAL '3 hours')::int")
+                    .count
 
     weekday_names = { 0 => "Dom", 1 => "Seg", 2 => "Ter", 3 => "Qua", 4 => "Qui", 5 => "Sex", 6 => "Sab" }
     @weekday_events = weekday_names.map { |k, v| { day: v, count: weekday_query[k] || 0 } }
@@ -165,23 +180,24 @@ class DashboardController < ApplicationController
       .each do |row|
         ref = row.ref
         next if ref.blank?
+
         begin
           host = URI.parse(ref).host&.gsub(/^www\./, '') || "direto"
         rescue
           host = "outro"
         end
         source = case host
-          when /google/i          then "Google"
-          when /facebook|fb/i     then "Facebook"
-          when /instagram/i       then "Instagram"
-          when /tiktok/i          then "TikTok"
-          when /youtube/i         then "YouTube"
-          when /twitter|x\.com/i  then "Twitter/X"
-          when /bing/i            then "Bing"
-          when /pinterest/i       then "Pinterest"
-          when "", nil            then "Direto"
-          else host.truncate(20)
-        end
+                 when /google/i          then "Google"
+                 when /facebook|fb/i     then "Facebook"
+                 when /instagram/i       then "Instagram"
+                 when /tiktok/i          then "TikTok"
+                 when /youtube/i         then "YouTube"
+                 when /twitter|x\.com/i  then "Twitter/X"
+                 when /bing/i            then "Bing"
+                 when /pinterest/i       then "Pinterest"
+                 when "", nil            then "Direto"
+                 else host.truncate(20)
+                 end
         @referrers[source] += 1
       end
     @referrers = @referrers.sort_by { |_, v| -v }.first(6).to_h
@@ -189,9 +205,9 @@ class DashboardController < ApplicationController
     @avg_times = calculate_avg_times(@client.id, range)
 
     @daily_events = base_scope
-      .where(kind: %w[page_viewed product_viewed product_added_to_cart checkout_completed])
-      .group("DATE(created_at - INTERVAL '3 hours')", :kind)
-      .count
+                    .where(kind: %w[page_viewed product_viewed product_added_to_cart checkout_completed])
+                    .group("DATE(created_at - INTERVAL '3 hours')", :kind)
+                    .count
 
     @sessions = fetch_sessions(@client.id, range)
   end
@@ -251,9 +267,9 @@ class DashboardController < ApplicationController
       sku   = variant_data["sku"]
 
       {
-        id:    product_id,
+        id: product_id,
         title: title,
-        sku:   sku,
+        sku: sku,
         image: image,
         price: product&.price || price,
         count: count
@@ -293,14 +309,19 @@ class DashboardController < ApplicationController
     end
 
     {
-      page_to_product:  times[:page_to_product].any? ? (times[:page_to_product].sum / times[:page_to_product].size).round(1) : 0,
-      product_to_cart:  times[:product_to_cart].any? ? (times[:product_to_cart].sum / times[:product_to_cart].size).round(1) : 0,
-      cart_to_checkout: times[:cart_to_checkout].any? ? (times[:cart_to_checkout].sum / times[:cart_to_checkout].size).round(1) : 0
+      page_to_product: average(times[:page_to_product]),
+      product_to_cart: average(times[:product_to_cart]),
+      cart_to_checkout: average(times[:cart_to_checkout])
     }
   end
 
+  def average(values)
+    return 0 unless values.any?
+
+    (values.sum / values.size).round(1)
+  end
+
   def fetch_sessions(client_id, range)
-    # Uma única query agregada que traz todos os dados necessários
     sql = <<-SQL
       SELECT
         session_id,
@@ -337,12 +358,12 @@ class DashboardController < ApplicationController
       end
 
       device = if ua =~ /Mobile|Android.*Mobile|iPhone|iPod/i
-        "Mobile"
-      elsif ua =~ /iPad|Android(?!.*Mobile)|Tablet/i
-        "Tablet"
-      else
-        "Desktop"
-      end
+                 "Mobile"
+               elsif ua =~ /iPad|Android(?!.*Mobile)|Tablet/i
+                 "Tablet"
+               else
+                 "Desktop"
+               end
 
       kinds = row[:kinds_arr] || []
       abandoned = !kinds.include?("checkout_completed")
@@ -350,15 +371,15 @@ class DashboardController < ApplicationController
       last_at = row[:last_at]
 
       {
-        session_id:   row[:session_id],
-        shop_domain:  row[:shop_domain],
-        started_at:   started_at,
-        last_at:      last_at,
+        session_id: row[:session_id],
+        shop_domain: row[:shop_domain],
+        started_at: started_at,
+        last_at: last_at,
         duration_min: started_at && last_at ? ((last_at - started_at) / 60).round(1) : 0,
-        event_count:  row[:event_count].to_i,
-        last_kinds:   kinds.last(4),
-        device:       device,
-        abandoned:    abandoned
+        event_count: row[:event_count].to_i,
+        last_kinds: kinds.last(4),
+        device: device,
+        abandoned: abandoned
       }
     end
   end

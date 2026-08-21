@@ -15,30 +15,31 @@ class OrdersController < ApplicationController
 
     render json: {
       order: {
-        number:     order.shopify_order_number,
+        number: order.shopify_order_number,
         shopify_id: order.shopify_order_id,
-        date:       order.shopify_creation_date&.strftime('%d/%m/%Y às %H:%M'),
-        total:      items.sum { |i| i.price.to_f * i.quantity.to_i }.round(2),
-        tags:       order.tags,
-        kinds:      order.kinds
+        date: order.shopify_creation_date&.strftime('%d/%m/%Y às %H:%M'),
+        total: items.sum { |i| i.price.to_f * i.quantity.to_i }.round(2),
+        tags: order.tags,
+        kinds: order.kinds
       },
       customer: {
-        name:  customer ? [[customer.first_name, customer.last_name].compact.join(' ').presence, customer.name].compact.first : nil,
+        name: customer ? [[customer.first_name, customer.last_name].compact.join(' ').presence,
+                          customer.name].compact.first : nil,
         email: customer&.email,
         phone: customer&.phone
       },
       items: items.map { |i|
         product = i.product
         {
-          name:     product&.shopify_product_name || i.try(:sku) || "Item ##{i.id}",
-          sku:      i.sku.to_s,
-          qty:      i.quantity.to_i,
-          price:    i.price.to_f,
+          name: product&.shopify_product_name || i.try(:sku) || "Item ##{i.id}",
+          sku: i.sku.to_s,
+          qty: i.quantity.to_i,
+          price: i.price.to_f,
           subtotal: (i.price.to_f * i.quantity.to_i).round(2),
-          image:    product&.image_url.to_s,
-          option1:  product&.option1,
-          option2:  product&.option2,
-          option3:  product&.option3
+          image: product&.image_url.to_s,
+          option1: product&.option1,
+          option2: product&.option2,
+          option3: product&.option3
         }
       }
     }
@@ -46,8 +47,8 @@ class OrdersController < ApplicationController
 
   def export_xlsx
     orders = @orders_scope
-               .includes(:customer, order_items: :product)
-               .order(shopify_creation_date: :desc)
+             .includes(:customer, order_items: :product)
+             .order(shopify_creation_date: :desc)
 
     workbook  = RubyXL::Workbook.new
     worksheet = workbook[0]
@@ -59,7 +60,8 @@ class OrdersController < ApplicationController
     row = 1
     orders.each do |o|
       customer  = o.customer
-      full_name = customer ? [[customer.first_name, customer.last_name].compact.join(' ').presence, customer.name].compact.first.to_s : ''
+      full_name = customer ? [[customer.first_name, customer.last_name].compact.join(' ').presence,
+                              customer.name].compact.first.to_s : ''
       items     = o.order_items
       total     = items.sum { |i| i.price.to_f * i.quantity.to_i }
 
@@ -99,11 +101,20 @@ class OrdersController < ApplicationController
 
   def set_filter_scope
     @orders_scope = orders_scope # <-- Agora usa orders_scope ao invés de Order.all
-    @orders_scope = @orders_scope.where(kinds: params[:kinds])                                             if params[:kinds].present?
-    @orders_scope = @orders_scope.where(staff_name: params[:staff_name])                                   if params[:staff_name].present?
-    @orders_scope = @orders_scope.where('shopify_order_number ILIKE ?', "%#{params[:search]}%")            if params[:search].present?
-    @orders_scope = @orders_scope.where('shopify_creation_date >= ?', params[:date_from].to_date)          if params[:date_from].present?
-    @orders_scope = @orders_scope.where('shopify_creation_date <= ?', params[:date_to].to_date.end_of_day) if params[:date_to].present?
+    @orders_scope = @orders_scope.where(kinds: params[:kinds]) if params[:kinds].present?
+    @orders_scope = @orders_scope.where(staff_name: params[:staff_name]) if params[:staff_name].present?
+
+    if params[:search].present?
+      @orders_scope = @orders_scope.where('shopify_order_number ILIKE ?', "%#{params[:search]}%")
+    end
+
+    if params[:date_from].present?
+      @orders_scope = @orders_scope.where('shopify_creation_date >= ?', params[:date_from].to_date)
+    end
+
+    if params[:date_to].present?
+      @orders_scope = @orders_scope.where('shopify_creation_date <= ?', params[:date_to].to_date.end_of_day)
+    end
   end
 
   def load_form_references

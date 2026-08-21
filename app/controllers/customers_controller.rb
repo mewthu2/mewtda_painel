@@ -20,10 +20,11 @@ class CustomersController < ApplicationController
     render json: {
       shopify_store: Client.find_by(id: current_client_id)&.shopify_admin_handle,
       customer: {
-        id:         customer.id,
-        name:       [customer.first_name, customer.last_name].compact.join(' ').presence || customer.name.presence || 'Sem nome',
-        email:      customer.email,
-        phone:      customer.phone,
+        id: customer.id,
+        name: [customer.first_name,
+               customer.last_name].compact.join(' ').presence || customer.name.presence || 'Sem nome',
+        email: customer.email,
+        phone: customer.phone,
         shopify_id: customer.shopify_customer_id,
         created_at: customer.created_at.strftime('%d/%m/%Y %H:%M')
       },
@@ -31,16 +32,16 @@ class CustomersController < ApplicationController
         items = o.order_items
 
         {
-          number:      o.shopify_order_number,
-          shopify_id:  o.shopify_order_id,
-          date:        o.shopify_creation_date&.strftime('%d/%m/%Y %H:%M'),
-          total:       items.sum { |i| i.price.to_f * i.quantity.to_i },
+          number: o.shopify_order_number,
+          shopify_id: o.shopify_order_id,
+          date: o.shopify_creation_date&.strftime('%d/%m/%Y %H:%M'),
+          total: items.sum { |i| i.price.to_f * i.quantity.to_i },
           items_count: items.size,
           items: items.map do |i|
             {
-              name:  i.product&.shopify_product_name || i.sku,
-              sku:   i.sku,
-              qty:   i.quantity,
+              name: i.product&.shopify_product_name || i.sku,
+              sku: i.sku,
+              qty: i.quantity,
               price: i.price,
               image: i.product&.image_url
             }
@@ -52,8 +53,8 @@ class CustomersController < ApplicationController
 
   def export_xlsx
     customers = @customers_scope
-                  .with_orders_count
-                  .order(created_at: :desc)
+                .with_orders_count
+                .order(created_at: :desc)
 
     workbook  = RubyXL::Workbook.new
     worksheet = workbook[0]
@@ -109,6 +110,6 @@ class CustomersController < ApplicationController
     @customers_scope = @customers_scope.inactive_days(params[:inactive_days]) if params[:inactive_days].present?
     @customers_scope = @customers_scope.with_min_orders(params[:min_orders])  if params[:min_orders].present?
     @customers_scope = @customers_scope.bought_product(params[:product_name]) if params[:product_name].present?
-    @customers_scope = @customers_scope.maderite                      if params[:maderite].present?
+    @customers_scope = @customers_scope.maderite if params[:maderite].present?
   end
 end

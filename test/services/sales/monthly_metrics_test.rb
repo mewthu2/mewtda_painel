@@ -9,13 +9,15 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
   end
 
   def create_order(attrs = {})
+    total = attrs[:total_price] || 100
     Order.create!({
       client: @client,
       shopify_order_id: SecureRandom.hex(6),
       shopify_creation_date: Time.zone.local(2026, 3, 15),
-      subtotal_price: 100,
+      subtotal_price: total,
       total_discounts: 0,
-      total_price: 100,
+      total_price: total,
+      total_shipping_price: 0,
       cancelled_at: nil,
       tags: nil
     }.merge(attrs))
@@ -32,27 +34,44 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     Sales::MonthlyMetrics.new(client: @client, year: 2026, month: 3, tag: tag).call
   end
 
-  test 'revenue, gross_sales and discounts sum total_price/subtotal_price/total_discounts of the month' do
+  test 'revenue is net of discounts plus shipping, gross_sales reconstructs the pre-discount value' do
     create_order(total_price: 100, subtotal_price: 120, total_discounts: 20)
     create_order(total_price: 50, subtotal_price: 50, total_discounts: 0)
     create_order(shopify_creation_date: Time.zone.local(2026, 2, 15), total_price: 999) # outside the month
 
     result = call
 
-    assert_equal 150.0, result[:revenue].to_f
-    assert_equal 170.0, result[:gross_sales].to_f
+    assert_equal 190.0, result[:gross_sales].to_f
     assert_equal 20.0, result[:discounts].to_f
+    assert_equal 170.0, result[:net_of_discounts].to_f
+    assert_equal 170.0, result[:revenue].to_f
     assert_equal 2, result[:orders_count]
   end
 
-  test 'excludes cancelled orders' do
+  test 'excludes cancelled orders from revenue via an implicit reversal, but still counts their gross value' do
     create_order(total_price: 100)
-    create_order(total_price: 500, cancelled_at: Time.current)
+    create_order(total_price: 500, cancelled_at: Time.zone.local(2026, 3, 20))
 
     result = call
 
+    assert_equal 600.0, result[:net_of_discounts].to_f
+    assert_equal 500.0, result[:reversals].to_f
     assert_equal 100.0, result[:revenue].to_f
     assert_equal 1, result[:orders_count]
+  end
+
+  test 'a real refund on a non-cancelled order is reverted by processed_at, not by order creation date' do
+    order = create_order(total_price: 300)
+    @client.refunds.create!(
+      order: order, shopify_refund_id: SecureRandom.hex(6), shopify_order_id: order.shopify_order_id,
+      processed_at: Time.zone.local(2026, 3, 25), amount: 120
+    )
+
+    result = call
+
+    assert_equal 300.0, result[:net_of_discounts].to_f
+    assert_equal 120.0, result[:reversals].to_f
+    assert_equal 180.0, result[:revenue].to_f
   end
 
   test 'avg_ticket is revenue divided by orders_count, nil when there are no orders' do
@@ -66,7 +85,7 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     assert_nil result[:avg_ticket]
   end
 
-  test 'tag filter restricts the order scope without affecting session count' do
+  test 'tag filter restricts the order scope and ignores reversals' do
     create_order(total_price: 100, tags: 'VendedoraElo, promo')
     create_order(total_price: 300, tags: 'outra-tag')
     create_page_view('s1')
@@ -76,26 +95,13 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
 
     assert_equal 100.0, result[:revenue].to_f
     assert_equal 1, result[:orders_count]
-    assert_equal 50.0, result[:conversion_rate]
   end
 
-  test 'conversion_rate is orders_count / unique sessions * 100, nil when there are no sessions' do
-    create_order
-    create_order
-    create_page_view('s1')
-    create_page_view('s1') # same session, counted once
-    create_page_view('s2')
-    create_page_view('s2')
-
-    assert_equal 100.0, call[:conversion_rate]
-
-    empty_client = Client.create!(name: 'Vazia', email: "vazia2-#{SecureRandom.hex(4)}@example.com")
-    result = Sales::MonthlyMetrics.new(client: empty_client, year: 2026, month: 3).call
-    assert_nil result[:conversion_rate]
-  end
-
-  test 'ad_cost_available is false and roas/cac are nil when a configured platform has no snapshot yet' do
-    @client.update!(meta_access_token: 'token', meta_ad_account_id: 'act_1')
+  test 'ad_cost_available is false when the client has ad costs but not for this period' do
+    @client.ad_costs.create!(
+      platform: 'meta', name: 'Campanha Fevereiro',
+      start_date: Date.new(2026, 2, 1), end_date: Date.new(2026, 2, 28), amount: 100
+    )
     create_order(total_price: 100)
 
     result = call
@@ -106,9 +112,11 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     assert_nil result[:cac]
   end
 
-  test 'roas is revenue / ad_cost and cac is ad_cost / new_customers_count when costs are synced' do
-    @client.update!(meta_access_token: 'token', meta_ad_account_id: 'act_1')
-    AdCostSnapshot.create!(client: @client, platform: 'meta', year: 2026, month: 3, cost: 100, fetched_at: Time.current)
+  test 'roas is revenue / ad_cost and cac is ad_cost / new_customers_count when ad cost is registered for the period' do
+    @client.ad_costs.create!(
+      platform: 'meta', name: 'Campanha Março',
+      start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 3, 31), amount: 100
+    )
 
     new_customer = Customer.create!(shopify_customer_id: SecureRandom.hex(6))
     create_order(total_price: 400, customer: new_customer)
@@ -122,15 +130,20 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     assert_equal 100.0, result[:cac].to_f
   end
 
-  test 'ad_cost only counts snapshots for currently configured platforms' do
-    @client.update!(meta_access_token: 'token', meta_ad_account_id: 'act_1')
-    AdCostSnapshot.create!(client: @client, platform: 'meta', year: 2026, month: 3, cost: 100, fetched_at: Time.current)
-    AdCostSnapshot.create!(client: @client, platform: 'google_ads', year: 2026, month: 3, cost: 900, fetched_at: Time.current)
+  test 'ad_cost sums entries from every platform registered for the period' do
+    @client.ad_costs.create!(
+      platform: 'meta', name: 'Meta',
+      start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 3, 31), amount: 100
+    )
+    @client.ad_costs.create!(
+      platform: 'google_ads', name: 'Google',
+      start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 3, 31), amount: 900
+    )
 
     result = call
 
-    assert_equal ['meta'], result[:configured_platforms]
-    assert_equal 100.0, result[:ad_cost].to_f
+    assert_equal %w[google_ads meta], result[:configured_platforms].sort
+    assert_equal 1000.0, result[:ad_cost].to_f
   end
 
   test 'new_customers_count only counts customers whose earliest non-cancelled order falls in the month' do
@@ -142,5 +155,98 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     create_order(shopify_creation_date: Time.zone.local(2026, 3, 12), customer: brand_new_customer)
 
     assert_equal 1, call[:new_customers_count]
+  end
+
+  test 'goal progress and remaining are computed against the revenue and roas targets' do
+    @client.goals.create!(year: 2026, month: 3, revenue_target: 200, roas_target: 4)
+    @client.ad_costs.create!(
+      platform: 'meta', name: 'Meta',
+      start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 3, 31), amount: 25
+    )
+    create_order(total_price: 150)
+
+    result = call
+
+    assert_equal 200.0, result[:revenue_target].to_f
+    assert_equal 75.0, result[:revenue_target_progress_pct]
+    assert_equal 50.0, result[:revenue_target_remaining].to_f
+    assert_equal 4.0, result[:roas_target].to_f
+    assert_equal 6.0, result[:roas].to_f
+    assert_equal 150.0, result[:roas_target_progress_pct]
+    assert_equal 0.0, result[:roas_target_remaining].to_f
+  end
+
+  test 'goal fields are nil when no goal is registered for the period' do
+    create_order(total_price: 100)
+
+    result = call
+
+    assert_nil result[:revenue_target]
+    assert_nil result[:revenue_target_progress_pct]
+    assert_nil result[:roas_target]
+  end
+
+  test 'avg_ticket_target and conversion_rate_target progress are computed like the other goals' do
+    @client.goals.create!(year: 2026, month: 3, avg_ticket_target: 100, conversion_rate_target: 50)
+    create_order(total_price: 100)
+    create_order(total_price: 300)
+    create_page_view('s1')
+    create_page_view('s2')
+    ShopifyEvent.create!(
+      client: @client, integration_user: @integration_user, kind: 'checkout_completed',
+      session_id: 's1', created_at: Time.zone.local(2026, 3, 15)
+    )
+
+    result = call
+
+    assert_equal 200.0, result[:avg_ticket].to_f
+    assert_equal 200.0, result[:avg_ticket_target_progress_pct]
+    assert_equal 0.0, result[:avg_ticket_target_remaining].to_f
+    assert_equal 50.0, result[:conversion_rate]
+    assert_equal 100.0, result[:conversion_rate_target_progress_pct]
+  end
+
+  test 'cac_target is a ceiling: status is :under when actual CAC is at or below the target' do
+    @client.goals.create!(year: 2026, month: 3, cac_target: 50)
+    @client.ad_costs.create!(
+      platform: 'meta', name: 'Meta',
+      start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 3, 31), amount: 30
+    )
+    new_customer = Customer.create!(shopify_customer_id: SecureRandom.hex(6))
+    create_order(total_price: 100, customer: new_customer)
+
+    result = call
+
+    assert_equal 30.0, result[:cac].to_f
+    assert_equal :under, result[:cac_target_status]
+    assert_equal 20.0, result[:cac_target_diff].to_f
+  end
+
+  test 'cac_target is a ceiling: status is :over when actual CAC exceeds the target' do
+    @client.goals.create!(year: 2026, month: 3, cac_target: 50)
+    @client.ad_costs.create!(
+      platform: 'meta', name: 'Meta',
+      start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 3, 31), amount: 100
+    )
+    new_customer = Customer.create!(shopify_customer_id: SecureRandom.hex(6))
+    create_order(total_price: 100, customer: new_customer)
+
+    result = call
+
+    assert_equal 100.0, result[:cac].to_f
+    assert_equal :over, result[:cac_target_status]
+    assert_equal 50.0, result[:cac_target_diff].to_f
+  end
+
+  test 'tagged_revenue sums gross-minus-discounts only for orders matching the goal tag' do
+    @client.goals.create!(year: 2026, month: 3, tagged_revenue_target: 100, tagged_revenue_tag: 'VendedoraElo')
+    create_order(total_price: 150, tags: 'VendedoraElo, promo')
+    create_order(total_price: 300, tags: 'outra-tag')
+
+    result = call
+
+    assert_equal 'VendedoraElo', result[:tagged_revenue_tag]
+    assert_equal 150.0, result[:tagged_revenue].to_f
+    assert_equal 150.0, result[:tagged_revenue_target_progress_pct]
   end
 end

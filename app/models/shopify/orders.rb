@@ -3,8 +3,8 @@ class Shopify::Orders
   extend ApplicationHelper
 
   class << self
-
-    def sync_shopify_orders_to_rails(session:, client:, limit: 100, status: 'any', time_range: :all, created_at_min: nil, created_at_max: nil)
+    def sync_shopify_orders_to_rails(session:, client:, limit: 100, status: 'any', time_range: :all,
+                                     created_at_min: nil, created_at_max: nil)
       api_client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
       total = 0
@@ -19,7 +19,10 @@ class Shopify::Orders
           nil
         end
 
-      order_fields = 'id,name,created_at,line_items,note_attributes,customer,total_price,subtotal_price,total_discounts,total_tax,total_shipping_price_set,tags,cancelled_at'
+      order_fields = %w[
+        id name created_at line_items note_attributes customer total_price subtotal_price
+        total_discounts total_tax total_shipping_price_set tags cancelled_at fulfillments
+      ].join(',')
 
       query_params = {
         limit: limit,
@@ -50,7 +53,10 @@ class Shopify::Orders
           )
           total += 1
         rescue StandardError => e
-          Rails.logger.error "[Shopify::Orders] Falha ao sincronizar pedido #{shopify_order['name']} (client #{client.id}): #{e.class} #{e.message}"
+          Rails.logger.error(
+            "[Shopify::Orders] Falha ao sincronizar pedido #{shopify_order['name']} " \
+            "(client #{client.id}): #{e.class} #{e.message}"
+          )
         end
 
         break unless response.next_page_info
@@ -118,7 +124,10 @@ class Shopify::Orders
             total += 1
           end
         rescue StandardError => e
-          Rails.logger.error "[Shopify::Orders] Falha ao sincronizar reembolsos do pedido #{shopify_order['name']} (client #{client.id}): #{e.class} #{e.message}"
+          Rails.logger.error(
+            "[Shopify::Orders] Falha ao sincronizar reembolsos do pedido #{shopify_order['name']} " \
+            "(client #{client.id}): #{e.class} #{e.message}"
+          )
         end
 
         break unless response.next_page_info
@@ -159,6 +168,8 @@ class Shopify::Orders
         session: session
       )
 
+      fulfillment = Array(shopify_order['fulfillments']).max_by { |f| f['created_at'].to_s }
+
       # Busca order existente pelo shopify_order_id E client_id
       # Isso permite que diferentes clients tenham orders com mesmo shopify_order_id
       order = Order.find_or_initialize_by(
@@ -182,9 +193,13 @@ class Shopify::Orders
         subtotal_price: shopify_order['subtotal_price'],
         total_discounts: shopify_order['total_discounts'],
         total_price: shopify_order['total_price'],
-        total_tax: shopify_order['total_tax'],
-        total_shipping_price: shopify_order.dig('total_shipping_price_set', 'shop_money', 'amount'),
-        cancelled_at: shopify_order['cancelled_at'].presence && Time.parse(shopify_order['cancelled_at'])
+        total_tax: shopify_order['total_tax'] || 0,
+        total_shipping_price: shopify_order.dig('total_shipping_price_set', 'shop_money', 'amount') || 0,
+        cancelled_at: shopify_order['cancelled_at'].presence && Time.parse(shopify_order['cancelled_at']),
+        tracking_number: fulfillment&.dig('tracking_number').presence,
+        tracking_company: fulfillment&.dig('tracking_company').presence,
+        tracking_url: fulfillment&.dig('tracking_url').presence,
+        fulfilled_at: fulfillment&.dig('created_at').presence && Time.parse(fulfillment['created_at'])
       )
 
       order.created_at = shopify_created_at if order.new_record?
@@ -305,6 +320,5 @@ class Shopify::Orders
       order.update!(staff_id:, staff_name:)
       order
     end
-
   end
 end

@@ -2,7 +2,6 @@
 
 module Integrations
   class GreatPagesController < IntegrationController
-
     def webhook
       lead = Lead.create!(
         email: params["E_mail"],

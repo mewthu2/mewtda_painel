@@ -22,9 +22,9 @@ module ShopifyEvents
 
     def session_id
       payload.dig("context", "session_id") ||
-      payload.dig("context", "sessionId") ||
-      payload.dig("clientId") ||
-      SecureRandom.uuid
+        payload.dig("context", "sessionId") ||
+        payload.dig("clientId") ||
+        SecureRandom.uuid
     end
   end
 end

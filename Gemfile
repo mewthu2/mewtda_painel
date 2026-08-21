@@ -3,7 +3,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.2.2'
 
-# This gem supports operating on xlsx files (Open XML format). While it is capable of properly parsing the entire OOXML structure
+# This gem supports operating on xlsx files (Open XML format). While it is
+# capable of properly parsing the entire OOXML structure
 gem 'rubyXL'
 
 gem 'jwt'
@@ -12,7 +13,8 @@ gem 'rack-cors'
 
 gem 'font-awesome-sass', '~> 6.4'
 
-# This library provides support for Ruby Shopify apps to access the Shopify Admin API, by making it easier to perform the following actions:
+# This library provides support for Ruby Shopify apps to access the Shopify
+# Admin API, by making it easier to perform the following actions:
 gem 'shopify_api'
 
 # Use postgresql as the database for Active Record
@@ -21,7 +23,8 @@ gem 'pg'
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails'
 
-# A simple HTTP and REST client for Ruby, inspired by the Sinatra microframework style of specifying actions: get, put, post, delete.
+# A simple HTTP and REST client for Ruby, inspired by the Sinatra
+# microframework style of specifying actions: get, put, post, delete.
 gem 'rest-client'
 
 # Ruby internationalization and localization (i18n) solution.
@@ -36,7 +39,8 @@ gem 'sidekiq-cron', '~> 1.12'
 # Makes http fun again! Ain't no party like a httparty, because a httparty don't stop.
 gem 'httparty'
 
-# ApexCharts.RB is a ruby charting library that's going to give your ruby app beautiful, interactive, and responsive charts powered by ApexCharts.JS
+# ApexCharts.RB is a ruby charting library that's going to give your ruby app
+# beautiful, interactive, and responsive charts powered by ApexCharts.JS
 gem 'apexcharts'
 
 # Cocoon makes it easier to handle nested forms.
@@ -82,12 +86,13 @@ gem 'jsbundling-rails'
 # gem 'bcrypt', '~> 3.1.7'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
-# Nokogiri (鋸) is an HTML, XML, SAX, and Reader parser. Among Nokogiri's many features is the ability to search documents via XPath or CSS3 selectors.
+# Nokogiri (鋸) is an HTML, XML, SAX, and Reader parser. Among Nokogiri's
+# many features is the ability to search documents via XPath or CSS3 selectors.
 gem 'nokogiri'
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
@@ -102,6 +107,10 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'web-console'
+
+  # Linter — usado pra checar/corrigir alinhamento e identação do código
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem 'rack-mini-profiler'

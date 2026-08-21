@@ -17,6 +17,7 @@ module Shopify
         discounts.concat(result[:discounts])
 
         break unless result[:has_next_page]
+
         after_cursor = result[:end_cursor]
       end
 
@@ -135,10 +136,10 @@ module Shopify
     # Busca descontos que vão expirar em X dias
     def fetch_expiring_in(days:)
       target_date = Date.current + days.days
-      
+
       fetch_active.select do |d|
         next false unless d[:ends_at].present?
-        
+
         expires_on = d[:ends_at].to_date
         expires_on >= Date.current && expires_on <= target_date
       end
