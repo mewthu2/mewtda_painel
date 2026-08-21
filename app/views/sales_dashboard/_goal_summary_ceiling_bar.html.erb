@@ -1,0 +1,28 @@
+<%
+  fill_pct = current.present? ? [(current.to_f / target.to_f * 100), 100].min : 0
+  over = status == :over
+  bar_status = current.blank? ? 'empty' : (over ? 'over' : 'done')
+%>
+
+<div class="sd-goal-bar-row">
+  <div class="sd-goal-bar-row__header">
+    <span class="sd-goal-bar-row__label"><%= label %></span>
+    <span class="sd-goal-bar-row__value">
+      <strong><%= current.present? ? currency(current.to_f.round(2)) : '—' %></strong> de até <%= currency(target.to_f.round(2)) %>
+    </span>
+  </div>
+
+  <div class="sd-goal-bar">
+    <div class="sd-goal-bar__fill sd-goal-bar__fill--<%= bar_status %>" style="width: <%= fill_pct %>%"></div>
+  </div>
+
+  <div class="sd-goal-bar-row__footer">
+    <% if current.blank? %>
+      <span class="sd-goal-row__pct">Sem dado suficiente ainda</span>
+    <% elsif over %>
+      <span class="sd-goal-row__remaining sd-goal-row__remaining--over"><%= currency(diff.to_f.round(2)) %> acima do teto</span>
+    <% else %>
+      <span class="sd-goal-row__remaining"><%= currency(diff.to_f.round(2)) %> de folga</span>
+    <% end %>
+  </div>
+</div>

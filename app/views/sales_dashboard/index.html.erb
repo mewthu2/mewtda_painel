@@ -112,6 +112,53 @@
         <p class="sd-chart-empty">Nenhuma meta definida para este mês.</p>
       <% end %>
 
+      <% if any_goal %>
+        <div class="sd-goals-summary">
+          <div class="sd-goals-summary__title">Resumo das Metas</div>
+
+          <% if @metrics[:revenue_target].present? %>
+            <%= render 'sales_dashboard/goal_summary_bar',
+                label: 'Faturamento (Bruto − Descontos)', format: :currency,
+                current: @metrics[:net_of_discounts], target: @metrics[:revenue_target],
+                progress_pct: @metrics[:revenue_target_progress_pct], remaining: @metrics[:revenue_target_remaining] %>
+          <% end %>
+
+          <% if @metrics[:avg_ticket_target].present? %>
+            <%= render 'sales_dashboard/goal_summary_bar',
+                label: 'Ticket Médio', format: :currency,
+                current: @metrics[:avg_ticket] || 0, target: @metrics[:avg_ticket_target],
+                progress_pct: @metrics[:avg_ticket_target_progress_pct], remaining: @metrics[:avg_ticket_target_remaining] %>
+          <% end %>
+
+          <% if @metrics[:conversion_rate_target].present? %>
+            <%= render 'sales_dashboard/goal_summary_bar',
+                label: 'Taxa de Conversão', format: :percent,
+                current: @metrics[:conversion_rate] || 0, target: @metrics[:conversion_rate_target],
+                progress_pct: @metrics[:conversion_rate_target_progress_pct], remaining: @metrics[:conversion_rate_target_remaining] %>
+          <% end %>
+
+          <% if @metrics[:roas_target].present? %>
+            <%= render 'sales_dashboard/goal_summary_bar',
+                label: 'ROAS Faturado', format: :multiplier,
+                current: @metrics[:roas] || 0, target: @metrics[:roas_target],
+                progress_pct: @metrics[:roas_target_progress_pct], remaining: @metrics[:roas_target_remaining] %>
+          <% end %>
+
+          <% if @metrics[:cac_target].present? %>
+            <%= render 'sales_dashboard/goal_summary_ceiling_bar',
+                label: 'CAC', current: @metrics[:cac], target: @metrics[:cac_target],
+                status: @metrics[:cac_target_status], diff: @metrics[:cac_target_diff] %>
+          <% end %>
+
+          <% if @metrics[:tagged_revenue_target].present? %>
+            <%= render 'sales_dashboard/goal_summary_bar',
+                label: "Vendas — tag \"#{@metrics[:tagged_revenue_tag]}\"", format: :currency,
+                current: @metrics[:tagged_revenue] || 0, target: @metrics[:tagged_revenue_target],
+                progress_pct: @metrics[:tagged_revenue_target_progress_pct], remaining: @metrics[:tagged_revenue_target_remaining] %>
+          <% end %>
+        </div>
+      <% end %>
+
       <% days_in_month = @goal_daily[:days_in_month] %>
       <div class="sd-goals-grid">
       <% if @metrics[:revenue_target].present? %>
