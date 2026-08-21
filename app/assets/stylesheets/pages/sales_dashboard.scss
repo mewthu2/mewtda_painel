@@ -1,5 +1,11 @@
 .sd-page { padding: 24px 28px; min-height: 100vh; }
 
+// Azul fixo (não usa var(--primary)) porque no tema escuro o primary é um azul
+// claro/pastel (#47b0f8), pensado pra botões pequenos — como fundo grande atrás de
+// texto branco ele fica sem contraste e "lavado". Esse header quer um azul forte
+// e consistente nos dois temas.
+$sd-header-blue: #14509e;
+
 .sd-header {
   display: flex;
   align-items: center;
@@ -7,7 +13,7 @@
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 24px;
-  background: var(--primary);
+  background: $sd-header-blue;
   border-radius: 14px;
   padding: 18px 24px;
 }
@@ -15,12 +21,24 @@
 .sd-header__subtitle { font-size: 13px; color: #dbe0ff; }
 
 .sd-month-nav { display: flex; align-items: center; gap: 10px; }
-.sd-month-nav__btn { background: #fff; color: var(--primary); border-radius: 8px; padding: 6px 12px; text-decoration: none; font-weight: 600; font-size: 13px; }
+.sd-month-nav__btn { background: #fff; color: $sd-header-blue; border-radius: 8px; padding: 6px 12px; text-decoration: none; font-weight: 600; font-size: 13px; }
 .sd-month-nav__label { color: #fff; font-weight: 700; min-width: 140px; text-align: center; }
 
-.sd-tag-filter { margin-bottom: 20px; }
-.sd-tag-filter input { border: 1px solid var(--outline); border-radius: 8px; padding: 8px 12px; font-size: 13px; }
-.sd-tag-filter .crm-btn { margin-left: 6px; }
+.sd-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  transition: background .15s;
+}
+.sd-export-btn:hover { background: rgba(255, 255, 255, 0.25); }
+
 
 .sd-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .sd-kpi__hint { font-size: 12px; color: var(--fg-alt); margin-top: 4px; }

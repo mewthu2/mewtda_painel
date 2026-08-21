@@ -4,9 +4,52 @@ class SalesDashboardController < ApplicationController
   before_action :set_client
   before_action :ensure_dashboard_access!
   before_action :require_admin!, only: [:sync_ad_costs]
-  before_action :load_metrics, only: [:index]
+  before_action :load_metrics, only: %i[index export_xlsx]
 
   def index; end
+
+  def export_xlsx
+    unless @client
+      return redirect_to sales_dashboard_path, alert: 'Nenhum cliente selecionado.'
+    end
+
+    workbook = RubyXL::Workbook.new
+    worksheet = workbook[0]
+    worksheet.sheet_name = 'Resumo'
+
+    rows = [
+      ['Cliente', @client.name],
+      ['Período', "#{@month}/#{@year}"],
+      [],
+      ['Bruto', @metrics[:gross_sales]],
+      ['Descontos', -@metrics[:discounts]],
+      ['Líquido de produtos', @metrics[:net_of_discounts]],
+      ['Reembolsos', -@metrics[:reversals]],
+      ['Líquido', @metrics[:net_sales]],
+      ['Frete', @metrics[:shipping]],
+      ['Faturamento', @metrics[:revenue]],
+      [],
+      ['Pedidos', @metrics[:orders_count]],
+      ['Ticket Médio', @metrics[:avg_ticket]],
+      [],
+      ['Investimento em Anúncios', @metrics[:ad_cost]],
+      ['ROAS', @metrics[:roas]],
+      ['Novos Clientes', @metrics[:new_customers_count]],
+      ['CAC', @metrics[:cac]]
+    ]
+
+    rows.each_with_index do |row, i|
+      row.each_with_index { |value, j| worksheet.add_cell(i, j, value) }
+    end
+
+    file_path = Rails.root.join('tmp', "vendas_#{SecureRandom.hex(4)}.xlsx")
+    workbook.write(file_path.to_s)
+
+    send_file file_path,
+              filename: "vendas_#{@client.name.parameterize}_#{@month}_#{@year}.xlsx",
+              type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              disposition: 'attachment'
+  end
 
   def sync_ad_costs
     unless @client

@@ -14,5 +14,6 @@ class HomeController < ApplicationController
   def load_sales_preview
     today = Date.current
     @sales = Sales::DailyBreakdown.new(client: @client, year: today.year, month: today.month).call
+    @metrics = Sales::MonthlyMetrics.new(client: @client, year: today.year, month: today.month).call
   end
 end

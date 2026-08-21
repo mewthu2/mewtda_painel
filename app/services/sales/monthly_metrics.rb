@@ -16,7 +16,6 @@ module Sales
         reversals: reversals,
         net_sales: net_sales,
         shipping: shipping,
-        taxes: taxes,
         orders_count: orders_count,
         avg_ticket: avg_ticket,
         ad_cost: ad_cost,
@@ -38,15 +37,25 @@ module Sales
       start..start.end_of_month
     end
 
+    # Pedidos NÃO cancelados: usado pra contagem de pedidos e ticket médio (volume real).
     def orders_scope
       scope = Order.not_cancelled.where(client_id: client.id, shopify_creation_date: period)
       scope = scope.where('tags ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(tag)}%") if tag.present?
       scope
     end
 
-    # Fórmula "Total Sales" do Shopify: net sales + frete + impostos.
+    # TODOS os pedidos criados no período, incluindo cancelados: o relatório "Total
+    # Sales" do Shopify conta o valor original de todo pedido no Bruto, mesmo cancelado,
+    # e reverte esse valor separadamente (ver #reversals) — não simplesmente ignora.
+    def all_orders_scope
+      scope = Order.where(client_id: client.id, shopify_creation_date: period)
+      scope = scope.where('tags ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(tag)}%") if tag.present?
+      scope
+    end
+
+    # Fórmula "Total Sales" do Shopify: net sales + frete (BR não usa Shopify Tax).
     def revenue
-      net_sales + shipping + taxes
+      net_sales + shipping
     end
 
     # subtotal_price do Shopify já vem líquido de descontos (não é o "bruto" de fato).
@@ -57,22 +66,36 @@ module Sales
     end
 
     def net_of_discounts
-      orders_scope.sum(:subtotal_price)
+      all_orders_scope.sum(:subtotal_price)
     end
 
     def discounts
-      orders_scope.sum(:total_discounts)
+      all_orders_scope.sum(:total_discounts)
     end
 
-    # Reembolsos são contados pela data em que foram PROCESSADOS, não pela data do
-    # pedido original — mesmo critério do relatório "Total Sales" do Shopify ("Sales
-    # reversals"). Um pedido de julho reembolsado em agosto entra no agosto, não no julho.
-    # Não dá pra atribuir reembolso a uma tag específica, então com filtro de tag ativo
-    # a dedução de reembolso é ignorada (mesma limitação já existente em ROAS/CAC).
+    # Duas fontes de reversão, cada uma pela data em que o evento aconteceu (não a
+    # data de criação do pedido) — mesmo critério do "Sales reversals" do Shopify:
+    #   1. Reembolsos reais (dinheiro devolvido) processados no período.
+    #   2. Pedidos cancelados no período que nunca chegaram a ser cobrados (sem
+    #      transação de reembolso, porque não tinha o que devolver) — sem isso, o
+    #      valor deles ficaria contado no Bruto sem nunca ser revertido.
+    # Não dá pra atribuir reversão a uma tag específica, então com filtro de tag ativo
+    # essa dedução é ignorada (mesma limitação já existente em ROAS/CAC).
     def reversals
       return 0 if tag.present?
 
+      refund_reversals + cancelled_without_refund_reversals
+    end
+
+    def refund_reversals
       client.refunds.where(processed_at: period).sum(:amount)
+    end
+
+    def cancelled_without_refund_reversals
+      Order
+        .where(client_id: client.id, cancelled_at: period)
+        .where.not(id: client.refunds.where.not(order_id: nil).select(:order_id))
+        .sum(:subtotal_price)
     end
 
     def net_sales
@@ -80,11 +103,7 @@ module Sales
     end
 
     def shipping
-      orders_scope.sum(:total_shipping_price)
-    end
-
-    def taxes
-      orders_scope.sum(:total_tax)
+      all_orders_scope.sum(:total_shipping_price)
     end
 
     def orders_count

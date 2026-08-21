@@ -48,6 +48,7 @@ Rails.application.routes.draw do
     resources :dashboard, only: [:index]
 
     get  'vendas',               to: 'sales_dashboard#index',          as: :sales_dashboard
+    get  'vendas/export_xlsx',   to: 'sales_dashboard#export_xlsx',   as: :export_xlsx_sales_dashboard
     post 'vendas/sync_ad_costs', to: 'sales_dashboard#sync_ad_costs', as: :sync_ad_costs_sales_dashboard
 
     resources :ad_costs, except: [:show]

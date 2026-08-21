@@ -11,25 +11,22 @@
     <% if @client %>
       <% current_month = Date.new(@year, @month, 1) %>
       <div class="sd-month-nav">
-        <%= link_to '‹', sales_dashboard_path(year: (current_month - 1.month).year, month: (current_month - 1.month).month, tag: @tag), class: 'sd-month-nav__btn' %>
+        <%= link_to '‹', sales_dashboard_path(year: (current_month - 1.month).year, month: (current_month - 1.month).month), class: 'sd-month-nav__btn' %>
         <span class="sd-month-nav__label"><%= month_label(current_month) %></span>
-        <%= link_to '›', sales_dashboard_path(year: (current_month + 1.month).year, month: (current_month + 1.month).month, tag: @tag), class: 'sd-month-nav__btn' %>
+        <%= link_to '›', sales_dashboard_path(year: (current_month + 1.month).year, month: (current_month + 1.month).month), class: 'sd-month-nav__btn' %>
       </div>
+      <%= link_to export_xlsx_sales_dashboard_path(year: @year, month: @month), class: 'sd-export-btn' do %>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+        Baixar Planilha
+      <% end %>
     <% end %>
   </div>
 
   <% if @empty_state %>
     <p><%= @empty_message %></p>
   <% else %>
-    <div class="sd-tag-filter">
-      <%= form_with url: sales_dashboard_path, method: :get, local: true do %>
-        <%= hidden_field_tag :year, @year %>
-        <%= hidden_field_tag :month, @month %>
-        <%= text_field_tag :tag, @tag, placeholder: 'Filtrar por tag (ex.: VendedoraElo)' %>
-        <%= button_tag 'Filtrar', class: 'crm-btn crm-btn--primary' %>
-      <% end %>
-    </div>
-
     <% unless @metrics[:ad_cost_available] %>
       <div class="sd-alert">
         <span>
@@ -44,11 +41,6 @@
     <% end %>
 
     <div class="sd-kpi-grid">
-      <div class="crm-kpi-card">
-        <div class="crm-kpi-card__label">Ticket Médio</div>
-        <div class="crm-kpi-card__value"><%= @metrics[:avg_ticket] ? currency(@metrics[:avg_ticket]) : '—' %></div>
-      </div>
-
       <div class="crm-kpi-card sd-kpi-card--wide">
         <div class="crm-kpi-card__label">Faturamento</div>
         <div class="crm-kpi-card__value"><%= currency(@metrics[:revenue]) %></div>
@@ -77,10 +69,6 @@
             <span class="sd-breakdown__label">+ Frete</span>
             <span class="sd-breakdown__value"><%= currency(@metrics[:shipping]) %></span>
           </div>
-          <div class="sd-breakdown__row sd-breakdown__row--pos">
-            <span class="sd-breakdown__label">+ Impostos</span>
-            <span class="sd-breakdown__value"><%= currency(@metrics[:taxes]) %></span>
-          </div>
           <div class="sd-breakdown__row sd-breakdown__row--total">
             <span class="sd-breakdown__label">= Faturamento</span>
             <span class="sd-breakdown__value"><%= currency(@metrics[:revenue]) %></span>
@@ -90,20 +78,13 @@
 
       <div class="crm-kpi-card">
         <div class="crm-kpi-card__label">ROAS Faturado</div>
-        <div class="crm-kpi-card__value"><%= @tag.blank? && @metrics[:roas] ? "#{@metrics[:roas]}x" : '—' %></div>
-        <% if @tag.present? %>
-          <div class="sd-kpi__hint">Não disponível com filtro de tag ativo</div>
-        <% end %>
+        <div class="crm-kpi-card__value"><%= @metrics[:roas] ? "#{@metrics[:roas]}x" : '—' %></div>
       </div>
 
       <div class="crm-kpi-card">
         <div class="crm-kpi-card__label">CAC</div>
-        <div class="crm-kpi-card__value"><%= @tag.blank? && @metrics[:cac] ? currency(@metrics[:cac]) : '—' %></div>
-        <% if @tag.present? %>
-          <div class="sd-kpi__hint">Não disponível com filtro de tag ativo</div>
-        <% else %>
-          <div class="sd-kpi__hint"><%= @metrics[:new_customers_count] %> clientes novos</div>
-        <% end %>
+        <div class="crm-kpi-card__value"><%= @metrics[:cac] ? currency(@metrics[:cac]) : '—' %></div>
+        <div class="sd-kpi__hint"><%= @metrics[:new_customers_count] %> clientes novos</div>
       </div>
     </div>
 
