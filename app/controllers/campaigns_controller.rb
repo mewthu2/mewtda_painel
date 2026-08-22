@@ -1,5 +1,8 @@
 class CampaignsController < ApplicationController
+  include ClientScoped
+
   before_action :authenticate_user!
+  before_action :set_client
   before_action :require_client!
   before_action :set_campaign, only: %i[show edit update destroy]
 
@@ -80,13 +83,13 @@ class CampaignsController < ApplicationController
   private
 
   def current_client
-    @current_client ||= current_user.client
+    @client
   end
   helper_method :current_client
 
   def require_client!
-    unless current_client.present?
-      redirect_to crm_path, alert: 'Você precisa estar vinculado a um cliente para acessar campanhas.'
+    unless @client
+      redirect_to crm_path, alert: 'Nenhum cliente selecionado.'
     end
   end
 

@@ -1,0 +1,37 @@
+.automations-wrapper { padding: 1.5rem 2rem; }
+
+.automations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.automations-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--bg);
+  border: 1px solid var(--outline);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.automations-card--soon { opacity: 0.7; }
+
+.automations-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  background: var(--primary-tint);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.automations-card__title { font-weight: 700; color: var(--fg); font-size: 1rem; margin-bottom: 0.35rem; }
+.automations-card__description { color: var(--fg-alt); font-size: 0.85rem; margin: 0; line-height: 1.5; }
+.automations-card__tags { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+.automations-card__cta { align-self: flex-start; }

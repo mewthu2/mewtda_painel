@@ -1,0 +1,215 @@
+<% title 'Automação de Rastreio' %>
+
+<div class="cpform-wrapper">
+  <div class="cpform-card">
+
+    <div class="cpform-card__header">
+      <div class="cpform-card__header-icon">
+        <i class="fa-solid fa-truck-fast"></i>
+      </div>
+      <div>
+        <h2 class="cpform-card__title">Automação de Rastreio</h2>
+        <p class="cpform-card__subtitle">Cliente: <%= @client.name %></p>
+      </div>
+    </div>
+
+    <% unless @client.zapi_configured? %>
+      <div class="cpform-alert cpform-alert--danger">
+        <div class="cpform-alert__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <div>
+          <strong>Atenção: Integração Zapi não configurada!</strong>
+          <p>Esta automação não será executada até que a integração Zapi seja configurada.</p>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @campaign.errors.any? %>
+      <div class="cpform-errors">
+        <div class="cpform-errors__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <div>
+          <strong>Corrija os erros abaixo:</strong>
+          <ul>
+            <% @campaign.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+
+    <%= form_with model: @campaign, url: tracking_automation_path, method: :patch, html: { autocomplete: 'off' } do |form| %>
+      <div class="cpform-card__body">
+
+        <div class="cpform-section">
+          <div class="cpform-section__header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            Informações Básicas
+          </div>
+
+          <div class="cpform-field">
+            <%= form.label :name, 'Nome', class: 'crm-label' %>
+            <%= form.text_field :name, class: 'crm-input', required: true %>
+          </div>
+
+          <div class="cpform-row">
+            <div class="cpform-field">
+              <%= form.label :start_date, 'Data de Início', class: 'crm-label' %>
+              <%= form.date_field :start_date, class: 'crm-input', required: true %>
+            </div>
+            <div class="cpform-field">
+              <%= form.label :end_date, 'Data de Fim', class: 'crm-label' %>
+              <%= form.date_field :end_date, class: 'crm-input', required: true %>
+            </div>
+          </div>
+
+          <div class="cpform-field">
+            <%= form.label :active, 'Status', class: 'crm-label' %>
+            <div class="cpform-toggle">
+              <%= form.check_box :active, class: 'cpform-toggle__input' %>
+              <span class="cpform-toggle__label">Automação ativa</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cpform-section cpform-section--highlight">
+          <div class="cpform-section__header cpform-section__header--highlight">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.46-1.028-1.028-1.028h-.958a1.028 1.028 0 00-.727.301L9.75 8.625" />
+            </svg>
+            Configuração de Rastreio
+          </div>
+
+          <p class="cpform-section__description">
+            Envia a cada pedido com código de rastreio preenchido, a partir da Data de Início definida acima.
+            Reenvia automaticamente até atingir o limite de mensagens.
+          </p>
+
+          <div class="cpform-row">
+            <div class="cpform-field">
+              <%= form.label :max_sends, 'Máximo de Mensagens', class: 'crm-label' %>
+              <%= form.number_field :max_sends, class: 'crm-input', min: 1, max: 20, placeholder: 'Ex: 3' %>
+              <span class="cpform-field__hint">Quantas vezes reenviar a mensagem de rastreio pro mesmo pedido</span>
+            </div>
+            <div class="cpform-field">
+              <%= form.label :interval_days, 'Intervalo Entre Envios (dias)', class: 'crm-label' %>
+              <%= form.number_field :interval_days, class: 'crm-input', min: 1, max: 60, placeholder: 'Ex: 4' %>
+              <span class="cpform-field__hint">Dias de espera antes de reenviar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="cpform-section cpform-section--message">
+          <div class="cpform-section__header cpform-section__header--message">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+            </svg>
+            Mensagem de Rastreio
+          </div>
+
+          <div class="cpform-field">
+            <%= form.label :message, 'Texto da Mensagem', class: 'crm-label' %>
+            <%= form.text_area :message, class: 'crm-input', rows: 7, required: true,
+                placeholder: 'Use as variáveis abaixo para personalizar a mensagem' %>
+          </div>
+
+          <div class="cpform-variables">
+            <span class="cpform-variables__title">Variáveis disponíveis:</span>
+            <div class="cpform-variables__list">
+              <code class="cpform-variables__item" title="Nome do cliente">{nome}</code>
+              <code class="cpform-variables__item" title="Número do pedido">{pedido}</code>
+              <code class="cpform-variables__item" title="Código de rastreio">{rastreio}</code>
+              <code class="cpform-variables__item" title="Transportadora">{transportadora}</code>
+              <code class="cpform-variables__item" title="Link de rastreio">{link_rastreio}</code>
+            </div>
+          </div>
+
+          <div class="cpform-hint-box cpform-hint-box--blue">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            <span>Use <code>{rastreio}</code> para o código e <code>{link_rastreio}</code> para o link de rastreamento.</span>
+          </div>
+        </div>
+
+        <% if @campaign.persisted? %>
+          <div class="cpform-section">
+            <div class="cpform-section__header">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Status da Automação
+            </div>
+
+            <div class="cpform-status-grid">
+              <div class="cpform-status-item">
+                <span class="cpform-status-item__label">Status</span>
+                <% case @campaign.status %>
+                <% when :running %>
+                  <span class="cpform-status-item__value cpform-status-item__value--running">Em execução</span>
+                <% when :pending %>
+                  <span class="cpform-status-item__value cpform-status-item__value--pending">Aguardando início</span>
+                <% when :finished %>
+                  <span class="cpform-status-item__value cpform-status-item__value--finished">Finalizada</span>
+                <% when :inactive %>
+                  <span class="cpform-status-item__value cpform-status-item__value--inactive">Inativa</span>
+                <% end %>
+              </div>
+              <div class="cpform-status-item">
+                <span class="cpform-status-item__label">Integração Zapi</span>
+                <% if @campaign.zapi_configured? %>
+                  <span class="cpform-status-item__value cpform-status-item__value--success">Configurada</span>
+                <% else %>
+                  <span class="cpform-status-item__value cpform-status-item__value--danger">Não configurada</span>
+                <% end %>
+              </div>
+              <div class="cpform-status-item">
+                <span class="cpform-status-item__label">Total de notificações</span>
+                <span class="cpform-status-item__value"><%= @campaign.actions_count %></span>
+              </div>
+              <div class="cpform-status-item">
+                <span class="cpform-status-item__label">Criada em</span>
+                <span class="cpform-status-item__value"><%= @campaign.created_at.strftime('%d/%m/%Y %H:%M') %></span>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+      </div>
+
+      <div class="cpform-card__footer">
+        <%= link_to automations_path, class: 'crm-btn crm-btn--secondary' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+          </svg>
+          Voltar
+        <% end %>
+        <% if @campaign.persisted? %>
+          <%= link_to campaign_path(@campaign), class: 'crm-btn cpform-btn--outline' do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+            </svg>
+            Ver notificações
+          <% end %>
+        <% end %>
+        <%= form.button class: 'crm-btn crm-btn--primary', data: { disable_with: 'Salvando...' } do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Salvar Automação
+        <% end %>
+      </div>
+    <% end %>
+
+  </div>
+</div>

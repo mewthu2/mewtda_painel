@@ -25,6 +25,10 @@ Rails.application.routes.draw do
       resources :campaign_actions, only: [:index, :show], path: 'actions'
     end
 
+    get   'automacoes',          to: 'automations#index',         as: :automations
+    get   'automacoes/rastreio', to: 'automations#edit_tracking', as: :edit_tracking_automation
+    patch 'automacoes/rastreio', to: 'automations#update_tracking', as: :tracking_automation
+
     resources :events, only: [:index] do
       collection do
         get  'session/:session_id', action: :session_detail, as: :session

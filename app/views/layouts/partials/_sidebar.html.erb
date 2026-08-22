@@ -45,76 +45,125 @@
         </details>
       <% end %>
 
-      <div class="crm-sidebar__group">
-        <span class="crm-sidebar__group-label">Operações</span>
+      <% operacoes_active = request.path.start_with?(orders_path) || request.path.start_with?(customers_path) || request.path.start_with?(products_path) %>
+      <details class="crm-sidebar__submenu" <%= 'open' if operacoes_active %>>
+        <summary class="crm-sidebar__link crm-sidebar__link--parent">
+          <i class="fa-solid fa-boxes-stacked crm-fa"></i>
+          Operações
+          <i class="fa-solid fa-chevron-down crm-sidebar__submenu-chevron"></i>
+        </summary>
+        <div class="crm-sidebar__submenu-body">
+          <%= link_to orders_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if current_page?(orders_path)}" do %>
+            <i class="fa-solid fa-box crm-fa"></i>
+            Pedidos
+          <% end %>
 
-        <%= link_to orders_path, class: "crm-sidebar__link #{'active' if current_page?(orders_path)}" do %>
-          <i class="fa-solid fa-box crm-fa"></i>
-          Pedidos
-        <% end %>
+          <%= link_to customers_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if current_page?(customers_path)}" do %>
+            <i class="fa-solid fa-users crm-fa"></i>
+            Clientes
+          <% end %>
 
-        <%= link_to customers_path, class: "crm-sidebar__link #{'active' if current_page?(customers_path)}" do %>
-          <i class="fa-solid fa-users crm-fa"></i>
-          Clientes
-        <% end %>
-
-        <%= link_to products_path, class: "crm-sidebar__link #{'active' if current_page?(products_path)}" do %>
-          <i class="fa-solid fa-bag-shopping crm-fa"></i>
-          Produtos
-        <% end %>
-      </div>
+          <%= link_to products_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if current_page?(products_path)}" do %>
+            <i class="fa-solid fa-bag-shopping crm-fa"></i>
+            Produtos
+          <% end %>
+        </div>
+      </details>
     <% end %>
 
     <% unless current_user.profile_id == Profile::AFFILIATE %>
-      <div class="crm-sidebar__group">
-        <span class="crm-sidebar__group-label">Marketing</span>
+      <% whatsapp_active = request.path.start_with?(automations_path) %>
+      <details class="crm-sidebar__submenu" <%= 'open' if whatsapp_active %>>
+        <summary class="crm-sidebar__link crm-sidebar__link--parent">
+          <i class="fa-brands fa-whatsapp crm-fa"></i>
+          WhatsApp
+          <i class="fa-solid fa-chevron-down crm-sidebar__submenu-chevron"></i>
+        </summary>
+        <div class="crm-sidebar__submenu-body">
+          <%= link_to automations_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if current_page?(automations_path)}" do %>
+            <i class="fa-solid fa-robot crm-fa"></i>
+            Automações
+          <% end %>
+        </div>
+      </details>
 
-        <%= link_to campaigns_path, class: "crm-sidebar__link #{'active' if request.path.start_with?(campaigns_path)}" do %>
+      <% marketing_active = request.path.start_with?(campaigns_path) || request.path.start_with?(affiliates_path) %>
+      <details class="crm-sidebar__submenu" <%= 'open' if marketing_active %>>
+        <summary class="crm-sidebar__link crm-sidebar__link--parent">
           <i class="fa-solid fa-bullseye crm-fa"></i>
-          Campanhas
-        <% end %>
+          Marketing
+          <i class="fa-solid fa-chevron-down crm-sidebar__submenu-chevron"></i>
+        </summary>
+        <div class="crm-sidebar__submenu-body">
+          <%= link_to campaigns_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(campaigns_path)}" do %>
+            <i class="fa-solid fa-envelope-open-text crm-fa"></i>
+            Campanhas
+          <% end %>
 
-        <%= link_to affiliates_path, class: "crm-sidebar__link #{'active' if request.path.start_with?(affiliates_path)}" do %>
-          <i class="fa-solid fa-user-group crm-fa"></i>
-          Afiliados
-        <% end %>
+          <%= link_to affiliates_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(affiliates_path)}" do %>
+            <i class="fa-solid fa-user-group crm-fa"></i>
+            Afiliados
+          <% end %>
+        </div>
+      </details>
+    <% end %>
 
-        <%= link_to crm_path, class: "crm-sidebar__link" do %>
-          <i class="fa-solid fa-robot crm-fa"></i>
-          Automações
-        <% end %>
-      </div>
+    <% if current_user.profile_id != Profile::AFFILIATE %>
+      <% settings_href = current_user.admin? ? (session[:selected_client_id].presence && edit_client_path(session[:selected_client_id])) : edit_settings_path %>
+      <% if settings_href %>
+        <% conta_active = current_user.admin? ? request.path.start_with?('/crm/clients/') : current_page?(edit_settings_path) %>
+        <details class="crm-sidebar__submenu" <%= 'open' if conta_active %>>
+          <summary class="crm-sidebar__link crm-sidebar__link--parent">
+            <i class="fa-solid fa-gear crm-fa"></i>
+            Conta
+            <i class="fa-solid fa-chevron-down crm-sidebar__submenu-chevron"></i>
+          </summary>
+          <div class="crm-sidebar__submenu-body">
+            <%= link_to settings_href, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if conta_active}" do %>
+              <i class="fa-solid fa-sliders crm-fa"></i>
+              Configurações
+            <% end %>
+          </div>
+        </details>
+      <% end %>
     <% end %>
 
     <% if current_user.admin? %>
-      <div class="crm-sidebar__group">
-        <span class="crm-sidebar__group-label">Admin</span>
+      <% admin_active = request.path.start_with?(users_path) || request.path.start_with?(clients_path) ||
+                         request.path.start_with?(profiles_path) || request.path.start_with?(try_on_index_path) %>
+      <details class="crm-sidebar__submenu" <%= 'open' if admin_active %>>
+        <summary class="crm-sidebar__link crm-sidebar__link--parent">
+          <i class="fa-solid fa-user-shield crm-fa"></i>
+          Admin
+          <i class="fa-solid fa-chevron-down crm-sidebar__submenu-chevron"></i>
+        </summary>
+        <div class="crm-sidebar__submenu-body">
+          <%= link_to users_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(users_path)}" do %>
+            <i class="fa-solid fa-user crm-fa"></i>
+            Usuários
+          <% end %>
 
-        <%= link_to users_path, class: "crm-sidebar__link #{'active' if request.path.start_with?(users_path)}" do %>
-          <i class="fa-solid fa-user crm-fa"></i>
-          Usuários
-        <% end %>
+          <%= link_to clients_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(clients_path)}" do %>
+            <i class="fa-solid fa-building crm-fa"></i>
+            Clientes
+          <% end %>
 
-        <%= link_to clients_path, class: "crm-sidebar__link #{'active' if request.path.start_with?(clients_path)}" do %>
-          <i class="fa-solid fa-building crm-fa"></i>
-          Clientes
-        <% end %>
+          <%= link_to profiles_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(profiles_path)}" do %>
+            <i class="fa-solid fa-id-badge crm-fa"></i>
+            Perfis
+          <% end %>
 
-        <%= link_to profiles_path, class: "crm-sidebar__link #{'active' if request.path.start_with?(profiles_path)}" do %>
-          <i class="fa-solid fa-id-badge crm-fa"></i>
-          Perfis
-        <% end %>
+          <%= link_to '/crm/sidekiq', class: "crm-sidebar__link crm-sidebar__link--sub", target: '_blank' do %>
+            <i class="fa-solid fa-bolt crm-fa"></i>
+            Sidekiq
+          <% end %>
 
-        <%= link_to '/crm/sidekiq', class: "crm-sidebar__link", target: '_blank' do %>
-          <i class="fa-solid fa-bolt crm-fa"></i>
-          Sidekiq
-        <% end %>
-
-        <%= link_to try_on_index_path, class: "crm-sidebar__link #{'active' if request.path.start_with?(try_on_index_path)}" do %>
-          <i class="fa-solid fa-wand-magic-sparkles crm-fa"></i>
-          Try-On Virtual
-        <% end %>
-      </div>
+          <%= link_to try_on_index_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(try_on_index_path)}" do %>
+            <i class="fa-solid fa-wand-magic-sparkles crm-fa"></i>
+            Try-On Virtual
+          <% end %>
+        </div>
+      </details>
     <% end %>
 
   </nav>

@@ -1,0 +1,63 @@
+<% title 'Automações' %>
+
+<div class="automations-wrapper">
+
+  <% unless @client.zapi_configured? %>
+    <div class="campaigns-alert campaigns-alert--danger">
+      <div class="campaigns-alert__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+      </div>
+      <div class="campaigns-alert__content">
+        <strong>Integração Zapi não configurada!</strong>
+        <p>As automações não serão executadas enquanto a integração Zapi não estiver configurada.</p>
+        <%= link_to 'Configurar Zapi', edit_settings_path, class: 'campaigns-alert__link' %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="automations-grid">
+    <div class="automations-card">
+      <div class="automations-card__icon">
+        <i class="fa-solid fa-truck-fast"></i>
+      </div>
+      <div class="automations-card__body">
+        <div class="automations-card__title">Notificação de Rastreio</div>
+        <p class="automations-card__description">
+          Envia uma mensagem no WhatsApp assim que o pedido tiver código de rastreio, com reenvios automáticos
+          até o limite configurado.
+        </p>
+        <div class="automations-card__tags">
+          <% if @tracking_campaign.nil? %>
+            <span class="crm-tag crm-tag--neutral">Não configurada</span>
+          <% elsif @tracking_campaign.active? %>
+            <span class="crm-tag crm-tag--success">Ativa</span>
+          <% else %>
+            <span class="crm-tag crm-tag--danger">Inativa</span>
+          <% end %>
+          <% if @tracking_campaign %>
+            <span class="crm-tag crm-tag--info"><%= @tracking_campaign.sent_count %> enviadas</span>
+          <% end %>
+        </div>
+      </div>
+      <%= link_to edit_tracking_automation_path, class: 'crm-btn crm-btn--primary automations-card__cta' do %>
+        <%= @tracking_campaign.nil? ? 'Configurar' : 'Editar' %>
+      <% end %>
+    </div>
+
+    <div class="automations-card automations-card--soon">
+      <div class="automations-card__icon">
+        <i class="fa-solid fa-hourglass-half"></i>
+      </div>
+      <div class="automations-card__body">
+        <div class="automations-card__title">Mais automações em breve</div>
+        <p class="automations-card__description">
+          Cashback, lembrete de expiração e notificações de marketing continuam disponíveis em
+          <%= link_to 'Campanhas', campaigns_path %>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
