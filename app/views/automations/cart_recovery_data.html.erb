@@ -1,0 +1,131 @@
+<% title 'Recuperação de Carrinho — Fila' %>
+
+<div class="campaign-show-wrapper">
+
+  <div class="campaign-show-header">
+    <div class="campaign-show-header__left">
+      <%= link_to edit_cart_recovery_automation_path, class: 'campaign-show-header__back' do %>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+        </svg>
+      <% end %>
+      <div>
+        <h1 class="campaign-show-header__title">Recuperação de Carrinho</h1>
+        <p class="campaign-show-header__subtitle">
+          Checkouts abandonados com telefone, do mais recente pro mais antigo — cliente: <%= @client.name %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="campaign-show-table-wrap">
+    <div class="campaign-show-table-header">
+      <span class="campaign-show-table-header__title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+        </svg>
+        Fila de Recuperação
+      </span>
+      <span class="campaign-show-table-header__count"><%= @checkouts.total_entries rescue @checkouts.count %> registros</span>
+    </div>
+
+    <table class="campaign-show-table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Telefone</th>
+          <th>Valor</th>
+          <th>Checkout em</th>
+          <th>Status</th>
+          <th>Cupom</th>
+          <th class="text-center">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @checkouts.each do |checkout| %>
+          <tr>
+            <td>
+              <div class="campaign-show-table__customer">
+                <div class="campaign-show-table__avatar">
+                  <%= (checkout.customer&.name.presence || checkout.email.presence || '?').to_s.split(' ').first(2).map { |w| w[0] }.join.upcase %>
+                </div>
+                <div>
+                  <div class="campaign-show-table__name"><%= checkout.customer&.name.presence || checkout.email.presence || 'Cliente sem nome' %></div>
+                  <div class="campaign-show-table__email"><%= checkout.email %></div>
+                </div>
+              </div>
+            </td>
+            <td><%= checkout.phone %></td>
+            <td><%= checkout.total_price.present? ? currency(checkout.total_price) : '—' %></td>
+            <td>
+              <% if checkout.checkout_created_at.present? %>
+                <span class="campaign-show-table__date"><%= checkout.checkout_created_at.strftime('%d/%m/%Y %H:%M') %></span>
+              <% else %>
+                <span class="campaign-show-table__empty">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% case checkout.status %>
+              <% when :recovered %>
+                <span class="campaign-show-table__status campaign-show-table__status--recovered">Recuperado</span>
+              <% when :second_sent %>
+                <span class="campaign-show-table__status campaign-show-table__status--info">2ª enviada</span>
+              <% when :first_sent %>
+                <span class="campaign-show-table__status campaign-show-table__status--sent">1ª enviada</span>
+              <% else %>
+                <span class="campaign-show-table__status campaign-show-table__status--pending">Na fila</span>
+              <% end %>
+            </td>
+            <td>
+              <% coupon = checkout.second_coupon_code.presence || checkout.first_coupon_code %>
+              <%= coupon.presence || '—' %>
+            </td>
+            <td class="text-center">
+              <div class="campaign-show-table__actions">
+                <% if checkout.first_notified_at.present? %>
+                  <%= button_to resend_cart_recovery_automation_path(checkout, slot: 'first'), method: :post,
+                        class: 'campaign-show-table__message-btn', form: { data: { turbo: false } },
+                        data: { confirm: 'Reenviar a 1ª mensagem agora?', disable_with: '...' } do %>
+                    1ª
+                  <% end %>
+                <% end %>
+                <% if checkout.second_notified_at.present? %>
+                  <%= button_to resend_cart_recovery_automation_path(checkout, slot: 'second'), method: :post,
+                        class: 'campaign-show-table__message-btn', form: { data: { turbo: false } },
+                        data: { confirm: 'Reenviar a 2ª mensagem agora?', disable_with: '...' } do %>
+                    2ª
+                  <% end %>
+                <% end %>
+                <% if checkout.first_notified_at.blank? && checkout.second_notified_at.blank? %>
+                  <span class="campaign-show-table__empty">—</span>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+        <% if @checkouts.empty? %>
+          <tr>
+            <td colspan="7" class="campaign-show-table__empty-row">
+              <div class="campaign-show-table__empty-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                </svg>
+                <p>Nenhum checkout abandonado com telefone ainda.</p>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+      <% if @checkouts.any? %>
+        <tfoot>
+          <tr>
+            <td colspan="7"><%= page_entries_info @checkouts rescue '' %></td>
+          </tr>
+        </tfoot>
+      <% end %>
+    </table>
+
+    <%= will_paginate @checkouts, list_classes: %w[campaign-show-pagination] rescue nil %>
+  </div>
+
+</div>

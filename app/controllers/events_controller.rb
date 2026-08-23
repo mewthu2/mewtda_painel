@@ -1,23 +1,46 @@
 class EventsController < ApplicationController
+  include ClientScoped
+
   before_action :authenticate_user!
   before_action :set_client
   before_action :load_analytics, only: [:index]
 
   def index; end
 
+  # A URL base vem sempre do site_url configurado no cliente (Afiliados >
+  # Configurar Afiliados) — o front só manda o caminho da página (opcional).
   def generate_link
-    url   = params[:url].to_s.strip
-    code  = params[:utm_code].to_s.strip
+    code = params[:utm_code].to_s.strip
+    path = params[:path].to_s.strip
 
-    if url.blank? || code.blank?
-      return render json: { error: "URL e utm_code sao obrigatorios" }, status: :unprocessable_entity
+    return render json: { error: "utm_code e obrigatorio" }, status: :unprocessable_entity if code.blank?
+
+    base = @client&.site_url
+    if base.blank?
+      return render json: { error: "Site principal nao configurado. Configure em Afiliados > Configurar Afiliados." },
+                    status: :unprocessable_entity
     end
 
+    # Se colarem uma URL completa (com dominio) no campo de caminho, descarta
+    # o dominio colado e fica só com path+query — a base sempre vem do
+    # site_url configurado, nunca do que foi digitado.
+    if path =~ %r{\Ahttps?://}i
+      begin
+        pasted = URI.parse(path)
+        path = [pasted.path, pasted.query].compact.join('?')
+        path = "#{path}##{pasted.fragment}" if pasted.fragment.present?
+      rescue URI::InvalidURIError
+        # segue com o valor original; a validacao final abaixo vai pegar
+      end
+    end
+
+    full_url = path.present? ? "#{base.chomp('/')}/#{path.sub(%r{\A/}, '')}" : base
+
     begin
-      uri = URI.parse(url)
+      uri = URI.parse(full_url)
 
       unless uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
-        return render json: { error: "URL invalida. Use http:// ou https://" }, status: :unprocessable_entity
+        return render json: { error: "URL invalida." }, status: :unprocessable_entity
       end
 
       existing = URI.decode_www_form(uri.query || "").to_h
@@ -61,20 +84,6 @@ class EventsController < ApplicationController
 
   private
 
-  def current_client
-    @current_client ||= current_user.client
-  end
-  helper_method :current_client
-
-  def set_client
-    @client = current_client
-
-    unless @client
-      @empty_state = true
-      @empty_message = "Voce nao esta vinculado a nenhum cliente."
-    end
-  end
-
   def load_analytics
     @period = params[:period].presence || "1"
     @filter_year = params[:year].presence&.to_i
@@ -111,6 +120,19 @@ class EventsController < ApplicationController
 
       days_count = { "7" => 7, "15" => 15, "30" => 30 }[@period] || 1
       prev_range = (range.first - days_count.days)..(range.first - 1.second)
+    end
+
+    # Vendas reais com o cupom do afiliado no periodo selecionado (nao o
+    # funil de eventos do pixel, e sim pedidos de fato sincronizados da
+    # Shopify) — separado do rastreamento de sessoes acima.
+    if @affiliate&.discount_code.present?
+      coupon_scope = Order.not_cancelled.where(
+        client_id: @client.id,
+        shopify_creation_date: range
+      ).where('discount_code ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(@affiliate.discount_code)}%")
+
+      @coupon_orders_count = coupon_scope.count
+      @coupon_revenue = coupon_scope.sum(:subtotal_price) + coupon_scope.sum(:total_shipping_price)
     end
 
     base_scope = ShopifyEvent.where(client_id: @client.id, created_at: range)

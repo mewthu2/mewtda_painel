@@ -5,7 +5,7 @@
   <%# Header %>
   <div class="campaign-show-header">
     <div class="campaign-show-header__left">
-      <%= link_to campaigns_path, class: 'campaign-show-header__back' do %>
+      <%= link_to automations_path, class: 'campaign-show-header__back' do %>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
         </svg>
@@ -16,11 +16,17 @@
       </div>
     </div>
     <div class="campaign-show-header__right">
-      <%= link_to edit_campaign_path(@campaign), class: 'campaign-show-btn campaign-show-btn--secondary' do %>
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
-        </svg>
-        Editar
+      <% edit_path = case @campaign.kind
+                     when 'shipping_tracking' then edit_tracking_automation_path
+                     when 'cashback' then edit_cashback_automation_path
+                     end %>
+      <% if edit_path %>
+        <%= link_to edit_path, class: 'campaign-show-btn campaign-show-btn--secondary' do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+          </svg>
+          Editar
+        <% end %>
       <% end %>
     </div>
   </div>
@@ -169,6 +175,7 @@
           <th>Agendado para</th>
           <th>Notificado em</th>
           <th>Mensagem</th>
+          <th class="text-center">Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -250,11 +257,21 @@
                 <span class="campaign-show-table__empty">—</span>
               <% end %>
             </td>
+            <td class="text-center">
+              <%= button_to resend_campaign_action_path(campaign_id: @campaign.to_param, action_id: action.to_param), method: :post,
+                    class: 'campaign-show-table__message-btn', form: { data: { turbo: false } },
+                    data: { confirm: 'Reenviar esta mensagem agora?', disable_with: 'Enviando...' } do %>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+                Reenviar
+              <% end %>
+            </td>
           </tr>
         <% end %>
         <% if @campaign_actions.empty? %>
           <tr>
-            <td colspan="6" class="campaign-show-table__empty-row">
+            <td colspan="7" class="campaign-show-table__empty-row">
               <div class="campaign-show-table__empty-content">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
@@ -268,7 +285,7 @@
       <% if @campaign_actions.any? %>
         <tfoot>
           <tr>
-            <td colspan="6"><%= page_entries_info @campaign_actions rescue '' %></td>
+            <td colspan="7"><%= page_entries_info @campaign_actions rescue '' %></td>
           </tr>
         </tfoot>
       <% end %>

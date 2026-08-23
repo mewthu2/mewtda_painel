@@ -106,9 +106,13 @@
         <div>
           <div class="ev-link-generator__title">Gerador de Link de Afiliado</div>
           <div class="ev-link-generator__subtitle">
-            Insira uma URL e gere o link com o rastreamento
-            <code class="ev-link-generator__code">utm_affiliate=<%= @utm_code %></code>
-            para <strong><%= @affiliate.name %></strong>
+            <% if @client.site_url_configured? %>
+              Informe o caminho da página (opcional) e gere o link, a partir de <code class="ev-link-generator__code"><%= @client.site_url %></code>,
+              com o rastreamento <code class="ev-link-generator__code">utm_affiliate=<%= @utm_code %></code>
+              para <strong><%= @affiliate.name %></strong>
+            <% else %>
+              Site principal não configurado. <%= link_to 'Configure em Afiliados > Configurar Afiliados.', settings_affiliates_path %>
+            <% end %>
           </div>
           <% if @affiliate.discount_code.present? %>
             <div class="ev-link-generator__meta">
@@ -137,14 +141,17 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918" />
             </svg>
             <input
-              type="url"
+              type="text"
               id="ev-link-input"
               class="crm-input ev-link-generator__input"
-              placeholder="https://sualojaexemplo.com.br/produtos/camiseta"
+              placeholder="/produtos/camiseta (deixe em branco para a página inicial)"
               autocomplete="off"
+              <%= 'disabled' unless @client.site_url_configured? %>
             />
           </div>
-          <button type="button" id="ev-link-generate-btn" class="crm-btn crm-btn--primary" onclick="evGenerateLink('<%= generate_link_events_path %>', '<%= @utm_code %>')">
+          <button type="button" id="ev-link-generate-btn" class="crm-btn crm-btn--primary"
+              <%= 'disabled' unless @client.site_url_configured? %>
+              onclick="evGenerateLink('<%= generate_link_events_path %>', '<%= @utm_code %>')">
             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
             </svg>
@@ -174,7 +181,7 @@
 
     <script>
       function evGenerateLink(endpoint, utmCode) {
-        var url = document.getElementById('ev-link-input').value.trim();
+        var path = document.getElementById('ev-link-input').value.trim();
         var btn = document.getElementById('ev-link-generate-btn');
         var resultEl = document.getElementById('ev-link-result');
         var errorEl = document.getElementById('ev-link-error');
@@ -182,12 +189,6 @@
 
         errorEl.style.display = 'none';
         resultEl.style.display = 'none';
-
-        if (!url) {
-          errorEl.textContent = 'Por favor, insira uma URL.';
-          errorEl.style.display = 'block';
-          return;
-        }
 
         btn.disabled = true;
         btn.style.opacity = '0.6';
@@ -200,7 +201,7 @@
             'Content-Type': 'application/json',
             'X-CSRF-Token': csrfToken ? csrfToken.content : ''
           },
-          body: JSON.stringify({ url: url, utm_code: utmCode })
+          body: JSON.stringify({ path: path, utm_code: utmCode })
         })
         .then(function(r) { return r.json(); })
         .then(function(data) {
@@ -251,6 +252,24 @@
         });
       }
     </script>
+  <% end %>
+
+  <% if @affiliate&.discount_code.present? %>
+    <div class="ev-card">
+      <div class="ev-card__header">
+        <div class="ev-card__title">Vendas com o Cupom <%= @affiliate.discount_code %></div>
+      </div>
+      <div class="ev-kpi-grid">
+        <div class="ev-kpi ev-kpi--green">
+          <div class="ev-kpi__label">Pedidos com Cupom</div>
+          <div class="ev-kpi__value"><%= number_with_delimiter(@coupon_orders_count) %></div>
+        </div>
+        <div class="ev-kpi ev-kpi--blue">
+          <div class="ev-kpi__label">Faturamento do Cupom</div>
+          <div class="ev-kpi__value"><%= currency(@coupon_revenue) %></div>
+        </div>
+      </div>
+    </div>
   <% end %>
 
   <% if @empty_state %>

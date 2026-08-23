@@ -103,6 +103,24 @@
   padding: 7px 12px;
 }
 
+.crm-sidebar__link--disabled {
+  cursor: default;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.crm-sidebar__soon-badge {
+  margin-left: auto;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--outline);
+  color: var(--fg-alt);
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
 @media (max-width: 768px) {
   .crm-sidebar {
     display: none;

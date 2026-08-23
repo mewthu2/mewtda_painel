@@ -1,4 +1,7 @@
 class Campaign < ApplicationRecord
+  extend FriendlyId
+  friendly_id :name, use: :slugged
+
   belongs_to :client
   has_many :campaign_actions, dependent: :destroy
 
@@ -6,17 +9,27 @@ class Campaign < ApplicationRecord
     cashback: 0,
     cashback_expiration: 1,
     marketing_notification: 2,
-    shipping_tracking: 3
+    shipping_tracking: 3,
+    cart_recovery: 4
   }
 
   validates :name, presence: true
   validates :kind, presence: true
   validates :message, presence: true
   validates :days_after_purchase, presence: true, numericality: { greater_than: 0 }, unless: -> {
-    marketing_notification? || shipping_tracking?
+    marketing_notification? || shipping_tracking? || cart_recovery?
   }
   validates :max_sends, presence: true, numericality: { greater_than: 0 }, if: :shipping_tracking?
   validates :interval_days, presence: true, numericality: { greater_than: 0 }, if: :shipping_tracking?
+  validates :send_delay_minutes, presence: true, numericality: { greater_than: 0 }, if: :cart_recovery?
+  # O cupom é criado manualmente na Shopify por fora — aqui só guarda o código
+  # já pronto, não gera nada via API.
+  validates :coupon_code, presence: true, if: -> { cart_recovery? && include_coupon? }
+  validates :resend_message, presence: true, if: -> { cart_recovery? && resend_enabled? }
+  validates :resend_delay_hours, presence: true, numericality: { greater_than: 0 },
+                                 if: -> { cart_recovery? && resend_enabled? }
+  validates :resend_coupon_code, presence: true,
+                                 if: -> { cart_recovery? && resend_enabled? && resend_include_coupon? }
   validates :start_date, presence: true
   validates :end_date, presence: true
   validate :end_date_after_start_date
@@ -60,12 +73,13 @@ class Campaign < ApplicationRecord
     when 'cashback_expiration'    then 'Expiração de Cashback'
     when 'marketing_notification' then 'Notificação de Marketing'
     when 'shipping_tracking'      then 'Rastreio de Pedido'
+    when 'cart_recovery'          then 'Recuperação de Carrinho'
     else kind
     end
   end
 
   def days_after_purchase_label
-    return nil if marketing_notification? || shipping_tracking?
+    return nil if marketing_notification? || shipping_tracking? || cart_recovery?
 
     cashback_expiration? ? 'dias antes da expiração' : 'dias após a compra'
   end

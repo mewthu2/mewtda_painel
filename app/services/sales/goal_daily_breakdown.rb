@@ -21,7 +21,7 @@ module Sales
         cac_by_day: cac_by_day,
         tagged_revenue_by_day: tagged_revenue_by_day,
         orders_count_by_day: orders_count_by_day,
-        total_revenue_by_day: total_revenue_by_day,
+        total_revenue_by_day: revenue_by_day,
         sessions_by_day: sessions_series('page_viewed'),
         checkout_completed_count_by_day: sessions_series('checkout_completed')
       }
@@ -69,10 +69,13 @@ module Sales
       end
     end
 
-    # Faturamento (Bruto − Descontos) por dia — mesma base usada na meta de
-    # Faturamento (Sales::MonthlyMetrics compara a meta contra net_of_discounts).
+    # Faturamento (Bruto − Descontos + Frete) por dia — mesma base usada na
+    # meta de Faturamento e no card principal (Sales::MonthlyMetrics#revenue).
     def revenue_by_day
-      days.map { |d| order_totals_by_day.dig(d, :net) || 0.0 }
+      days.map do |d|
+        entry = order_totals_by_day[d]
+        entry ? (entry[:net] + entry[:shipping]).round(2) : 0.0
+      end
     end
 
     def avg_ticket_by_day
@@ -84,15 +87,6 @@ module Sales
 
     def orders_count_by_day
       days.map { |d| order_totals_by_day.dig(d, :count) || 0 }
-    end
-
-    # Faturamento total do dia (líquido + frete) — mesma base do card
-    # "Faturamento" no topo do dashboard, usada no modal de detalhe do dia.
-    def total_revenue_by_day
-      days.map do |d|
-        entry = order_totals_by_day[d]
-        entry ? (entry[:net] + entry[:shipping]).round(2) : 0.0
-      end
     end
 
     def tagged_orders_scope

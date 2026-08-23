@@ -1,0 +1,59 @@
+<div class="wa-preview-col">
+  <div class="wa-preview-col__label"><i class="fa-brands fa-whatsapp"></i> Pré-visualização no WhatsApp</div>
+  <div class="wa-phone">
+    <div class="wa-phone__screen">
+      <div class="wa-phone__header">
+        <div class="wa-phone__avatar"><i class="fa-solid fa-store"></i></div>
+        <div>
+          <div class="wa-phone__name"><%= @client.name %></div>
+          <div class="wa-phone__status">online</div>
+        </div>
+      </div>
+      <div class="wa-phone__chat">
+        <div class="wa-bubble">
+          <span class="wa-bubble__text" id="wa-preview-text"></span>
+          <span class="wa-bubble__meta">
+            <span class="wa-bubble__time"><%= Time.current.strftime('%H:%M') %></span>
+            <i class="fa-solid fa-check-double wa-bubble__check"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initWhatsappPreview(textareaId, samples) {
+    initWhatsappPreviewMulti([{ id: textareaId, samples: samples }]);
+  }
+
+  // Aceita várias textareas (ex: mensagem + reenvio) — o preview mostra
+  // sempre a última que o usuário focou/editou.
+  function initWhatsappPreviewMulti(fields) {
+    var preview = document.getElementById('wa-preview-text');
+    if (!preview || !fields.length) return;
+
+    var active = fields[0];
+
+    function render() {
+      var textarea = document.getElementById(active.id);
+      if (!textarea) return;
+
+      var text = textarea.value;
+      Object.keys(active.samples).forEach(function (key) {
+        text = text.split(key).join(active.samples[key]);
+      });
+      preview.textContent = text;
+    }
+
+    fields.forEach(function (field) {
+      var textarea = document.getElementById(field.id);
+      if (!textarea) return;
+
+      textarea.addEventListener('input', function () { active = field; render(); });
+      textarea.addEventListener('focus', function () { active = field; render(); });
+    });
+
+    render();
+  }
+</script>

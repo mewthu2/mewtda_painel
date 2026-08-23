@@ -24,12 +24,10 @@ module Sales
         new_customers_count: new_customers_count,
         cac: cac,
         conversion_rate: conversion_rate,
-        # Meta de "Faturamento" = Bruto − Descontos (net_of_discounts), não o Faturamento
-        # (Total Sales) do card acima — assim o cliente define a meta com um número
-        # simples, sem precisar prever reembolsos/frete do mês que ainda vai acontecer.
+        # Meta de "Faturamento" = mesmo valor do card principal (Bruto − Descontos + Frete).
         revenue_target: goal&.revenue_target,
-        revenue_target_progress_pct: progress_pct(net_of_discounts, goal&.revenue_target),
-        revenue_target_remaining: remaining(net_of_discounts, goal&.revenue_target),
+        revenue_target_progress_pct: progress_pct(revenue, goal&.revenue_target),
+        revenue_target_remaining: remaining(revenue, goal&.revenue_target),
         roas_target: goal&.roas_target,
         roas_target_progress_pct: progress_pct(roas, goal&.roas_target),
         roas_target_remaining: remaining(roas, goal&.roas_target),

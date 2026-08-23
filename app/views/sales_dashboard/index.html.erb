@@ -118,8 +118,8 @@
 
           <% if @metrics[:revenue_target].present? %>
             <%= render 'sales_dashboard/goal_summary_bar',
-                label: 'Faturamento (Bruto − Descontos)', format: :currency,
-                current: @metrics[:net_of_discounts], target: @metrics[:revenue_target],
+                label: 'Faturamento (Bruto − Descontos + Frete)', format: :currency,
+                current: @metrics[:revenue], target: @metrics[:revenue_target],
                 progress_pct: @metrics[:revenue_target_progress_pct], remaining: @metrics[:revenue_target_remaining] %>
           <% end %>
 
@@ -163,9 +163,9 @@
       <div class="sd-goals-grid">
       <% if @metrics[:revenue_target].present? %>
         <%= render 'sales_dashboard/goal_progress', chart_id: 'goal-gauge-revenue', metric: 'revenue',
-            label: 'Faturamento (Bruto − Descontos)', format: :currency,
+            label: 'Faturamento (Bruto − Descontos + Frete)', format: :currency,
             reference: (@metrics[:revenue_target].to_f / days_in_month).round(2),
-            current: @metrics[:net_of_discounts], target: @metrics[:revenue_target],
+            current: @metrics[:revenue], target: @metrics[:revenue_target],
             progress_pct: @metrics[:revenue_target_progress_pct], remaining: @metrics[:revenue_target_remaining] %>
       <% end %>
 

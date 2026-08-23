@@ -4,11 +4,18 @@ class Client < ApplicationRecord
   has_many :ad_costs, dependent: :destroy
   has_many :refunds, dependent: :destroy
   has_many :goals, dependent: :destroy
+  has_many :abandoned_checkouts, dependent: :destroy
 
   encrypts :meta_access_token, :google_ads_refresh_token, :shopify_api_secret
 
   validates :name, presence: true
   validates :email, presence: true
+  validates :site_url, format: { with: %r{\Ahttps?://}, message: 'deve começar com http:// ou https://' },
+                       allow_blank: true
+
+  def site_url_configured?
+    site_url.present?
+  end
 
   def zapi_configured?
     zapi_instance_id.present? &&

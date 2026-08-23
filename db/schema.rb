@@ -10,12 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_21_175734) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_22_144024) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
+
+  create_table "abandoned_checkouts", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.bigint "customer_id"
+    t.string "shopify_checkout_id", null: false
+    t.string "shopify_checkout_token"
+    t.string "email"
+    t.string "phone"
+    t.decimal "total_price", precision: 12, scale: 2
+    t.string "currency"
+    t.datetime "checkout_created_at"
+    t.datetime "checkout_updated_at"
+    t.string "recovery_url"
+    t.datetime "completed_at"
+    t.jsonb "line_items", default: []
+    t.datetime "first_notified_at"
+    t.text "first_message_sent"
+    t.string "first_coupon_code"
+    t.datetime "second_notified_at"
+    t.text "second_message_sent"
+    t.string "second_coupon_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "slug"
+    t.index ["client_id", "shopify_checkout_id"], name: "index_abandoned_checkouts_on_client_and_shopify_id", unique: true
+    t.index ["client_id"], name: "index_abandoned_checkouts_on_client_id"
+    t.index ["customer_id"], name: "index_abandoned_checkouts_on_customer_id"
+    t.index ["slug"], name: "index_abandoned_checkouts_on_slug", unique: true
+  end
 
   create_table "ad_cost_snapshots", force: :cascade do |t|
     t.bigint "client_id", null: false
@@ -74,12 +103,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_175734) do
     t.text "error_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug"
     t.index ["campaign_id", "kind"], name: "index_campaign_actions_on_campaign_id_and_kind"
     t.index ["campaign_id", "status"], name: "index_campaign_actions_on_campaign_id_and_status"
     t.index ["campaign_id"], name: "index_campaign_actions_on_campaign_id"
     t.index ["customer_id"], name: "index_campaign_actions_on_customer_id"
     t.index ["notified_at"], name: "index_campaign_actions_on_notified_at"
     t.index ["order_id"], name: "index_campaign_actions_on_order_id"
+    t.index ["slug"], name: "index_campaign_actions_on_slug", unique: true
   end
 
   create_table "campaigns", force: :cascade do |t|
@@ -96,9 +127,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_175734) do
     t.jsonb "filters", default: {}, null: false
     t.integer "max_sends"
     t.integer "interval_days"
+    t.integer "send_delay_minutes"
+    t.boolean "include_coupon", default: false, null: false
+    t.boolean "resend_enabled", default: false, null: false
+    t.integer "resend_delay_hours"
+    t.text "resend_message"
+    t.boolean "resend_include_coupon", default: false, null: false
+    t.string "coupon_code"
+    t.string "resend_coupon_code"
+    t.string "slug"
     t.index ["client_id", "kind"], name: "index_campaigns_on_client_id_and_kind"
     t.index ["client_id"], name: "index_campaigns_on_client_id"
     t.index ["filters"], name: "index_campaigns_on_filters", using: :gin
+    t.index ["slug"], name: "index_campaigns_on_slug", unique: true
     t.index ["start_date", "end_date"], name: "index_campaigns_on_start_date_and_end_date"
   end
 
@@ -122,6 +163,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_175734) do
     t.string "shopify_api_secret"
     t.datetime "orders_synced_at"
     t.datetime "refunds_synced_at"
+    t.string "site_url"
     t.index ["shopify_shop_url"], name: "index_clients_on_shopify_shop_url", unique: true
   end
 
@@ -238,10 +280,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_175734) do
     t.string "tracking_company"
     t.string "tracking_url"
     t.datetime "fulfilled_at"
+    t.string "discount_code"
     t.index ["cancelled_at"], name: "index_orders_on_cancelled_at"
     t.index ["client_id", "shopify_order_id"], name: "index_orders_on_client_id_and_shopify_order_id", unique: true
     t.index ["client_id"], name: "index_orders_on_client_id"
     t.index ["customer_id"], name: "index_orders_on_customer_id"
+    t.index ["discount_code"], name: "index_orders_on_discount_code"
     t.index ["location_id"], name: "index_orders_on_location_id"
     t.index ["shopify_order_id"], name: "index_orders_on_shopify_order_id", unique: true
     t.index ["shopify_order_number"], name: "index_orders_on_shopify_order_number"
@@ -357,6 +401,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_21_175734) do
     t.index ["utm_code"], name: "index_users_on_utm_code", unique: true
   end
 
+  add_foreign_key "abandoned_checkouts", "clients"
+  add_foreign_key "abandoned_checkouts", "customers"
   add_foreign_key "ad_cost_snapshots", "clients"
   add_foreign_key "ad_costs", "clients"
   add_foreign_key "campaign_actions", "campaigns"

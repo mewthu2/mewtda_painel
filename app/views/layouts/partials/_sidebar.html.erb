@@ -87,7 +87,7 @@
         </div>
       </details>
 
-      <% marketing_active = request.path.start_with?(campaigns_path) || request.path.start_with?(affiliates_path) %>
+      <% marketing_active = request.path.start_with?(affiliates_path) %>
       <details class="crm-sidebar__submenu" <%= 'open' if marketing_active %>>
         <summary class="crm-sidebar__link crm-sidebar__link--parent">
           <i class="fa-solid fa-bullseye crm-fa"></i>
@@ -95,10 +95,11 @@
           <i class="fa-solid fa-chevron-down crm-sidebar__submenu-chevron"></i>
         </summary>
         <div class="crm-sidebar__submenu-body">
-          <%= link_to campaigns_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(campaigns_path)}" do %>
+          <span class="crm-sidebar__link crm-sidebar__link--sub crm-sidebar__link--disabled" title="Em breve">
             <i class="fa-solid fa-envelope-open-text crm-fa"></i>
             Campanhas
-          <% end %>
+            <span class="crm-sidebar__soon-badge">Em breve</span>
+          </span>
 
           <%= link_to affiliates_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(affiliates_path)}" do %>
             <i class="fa-solid fa-user-group crm-fa"></i>

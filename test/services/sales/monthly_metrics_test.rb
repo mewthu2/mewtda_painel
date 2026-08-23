@@ -142,22 +142,23 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     assert_equal 1, call[:new_customers_count]
   end
 
-  test 'goal progress and remaining are computed against the revenue and roas targets' do
+  test 'goal progress and remaining are computed against the revenue (incl. shipping) and roas targets' do
     @client.goals.create!(year: 2026, month: 3, revenue_target: 200, roas_target: 4)
     @client.ad_costs.create!(
       platform: 'meta', name: 'Meta',
       start_date: Date.new(2026, 3, 1), end_date: Date.new(2026, 3, 31), amount: 25
     )
-    create_order(total_price: 150)
+    create_order(total_price: 150, subtotal_price: 150, total_shipping_price: 20)
 
     result = call
 
+    assert_equal 170.0, result[:revenue].to_f # 150 (net) + 20 (frete)
     assert_equal 200.0, result[:revenue_target].to_f
-    assert_equal 75.0, result[:revenue_target_progress_pct]
-    assert_equal 50.0, result[:revenue_target_remaining].to_f
+    assert_equal 85.0, result[:revenue_target_progress_pct]
+    assert_equal 30.0, result[:revenue_target_remaining].to_f
     assert_equal 4.0, result[:roas_target].to_f
-    assert_equal 6.0, result[:roas].to_f
-    assert_equal 150.0, result[:roas_target_progress_pct]
+    assert_equal 6.8, result[:roas].to_f
+    assert_equal 170.0, result[:roas_target_progress_pct]
     assert_equal 0.0, result[:roas_target_remaining].to_f
   end
 

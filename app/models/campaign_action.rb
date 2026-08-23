@@ -1,4 +1,7 @@
 class CampaignAction < ApplicationRecord
+  extend FriendlyId
+  friendly_id :random_slug, use: :slugged
+
   belongs_to :campaign
   belongs_to :customer
   belongs_to :order, optional: true
@@ -46,5 +49,13 @@ class CampaignAction < ApplicationRecord
       status: :failed,
       error_message: error
     )
+  end
+
+  private
+
+  # Sem um campo "nome" natural — gera um slug opaco só na criação
+  # (FriendlyId só chama isso quando o slug ainda está em branco).
+  def random_slug
+    SecureRandom.hex(6)
   end
 end

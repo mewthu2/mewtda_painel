@@ -1,5 +1,8 @@
 class AffiliatesController < ApplicationController
+  include ClientScoped
+
   before_action :authenticate_user!
+  before_action :set_client
   before_action :require_client!
   before_action :set_affiliate, only: %i[show edit update destroy]
   before_action :load_analytics, only: [:show]
@@ -28,6 +31,8 @@ class AffiliatesController < ApplicationController
         @affiliates = @affiliates.where(active: false) if column_exists?(:users, :active)
       end
     end
+
+    @coupon_stats = load_coupon_stats(@affiliates)
   end
 
   def show; end
@@ -72,16 +77,48 @@ class AffiliatesController < ApplicationController
     redirect_to affiliates_path, notice: 'Afiliado excluído com sucesso.'
   end
 
+  def edit_settings; end
+
+  def update_settings
+    if current_client.update(site_url_params)
+      redirect_to affiliates_path, notice: 'Configuração de afiliados atualizada com sucesso.'
+    else
+      render :edit_settings, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def current_client
-    @current_client ||= current_user.client
+    @client
   end
   helper_method :current_client
 
   def require_client!
     unless current_client.present?
-      redirect_to crm_path, alert: 'Você precisa estar vinculado a um cliente para acessar afiliados.'
+      redirect_to crm_path, alert: 'Nenhum cliente selecionado.'
+    end
+  end
+
+  def site_url_params
+    params.require(:client).permit(:site_url)
+  end
+
+  # Vendas reais (nao o funil de pixel) por cupom de cada afiliado listado,
+  # em todo o historico do cliente — usado pra mostrar quem de fato converteu.
+  def load_coupon_stats(affiliates)
+    affiliates.each_with_object({}) do |affiliate, memo|
+      next if affiliate.discount_code.blank?
+
+      pick_sql = 'COUNT(*), COALESCE(SUM(subtotal_price), 0), COALESCE(SUM(total_shipping_price), 0)'
+
+      count, subtotal, shipping = Order.not_cancelled
+                                       .where(client_id: current_client.id)
+                                       .where('discount_code ILIKE ?',
+                                              "%#{ActiveRecord::Base.sanitize_sql_like(affiliate.discount_code)}%")
+                                       .pick(Arel.sql(pick_sql))
+
+      memo[affiliate.id] = { orders_count: count, revenue: subtotal.to_f + shipping.to_f }
     end
   end
 

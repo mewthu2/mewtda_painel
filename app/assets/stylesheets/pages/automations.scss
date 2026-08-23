@@ -1,5 +1,9 @@
 .automations-wrapper { padding: 1.5rem 2rem; }
 
+.automations-intro { margin-bottom: 1.5rem; max-width: 720px; }
+.automations-intro__title { font-size: 1.2rem; font-weight: 700; color: var(--fg); margin: 0 0 0.35rem; }
+.automations-intro__text { color: var(--fg-alt); font-size: 0.9rem; line-height: 1.6; margin: 0; }
+
 .automations-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -35,3 +39,139 @@
 .automations-card__description { color: var(--fg-alt); font-size: 0.85rem; margin: 0; line-height: 1.5; }
 .automations-card__tags { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
 .automations-card__cta { align-self: flex-start; }
+.automations-card__cta-row { display: flex; gap: 0.5rem; }
+
+/* Layout com preview de WhatsApp ao lado do formulário */
+.cpform-wrapper--with-preview {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cpform-wrapper--with-preview .cpform-card { flex: 1 1 480px; max-width: 720px; }
+
+.cpform-header-description {
+  color: var(--fg-alt);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0.5rem 0 0;
+}
+
+.wa-preview-col {
+  flex: 0 0 320px;
+  position: sticky;
+  top: 20px;
+  padding: 18px 14px 22px;
+  background: linear-gradient(180deg, rgba(37, 211, 102, 0.1), rgba(37, 211, 102, 0.02));
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.12);
+}
+
+.wa-preview-col__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #1a7a4c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.wa-preview-col__label i { color: #25d366; font-size: 14px; }
+
+.wa-phone {
+  width: 300px;
+  height: 560px;
+  background: #0b141a;
+  border-radius: 32px;
+  padding: 10px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+}
+
+.wa-phone__screen {
+  height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #e5ddd5;
+}
+
+.wa-phone__header {
+  background: #075e54;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.wa-phone__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.wa-phone__name { color: #fff; font-size: 13px; font-weight: 600; line-height: 1.2; }
+.wa-phone__status { color: rgba(255, 255, 255, 0.7); font-size: 11px; }
+
+.wa-phone__chat {
+  flex: 1;
+  padding: 14px 10px;
+  overflow-y: auto;
+  background-image:
+    linear-gradient(rgba(229, 221, 213, 0.9), rgba(229, 221, 213, 0.9)),
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0 2px, transparent 2px 40px);
+}
+
+.wa-bubble {
+  background: #dcf8c6;
+  border-radius: 8px;
+  padding: 6px 8px 4px;
+  max-width: 88%;
+  margin-left: auto;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.wa-bubble__text {
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: #111;
+  min-height: 18px;
+}
+
+.wa-bubble__text:empty::before {
+  content: 'Sua mensagem vai aparecer aqui...';
+  color: #8a8a8a;
+  font-style: italic;
+}
+
+.wa-bubble__meta {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.wa-bubble__time { font-size: 10px; color: rgba(0, 0, 0, 0.45); }
+.wa-bubble__check { font-size: 10px; color: #4fc3f7; }

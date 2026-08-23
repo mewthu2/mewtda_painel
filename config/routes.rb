@@ -24,10 +24,19 @@ Rails.application.routes.draw do
     resources :campaigns do
       resources :campaign_actions, only: [:index, :show], path: 'actions'
     end
+    post 'campaigns/:campaign_id/actions/:action_id/resend', to: 'campaigns#resend_action', as: :resend_campaign_action
 
-    get   'automacoes',          to: 'automations#index',         as: :automations
-    get   'automacoes/rastreio', to: 'automations#edit_tracking', as: :edit_tracking_automation
-    patch 'automacoes/rastreio', to: 'automations#update_tracking', as: :tracking_automation
+    get   'automations',                    to: 'automations#index',           as: :automations
+    get   'automations/tracking',           to: 'automations#edit_tracking',   as: :edit_tracking_automation
+    patch 'automations/tracking',           to: 'automations#update_tracking', as: :tracking_automation
+    get   'automations/cashback',           to: 'automations#edit_cashback',   as: :edit_cashback_automation
+    patch 'automations/cashback',           to: 'automations#update_cashback', as: :cashback_automation
+    get   'automations/cart-recovery',      to: 'automations#edit_cart_recovery',   as: :edit_cart_recovery_automation
+    patch 'automations/cart-recovery',      to: 'automations#update_cart_recovery', as: :cart_recovery_automation
+    get   'automations/cart-recovery/data', to: 'automations#cart_recovery_data',
+                                            as: :cart_recovery_data_automation
+    post  'automations/cart-recovery/data/:id/resend', to: 'automations#resend_cart_recovery',
+                                                       as: :resend_cart_recovery_automation
 
     resources :events, only: [:index] do
       collection do
@@ -36,7 +45,12 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :affiliates
+    resources :affiliates do
+      collection do
+        get   'configuracoes', action: :edit_settings,   as: :settings
+        patch 'configuracoes', action: :update_settings, as: nil
+      end
+    end
 
     post 'update_selected_client', to: 'clients#update_selected_client'
     get '/', to: 'dashboard#index', as: :crm

@@ -4,6 +4,10 @@ class CampaignsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_client
   before_action :require_client!
+  # A criação livre de campanhas foi substituída pelas Automações (telas
+  # dedicadas por tipo). show/resend_action continuam ativos porque são
+  # usados pelo botão "Ver Dados" de cada automação.
+  before_action :redirect_deactivated!, only: %i[index new create edit update destroy]
   before_action :set_campaign, only: %i[show edit update destroy]
 
   def index
@@ -80,6 +84,17 @@ class CampaignsController < ApplicationController
     redirect_to campaigns_path, notice: 'Campanha excluída com sucesso.'
   end
 
+  def resend_action
+    campaign = current_client.campaigns.friendly.find(params[:campaign_id])
+    campaign_action = campaign.campaign_actions.friendly.find(params[:action_id])
+
+    SendCampaignNotificationJob.perform_later(campaign_action.id)
+
+    redirect_to campaign_path(campaign), notice: 'Reenvio agendado com sucesso.'
+  rescue ActiveRecord::RecordNotFound
+    redirect_to campaigns_path, alert: 'Notificação não encontrada.'
+  end
+
   private
 
   def current_client
@@ -93,8 +108,12 @@ class CampaignsController < ApplicationController
     end
   end
 
+  def redirect_deactivated!
+    redirect_to automations_path, notice: 'Campanhas foi substituído pelas Automações.'
+  end
+
   def set_campaign
-    @campaign = current_client.campaigns.find(params[:id])
+    @campaign = current_client.campaigns.friendly.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to campaigns_path, alert: 'Campanha não encontrada.'
   end

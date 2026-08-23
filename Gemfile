@@ -61,6 +61,8 @@ gem 'bcrypt'
 # Devise is a flexible authentication solution for Rails based on Warden
 gem 'devise'
 
+gem 'friendly_id', '~> 5.5'
+
 # Use Sass to process CSS
 gem 'sassc-rails'
 

@@ -71,4 +71,111 @@ class AutomationsControllerTest < ActionDispatch::IntegrationTest
     assert campaign.present?
     assert campaign.active?
   end
+
+  test 'edit_cashback initializes a not-yet-persisted campaign with cashback defaults' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    user = build_user(client: client)
+    sign_in user
+
+    get edit_cashback_automation_path
+
+    assert_response :success
+    assert_equal 0, client.campaigns.count
+  end
+
+  test 'update_cashback creates the cashback campaign' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    user = build_user(client: client)
+    sign_in user
+
+    patch cashback_automation_path, params: {
+      campaign: {
+        name: 'Cashback', message: 'Oi {nome}, use {cupom}!',
+        start_date: Date.current, end_date: Date.current + 1.year,
+        active: '1', days_after_purchase: 7
+      }
+    }
+
+    assert_redirected_to automations_path
+    campaign = client.campaigns.find_by(kind: 'cashback')
+    assert campaign.present?
+    assert campaign.active?
+    assert_equal 7, campaign.days_after_purchase
+  end
+
+  test 'edit_cart_recovery initializes a not-yet-persisted campaign with defaults' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    user = build_user(client: client)
+    sign_in user
+
+    get edit_cart_recovery_automation_path
+
+    assert_response :success
+    assert_equal 0, client.campaigns.count
+  end
+
+  test 'update_cart_recovery creates the cart_recovery campaign with resend config' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    user = build_user(client: client)
+    sign_in user
+
+    patch cart_recovery_automation_path, params: {
+      campaign: {
+        name: 'Recuperação de Carrinho', message: 'Oi {nome}, finalize sua compra! {link}',
+        start_date: Date.current, end_date: Date.current + 1.year,
+        active: '1', send_delay_minutes: 60,
+        include_coupon: '1', coupon_code: 'VOLTA10',
+        resend_enabled: '1', resend_delay_hours: 24, resend_message: 'Ainda dá tempo, {nome}! {cupom}',
+        resend_include_coupon: '1', resend_coupon_code: 'VOLTA15'
+      }
+    }
+
+    assert_redirected_to automations_path
+    campaign = client.campaigns.find_by(kind: 'cart_recovery')
+    assert campaign.present?
+    assert campaign.active?
+    assert_equal 60, campaign.send_delay_minutes
+    assert campaign.resend_enabled?
+    assert_equal 'VOLTA15', campaign.resend_coupon_code
+  end
+
+  test 'cart_recovery_data lists only abandoned checkouts with a phone number' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    user = build_user(client: client)
+    sign_in user
+
+    with_phone = client.abandoned_checkouts.create!(
+      shopify_checkout_id: SecureRandom.hex(6), phone: '+5511999999999', email: 'a@example.com',
+      checkout_created_at: Time.current
+    )
+    client.abandoned_checkouts.create!(
+      shopify_checkout_id: SecureRandom.hex(6), phone: nil, email: 'b@example.com',
+      checkout_created_at: Time.current
+    )
+
+    get cart_recovery_data_automation_path
+
+    assert_response :success
+    assert_match with_phone.email, response.body
+  end
+
+  test 'resend_cart_recovery enqueues SendCartRecoveryNotificationJob for an already-notified checkout' do
+    client = Client.create!(name: 'Loja', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    client.campaigns.create!(
+      name: 'Recuperação', kind: 'cart_recovery', message: 'Oi {nome}',
+      start_date: Date.current, end_date: Date.current + 1.year, send_delay_minutes: 60
+    )
+    checkout = client.abandoned_checkouts.create!(
+      shopify_checkout_id: SecureRandom.hex(6), phone: '+5511999999999',
+      checkout_created_at: Time.current, first_notified_at: Time.current
+    )
+    user = build_user(client: client)
+    sign_in user
+
+    assert_enqueued_with(job: SendCartRecoveryNotificationJob, args: [checkout.id, 'Oi {nome}', nil, 'first']) do
+      post resend_cart_recovery_automation_path(checkout, slot: 'first')
+    end
+
+    assert_redirected_to cart_recovery_data_automation_path
+  end
 end

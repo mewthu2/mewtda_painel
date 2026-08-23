@@ -44,7 +44,7 @@
     <%= form_for @goal, as: :goal, url: goal_path(year: @year, month: @month), method: :patch, html: { autocomplete: 'off' } do |form| %>
       <div class="users-form-page__body">
         <div class="users-form-page__field">
-          <%= form.label :revenue_target, 'Meta de Faturamento — Bruto − Descontos (R$)', class: 'crm-label' %>
+          <%= form.label :revenue_target, 'Meta de Faturamento — Bruto − Descontos + Frete (R$)', class: 'crm-label' %>
           <%= form.number_field :revenue_target, class: 'crm-input', step: '0.01', min: 0, placeholder: 'Ex.: 200000' %>
           <span class="cpform-field__hint">Vendas brutas menos descontos, sem considerar frete/reembolsos do mês.</span>
         </div>

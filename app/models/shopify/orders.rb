@@ -22,6 +22,7 @@ class Shopify::Orders
       order_fields = %w[
         id name created_at line_items note_attributes customer total_price subtotal_price
         total_discounts total_tax total_shipping_price_set tags cancelled_at fulfillments
+        discount_codes
       ].join(',')
 
       query_params = {
@@ -194,6 +195,7 @@ class Shopify::Orders
         customer_id: customer&.id,
         client_id: client.id,
         tags: shopify_order['tags'],
+        discount_code: Array(shopify_order['discount_codes']).filter_map { |d| d['code'] }.join(', ').presence,
         subtotal_price: shopify_order['subtotal_price'],
         total_discounts: shopify_order['total_discounts'],
         total_price: shopify_order['total_price'],

@@ -1,21 +1,26 @@
 class ShopifyAuthController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:auth, :callback]
+  # callback precisa ficar público — a Shopify redireciona o navegador do
+  # lojista de volta pra cá depois do consentimento, sem cookie de sessão
+  # garantido. A segurança dele vem do state assinado (verifier), não de
+  # autenticação. auth exige login + ser dono do cliente (ou admin).
+  skip_before_action :authenticate_user!, only: [:callback]
+  before_action :set_client, only: [:auth]
+  before_action :authorize_client_owner!, only: [:auth]
 
   STATE_EXPIRY = 15.minutes
-  SCOPE = 'read_orders,write_orders,read_products'.freeze
+  SCOPE = 'read_orders,write_orders,read_products,read_checkouts'.freeze
 
   def auth
-    client = Client.find(params[:id])
     shop = params[:shop]
 
-    unless client.shopify_app_configured?
+    unless @client.shopify_app_configured?
       return render plain: 'App Shopify não configurado para este cliente.', status: :unprocessable_entity
     end
 
-    state = verifier.generate(client.id, expires_in: STATE_EXPIRY)
+    state = verifier.generate(@client.id, expires_in: STATE_EXPIRY)
 
     redirect_to(
-      "https://#{shop}/admin/oauth/authorize?client_id=#{client.shopify_api_key}&scope=#{SCOPE}&redirect_uri=#{shopify_callback_url}&state=#{state}",
+      "https://#{shop}/admin/oauth/authorize?client_id=#{@client.shopify_api_key}&scope=#{SCOPE}&redirect_uri=#{shopify_callback_url}&state=#{state}",
       allow_other_host: true
     )
   end
@@ -50,6 +55,16 @@ class ShopifyAuthController < ApplicationController
   end
 
   private
+
+  def set_client
+    @client = Client.find(params[:id])
+  end
+
+  def authorize_client_owner!
+    return if current_user.admin? || current_user.client_id == @client.id
+
+    redirect_to crm_path, alert: 'Acesso restrito.'
+  end
 
   def verifier
     Rails.application.message_verifier(:shopify_oauth_state)

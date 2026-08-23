@@ -2,6 +2,14 @@
 
 <div class="automations-wrapper">
 
+  <div class="automations-intro">
+    <h1 class="automations-intro__title">Automações</h1>
+    <p class="automations-intro__text">
+      Mensagens de WhatsApp disparadas automaticamente com base no comportamento do cliente — sem precisar
+      criar uma campanha manual pra cada situação. Configure uma vez e deixe rodando.
+    </p>
+  </div>
+
   <% unless @client.zapi_configured? %>
     <div class="campaigns-alert campaigns-alert--danger">
       <div class="campaigns-alert__icon">
@@ -41,9 +49,82 @@
           <% end %>
         </div>
       </div>
-      <%= link_to edit_tracking_automation_path, class: 'crm-btn crm-btn--primary automations-card__cta' do %>
-        <%= @tracking_campaign.nil? ? 'Configurar' : 'Editar' %>
-      <% end %>
+      <div class="automations-card__cta-row">
+        <%= link_to edit_tracking_automation_path, class: 'crm-btn crm-btn--primary automations-card__cta' do %>
+          <%= @tracking_campaign.nil? ? 'Configurar' : 'Editar' %>
+        <% end %>
+        <% if @tracking_campaign %>
+          <%= link_to campaign_path(@tracking_campaign), class: 'crm-btn crm-btn--secondary automations-card__cta' do %>
+            Ver Dados
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="automations-card">
+      <div class="automations-card__icon">
+        <i class="fa-solid fa-coins"></i>
+      </div>
+      <div class="automations-card__body">
+        <div class="automations-card__title">Cashback</div>
+        <p class="automations-card__description">
+          Envia um cupom de cashback por WhatsApp alguns dias depois da compra, pra incentivar o cliente a
+          voltar e comprar de novo.
+        </p>
+        <div class="automations-card__tags">
+          <% if @cashback_campaign.nil? %>
+            <span class="crm-tag crm-tag--neutral">Não configurada</span>
+          <% elsif @cashback_campaign.active? %>
+            <span class="crm-tag crm-tag--success">Ativa</span>
+          <% else %>
+            <span class="crm-tag crm-tag--danger">Inativa</span>
+          <% end %>
+          <% if @cashback_campaign %>
+            <span class="crm-tag crm-tag--info"><%= @cashback_campaign.sent_count %> enviadas</span>
+          <% end %>
+        </div>
+      </div>
+      <div class="automations-card__cta-row">
+        <%= link_to edit_cashback_automation_path, class: 'crm-btn crm-btn--primary automations-card__cta' do %>
+          <%= @cashback_campaign.nil? ? 'Configurar' : 'Editar' %>
+        <% end %>
+        <% if @cashback_campaign %>
+          <%= link_to campaign_path(@cashback_campaign), class: 'crm-btn crm-btn--secondary automations-card__cta' do %>
+            Ver Dados
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="automations-card">
+      <div class="automations-card__icon">
+        <i class="fa-solid fa-cart-shopping"></i>
+      </div>
+      <div class="automations-card__body">
+        <div class="automations-card__title">Recuperação de Carrinho</div>
+        <p class="automations-card__description">
+          Envia mensagem no WhatsApp pra quem chegou no checkout, digitou o telefone e não finalizou a compra —
+          com opção de reenvio e cupom.
+        </p>
+        <div class="automations-card__tags">
+          <% if @cart_recovery_campaign.nil? %>
+            <span class="crm-tag crm-tag--neutral">Não configurada</span>
+          <% elsif @cart_recovery_campaign.active? %>
+            <span class="crm-tag crm-tag--success">Ativa</span>
+          <% else %>
+            <span class="crm-tag crm-tag--danger">Inativa</span>
+          <% end %>
+          <span class="crm-tag crm-tag--info"><%= @client.abandoned_checkouts.with_phone.count %> na fila</span>
+        </div>
+      </div>
+      <div class="automations-card__cta-row">
+        <%= link_to edit_cart_recovery_automation_path, class: 'crm-btn crm-btn--primary automations-card__cta' do %>
+          <%= @cart_recovery_campaign.nil? ? 'Configurar' : 'Editar' %>
+        <% end %>
+        <%= link_to cart_recovery_data_automation_path, class: 'crm-btn crm-btn--secondary automations-card__cta' do %>
+          Ver Dados
+        <% end %>
+      </div>
     </div>
 
     <div class="automations-card automations-card--soon">
@@ -53,8 +134,7 @@
       <div class="automations-card__body">
         <div class="automations-card__title">Mais automações em breve</div>
         <p class="automations-card__description">
-          Cashback, lembrete de expiração e notificações de marketing continuam disponíveis em
-          <%= link_to 'Campanhas', campaigns_path %>.
+          Lembrete de expiração de cupom e notificações de marketing estão em desenvolvimento.
         </p>
       </div>
     </div>
