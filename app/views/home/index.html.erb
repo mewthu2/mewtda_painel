@@ -1,36 +1,1149 @@
-<% title 'Mewtda' %>
+<% title 'Mewtda — CRM para lojas Shopify' %>
 
-<div class="crm-institutional">
+<%#
+  =====================================================================
+  MEWTDA — Landing Page
+  ---------------------------------------------------------------------
+  1) CSS     → app/assets/stylesheets/pages/landing.scss (required por
+     admin.scss, entra no precompile normal do Sprockets).
+  2) markup  → classes mwtda-lp-*, com atributos data-reveal /
+     data-reveal-self nos pontos onde entra efeito de rolagem.
+  3) <script> → JS puro (sem dependência nenhuma) com os 4 efeitos de
+     scroll: nav com fundo ao rolar, parallax sutil no hero, reveal
+     em cascata nos cards (fade + slide + blur) via IntersectionObserver,
+     e uma barra de progresso que "acende" os 3 passos de "Como
+     funciona" conforme você rola. Pode virar
+     app/javascript/landing/scroll_effects.js e ser importado no seu
+     application.js / importmap.
+  =====================================================================
+%>
 
-  <section class="crm-institutional__hero">
-    <%= image_tag 'admin/logo-novo.png', class: 'crm-institutional__logo', alt: 'Mewtda' %>
-    <h1 class="crm-institutional__headline">Gerencie seu negócio com inteligência</h1>
-    <p class="crm-institutional__subheadline">
-      A Mewtda ajuda lojas a centralizar pedidos, clientes e campanhas em um só lugar.
-    </p>
-    <%= link_to 'Entrar', new_user_session_path, class: 'crm-btn crm-btn--primary crm-institutional__cta' %>
+<% content_for :head do %>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<% end %>
+
+<div class="mwtda-lp">
+
+  <nav class="mwtda-lp-nav">
+    <div class="mwtda-lp-nav__inner">
+      <%= image_tag 'admin/logonovo.png',
+            class: 'mwtda-lp-nav__logo',
+            alt: 'Mewtda',
+            style: 'display:block !important; height:42px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important;' %>
+      <div class="mwtda-lp-nav__links">
+        <a href="#recursos">Recursos</a>
+        <a href="#automacoes">Automações</a>
+        <a href="#integracoes">Integrações</a>
+        <a href="#ecommerce">Sua Loja</a>
+        <a href="#planos">Planos</a>
+      </div>
+      <%= link_to 'Entrar', new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-nav__cta' %>
+      <button
+        type="button"
+        class="mwtda-lp-nav__burger"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        aria-controls="mwtda-mobile-menu"
+        data-mobile-menu-trigger
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mwtda-lp-mobile-menu" id="mwtda-mobile-menu" data-mobile-menu inert>
+    <canvas class="mwtda-lp-mobile-menu__canvas" data-mobile-menu-canvas></canvas>
+    <button type="button" class="mwtda-lp-mobile-menu__close" aria-label="Fechar menu" data-mobile-menu-close>
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <nav class="mwtda-lp-mobile-menu__links">
+      <a href="#recursos" data-mobile-menu-link>Recursos</a>
+      <a href="#automacoes" data-mobile-menu-link>Automações</a>
+      <a href="#integracoes" data-mobile-menu-link>Integrações</a>
+      <a href="#ecommerce" data-mobile-menu-link>Sua Loja</a>
+      <a href="#planos" data-mobile-menu-link>Planos</a>
+    </nav>
+    <%= link_to 'Entrar', new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg mwtda-lp-mobile-menu__cta', data: { 'mobile-menu-link': true } %>
+  </div>
+
+  <section class="mwtda-lp-hero">
+    <div class="mwtda-lp-hero__inner">
+      <div class="mwtda-lp-hero__logo3d" data-mwtda-wave-logo aria-hidden="true">
+        <canvas class="mwtda-lp-hero__logo3d-canvas"></canvas>
+      </div>
+      <span class="mwtda-lp-badge">CRM para lojas Shopify</span>
+      <h1 class="mwtda-lp-hero__headline">Gerencie sua loja com inteligência, em um só lugar</h1>
+      <p class="mwtda-lp-hero__subheadline">
+        Centralize pedidos, clientes, metas de vendas e automações de WhatsApp — com dashboards em tempo real
+        que rodam sozinhos, sem planilha e sem retrabalho.
+      </p>
+      <div class="mwtda-lp-hero__ctas">
+        <%= link_to 'Entrar', new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg' %>
+        <a href="#recursos" class="mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg">Ver Recursos</a>
+      </div>
+    </div>
   </section>
 
-  <section class="crm-institutional__features">
-    <div class="crm-card crm-institutional__feature">
-      <i class="fa-solid fa-chart-line crm-institutional__feature-icon"></i>
-      <h2>O que é</h2>
-      <p>Um painel único para acompanhar vendas, pedidos e o desempenho das suas campanhas.</p>
-    </div>
-    <div class="crm-card crm-institutional__feature">
-      <i class="fa-solid fa-users crm-institutional__feature-icon"></i>
-      <h2>Pra quem é</h2>
-      <p>Lojas que vendem por Shopify e precisam de visibilidade sobre clientes e pedidos.</p>
-    </div>
-    <div class="crm-card crm-institutional__feature">
-      <i class="fa-solid fa-bullseye crm-institutional__feature-icon"></i>
-      <h2>Como ajuda</h2>
-      <p>Automação de eventos, afiliados e acompanhamento de campanhas de marketing.</p>
+  <section class="mwtda-lp-strip">
+    <div class="mwtda-lp-strip__inner">
+      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-shopify"></i> Integração nativa com Shopify</div>
+      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-whatsapp"></i> Automações via WhatsApp</div>
+      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-chart-line"></i> Dashboards em tempo real</div>
+      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-bullseye"></i> Metas, ROAS e CAC</div>
+      <%# duplicado pra loop do marquee ficar contínuo (o CSS anima -50%) %>
+      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-shopify"></i> Integração nativa com Shopify</div>
+      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-whatsapp"></i> Automações via WhatsApp</div>
+      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-chart-line"></i> Dashboards em tempo real</div>
+      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-bullseye"></i> Metas, ROAS e CAC</div>
     </div>
   </section>
 
-  <footer class="crm-institutional__footer">
-    &copy; <%= Date.today.year %> Mewtda
+  <% client_logos = client_logo_assets %>
+  <% if client_logos.any? %>
+    <section class="mwtda-lp-clients">
+      <div class="mwtda-lp-clients__inner">
+        <span class="mwtda-lp-eyebrow mwtda-lp-clients__title">Lojas que confiam na Mewtda</span>
+        <div class="mwtda-lp-clients__strip">
+          <div class="mwtda-lp-clients__track">
+            <% client_logos.each do |logo| %>
+              <%= image_tag logo, class: 'mwtda-lp-clients__logo', alt: 'Logo de cliente Mewtda', loading: 'lazy' %>
+            <% end %>
+            <%# duplicado pra loop do marquee ficar contínuo (o CSS anima -50%) %>
+            <% client_logos.each do |logo| %>
+              <%= image_tag logo, class: 'mwtda-lp-clients__logo', alt: '', 'aria-hidden': 'true', loading: 'lazy' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </section>
+  <% end %>
+
+  <section class="mwtda-lp-phones" data-phone-scroll-root>
+    <div class="mwtda-lp-phones__pinwrap" data-phone-pin-wrap>
+      <div class="mwtda-lp-phones__stage">
+        <div class="mwtda-lp-phones__glow"></div>
+
+        <div class="mwtda-lp-phones__text">
+          <span class="mwtda-lp-eyebrow">EM AÇÃO</span>
+          <div class="mwtda-lp-phones__copy-stack">
+            <div class="mwtda-lp-phones__copy" data-phone-copy data-index="0" data-active="true">
+              <span class="mwtda-lp-phones__copy-eyebrow">DASHBOARD</span>
+              <h2>Toda sua operação em um painel só</h2>
+              <p>Faturamento, ROAS e CAC em tempo real, com metas visuais pra toda a equipe acompanhar.</p>
+            </div>
+            <div class="mwtda-lp-phones__copy" data-phone-copy data-index="1" data-active="false">
+              <span class="mwtda-lp-phones__copy-eyebrow">WHATSAPP</span>
+              <h2>Automações que rodam sozinhas</h2>
+              <p>Rastreio de pedido, cashback e recuperação de carrinho — configuradas uma vez, sem depender da equipe.</p>
+            </div>
+            <div class="mwtda-lp-phones__copy" data-phone-copy data-index="2" data-active="false">
+              <span class="mwtda-lp-phones__copy-eyebrow">AFILIADOS</span>
+              <h2>Cada parceria com retorno mensurável</h2>
+              <p>Rastreie cupons, gere links de afiliado e meça o retorno real de cada campanha e parceiro.</p>
+            </div>
+            <div class="mwtda-lp-phones__copy" data-phone-copy data-index="3" data-active="false">
+              <span class="mwtda-lp-phones__copy-eyebrow">INTEGRAÇÕES</span>
+              <h2>Conectado com o que sua loja já usa</h2>
+              <p>Shopify, WhatsApp e ferramentas de marketing conversando entre si, sem gambiarra.</p>
+            </div>
+          </div>
+          <div class="mwtda-lp-phones__dots" data-phone-dots>
+            <span data-active="true"></span>
+            <span data-active="false"></span>
+            <span data-active="false"></span>
+            <span data-active="false"></span>
+          </div>
+        </div>
+
+        <div class="mwtda-lp-phones__canvas" data-phone-canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mwtda-lp-section mwtda-lp-section--tint" id="recursos">
+    <div class="mwtda-lp-section__inner">
+      <span class="mwtda-lp-eyebrow" data-reveal-self>RECURSOS</span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self>Tudo que sua operação Shopify precisa, em um painel só</h2>
+      <p class="mwtda-lp-section__lead" data-reveal-self>
+        Menos abas abertas, menos planilha manual — mais visibilidade sobre o que realmente move o negócio.
+      </p>
+
+      <div class="mwtda-lp-feature-grid" data-reveal>
+        <div class="mwtda-lp-card mwtda-lp-feature-card">
+          <div class="mwtda-lp-feature-card__icon"><i class="fa-solid fa-chart-pie"></i></div>
+          <h3>Dashboard de Vendas</h3>
+          <ul>
+            <li>Faturamento, ROAS e CAC em tempo real</li>
+            <li>Metas mensais com barra de progresso</li>
+            <li>Gráficos diários de vendas e conversão</li>
+            <li>Comparativo entre Google Ads e Meta Ads</li>
+            <li>Exportação de relatórios em planilha</li>
+          </ul>
+        </div>
+
+        <div class="mwtda-lp-card mwtda-lp-feature-card">
+          <div class="mwtda-lp-feature-card__icon"><i class="fa-brands fa-whatsapp"></i></div>
+          <h3>Automações via WhatsApp</h3>
+          <ul>
+            <li>Notificação automática de rastreio de pedido</li>
+            <li>Cashback programado após a compra</li>
+            <li>Recuperação de carrinho abandonado</li>
+            <li>Pré-visualização da mensagem em tempo real</li>
+            <li>Reenvio de notificações com um clique</li>
+          </ul>
+        </div>
+
+        <div class="mwtda-lp-card mwtda-lp-feature-card">
+          <div class="mwtda-lp-feature-card__icon"><i class="fa-solid fa-user-group"></i></div>
+          <h3>Afiliados & Marketing</h3>
+          <ul>
+            <li>Geração de link de afiliado com um clique</li>
+            <li>Rastreamento de vendas por cupom</li>
+            <li>Dashboard de performance por afiliado</li>
+            <li>Funil de conversão completo</li>
+            <li>Analytics de sessões e produtos mais vistos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mwtda-lp-section" id="automacoes">
+    <div class="mwtda-lp-section__inner">
+      <span class="mwtda-lp-eyebrow" data-reveal-self>COMO FUNCIONA</span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self>Do primeiro acesso ao resultado, em três passos</h2>
+
+      <div class="mwtda-lp-process-grid" data-reveal>
+        <div class="mwtda-lp-process-step">
+          <span class="mwtda-lp-process-step__number">1</span>
+          <h3>Conecte sua loja</h3>
+          <p>Autorize o acesso à sua Shopify em poucos cliques — sem instalar nada, sem depender de dev.</p>
+        </div>
+        <div class="mwtda-lp-process-step">
+          <span class="mwtda-lp-process-step__number">2</span>
+          <h3>Configure suas automações</h3>
+          <p>Defina mensagens, prazos e cupons das automações de WhatsApp e as metas do mês.</p>
+        </div>
+        <div class="mwtda-lp-process-step">
+          <span class="mwtda-lp-process-step__number">3</span>
+          <h3>Acompanhe os resultados</h3>
+          <p>Dashboards atualizados automaticamente, com histórico diário de vendas e conversão.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mwtda-lp-section mwtda-lp-section--tint" id="integracoes">
+    <div class="mwtda-lp-section__inner">
+      <span class="mwtda-lp-eyebrow" data-reveal-self>INTEGRAÇÕES</span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self>Conectado com as ferramentas que você já usa</h2>
+
+      <div class="mwtda-lp-platform-grid" data-reveal>
+        <div class="mwtda-lp-card mwtda-lp-platform-card">
+          <i class="fa-brands fa-shopify mwtda-lp-platform-card__icon" style="color:#95bf47"></i>
+          <h3>Shopify</h3>
+          <p>Sincronização de pedidos, produtos e clientes direto da sua loja.</p>
+        </div>
+        <div class="mwtda-lp-card mwtda-lp-platform-card">
+          <i class="fa-brands fa-whatsapp mwtda-lp-platform-card__icon" style="color:#25d366"></i>
+          <h3>WhatsApp (Z-API)</h3>
+          <p>Automações de rastreio, cashback e recuperação de carrinho.</p>
+        </div>
+        <div class="mwtda-lp-card mwtda-lp-platform-card">
+          <i class="fa-brands fa-google mwtda-lp-platform-card__icon" style="color:#4285F4"></i>
+          <h3>Google Ads</h3>
+          <p>Custo de anúncios direto no cálculo de ROAS e CAC.</p>
+        </div>
+        <div class="mwtda-lp-card mwtda-lp-platform-card">
+          <i class="fa-brands fa-meta mwtda-lp-platform-card__icon" style="color:#0866FF"></i>
+          <h3>Meta Ads</h3>
+          <p>Investimento em Facebook e Instagram no mesmo painel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mwtda-lp-section" id="ecommerce">
+    <div class="mwtda-lp-section__inner">
+      <span class="mwtda-lp-eyebrow" data-reveal-self>MONTAMOS SUA LOJA</span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self>Ainda não tem uma loja? A gente cria pra você</h2>
+      <p class="mwtda-lp-section__lead" data-reveal-self>
+        Além do CRM, também montamos sua loja na Shopify do zero — design com a cara da sua marca e já de saída
+        integrada ao Mewtda, sem dor de cabeça com configuração.
+      </p>
+
+      <div class="mwtda-lp-feature-grid" data-reveal>
+        <div class="mwtda-lp-card mwtda-lp-feature-card">
+          <div class="mwtda-lp-feature-card__icon"><i class="fa-solid fa-palette"></i></div>
+          <h3>Design sob medida</h3>
+          <p>Layout pensado pra sua marca e pro seu produto, não um template genérico.</p>
+        </div>
+
+        <div class="mwtda-lp-card mwtda-lp-feature-card">
+          <div class="mwtda-lp-feature-card__icon"><i class="fa-brands fa-shopify"></i></div>
+          <h3>Loja completa na Shopify</h3>
+          <p>Produtos, pagamentos, frete e domínio configurados de ponta a ponta.</p>
+        </div>
+
+        <div class="mwtda-lp-card mwtda-lp-feature-card">
+          <div class="mwtda-lp-feature-card__icon"><i class="fa-solid fa-plug"></i></div>
+          <h3>Já nasce integrada ao CRM</h3>
+          <p>Sem trabalho extra depois: a loja sai do ar já conectada ao painel Mewtda.</p>
+        </div>
+      </div>
+
+      <div class="mwtda-lp-ecommerce__cta" data-reveal-self>
+        <a
+          href="https://wa.me/5516991997608?text=Olá,%20quero%20criar%20minha%20loja%20com%20a%20Mewtda."
+          target="_blank"
+          class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg"
+        >
+          <i class="fa-brands fa-whatsapp"></i> Quero minha loja
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mwtda-lp-section mwtda-lp-cta" id="planos">
+    <div class="mwtda-lp-section__inner mwtda-lp-cta__inner" data-reveal-self>
+      <h2>Quer ver o Mewtda funcionando na sua loja?</h2>
+      <p>Fale com a gente e a gente te mostra como fica na prática, com os dados da sua própria operação.</p>
+      <div class="mwtda-lp-hero__ctas">
+        <a
+          href="https://wa.me/5516991997608?text=Olá,%20quero%20conhecer%20o%20Mewtda."
+          target="_blank"
+          class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg"
+        >
+          <i class="fa-brands fa-whatsapp"></i> Falar no WhatsApp
+        </a>
+        <%= link_to 'Entrar', new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--outline-light mwtda-lp-btn--lg' %>
+      </div>
+    </div>
+  </section>
+
+  <footer class="mwtda-lp-footer">
+    <div class="mwtda-lp-footer__inner">
+      <div class="mwtda-lp-footer__brand">
+        <%= image_tag 'admin/logonovo.png',
+              class: 'mwtda-lp-footer__logo',
+              alt: 'Mewtda',
+              style: 'display:block !important; height:26px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important;' %>
+        <p>CRM completo para lojas Shopify — vendas, automações e afiliados em um só lugar.</p>
+        <%= image_tag 'admin/shopifypartnerbadge_250.png',
+              class: 'mwtda-lp-footer__badge',
+              alt: 'Shopify Partner',
+              style: 'display:block !important; height:56px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important; opacity:0.9;' %>
+      </div>
+
+      <div class="mwtda-lp-footer__column">
+        <span class="mwtda-lp-footer__title">Produto</span>
+        <a href="#recursos">Recursos</a>
+        <a href="#automacoes">Como Funciona</a>
+        <a href="#integracoes">Integrações</a>
+      </div>
+
+      <div class="mwtda-lp-footer__column">
+        <span class="mwtda-lp-footer__title">Contato</span>
+        <a href="https://wa.me/5516991997608" target="_blank">WhatsApp</a>
+        <%= link_to 'Entrar', new_user_session_path %>
+      </div>
+    </div>
+
+    <div class="mwtda-lp-footer__bottom">
+      &copy; <%= Date.today.year %> Mewtda
+    </div>
   </footer>
 
 </div>
+
+<script>
+  // ===================================================================
+  // MEWTDA — efeitos de rolagem (JS puro, sem dependências)
+  // -------------------------------------------------------------------
+  // 1) alterna .is-scrolled na nav quando a página rola;
+  // 2) escreve --mw-scroll-y na raiz .mwtda-lp pro parallax sutil do hero;
+  // 3) alterna .is-visible em [data-reveal] / [data-reveal-self] via
+  //    IntersectionObserver (fade + slide + blur escalonado);
+  // 4) calcula o progresso de scroll da seção "Como funciona" e escreve
+  //    --mw-progress (0 a 1) pra linha de progresso entre os 3 passos.
+  // Pode virar app/javascript/landing/scroll_effects.js sem alterar
+  // nada e ser importado no seu application.js / importmap.
+  // ===================================================================
+  document.addEventListener('DOMContentLoaded', function () {
+    var root = document.querySelector('.mwtda-lp')
+    var nav = document.querySelector('.mwtda-lp-nav')
+    var processGrid = document.querySelector('.mwtda-lp-process-grid')
+    if (!root) return
+
+    // --- 0: "portal" pra fora do layout do app -------------------------
+    // Se essa view for renderizada dentro do layout padrão (com sidebar,
+    // header fixo, etc.), qualquer ancestral entre <body> e .mwtda-lp que
+    // tenha transform / filter / perspective / will-change / contain cria
+    // um novo "containing block" — e nesse caso position:fixed passa a
+    // ficar preso dentro daquele ancestral em vez de cobrir a viewport
+    // inteira (era isso que deixava a página "de lado", encaixada ao lado
+    // da sidebar). Mover o próprio elemento para ser filho direto do
+    // <body> resolve isso na raiz, sem precisar tocar no layout do app.
+    if (root.parentElement !== document.body) {
+      document.body.appendChild(root)
+    }
+
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // --- quem realmente rola ------------------------------------------
+    // `root` é position:fixed + overflow-y:auto (ver bloco acima) — é
+    // ELE que dispara o evento `scroll`, a `window` NUNCA rola nesse
+    // esquema. Todo o resto do script (nav, parallax, progresso, e o
+    // showcase 3D do celular) precisa escutar `root`, não `window`.
+    var scroller = root
+
+    // --- 1 & 2: estado da nav + var de parallax do hero, com throttle via rAF
+    var ticking = false
+    function onScroll() {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(function () {
+        var y = root.scrollTop
+
+        if (nav) {
+          nav.classList.toggle('is-scrolled', y > 8)
+        }
+
+        if (!prefersReducedMotion) {
+          root.style.setProperty('--mw-scroll-y', (Math.min(y, 800) * -1) + 'px')
+        }
+
+        // --- 4: progresso do bloco "Como funciona" --------------------
+        if (processGrid) {
+          var rect = processGrid.getBoundingClientRect()
+          var vh = window.innerHeight
+          var start = vh * 0.85
+          var end = vh * 0.35
+          var total = rect.top - end
+          var range = start - end
+          var raw = 1 - total / range
+          var progress = Math.min(1, Math.max(0, raw))
+
+          processGrid.style.setProperty('--mw-progress', progress.toFixed(3))
+          processGrid.toggleAttribute('data-progress-lit-1', progress > 0.05)
+          processGrid.toggleAttribute('data-progress-lit-2', progress > 0.55)
+          processGrid.toggleAttribute('data-progress-lit-3', progress > 0.95)
+        }
+
+        ticking = false
+      })
+    }
+
+    scroller.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    onScroll()
+
+    // --- 3: reveal-on-scroll ------------------------------------------
+    var revealTargets = document.querySelectorAll('[data-reveal], [data-reveal-self]')
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    )
+
+    revealTargets.forEach(function (el) {
+      observer.observe(el)
+    })
+  })
+</script>
+
+<script type="module">
+  // ===================================================================
+  // MEWTDA — showcase 3D do celular (Three.js via CDN, sem bundler)
+  // -------------------------------------------------------------------
+  // Um único celular 3D (WebGL) gira conforme o usuário rola a seção
+  // `.mwtda-lp-phones` (que fica "presa"/sticky por 4x a altura da tela
+  // enquanto rola). A tela do celular troca de imagem exatamente no
+  // instante em que ele está "de costas" pra câmera — por isso a troca
+  // é imperceptível — e o texto ao lado troca em sincronia com o MESMO
+  // índice, nunca em pontos diferentes.
+  //
+  // Pra usar as imagens reais dos sites (em vez do placeholder com
+  // gradiente + texto), troque `imageUrl: null` por
+  // `imageUrl: "/caminho/da/imagem.png"` em cada item de SCREENS — o
+  // código já está pronto pra desenhar a imagem cobrindo a tela do
+  // celular (fica em cache, então só carrega uma vez).
+  // ===================================================================
+  import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js"
+
+  var SCREENS = [
+    { title: "Dashboard de Vendas", tag: "01", from: "#fc7107", to: "#00247e", imageUrl: null },
+    { title: "Automações no WhatsApp", tag: "02", from: "#00c853", to: "#00247e", imageUrl: null },
+    { title: "Afiliados & Campanhas", tag: "03", from: "#7c4dff", to: "#00247e", imageUrl: null },
+    { title: "Integrações nativas", tag: "04", from: "#ff8a33", to: "#001233", imageUrl: null },
+  ]
+
+  var imageCache = {}
+
+  function createRoundedRectShape(width, height, radius) {
+    var shape = new THREE.Shape()
+    var x = -width / 2
+    var y = -height / 2
+    shape.moveTo(x, y + radius)
+    shape.lineTo(x, y + height - radius)
+    shape.quadraticCurveTo(x, y + height, x + radius, y + height)
+    shape.lineTo(x + width - radius, y + height)
+    shape.quadraticCurveTo(x + width, y + height, x + width, y + height - radius)
+    shape.lineTo(x + width, y + radius)
+    shape.quadraticCurveTo(x + width, y, x + width - radius, y)
+    shape.lineTo(x + radius, y)
+    shape.quadraticCurveTo(x, y, x, y + radius)
+    return shape
+  }
+
+  function tracePath(ctx, x, y, w, h, r) {
+    ctx.beginPath()
+    ctx.moveTo(x + r, y)
+    ctx.arcTo(x + w, y, x + w, y + h, r)
+    ctx.arcTo(x + w, y + h, x, y + h, r)
+    ctx.arcTo(x, y + h, x, y, r)
+    ctx.arcTo(x, y, x + w, y, r)
+    ctx.closePath()
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    tracePath(ctx, x, y, w, h, r)
+    ctx.fill()
+  }
+
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    var words = text.split(" ")
+    var line = ""
+    var cursorY = y
+    for (var i = 0; i < words.length; i++) {
+      var testLine = line + words[i] + " "
+      if (ctx.measureText(testLine).width > maxWidth && line !== "") {
+        ctx.fillText(line, x, cursorY)
+        line = words[i] + " "
+        cursorY += lineHeight
+      } else {
+        line = testLine
+      }
+    }
+    ctx.fillText(line, x, cursorY)
+  }
+
+  function drawPlaceholder(ctx, w, h, screen) {
+    var grad = ctx.createLinearGradient(0, 0, w, h)
+    grad.addColorStop(0, screen.from)
+    grad.addColorStop(1, screen.to)
+    ctx.fillStyle = grad
+    ctx.fillRect(0, 0, w, h)
+
+    // status bar fake
+    ctx.fillStyle = "rgba(255,255,255,0.14)"
+    ctx.fillRect(0, 0, w, h * 0.08)
+
+    ctx.fillStyle = "rgba(255,255,255,0.9)"
+    ctx.font = "700 " + h * 0.16 + "px Inter, sans-serif"
+    ctx.textBaseline = "top"
+    ctx.fillText(screen.tag, w * 0.08, h * 0.16)
+
+    ctx.font = "600 " + h * 0.052 + "px Inter, sans-serif"
+    ctx.fillStyle = "rgba(255,255,255,0.96)"
+    wrapText(ctx, screen.title, w * 0.08, h * 0.36, w * 0.84, h * 0.062)
+
+    // fake UI blocks
+    ctx.fillStyle = "rgba(255,255,255,0.16)"
+    var blockY = h * 0.58
+    var blockH = h * 0.09
+    var gap = h * 0.03
+    for (var i = 0; i < 3; i++) {
+      roundRect(ctx, w * 0.08, blockY + i * (blockH + gap), w * 0.84, blockH, 14)
+    }
+  }
+
+  function drawScreenTexture(ctx, screen, onDone) {
+    var w = ctx.canvas.width
+    var h = ctx.canvas.height
+
+    // limpa e recorta cantos arredondados diretamente no canvas — a
+    // textura já nasce com os cantos redondos (transparente fora do
+    // recorte), sem depender de geometria 3D customizada com UV manual.
+    ctx.clearRect(0, 0, w, h)
+    ctx.save()
+    tracePath(ctx, 0, 0, w, h, w * 0.09)
+    ctx.clip()
+
+    if (screen.imageUrl) {
+      var cached = imageCache[screen.imageUrl]
+      if (cached && cached.complete) {
+        // cover: preenche a tela toda cortando o excesso, sem distorcer
+        var scale = Math.max(w / cached.naturalWidth, h / cached.naturalHeight)
+        var dw = cached.naturalWidth * scale
+        var dh = cached.naturalHeight * scale
+        ctx.drawImage(cached, (w - dw) / 2, (h - dh) / 2, dw, dh)
+        ctx.restore()
+        onDone && onDone()
+        return
+      }
+      if (!cached) {
+        var img = new Image()
+        img.crossOrigin = "anonymous"
+        img.src = screen.imageUrl
+        img.onload = function () {
+          onDone && onDone()
+        }
+        imageCache[screen.imageUrl] = img
+      }
+      // enquanto a imagem real carrega, mostra o placeholder de gradiente
+      drawPlaceholder(ctx, w, h, screen)
+      ctx.restore()
+      return
+    }
+
+    drawPlaceholder(ctx, w, h, screen)
+    ctx.restore()
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var mount = document.querySelector("[data-phone-canvas]")
+    var container = document.querySelector("[data-phone-scroll-root]")
+    var pinWrap = document.querySelector("[data-phone-pin-wrap]")
+    var stage = container ? container.querySelector(".mwtda-lp-phones__stage") : null
+    var copyEls = document.querySelectorAll("[data-phone-copy]")
+    var dotEls = document.querySelectorAll("[data-phone-dots] span")
+    if (!mount || !container || !pinWrap) return
+
+    var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+    var scene = new THREE.Scene()
+    var camera = new THREE.PerspectiveCamera(32, mount.clientWidth / mount.clientHeight, 0.1, 100)
+    camera.position.set(0, 0, 9)
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setSize(mount.clientWidth, mount.clientHeight)
+    mount.appendChild(renderer.domElement)
+
+    // --- iluminação ----------------------------------------------------
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55))
+    var key = new THREE.DirectionalLight(0xffffff, 1.1)
+    key.position.set(3, 4, 6)
+    scene.add(key)
+    var rim = new THREE.PointLight(0xfc7107, 6, 20)
+    rim.position.set(-4, 1, 3)
+    scene.add(rim)
+    var rim2 = new THREE.PointLight(0x3355ff, 4, 20)
+    rim2.position.set(4, -2, -3)
+    scene.add(rim2)
+
+    // --- grupo do celular ------------------------------------------------
+    var phone = new THREE.Group()
+    scene.add(phone)
+
+    var bodyW = 2.4
+    var bodyH = 4.9
+    var bodyD = 0.26
+    var bodyShape = createRoundedRectShape(bodyW, bodyH, 0.34)
+    var bodyGeo = new THREE.ExtrudeGeometry(bodyShape, {
+      depth: bodyD,
+      bevelEnabled: true,
+      bevelThickness: 0.02,
+      bevelSize: 0.02,
+      bevelSegments: 3,
+      curveSegments: 12,
+    })
+    bodyGeo.translate(0, 0, -bodyD / 2)
+    var bodyMat = new THREE.MeshStandardMaterial({
+      color: 0x14161c,
+      metalness: 0.85,
+      roughness: 0.25,
+    })
+    var bodyMesh = new THREE.Mesh(bodyGeo, bodyMat)
+    phone.add(bodyMesh)
+
+    // tela frontal (canvas texture)
+    var canvas = document.createElement("canvas")
+    canvas.width = 540
+    canvas.height = 1100
+    var ctx2d = canvas.getContext("2d")
+    var texture = new THREE.CanvasTexture(canvas)
+    texture.colorSpace = THREE.SRGBColorSpace
+
+    // PlaneGeometry tem UV nativo 0..1 — os cantos arredondados já vêm
+    // prontos na própria textura (canvas com clip + fundo transparente),
+    // então aqui é só um retângulo plano com a textura por cima.
+    var screenW = bodyW - 0.16
+    var screenH = bodyH - 0.16
+    var screenGeo = new THREE.PlaneGeometry(screenW, screenH)
+
+    // o corpo usa ExtrudeGeometry com bisel (bevelThickness + bevelSize =
+    // 0.04) — o bisel estende a face frontal ~0.04 além de `bodyD/2`, então
+    // qualquer offset menor que isso deixa a tela ESCONDIDA DENTRO do
+    // corpo. O offset precisa vencer o bisel com folga.
+    var frontZ = bodyD / 2 + 0.045
+    var screenMat = new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+    var screenMesh = new THREE.Mesh(screenGeo, screenMat)
+    screenMesh.position.z = frontZ
+    phone.add(screenMesh)
+
+    // tela traseira (pra não ficar transparente vendo o "miolo" ao girar)
+    var backMesh = new THREE.Mesh(screenGeo, screenMat)
+    backMesh.position.z = -frontZ
+    backMesh.rotation.y = Math.PI
+    phone.add(backMesh)
+
+    // notch/câmera
+    var notchGeo = new THREE.CircleGeometry(0.045, 24)
+    var notchMat = new THREE.MeshBasicMaterial({ color: 0x000000 })
+    var notch = new THREE.Mesh(notchGeo, notchMat)
+    notch.position.set(0, bodyH / 2 - 0.22, frontZ + 0.005)
+    phone.add(notch)
+
+    var currentScreenIndex = -1
+    var lastReportedIndex = -1
+    function setScreen(index) {
+      if (index === currentScreenIndex) return
+      currentScreenIndex = index
+      var screen = SCREENS[((index % SCREENS.length) + SCREENS.length) % SCREENS.length]
+      drawScreenTexture(ctx2d, screen, function () {
+        texture.needsUpdate = true
+      })
+      texture.needsUpdate = true
+    }
+    setScreen(0)
+
+    function updateCopyAndDots(index) {
+      copyEls.forEach(function (el) {
+        var i = parseInt(el.getAttribute("data-index"), 10)
+        el.setAttribute("data-active", i === index ? "true" : "false")
+      })
+      dotEls.forEach(function (el, i) {
+        el.setAttribute("data-active", i === index ? "true" : "false")
+      })
+    }
+
+    // --- animação ligada ao scroll --------------------------------------
+    var numStops = SCREENS.length
+    var targetRotationY = 0
+    var currentRotationY = 0
+    var time = 0
+
+    function resize() {
+      camera.aspect = mount.clientWidth / mount.clientHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(mount.clientWidth, mount.clientHeight)
+    }
+    window.addEventListener("resize", resize)
+
+    // quem realmente rola: a raiz .mwtda-lp é position:fixed +
+    // overflow-y:auto, então é ela que dispara `scroll` — a `window`
+    // nunca rola nesse esquema.
+    var scroller = mount.closest(".mwtda-lp") || window
+
+    var rafId = 0
+    function tick() {
+      time += 0.016
+      currentRotationY += (targetRotationY - currentRotationY) * (prefersReducedMotion ? 1 : 0.09)
+      phone.rotation.y = currentRotationY
+      phone.rotation.x = Math.sin(time * 0.6) * 0.035
+      phone.position.y = Math.sin(time * 0.8) * 0.08
+
+      // troca a textura quando o celular está "de costas" pra câmera —
+      // baseado na rotação ATUAL (com lerp), não na alvo, pra ficar
+      // sempre coerente com o que está sendo desenhado na tela.
+      var normalized = ((currentRotationY % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
+      var segment = Math.floor(currentRotationY / (Math.PI * 2) + 0.0001)
+      var facingBack = normalized > Math.PI * 0.5 && normalized < Math.PI * 1.5
+      var desiredIndex = facingBack ? segment + 1 : segment
+      setScreen(desiredIndex)
+
+      // a legenda de texto usa o MESMO índice/threshold da textura 3D —
+      // caso contrário a legenda troca num ponto e a tela do celular
+      // troca em outro, gerando uma janela com passos diferentes.
+      var clampedIndex = Math.min(numStops - 1, Math.max(0, desiredIndex))
+      if (clampedIndex !== lastReportedIndex) {
+        lastReportedIndex = clampedIndex
+        updateCopyAndDots(clampedIndex)
+      }
+
+      renderer.render(scene, camera)
+      rafId = requestAnimationFrame(tick)
+    }
+
+    function onPhoneScroll() {
+      var rect = pinWrap.getBoundingClientRect()
+      // usa a altura REAL do palco sticky (100vh - altura da nav fixa),
+      // não window.innerHeight puro — senão o "fim do pin" no JS não bate
+      // com o `height: calc(100vh - var(--mw-nav-h))` do CSS.
+      var stickyHeight = (stage && stage.clientHeight) || window.innerHeight
+      var total = rect.height - stickyHeight
+      var raw = -rect.top / Math.max(total, 1)
+      var progress = Math.min(1, Math.max(0, raw))
+
+      var scaled = progress * (numStops - 1)
+      targetRotationY = scaled * Math.PI * 2
+    }
+
+    scroller.addEventListener("scroll", onPhoneScroll, { passive: true })
+    window.addEventListener("resize", onPhoneScroll, { passive: true })
+    onPhoneScroll()
+    tick()
+  })
+</script>
+
+<script type="module">
+  // ===================================================================
+  // MEWTDA — logo animado em Three.js (barras tipo equalizador "ondulando")
+  // -------------------------------------------------------------------
+  // Recria o wordmark "mewtda" (textura de canvas 2D com o mesmo gradiente
+  // azul da marca) + as 6 barras coloridas do logo, só que em WebGL, com
+  // cada barra oscilando em altura (senoide com fase própria) pra dar o
+  // efeito de onda de áudio mexendo. Câmera ortográfica pra não ter
+  // distorção de perspectiva — a intenção é parecer um logo "vivo", não
+  // uma cena 3D.
+  // ===================================================================
+  document.addEventListener('DOMContentLoaded', async function () {
+    var container = document.querySelector('[data-mwtda-wave-logo]')
+    var canvas = container && container.querySelector('.mwtda-lp-hero__logo3d-canvas')
+    if (!container || !canvas) return
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // Espera a fonte da marca carregar ANTES de montar a cena: o texto vira
+    // textura uma única vez, com a métrica final — evita ter que trocar a
+    // textura (e a geometria já ter sido montada com outro tamanho) depois.
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready } catch (e) {}
+    }
+
+    var THREE
+    try {
+      THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js')
+    } catch (e) {
+      return // sem THREE, fica só o fallback estático (background-image do CSS)
+    }
+
+    var renderer
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true })
+    } catch (e) {
+      return // sem WebGL, idem — fallback estático cobre
+    }
+    renderer.setClearColor(0x000000, 0)
+
+    // WebGL deu certo: tira o fallback estático (background-image do CSS)
+    // pra não ficar sobreposto/"fantasma" atrás do canvas transparente.
+    container.style.backgroundImage = 'none'
+
+    var scene = new THREE.Scene()
+    var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10)
+    camera.position.z = 5
+
+    // --- wordmark "mewtda" via textura de canvas 2D --------------------
+    // Mede o texto de verdade (measureText) em vez de chutar um aspect
+    // ratio fixo pro canvas — assim a largura do plano bate exatamente
+    // com os glifos desenhados, sem sobra transparente que bagunça o
+    // posicionamento das barras ao lado.
+    var WORDMARK_FONT_PX = 220
+    var WORDMARK_FONT = "800 " + WORDMARK_FONT_PX + "px 'Space Grotesk', ui-sans-serif, system-ui, sans-serif"
+    var WORDMARK_PAD = WORDMARK_FONT_PX * 0.12
+
+    function makeWordmarkTexture () {
+      var probe = document.createElement('canvas').getContext('2d')
+      probe.font = WORDMARK_FONT
+      var metrics = probe.measureText('mewtda')
+      var textWidth = metrics.width
+      var ascent = metrics.actualBoundingBoxAscent || WORDMARK_FONT_PX * 0.72
+      var descent = metrics.actualBoundingBoxDescent || WORDMARK_FONT_PX * 0.22
+
+      var c = document.createElement('canvas')
+      c.width = Math.ceil(textWidth + WORDMARK_PAD * 2)
+      c.height = Math.ceil(ascent + descent + WORDMARK_PAD * 2)
+      var ctx = c.getContext('2d')
+      ctx.font = WORDMARK_FONT
+      ctx.textBaseline = 'alphabetic'
+      ctx.textAlign = 'left'
+      var grad = ctx.createLinearGradient(0, 0, c.width, 0)
+      grad.addColorStop(0, '#22b6ff')
+      grad.addColorStop(1, '#1d4ed8')
+      ctx.fillStyle = grad
+      ctx.fillText('mewtda', WORDMARK_PAD, WORDMARK_PAD + ascent)
+      var texture = new THREE.CanvasTexture(c)
+      texture.colorSpace = THREE.SRGBColorSpace
+      texture.needsUpdate = true
+      return { texture: texture, aspect: c.width / c.height }
+    }
+
+    // --- barras (equalizador) ------------------------------------------
+    var bars = [
+      { color: 0x7c3aed, base: 0.50, speed: 1.6, phase: 0.0 },
+      { color: 0xd946ef, base: 0.30, speed: 2.1, phase: 1.1 },
+      { color: 0xfb7115, base: 0.88, speed: 1.3, phase: 2.4 },
+      { color: 0xf5b301, base: 0.42, speed: 2.4, phase: 0.6 },
+      { color: 0x22c55e, base: 0.66, speed: 1.8, phase: 3.3 },
+      { color: 0x14e0a4, base: 0.34, speed: 2.0, phase: 4.2 }
+    ]
+    var barWidth = 0.085
+    var barGap = 0.045
+    var barsTotalWidth = bars.length * barWidth + (bars.length - 1) * barGap
+    var maxBase = Math.max.apply(null, bars.map(function (b) { return b.base }))
+
+    // --- layout: wordmark + gap + barras, tudo centralizado no eixo X --
+    var wordmark = makeWordmarkTexture()
+    var wordmarkHeight = 0.62
+    var wordmarkWidth = wordmarkHeight * wordmark.aspect
+    var groupGap = 0.22
+    var totalWidth = wordmarkWidth + groupGap + barsTotalWidth
+    var layoutStartX = -totalWidth / 2
+
+    var wordmarkMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(wordmarkWidth, wordmarkHeight),
+      new THREE.MeshBasicMaterial({ map: wordmark.texture, transparent: true })
+    )
+    wordmarkMesh.position.x = layoutStartX + wordmarkWidth / 2
+    scene.add(wordmarkMesh)
+
+    var barsStartX = layoutStartX + wordmarkWidth + groupGap + barWidth / 2
+
+    bars.forEach(function (bar, i) {
+      var geometry = new THREE.BoxGeometry(barWidth, 1, 0.06)
+      var material = new THREE.MeshBasicMaterial({ color: bar.color })
+      var mesh = new THREE.Mesh(geometry, material)
+      mesh.position.x = barsStartX + i * (barWidth + barGap)
+      bar.mesh = mesh
+      scene.add(mesh)
+    })
+
+    function layout () {
+      var width = container.clientWidth || 1
+      var height = container.clientHeight || 1
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+      renderer.setSize(width, height, false)
+
+      // ortográfica: mundo visível vai de -viewHalf a +viewHalf no eixo
+      // menor, escalado pelo aspect ratio do container.
+      var aspect = width / height
+      var viewHalf = 0.85
+      if (aspect >= 1) {
+        camera.left = -viewHalf * aspect
+        camera.right = viewHalf * aspect
+        camera.top = viewHalf
+        camera.bottom = -viewHalf
+      } else {
+        camera.left = -viewHalf
+        camera.right = viewHalf
+        camera.top = viewHalf / aspect
+        camera.bottom = -viewHalf / aspect
+      }
+      camera.updateProjectionMatrix()
+    }
+
+    function renderBars (t) {
+      bars.forEach(function (bar) {
+        var wave = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * bar.speed + bar.phase))
+        var h = Math.max(0.06, bar.base * wave)
+        bar.mesh.scale.y = h
+        bar.mesh.position.y = h / 2 - maxBase / 2
+      })
+    }
+
+    layout()
+    renderBars(0)
+    renderer.render(scene, camera)
+
+    window.addEventListener('resize', layout, { passive: true })
+
+    if (reduceMotion) return // fica parado num frame só, sem loop de animação
+
+    function tick (now) {
+      renderBars((now || 0) / 1000)
+      renderer.render(scene, camera)
+      requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  })
+</script>
+
+<script type="module">
+  // ===================================================================
+  // MEWTDA — menu mobile off-canvas com fundo de partículas em Three.js
+  // -------------------------------------------------------------------
+  // O menu em si (abrir/fechar, foco, Esc, trava de scroll) é JS puro.
+  // O WebGL só entra na primeira vez que o usuário abre o menu — em vez
+  // de inicializar de cara pra todo mundo que carrega a página no
+  // celular — e o loop de animação para assim que o menu fecha, pra não
+  // gastar bateria à toa com o menu escondido.
+  // ===================================================================
+  document.addEventListener('DOMContentLoaded', function () {
+    var trigger = document.querySelector('[data-mobile-menu-trigger]')
+    var menu = document.querySelector('[data-mobile-menu]')
+    var closeBtn = document.querySelector('[data-mobile-menu-close]')
+    var canvas = document.querySelector('[data-mobile-menu-canvas]')
+    var links = document.querySelectorAll('[data-mobile-menu-link]')
+    var root = document.querySelector('.mwtda-lp')
+    if (!trigger || !menu || !closeBtn || !canvas || !root) return
+
+    var particles = null // { start, stop } — só existe depois da 1ª abertura
+
+    function openMenu () {
+      menu.classList.add('is-open')
+      menu.removeAttribute('inert')
+      root.classList.add('is-menu-open')
+      trigger.setAttribute('aria-expanded', 'true')
+      closeBtn.focus()
+
+      if (particles) {
+        particles.start()
+      } else {
+        initParticles(canvas).then(function (api) {
+          particles = api
+          if (menu.classList.contains('is-open')) particles.start()
+        })
+      }
+    }
+
+    function closeMenu () {
+      menu.classList.remove('is-open')
+      menu.setAttribute('inert', '')
+      root.classList.remove('is-menu-open')
+      trigger.setAttribute('aria-expanded', 'false')
+      trigger.focus()
+      if (particles) particles.stop()
+    }
+
+    trigger.addEventListener('click', function () {
+      if (menu.classList.contains('is-open')) closeMenu()
+      else openMenu()
+    })
+
+    closeBtn.addEventListener('click', closeMenu)
+    links.forEach(function (a) { a.addEventListener('click', closeMenu) })
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.classList.contains('is-open')) closeMenu()
+    })
+
+    // --- fundo: partículas soltas nas cores da marca, com leve deriva ---
+    async function initParticles (canvas) {
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      var THREE
+      try {
+        THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js')
+      } catch (e) {
+        return { start: function () {}, stop: function () {} } // sem THREE, fundo fica só a cor sólida do CSS
+      }
+
+      var renderer
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true })
+      } catch (e) {
+        return { start: function () {}, stop: function () {} }
+      }
+      renderer.setClearColor(0x000000, 0)
+
+      var scene = new THREE.Scene()
+      var camera = new THREE.PerspectiveCamera(50, 1, 0.1, 20)
+      camera.position.z = 6
+
+      // sprite circular suave (canvas 2D) em vez de quadrado cru do ponto
+      var spriteCanvas = document.createElement('canvas')
+      spriteCanvas.width = 64
+      spriteCanvas.height = 64
+      var sctx = spriteCanvas.getContext('2d')
+      var grad = sctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+      grad.addColorStop(0, 'rgba(255,255,255,1)')
+      grad.addColorStop(0.4, 'rgba(255,255,255,0.7)')
+      grad.addColorStop(1, 'rgba(255,255,255,0)')
+      sctx.fillStyle = grad
+      sctx.fillRect(0, 0, 64, 64)
+      var spriteTexture = new THREE.CanvasTexture(spriteCanvas)
+
+      var PALETTE = [0x7c3aed, 0xd946ef, 0xfb7115, 0xf5b301, 0x22c55e, 0x14e0a4]
+      var COUNT = 90
+      var positions = new Float32Array(COUNT * 3)
+      var colors = new Float32Array(COUNT * 3)
+      var basePositions = new Float32Array(COUNT * 3)
+      var phases = new Float32Array(COUNT)
+      var speeds = new Float32Array(COUNT)
+      var tmpColor = new THREE.Color()
+
+      for (var i = 0; i < COUNT; i++) {
+        var x = (Math.random() - 0.5) * 8
+        var y = (Math.random() - 0.5) * 9
+        var z = (Math.random() - 0.5) * 4
+        positions[i * 3] = basePositions[i * 3] = x
+        positions[i * 3 + 1] = basePositions[i * 3 + 1] = y
+        positions[i * 3 + 2] = basePositions[i * 3 + 2] = z
+        phases[i] = Math.random() * Math.PI * 2
+        speeds[i] = 0.4 + Math.random() * 0.6
+
+        tmpColor.set(PALETTE[i % PALETTE.length])
+        colors[i * 3] = tmpColor.r
+        colors[i * 3 + 1] = tmpColor.g
+        colors[i * 3 + 2] = tmpColor.b
+      }
+
+      var geometry = new THREE.BufferGeometry()
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+
+      var material = new THREE.PointsMaterial({
+        size: 0.22,
+        map: spriteTexture,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+
+      var points = new THREE.Points(geometry, material)
+      scene.add(points)
+
+      function layout () {
+        var width = canvas.clientWidth || 1
+        var height = canvas.clientHeight || 1
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+        renderer.setSize(width, height, false)
+        camera.aspect = width / height
+        camera.updateProjectionMatrix()
+      }
+
+      function renderFrame (t) {
+        var posAttr = geometry.attributes.position
+        for (var i = 0; i < COUNT; i++) {
+          posAttr.array[i * 3 + 1] = basePositions[i * 3 + 1] + Math.sin(t * speeds[i] + phases[i]) * 0.4
+        }
+        posAttr.needsUpdate = true
+        points.rotation.y = t * 0.06
+        renderer.render(scene, camera)
+      }
+
+      layout()
+      renderFrame(0)
+      window.addEventListener('resize', layout, { passive: true })
+
+      var rafId = null
+      function loop (now) {
+        renderFrame((now || 0) / 1000)
+        rafId = requestAnimationFrame(loop)
+      }
+
+      return {
+        start: function () {
+          if (reduceMotion || rafId) return
+          rafId = requestAnimationFrame(loop)
+        },
+        stop: function () {
+          if (rafId) cancelAnimationFrame(rafId)
+          rafId = null
+        }
+      }
+    }
+  })
+</script>

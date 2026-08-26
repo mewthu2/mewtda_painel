@@ -6,28 +6,46 @@
 .crm-footer__container {
   max-width: 1200px;
   margin: auto;
-  padding: 40px 24px;
+  padding: 48px 24px 40px;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1.4fr;
   gap: 40px;
 }
 
+.crm-footer__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .crm-footer__logo {
-  width: 140px;
+  width: 180px;
 }
 
 .crm-footer__description {
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 14px;
   line-height: 1.6;
   color: var(--fg-alt);
   max-width: 260px;
 }
 
+.crm-footer__badge {
+  width: 88px;
+  margin-top: 20px;
+  opacity: .92;
+  transition: opacity .15s, transform .15s;
+}
+
+.crm-footer__badge:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
 .crm-footer__column {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .crm-footer__title {
@@ -37,50 +55,71 @@
   text-transform: uppercase;
   color: var(--fg-alt);
   margin-bottom: 6px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.crm-footer__title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 28px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 2px;
 }
 
 .crm-footer__link {
   font-size: 14px;
   color: var(--fg);
   text-decoration: none;
-  transition: .15s;
+  transition: color .15s, transform .15s;
+  width: fit-content;
 }
 
 .crm-footer__link:hover {
   color: var(--primary);
+  transform: translateX(3px);
 }
 
 .crm-footer__support {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .crm-footer__support-text {
   font-size: 14px;
   color: var(--fg-alt);
+  line-height: 1.5;
 }
 
 .crm-footer__whatsapp {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: #25d366;
   color: #fff;
   text-decoration: none;
-  padding: 10px 16px;
+  padding: 11px 18px;
   border-radius: var(--radius);
   font-size: 14px;
   font-weight: 600;
   width: fit-content;
-  transition: .15s;
+  box-shadow: 0 2px 10px rgba(37, 211, 102, .3);
+  transition: background .15s, transform .15s, box-shadow .15s;
 }
 
 .crm-footer__whatsapp:hover {
   background: #1ebe5d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, .4);
 }
 
 .crm-footer__bottom {
   border-top: 1px solid var(--outline);
-  padding: 14px 24px;
+  padding: 16px 24px;
   display: flex;
   justify-content: space-between;
   font-size: 12px;
@@ -94,8 +133,10 @@
 @media (max-width: 900px) {
   .crm-footer__container {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 32px;
   }
+
+  .crm-footer__brand { align-items: center; text-align: center; }
 
   .crm-footer__bottom {
     flex-direction: column;

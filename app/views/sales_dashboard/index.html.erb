@@ -4,7 +4,12 @@
 <div class="sd-page">
   <div class="sd-header">
     <div>
-      <div class="sd-header__title">Dashboard de Vendas<%= " — #{@client.name}" if @client %></div>
+      <div class="sd-header__title">
+        Dashboard de Vendas
+        <% if @client %>
+          — <i class="fa-brands fa-shopify sd-header__shopify-icon" title="Shopify"></i> <%= @client.name %>
+        <% end %>
+      </div>
       <div class="sd-header__subtitle">Ticket médio, faturamento, conversão, ROAS e CAC do mês</div>
       <% if @client %>
         <div class="sd-header__sync-info">
@@ -132,7 +137,7 @@
 
           <% if @metrics[:conversion_rate_target].present? %>
             <%= render 'sales_dashboard/goal_summary_bar',
-                label: 'Taxa de Conversão', format: :percent,
+                label: 'Taxa de Conversão', format: :percent, warning: true,
                 current: @metrics[:conversion_rate] || 0, target: @metrics[:conversion_rate_target],
                 progress_pct: @metrics[:conversion_rate_target_progress_pct], remaining: @metrics[:conversion_rate_target_remaining] %>
           <% end %>
@@ -178,7 +183,7 @@
 
       <% if @metrics[:conversion_rate_target].present? %>
         <%= render 'sales_dashboard/goal_progress', chart_id: 'goal-gauge-conversion', metric: 'conversionRate',
-            label: 'Taxa de Conversão', format: :percent, reference: @metrics[:conversion_rate_target],
+            label: 'Taxa de Conversão', format: :percent, warning: true, reference: @metrics[:conversion_rate_target],
             current: @metrics[:conversion_rate] || 0, target: @metrics[:conversion_rate_target],
             progress_pct: @metrics[:conversion_rate_target_progress_pct], remaining: @metrics[:conversion_rate_target_remaining] %>
       <% end %>
@@ -405,8 +410,13 @@ document.addEventListener("DOMContentLoaded", function () {
     opts = opts || {};
     var cls = 'sd-modal__metric' + (opts.clickable ? ' sd-modal__metric--clickable' : '');
     var attr = opts.clickable ? ' data-open-orders="1"' : '';
+    var warningTitle = 'A Shopify não disponibiliza sessões/conversão via API — este número vem do nosso ' +
+      'pixel de rastreamento próprio e pode não bater exatamente com o relatório nativo da Shopify.';
+    var warningIcon = opts.warning
+      ? '<i class="fa-solid fa-triangle-exclamation sd-disclaimer-icon" title="' + warningTitle + '"></i>'
+      : '';
     return '<div class="' + cls + '"' + attr + '>' +
-      '<span class="sd-modal__metric-label">' + label + '</span>' +
+      '<span class="sd-modal__metric-label">' + label + warningIcon + '</span>' +
       '<span class="sd-modal__metric-value">' + value + '</span>' +
     '</div>';
   }
@@ -431,9 +441,9 @@ document.addEventListener("DOMContentLoaded", function () {
       dayMetricCard('Faturamento', fmtCurrency(goalDaily.totalRevenue[idx])),
       dayMetricCard('Pedidos', goalDaily.ordersCount[idx], { clickable: true }),
       dayMetricCard('Ticket Médio', avgTicket === null ? '—' : fmtCurrency(avgTicket)),
-      dayMetricCard('Acessos', goalDaily.sessions[idx]),
-      dayMetricCard('Checkouts Completos', goalDaily.checkoutCompleted[idx]),
-      dayMetricCard('Taxa de Conversão', fmtPercent(conversion))
+      dayMetricCard('Acessos', goalDaily.sessions[idx], { warning: true }),
+      dayMetricCard('Checkouts Completos', goalDaily.checkoutCompleted[idx], { warning: true }),
+      dayMetricCard('Taxa de Conversão', fmtPercent(conversion), { warning: true })
     ];
 
     if (roas !== null && roas !== undefined) cards.push(dayMetricCard('ROAS', fmtMultiplier(roas)));

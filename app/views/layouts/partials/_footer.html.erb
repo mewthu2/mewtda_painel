@@ -3,12 +3,14 @@
   <div class="crm-footer__container">
 
     <div class="crm-footer__brand">
-      <%= image_tag 'admin/logo-novo.png', class: 'crm-footer__logo' %>
+      <%= image_tag 'admin/logonovo.png', class: 'crm-footer__logo' %>
 
       <p class="crm-footer__description">
         Plataforma CRM para gestão inteligente de clientes,
         pedidos e produtos.
       </p>
+
+      <%= image_tag 'admin/shopifypartnerbadge_250.png', class: 'crm-footer__badge', alt: 'Shopify Partner' %>
     </div>
 
     <div class="crm-footer__column">
@@ -23,7 +25,7 @@
       <%= link_to orders_path, class: "crm-footer__link" do %>Pedidos<% end %>
       <%= link_to customers_path, class: "crm-footer__link" do %>Clientes<% end %>
       <%= link_to products_path, class: "crm-footer__link" do %>Produtos<% end %>
-      <%= link_to campaigns_path, class: "crm-footer__link" do %>Campanhas<% end %>
+      <%= link_to automations_path, class: "crm-footer__link" do %>Automações<% end %>
       <%= link_to affiliates_path, class: "crm-footer__link" do %>Afiliados<% end %>
       <%= link_to edit_account_path, class: "crm-footer__link" do %>Minha Conta<% end %>
 
@@ -56,6 +58,7 @@
         target="_blank"
         class="crm-footer__whatsapp"
       >
+        <i class="fa-brands fa-whatsapp"></i>
         Falar no WhatsApp
       </a>
 
