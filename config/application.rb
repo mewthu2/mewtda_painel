@@ -16,7 +16,7 @@ module MewtdaPainel
     config.active_record.default_timezone = :utc
 
     config.i18n.default_locale = :'pt-BR'
-    config.i18n.available_locales = [:'pt-BR', :en]
+    config.i18n.available_locales = [:'pt-BR', :en, :es]
 
     config.active_record.encryption.primary_key = ENV['AR_ENCRYPTION_PRIMARY_KEY']
     config.active_record.encryption.deterministic_key = ENV['AR_ENCRYPTION_DETERMINISTIC_KEY']

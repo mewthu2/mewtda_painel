@@ -1,0 +1,17 @@
+<%
+  locales = { 'pt-BR' => 'PT', 'en' => 'EN', 'es' => 'ES' }
+%>
+<div class="mwtda-lp-lang <%= wrapper_class %>" role="group" aria-label="<%= t('home.nav.language_switcher_label') %>">
+  <% locales.each do |code, label| %>
+    <%
+      # data-turbo="false": troca de idioma é mesmo path (/) só com query
+      # string diferente — o Turbo Drive trataria isso como visita interna
+      # (troca só o <body>) e o DOMContentLoaded dos scripts da página
+      # (logo 3D, menu mobile, celular 3D) não rodaria de novo. Forçando
+      # reload completo garante que tudo reinicializa certo.
+    %>
+    <%= link_to label, root_path(locale: code),
+          class: "mwtda-lp-lang__option #{'is-active' if I18n.locale.to_s == code}",
+          data: { turbo: false } %>
+  <% end %>
+</div>

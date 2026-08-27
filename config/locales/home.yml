@@ -1,0 +1,404 @@
+en:
+  home:
+    nav:
+      recursos: "Features"
+      automacoes: "How It Works"
+      integracoes: "Integrations"
+      sua_loja: "Your Store"
+      planos: "Pricing"
+      entrar: "Sign In"
+      abrir_menu: "Open menu"
+      fechar_menu: "Close menu"
+      language_switcher_label: "Select language"
+    hero:
+      badge: "CRM for Shopify stores"
+      headline: "Run your store smarter, all in one place"
+      subheadline: "Centralize orders, customers, sales goals, and WhatsApp automations — with real-time dashboards that run on their own, no spreadsheets, no rework."
+      cta_entrar: "Sign In"
+      cta_ver_recursos: "See Features"
+    strip:
+      shopify: "Native Shopify integration"
+      whatsapp: "WhatsApp automations"
+      dashboards: "Real-time dashboards"
+      metas: "Goals, ROAS & CAC"
+    clients:
+      title: "Stores that trust Mewtda"
+      logo_alt: "Mewtda client logo"
+    phones:
+      eyebrow: "IN ACTION"
+      dashboard:
+        eyebrow: "DASHBOARD"
+        title: "Your whole operation in one panel"
+        text: "Revenue, ROAS, and CAC in real time, with visual goals the whole team can follow."
+        screen_title: "Sales Dashboard"
+      whatsapp:
+        eyebrow: "WHATSAPP"
+        title: "Automations that run on their own"
+        text: "Order tracking, cashback, and cart recovery — set up once, no team dependency."
+        screen_title: "WhatsApp Automations"
+      afiliados:
+        eyebrow: "AFFILIATES"
+        title: "Every partnership, a measurable return"
+        text: "Track coupons, generate affiliate links, and measure the real return of every campaign and partner."
+        screen_title: "Affiliates & Campaigns"
+      integracoes:
+        eyebrow: "INTEGRATIONS"
+        title: "Connected with what your store already uses"
+        text: "Shopify, WhatsApp, and marketing tools talking to each other, no workarounds."
+        screen_title: "Native Integrations"
+    recursos:
+      eyebrow: "FEATURES"
+      title: "Everything your Shopify operation needs, in one panel"
+      lead: "Fewer open tabs, less manual spreadsheet work — more visibility into what actually moves the business."
+      dashboard:
+        title: "Sales Dashboard"
+        items:
+          - "Real-time revenue, ROAS, and CAC"
+          - "Monthly goals with progress bar"
+          - "Daily sales and conversion charts"
+          - "Google Ads vs. Meta Ads comparison"
+          - "Spreadsheet report exports"
+      whatsapp:
+        title: "WhatsApp Automations"
+        items:
+          - "Automatic order tracking notifications"
+          - "Scheduled post-purchase cashback"
+          - "Abandoned cart recovery"
+          - "Real-time message preview"
+          - "One-click notification resend"
+      afiliados:
+        title: "Affiliates & Marketing"
+        items:
+          - "One-click affiliate link generation"
+          - "Coupon-based sales tracking"
+          - "Per-affiliate performance dashboard"
+          - "Full conversion funnel"
+          - "Session and top-product analytics"
+    automacoes:
+      eyebrow: "HOW IT WORKS"
+      title: "From first login to results, in three steps"
+      step1:
+        title: "Connect your store"
+        text: "Authorize access to your Shopify in a few clicks — no installs, no developer needed."
+      step2:
+        title: "Set up your automations"
+        text: "Define messages, deadlines, and coupons for your WhatsApp automations and monthly goals."
+      step3:
+        title: "Track your results"
+        text: "Dashboards update automatically, with a daily history of sales and conversion."
+    integracoes:
+      eyebrow: "INTEGRATIONS"
+      title: "Connected with the tools you already use"
+      shopify:
+        title: "Shopify"
+        text: "Order, product, and customer sync straight from your store."
+      whatsapp:
+        title: "WhatsApp (Z-API)"
+        text: "Tracking, cashback, and cart recovery automations."
+      google_ads:
+        title: "Google Ads"
+        text: "Ad spend feeding straight into your ROAS and CAC calculations."
+      meta_ads:
+        title: "Meta Ads"
+        text: "Facebook and Instagram spend in the same panel."
+    ecommerce:
+      eyebrow: "WE BUILD YOUR STORE"
+      title: "Don't have a store yet? We'll build it for you"
+      lead: "Besides the CRM, we also build your Shopify store from scratch — design that looks like your brand, already integrated with Mewtda from day one, no setup headaches."
+      design:
+        title: "Custom design"
+        text: "A layout built for your brand and your product, not a generic template."
+      loja:
+        title: "Complete Shopify store"
+        text: "Products, payments, shipping, and domain, fully configured end to end."
+      crm:
+        title: "Already integrated with the CRM"
+        text: "No extra work later — your store launches already connected to the Mewtda panel."
+      cta_button: "I want my store"
+      whatsapp_message: "Hi, I'd like to build my store with Mewtda."
+    cta:
+      title: "Want to see Mewtda running in your store?"
+      text: "Talk to us and we'll show you how it works in practice, with your own operation's data."
+      whatsapp_button: "Chat on WhatsApp"
+      whatsapp_message: "Hi, I'd like to learn about Mewtda."
+      entrar: "Sign In"
+    footer:
+      description: "Complete CRM for Shopify stores — sales, automations, and affiliates in one place."
+      shopify_partner_alt: "Shopify Partner"
+      produto_title: "Product"
+      recursos: "Features"
+      como_funciona: "How It Works"
+      integracoes: "Integrations"
+      contato_title: "Contact"
+      whatsapp: "WhatsApp"
+      entrar: "Sign In"
+
+es:
+  home:
+    nav:
+      recursos: "Funciones"
+      automacoes: "Cómo Funciona"
+      integracoes: "Integraciones"
+      sua_loja: "Tu Tienda"
+      planos: "Planes"
+      entrar: "Ingresar"
+      abrir_menu: "Abrir menú"
+      fechar_menu: "Cerrar menú"
+      language_switcher_label: "Seleccionar idioma"
+    hero:
+      badge: "CRM para tiendas Shopify"
+      headline: "Gestiona tu tienda con inteligencia, todo en un solo lugar"
+      subheadline: "Centraliza pedidos, clientes, metas de ventas y automatizaciones de WhatsApp — con paneles en tiempo real que funcionan solos, sin hojas de cálculo ni retrabajo."
+      cta_entrar: "Ingresar"
+      cta_ver_recursos: "Ver Funciones"
+    strip:
+      shopify: "Integración nativa con Shopify"
+      whatsapp: "Automatizaciones vía WhatsApp"
+      dashboards: "Paneles en tiempo real"
+      metas: "Metas, ROAS y CAC"
+    clients:
+      title: "Tiendas que confían en Mewtda"
+      logo_alt: "Logo de cliente Mewtda"
+    phones:
+      eyebrow: "EN ACCIÓN"
+      dashboard:
+        eyebrow: "PANEL"
+        title: "Toda tu operación en un solo panel"
+        text: "Facturación, ROAS y CAC en tiempo real, con metas visuales para que todo el equipo las siga."
+        screen_title: "Panel de Ventas"
+      whatsapp:
+        eyebrow: "WHATSAPP"
+        title: "Automatizaciones que funcionan solas"
+        text: "Seguimiento de pedidos, cashback y recuperación de carritos — configurados una vez, sin depender del equipo."
+        screen_title: "Automatizaciones de WhatsApp"
+      afiliados:
+        eyebrow: "AFILIADOS"
+        title: "Cada alianza con un retorno medible"
+        text: "Rastrea cupones, genera enlaces de afiliado y mide el retorno real de cada campaña y socio."
+        screen_title: "Afiliados y Campañas"
+      integracoes:
+        eyebrow: "INTEGRACIONES"
+        title: "Conectado con lo que tu tienda ya usa"
+        text: "Shopify, WhatsApp y herramientas de marketing conectadas entre sí, sin parches."
+        screen_title: "Integraciones Nativas"
+    recursos:
+      eyebrow: "FUNCIONES"
+      title: "Todo lo que tu operación en Shopify necesita, en un solo panel"
+      lead: "Menos pestañas abiertas, menos hojas de cálculo manuales — más visibilidad sobre lo que realmente mueve tu negocio."
+      dashboard:
+        title: "Panel de Ventas"
+        items:
+          - "Facturación, ROAS y CAC en tiempo real"
+          - "Metas mensuales con barra de progreso"
+          - "Gráficos diarios de ventas y conversión"
+          - "Comparativo entre Google Ads y Meta Ads"
+          - "Exportación de reportes en hoja de cálculo"
+      whatsapp:
+        title: "Automatizaciones vía WhatsApp"
+        items:
+          - "Notificación automática de seguimiento de pedido"
+          - "Cashback programado después de la compra"
+          - "Recuperación de carritos abandonados"
+          - "Vista previa del mensaje en tiempo real"
+          - "Reenvío de notificaciones con un clic"
+      afiliados:
+        title: "Afiliados y Marketing"
+        items:
+          - "Generación de enlace de afiliado con un clic"
+          - "Seguimiento de ventas por cupón"
+          - "Panel de rendimiento por afiliado"
+          - "Embudo de conversión completo"
+          - "Analítica de sesiones y productos más vistos"
+    automacoes:
+      eyebrow: "CÓMO FUNCIONA"
+      title: "Del primer acceso al resultado, en tres pasos"
+      step1:
+        title: "Conecta tu tienda"
+        text: "Autoriza el acceso a tu Shopify en pocos clics — sin instalar nada, sin depender de un desarrollador."
+      step2:
+        title: "Configura tus automatizaciones"
+        text: "Define mensajes, plazos y cupones de tus automatizaciones de WhatsApp y las metas del mes."
+      step3:
+        title: "Sigue tus resultados"
+        text: "Paneles actualizados automáticamente, con historial diario de ventas y conversión."
+    integracoes:
+      eyebrow: "INTEGRACIONES"
+      title: "Conectado con las herramientas que ya usas"
+      shopify:
+        title: "Shopify"
+        text: "Sincronización de pedidos, productos y clientes directo desde tu tienda."
+      whatsapp:
+        title: "WhatsApp (Z-API)"
+        text: "Automatizaciones de seguimiento, cashback y recuperación de carritos."
+      google_ads:
+        title: "Google Ads"
+        text: "Costo de anuncios directo en el cálculo de ROAS y CAC."
+      meta_ads:
+        title: "Meta Ads"
+        text: "Inversión en Facebook e Instagram en el mismo panel."
+    ecommerce:
+      eyebrow: "CREAMOS TU TIENDA"
+      title: "¿Todavía no tienes una tienda? Nosotros la creamos por ti"
+      lead: "Además del CRM, también creamos tu tienda en Shopify desde cero — diseño con la cara de tu marca y ya integrada a Mewtda desde el primer día, sin dolores de cabeza con la configuración."
+      design:
+        title: "Diseño a medida"
+        text: "Un diseño pensado para tu marca y tu producto, no una plantilla genérica."
+      loja:
+        title: "Tienda completa en Shopify"
+        text: "Productos, pagos, envíos y dominio configurados de principio a fin."
+      crm:
+        title: "Ya nace integrada al CRM"
+        text: "Sin trabajo extra después: tu tienda sale al aire ya conectada al panel de Mewtda."
+      cta_button: "Quiero mi tienda"
+      whatsapp_message: "Hola, quiero crear mi tienda con Mewtda."
+    cta:
+      title: "¿Quieres ver Mewtda funcionando en tu tienda?"
+      text: "Habla con nosotros y te mostramos cómo funciona en la práctica, con los datos de tu propia operación."
+      whatsapp_button: "Hablar por WhatsApp"
+      whatsapp_message: "Hola, quiero conocer Mewtda."
+      entrar: "Ingresar"
+    footer:
+      description: "CRM completo para tiendas Shopify — ventas, automatizaciones y afiliados en un solo lugar."
+      shopify_partner_alt: "Shopify Partner"
+      produto_title: "Producto"
+      recursos: "Funciones"
+      como_funciona: "Cómo Funciona"
+      integracoes: "Integraciones"
+      contato_title: "Contacto"
+      whatsapp: "WhatsApp"
+      entrar: "Ingresar"
+
+pt-BR:
+  home:
+    nav:
+      recursos: "Recursos"
+      automacoes: "Automações"
+      integracoes: "Integrações"
+      sua_loja: "Sua Loja"
+      planos: "Planos"
+      entrar: "Entrar"
+      abrir_menu: "Abrir menu"
+      fechar_menu: "Fechar menu"
+      language_switcher_label: "Selecionar idioma"
+    hero:
+      badge: "CRM para lojas Shopify"
+      headline: "Gerencie sua loja com inteligência, em um só lugar"
+      subheadline: "Centralize pedidos, clientes, metas de vendas e automações de WhatsApp — com dashboards em tempo real que rodam sozinhos, sem planilha e sem retrabalho."
+      cta_entrar: "Entrar"
+      cta_ver_recursos: "Ver Recursos"
+    strip:
+      shopify: "Integração nativa com Shopify"
+      whatsapp: "Automações via WhatsApp"
+      dashboards: "Dashboards em tempo real"
+      metas: "Metas, ROAS e CAC"
+    clients:
+      title: "Lojas que confiam na Mewtda"
+      logo_alt: "Logo de cliente Mewtda"
+    phones:
+      eyebrow: "EM AÇÃO"
+      dashboard:
+        eyebrow: "DASHBOARD"
+        title: "Toda sua operação em um painel só"
+        text: "Faturamento, ROAS e CAC em tempo real, com metas visuais pra toda a equipe acompanhar."
+        screen_title: "Dashboard de Vendas"
+      whatsapp:
+        eyebrow: "WHATSAPP"
+        title: "Automações que rodam sozinhas"
+        text: "Rastreio de pedido, cashback e recuperação de carrinho — configuradas uma vez, sem depender da equipe."
+        screen_title: "Automações no WhatsApp"
+      afiliados:
+        eyebrow: "AFILIADOS"
+        title: "Cada parceria com retorno mensurável"
+        text: "Rastreie cupons, gere links de afiliado e meça o retorno real de cada campanha e parceiro."
+        screen_title: "Afiliados & Campanhas"
+      integracoes:
+        eyebrow: "INTEGRAÇÕES"
+        title: "Conectado com o que sua loja já usa"
+        text: "Shopify, WhatsApp e ferramentas de marketing conversando entre si, sem gambiarra."
+        screen_title: "Integrações nativas"
+    recursos:
+      eyebrow: "RECURSOS"
+      title: "Tudo que sua operação Shopify precisa, em um painel só"
+      lead: "Menos abas abertas, menos planilha manual — mais visibilidade sobre o que realmente move o negócio."
+      dashboard:
+        title: "Dashboard de Vendas"
+        items:
+          - "Faturamento, ROAS e CAC em tempo real"
+          - "Metas mensais com barra de progresso"
+          - "Gráficos diários de vendas e conversão"
+          - "Comparativo entre Google Ads e Meta Ads"
+          - "Exportação de relatórios em planilha"
+      whatsapp:
+        title: "Automações via WhatsApp"
+        items:
+          - "Notificação automática de rastreio de pedido"
+          - "Cashback programado após a compra"
+          - "Recuperação de carrinho abandonado"
+          - "Pré-visualização da mensagem em tempo real"
+          - "Reenvio de notificações com um clique"
+      afiliados:
+        title: "Afiliados & Marketing"
+        items:
+          - "Geração de link de afiliado com um clique"
+          - "Rastreamento de vendas por cupom"
+          - "Dashboard de performance por afiliado"
+          - "Funil de conversão completo"
+          - "Analytics de sessões e produtos mais vistos"
+    automacoes:
+      eyebrow: "COMO FUNCIONA"
+      title: "Do primeiro acesso ao resultado, em três passos"
+      step1:
+        title: "Conecte sua loja"
+        text: "Autorize o acesso à sua Shopify em poucos cliques — sem instalar nada, sem depender de dev."
+      step2:
+        title: "Configure suas automações"
+        text: "Defina mensagens, prazos e cupons das automações de WhatsApp e as metas do mês."
+      step3:
+        title: "Acompanhe os resultados"
+        text: "Dashboards atualizados automaticamente, com histórico diário de vendas e conversão."
+    integracoes:
+      eyebrow: "INTEGRAÇÕES"
+      title: "Conectado com as ferramentas que você já usa"
+      shopify:
+        title: "Shopify"
+        text: "Sincronização de pedidos, produtos e clientes direto da sua loja."
+      whatsapp:
+        title: "WhatsApp (Z-API)"
+        text: "Automações de rastreio, cashback e recuperação de carrinho."
+      google_ads:
+        title: "Google Ads"
+        text: "Custo de anúncios direto no cálculo de ROAS e CAC."
+      meta_ads:
+        title: "Meta Ads"
+        text: "Investimento em Facebook e Instagram no mesmo painel."
+    ecommerce:
+      eyebrow: "MONTAMOS SUA LOJA"
+      title: "Ainda não tem uma loja? A gente cria pra você"
+      lead: "Além do CRM, também montamos sua loja na Shopify do zero — design com a cara da sua marca e já de saída integrada ao Mewtda, sem dor de cabeça com configuração."
+      design:
+        title: "Design sob medida"
+        text: "Layout pensado pra sua marca e pro seu produto, não um template genérico."
+      loja:
+        title: "Loja completa na Shopify"
+        text: "Produtos, pagamentos, frete e domínio configurados de ponta a ponta."
+      crm:
+        title: "Já nasce integrada ao CRM"
+        text: "Sem trabalho extra depois: a loja sai do ar já conectada ao painel Mewtda."
+      cta_button: "Quero minha loja"
+      whatsapp_message: "Olá, quero criar minha loja com a Mewtda."
+    cta:
+      title: "Quer ver o Mewtda funcionando na sua loja?"
+      text: "Fale com a gente e a gente te mostra como fica na prática, com os dados da sua própria operação."
+      whatsapp_button: "Falar no WhatsApp"
+      whatsapp_message: "Olá, quero conhecer o Mewtda."
+      entrar: "Entrar"
+    footer:
+      description: "CRM completo para lojas Shopify — vendas, automações e afiliados em um só lugar."
+      shopify_partner_alt: "Shopify Partner"
+      produto_title: "Produto"
+      recursos: "Recursos"
+      como_funciona: "Como Funciona"
+      integracoes: "Integrações"
+      contato_title: "Contato"
+      whatsapp: "WhatsApp"
+      entrar: "Entrar"

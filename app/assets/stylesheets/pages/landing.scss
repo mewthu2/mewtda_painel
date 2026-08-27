@@ -382,9 +382,50 @@
     transform: translateY(-7px) rotate(-45deg);
   }
 
+  /* -----------------------------------------------------------------
+     4c. SELETOR DE IDIOMA (PT / EN / ES)
+     ----------------------------------------------------------------- */
+  .mwtda-lp-lang {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    flex-shrink: 0;
+  }
+
+  .mwtda-lp-lang__option {
+    padding: 0.3rem 0.55rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border-radius: var(--mw-radius-sm);
+    color: var(--mw-fg-muted);
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+
+  .mwtda-lp-lang__option:hover {
+    color: var(--mw-fg);
+  }
+
+  .mwtda-lp-lang__option.is-active {
+    color: var(--mw-fg);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .mwtda-lp-mobile-menu__lang {
+    position: relative;
+    gap: 0.4rem;
+  }
+
+  .mwtda-lp-mobile-menu__lang .mwtda-lp-lang__option {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.9rem;
+    border: 1px solid var(--mw-border-strong);
+  }
+
   @media (max-width: 860px) {
     .mwtda-lp-nav__links,
-    .mwtda-lp-nav__cta {
+    .mwtda-lp-nav__cta,
+    .mwtda-lp-nav__lang {
       display: none;
     }
 
@@ -1256,6 +1297,7 @@
     z-index: 1;
     flex: 0 0 clamp(220px, 26vw, 340px);
     height: clamp(420px, 68vh, 620px);
+    cursor: grab;
   }
 
   @media (max-width: 860px) {

@@ -3,12 +3,21 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
+  before_action :set_locale
   before_action :authenticate_user!
   before_action :redirect_affiliate_to_events!
 
   layout 'layouts/application'
 
   private
+
+  # Lê o idioma de ?locale=, memoriza na sessão pra persistir entre páginas,
+  # e cai pro default se não vier nada ou vier um valor inválido.
+  def set_locale
+    requested = params[:locale].presence
+    session[:locale] = requested if requested && I18n.available_locales.map(&:to_s).include?(requested)
+    I18n.locale = session[:locale] || I18n.default_locale
+  end
 
   def require_admin!
     unless current_user&.admin?

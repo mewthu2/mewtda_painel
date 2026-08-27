@@ -1,4 +1,4 @@
-<% title 'Mewtda — CRM para lojas Shopify' %>
+<% title "Mewtda — #{t('home.hero.badge')}" %>
 
 <%#
   =====================================================================
@@ -31,17 +31,18 @@
             alt: 'Mewtda',
             style: 'display:block !important; height:42px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important;' %>
       <div class="mwtda-lp-nav__links">
-        <a href="#recursos">Recursos</a>
-        <a href="#automacoes">Automações</a>
-        <a href="#integracoes">Integrações</a>
-        <a href="#ecommerce">Sua Loja</a>
-        <a href="#planos">Planos</a>
+        <a href="#recursos"><%= t('home.nav.recursos') %></a>
+        <a href="#automacoes"><%= t('home.nav.automacoes') %></a>
+        <a href="#integracoes"><%= t('home.nav.integracoes') %></a>
+        <a href="#ecommerce"><%= t('home.nav.sua_loja') %></a>
+        <a href="#planos"><%= t('home.nav.planos') %></a>
       </div>
-      <%= link_to 'Entrar', new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-nav__cta' %>
+      <%= render 'home/language_switcher', wrapper_class: 'mwtda-lp-nav__lang' %>
+      <%= link_to t('home.nav.entrar'), new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-nav__cta' %>
       <button
         type="button"
         class="mwtda-lp-nav__burger"
-        aria-label="Abrir menu"
+        aria-label="<%= t('home.nav.abrir_menu') %>"
         aria-expanded="false"
         aria-controls="mwtda-mobile-menu"
         data-mobile-menu-trigger
@@ -53,17 +54,18 @@
 
   <div class="mwtda-lp-mobile-menu" id="mwtda-mobile-menu" data-mobile-menu inert>
     <canvas class="mwtda-lp-mobile-menu__canvas" data-mobile-menu-canvas></canvas>
-    <button type="button" class="mwtda-lp-mobile-menu__close" aria-label="Fechar menu" data-mobile-menu-close>
+    <button type="button" class="mwtda-lp-mobile-menu__close" aria-label="<%= t('home.nav.fechar_menu') %>" data-mobile-menu-close>
       <i class="fa-solid fa-xmark"></i>
     </button>
     <nav class="mwtda-lp-mobile-menu__links">
-      <a href="#recursos" data-mobile-menu-link>Recursos</a>
-      <a href="#automacoes" data-mobile-menu-link>Automações</a>
-      <a href="#integracoes" data-mobile-menu-link>Integrações</a>
-      <a href="#ecommerce" data-mobile-menu-link>Sua Loja</a>
-      <a href="#planos" data-mobile-menu-link>Planos</a>
+      <a href="#recursos" data-mobile-menu-link><%= t('home.nav.recursos') %></a>
+      <a href="#automacoes" data-mobile-menu-link><%= t('home.nav.automacoes') %></a>
+      <a href="#integracoes" data-mobile-menu-link><%= t('home.nav.integracoes') %></a>
+      <a href="#ecommerce" data-mobile-menu-link><%= t('home.nav.sua_loja') %></a>
+      <a href="#planos" data-mobile-menu-link><%= t('home.nav.planos') %></a>
     </nav>
-    <%= link_to 'Entrar', new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg mwtda-lp-mobile-menu__cta', data: { 'mobile-menu-link': true } %>
+    <%= render 'home/language_switcher', wrapper_class: 'mwtda-lp-mobile-menu__lang' %>
+    <%= link_to t('home.nav.entrar'), new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg mwtda-lp-mobile-menu__cta', data: { 'mobile-menu-link': true } %>
   </div>
 
   <section class="mwtda-lp-hero">
@@ -71,30 +73,29 @@
       <div class="mwtda-lp-hero__logo3d" data-mwtda-wave-logo aria-hidden="true">
         <canvas class="mwtda-lp-hero__logo3d-canvas"></canvas>
       </div>
-      <span class="mwtda-lp-badge">CRM para lojas Shopify</span>
-      <h1 class="mwtda-lp-hero__headline">Gerencie sua loja com inteligência, em um só lugar</h1>
+      <span class="mwtda-lp-badge"><%= t('home.hero.badge') %></span>
+      <h1 class="mwtda-lp-hero__headline"><%= t('home.hero.headline') %></h1>
       <p class="mwtda-lp-hero__subheadline">
-        Centralize pedidos, clientes, metas de vendas e automações de WhatsApp — com dashboards em tempo real
-        que rodam sozinhos, sem planilha e sem retrabalho.
+        <%= t('home.hero.subheadline') %>
       </p>
       <div class="mwtda-lp-hero__ctas">
-        <%= link_to 'Entrar', new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg' %>
-        <a href="#recursos" class="mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg">Ver Recursos</a>
+        <%= link_to t('home.hero.cta_entrar'), new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg' %>
+        <a href="#recursos" class="mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg"><%= t('home.hero.cta_ver_recursos') %></a>
       </div>
     </div>
   </section>
 
   <section class="mwtda-lp-strip">
     <div class="mwtda-lp-strip__inner">
-      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-shopify"></i> Integração nativa com Shopify</div>
-      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-whatsapp"></i> Automações via WhatsApp</div>
-      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-chart-line"></i> Dashboards em tempo real</div>
-      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-bullseye"></i> Metas, ROAS e CAC</div>
+      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-shopify"></i> <%= t('home.strip.shopify') %></div>
+      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-whatsapp"></i> <%= t('home.strip.whatsapp') %></div>
+      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-chart-line"></i> <%= t('home.strip.dashboards') %></div>
+      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-bullseye"></i> <%= t('home.strip.metas') %></div>
       <%# duplicado pra loop do marquee ficar contínuo (o CSS anima -50%) %>
-      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-shopify"></i> Integração nativa com Shopify</div>
-      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-whatsapp"></i> Automações via WhatsApp</div>
-      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-chart-line"></i> Dashboards em tempo real</div>
-      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-bullseye"></i> Metas, ROAS e CAC</div>
+      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-shopify"></i> <%= t('home.strip.shopify') %></div>
+      <div class="mwtda-lp-strip__item"><i class="fa-brands fa-whatsapp"></i> <%= t('home.strip.whatsapp') %></div>
+      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-chart-line"></i> <%= t('home.strip.dashboards') %></div>
+      <div class="mwtda-lp-strip__item"><i class="fa-solid fa-bullseye"></i> <%= t('home.strip.metas') %></div>
     </div>
   </section>
 
@@ -102,11 +103,11 @@
   <% if client_logos.any? %>
     <section class="mwtda-lp-clients">
       <div class="mwtda-lp-clients__inner">
-        <span class="mwtda-lp-eyebrow mwtda-lp-clients__title">Lojas que confiam na Mewtda</span>
+        <span class="mwtda-lp-eyebrow mwtda-lp-clients__title"><%= t('home.clients.title') %></span>
         <div class="mwtda-lp-clients__strip">
           <div class="mwtda-lp-clients__track">
             <% client_logos.each do |logo| %>
-              <%= image_tag logo, class: 'mwtda-lp-clients__logo', alt: 'Logo de cliente Mewtda', loading: 'lazy' %>
+              <%= image_tag logo, class: 'mwtda-lp-clients__logo', alt: t('home.clients.logo_alt'), loading: 'lazy' %>
             <% end %>
             <%# duplicado pra loop do marquee ficar contínuo (o CSS anima -50%) %>
             <% client_logos.each do |logo| %>
@@ -124,27 +125,27 @@
         <div class="mwtda-lp-phones__glow"></div>
 
         <div class="mwtda-lp-phones__text">
-          <span class="mwtda-lp-eyebrow">EM AÇÃO</span>
+          <span class="mwtda-lp-eyebrow"><%= t('home.phones.eyebrow') %></span>
           <div class="mwtda-lp-phones__copy-stack">
             <div class="mwtda-lp-phones__copy" data-phone-copy data-index="0" data-active="true">
-              <span class="mwtda-lp-phones__copy-eyebrow">DASHBOARD</span>
-              <h2>Toda sua operação em um painel só</h2>
-              <p>Faturamento, ROAS e CAC em tempo real, com metas visuais pra toda a equipe acompanhar.</p>
+              <span class="mwtda-lp-phones__copy-eyebrow"><%= t('home.phones.dashboard.eyebrow') %></span>
+              <h2><%= t('home.phones.dashboard.title') %></h2>
+              <p><%= t('home.phones.dashboard.text') %></p>
             </div>
             <div class="mwtda-lp-phones__copy" data-phone-copy data-index="1" data-active="false">
-              <span class="mwtda-lp-phones__copy-eyebrow">WHATSAPP</span>
-              <h2>Automações que rodam sozinhas</h2>
-              <p>Rastreio de pedido, cashback e recuperação de carrinho — configuradas uma vez, sem depender da equipe.</p>
+              <span class="mwtda-lp-phones__copy-eyebrow"><%= t('home.phones.whatsapp.eyebrow') %></span>
+              <h2><%= t('home.phones.whatsapp.title') %></h2>
+              <p><%= t('home.phones.whatsapp.text') %></p>
             </div>
             <div class="mwtda-lp-phones__copy" data-phone-copy data-index="2" data-active="false">
-              <span class="mwtda-lp-phones__copy-eyebrow">AFILIADOS</span>
-              <h2>Cada parceria com retorno mensurável</h2>
-              <p>Rastreie cupons, gere links de afiliado e meça o retorno real de cada campanha e parceiro.</p>
+              <span class="mwtda-lp-phones__copy-eyebrow"><%= t('home.phones.afiliados.eyebrow') %></span>
+              <h2><%= t('home.phones.afiliados.title') %></h2>
+              <p><%= t('home.phones.afiliados.text') %></p>
             </div>
             <div class="mwtda-lp-phones__copy" data-phone-copy data-index="3" data-active="false">
-              <span class="mwtda-lp-phones__copy-eyebrow">INTEGRAÇÕES</span>
-              <h2>Conectado com o que sua loja já usa</h2>
-              <p>Shopify, WhatsApp e ferramentas de marketing conversando entre si, sem gambiarra.</p>
+              <span class="mwtda-lp-phones__copy-eyebrow"><%= t('home.phones.integracoes.eyebrow') %></span>
+              <h2><%= t('home.phones.integracoes.title') %></h2>
+              <p><%= t('home.phones.integracoes.text') %></p>
             </div>
           </div>
           <div class="mwtda-lp-phones__dots" data-phone-dots>
@@ -162,46 +163,40 @@
 
   <section class="mwtda-lp-section mwtda-lp-section--tint" id="recursos">
     <div class="mwtda-lp-section__inner">
-      <span class="mwtda-lp-eyebrow" data-reveal-self>RECURSOS</span>
-      <h2 class="mwtda-lp-section__title" data-reveal-self>Tudo que sua operação Shopify precisa, em um painel só</h2>
+      <span class="mwtda-lp-eyebrow" data-reveal-self><%= t('home.recursos.eyebrow') %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t('home.recursos.title') %></h2>
       <p class="mwtda-lp-section__lead" data-reveal-self>
-        Menos abas abertas, menos planilha manual — mais visibilidade sobre o que realmente move o negócio.
+        <%= t('home.recursos.lead') %>
       </p>
 
       <div class="mwtda-lp-feature-grid" data-reveal>
         <div class="mwtda-lp-card mwtda-lp-feature-card">
           <div class="mwtda-lp-feature-card__icon"><i class="fa-solid fa-chart-pie"></i></div>
-          <h3>Dashboard de Vendas</h3>
+          <h3><%= t('home.recursos.dashboard.title') %></h3>
           <ul>
-            <li>Faturamento, ROAS e CAC em tempo real</li>
-            <li>Metas mensais com barra de progresso</li>
-            <li>Gráficos diários de vendas e conversão</li>
-            <li>Comparativo entre Google Ads e Meta Ads</li>
-            <li>Exportação de relatórios em planilha</li>
+            <% t('home.recursos.dashboard.items').each do |item| %>
+              <li><%= item %></li>
+            <% end %>
           </ul>
         </div>
 
         <div class="mwtda-lp-card mwtda-lp-feature-card">
           <div class="mwtda-lp-feature-card__icon"><i class="fa-brands fa-whatsapp"></i></div>
-          <h3>Automações via WhatsApp</h3>
+          <h3><%= t('home.recursos.whatsapp.title') %></h3>
           <ul>
-            <li>Notificação automática de rastreio de pedido</li>
-            <li>Cashback programado após a compra</li>
-            <li>Recuperação de carrinho abandonado</li>
-            <li>Pré-visualização da mensagem em tempo real</li>
-            <li>Reenvio de notificações com um clique</li>
+            <% t('home.recursos.whatsapp.items').each do |item| %>
+              <li><%= item %></li>
+            <% end %>
           </ul>
         </div>
 
         <div class="mwtda-lp-card mwtda-lp-feature-card">
           <div class="mwtda-lp-feature-card__icon"><i class="fa-solid fa-user-group"></i></div>
-          <h3>Afiliados & Marketing</h3>
+          <h3><%= t('home.recursos.afiliados.title') %></h3>
           <ul>
-            <li>Geração de link de afiliado com um clique</li>
-            <li>Rastreamento de vendas por cupom</li>
-            <li>Dashboard de performance por afiliado</li>
-            <li>Funil de conversão completo</li>
-            <li>Analytics de sessões e produtos mais vistos</li>
+            <% t('home.recursos.afiliados.items').each do |item| %>
+              <li><%= item %></li>
+            <% end %>
           </ul>
         </div>
       </div>
@@ -210,24 +205,24 @@
 
   <section class="mwtda-lp-section" id="automacoes">
     <div class="mwtda-lp-section__inner">
-      <span class="mwtda-lp-eyebrow" data-reveal-self>COMO FUNCIONA</span>
-      <h2 class="mwtda-lp-section__title" data-reveal-self>Do primeiro acesso ao resultado, em três passos</h2>
+      <span class="mwtda-lp-eyebrow" data-reveal-self><%= t('home.automacoes.eyebrow') %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t('home.automacoes.title') %></h2>
 
       <div class="mwtda-lp-process-grid" data-reveal>
         <div class="mwtda-lp-process-step">
           <span class="mwtda-lp-process-step__number">1</span>
-          <h3>Conecte sua loja</h3>
-          <p>Autorize o acesso à sua Shopify em poucos cliques — sem instalar nada, sem depender de dev.</p>
+          <h3><%= t('home.automacoes.step1.title') %></h3>
+          <p><%= t('home.automacoes.step1.text') %></p>
         </div>
         <div class="mwtda-lp-process-step">
           <span class="mwtda-lp-process-step__number">2</span>
-          <h3>Configure suas automações</h3>
-          <p>Defina mensagens, prazos e cupons das automações de WhatsApp e as metas do mês.</p>
+          <h3><%= t('home.automacoes.step2.title') %></h3>
+          <p><%= t('home.automacoes.step2.text') %></p>
         </div>
         <div class="mwtda-lp-process-step">
           <span class="mwtda-lp-process-step__number">3</span>
-          <h3>Acompanhe os resultados</h3>
-          <p>Dashboards atualizados automaticamente, com histórico diário de vendas e conversão.</p>
+          <h3><%= t('home.automacoes.step3.title') %></h3>
+          <p><%= t('home.automacoes.step3.text') %></p>
         </div>
       </div>
     </div>
@@ -235,29 +230,29 @@
 
   <section class="mwtda-lp-section mwtda-lp-section--tint" id="integracoes">
     <div class="mwtda-lp-section__inner">
-      <span class="mwtda-lp-eyebrow" data-reveal-self>INTEGRAÇÕES</span>
-      <h2 class="mwtda-lp-section__title" data-reveal-self>Conectado com as ferramentas que você já usa</h2>
+      <span class="mwtda-lp-eyebrow" data-reveal-self><%= t('home.integracoes.eyebrow') %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t('home.integracoes.title') %></h2>
 
       <div class="mwtda-lp-platform-grid" data-reveal>
         <div class="mwtda-lp-card mwtda-lp-platform-card">
           <i class="fa-brands fa-shopify mwtda-lp-platform-card__icon" style="color:#95bf47"></i>
-          <h3>Shopify</h3>
-          <p>Sincronização de pedidos, produtos e clientes direto da sua loja.</p>
+          <h3><%= t('home.integracoes.shopify.title') %></h3>
+          <p><%= t('home.integracoes.shopify.text') %></p>
         </div>
         <div class="mwtda-lp-card mwtda-lp-platform-card">
           <i class="fa-brands fa-whatsapp mwtda-lp-platform-card__icon" style="color:#25d366"></i>
-          <h3>WhatsApp (Z-API)</h3>
-          <p>Automações de rastreio, cashback e recuperação de carrinho.</p>
+          <h3><%= t('home.integracoes.whatsapp.title') %></h3>
+          <p><%= t('home.integracoes.whatsapp.text') %></p>
         </div>
         <div class="mwtda-lp-card mwtda-lp-platform-card">
           <i class="fa-brands fa-google mwtda-lp-platform-card__icon" style="color:#4285F4"></i>
-          <h3>Google Ads</h3>
-          <p>Custo de anúncios direto no cálculo de ROAS e CAC.</p>
+          <h3><%= t('home.integracoes.google_ads.title') %></h3>
+          <p><%= t('home.integracoes.google_ads.text') %></p>
         </div>
         <div class="mwtda-lp-card mwtda-lp-platform-card">
           <i class="fa-brands fa-meta mwtda-lp-platform-card__icon" style="color:#0866FF"></i>
-          <h3>Meta Ads</h3>
-          <p>Investimento em Facebook e Instagram no mesmo painel.</p>
+          <h3><%= t('home.integracoes.meta_ads.title') %></h3>
+          <p><%= t('home.integracoes.meta_ads.text') %></p>
         </div>
       </div>
     </div>
@@ -265,40 +260,39 @@
 
   <section class="mwtda-lp-section" id="ecommerce">
     <div class="mwtda-lp-section__inner">
-      <span class="mwtda-lp-eyebrow" data-reveal-self>MONTAMOS SUA LOJA</span>
-      <h2 class="mwtda-lp-section__title" data-reveal-self>Ainda não tem uma loja? A gente cria pra você</h2>
+      <span class="mwtda-lp-eyebrow" data-reveal-self><%= t('home.ecommerce.eyebrow') %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t('home.ecommerce.title') %></h2>
       <p class="mwtda-lp-section__lead" data-reveal-self>
-        Além do CRM, também montamos sua loja na Shopify do zero — design com a cara da sua marca e já de saída
-        integrada ao Mewtda, sem dor de cabeça com configuração.
+        <%= t('home.ecommerce.lead') %>
       </p>
 
       <div class="mwtda-lp-feature-grid" data-reveal>
         <div class="mwtda-lp-card mwtda-lp-feature-card">
           <div class="mwtda-lp-feature-card__icon"><i class="fa-solid fa-palette"></i></div>
-          <h3>Design sob medida</h3>
-          <p>Layout pensado pra sua marca e pro seu produto, não um template genérico.</p>
+          <h3><%= t('home.ecommerce.design.title') %></h3>
+          <p><%= t('home.ecommerce.design.text') %></p>
         </div>
 
         <div class="mwtda-lp-card mwtda-lp-feature-card">
           <div class="mwtda-lp-feature-card__icon"><i class="fa-brands fa-shopify"></i></div>
-          <h3>Loja completa na Shopify</h3>
-          <p>Produtos, pagamentos, frete e domínio configurados de ponta a ponta.</p>
+          <h3><%= t('home.ecommerce.loja.title') %></h3>
+          <p><%= t('home.ecommerce.loja.text') %></p>
         </div>
 
         <div class="mwtda-lp-card mwtda-lp-feature-card">
           <div class="mwtda-lp-feature-card__icon"><i class="fa-solid fa-plug"></i></div>
-          <h3>Já nasce integrada ao CRM</h3>
-          <p>Sem trabalho extra depois: a loja sai do ar já conectada ao painel Mewtda.</p>
+          <h3><%= t('home.ecommerce.crm.title') %></h3>
+          <p><%= t('home.ecommerce.crm.text') %></p>
         </div>
       </div>
 
       <div class="mwtda-lp-ecommerce__cta" data-reveal-self>
         <a
-          href="https://wa.me/5516991997608?text=Olá,%20quero%20criar%20minha%20loja%20com%20a%20Mewtda."
+          href="https://wa.me/5516991997608?text=<%= CGI.escape(t('home.ecommerce.whatsapp_message')) %>"
           target="_blank"
           class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg"
         >
-          <i class="fa-brands fa-whatsapp"></i> Quero minha loja
+          <i class="fa-brands fa-whatsapp"></i> <%= t('home.ecommerce.cta_button') %>
         </a>
       </div>
     </div>
@@ -306,17 +300,17 @@
 
   <section class="mwtda-lp-section mwtda-lp-cta" id="planos">
     <div class="mwtda-lp-section__inner mwtda-lp-cta__inner" data-reveal-self>
-      <h2>Quer ver o Mewtda funcionando na sua loja?</h2>
-      <p>Fale com a gente e a gente te mostra como fica na prática, com os dados da sua própria operação.</p>
+      <h2><%= t('home.cta.title') %></h2>
+      <p><%= t('home.cta.text') %></p>
       <div class="mwtda-lp-hero__ctas">
         <a
-          href="https://wa.me/5516991997608?text=Olá,%20quero%20conhecer%20o%20Mewtda."
+          href="https://wa.me/5516991997608?text=<%= CGI.escape(t('home.cta.whatsapp_message')) %>"
           target="_blank"
           class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg"
         >
-          <i class="fa-brands fa-whatsapp"></i> Falar no WhatsApp
+          <i class="fa-brands fa-whatsapp"></i> <%= t('home.cta.whatsapp_button') %>
         </a>
-        <%= link_to 'Entrar', new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--outline-light mwtda-lp-btn--lg' %>
+        <%= link_to t('home.cta.entrar'), new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--outline-light mwtda-lp-btn--lg' %>
       </div>
     </div>
   </section>
@@ -328,24 +322,24 @@
               class: 'mwtda-lp-footer__logo',
               alt: 'Mewtda',
               style: 'display:block !important; height:26px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important;' %>
-        <p>CRM completo para lojas Shopify — vendas, automações e afiliados em um só lugar.</p>
+        <p><%= t('home.footer.description') %></p>
         <%= image_tag 'admin/shopifypartnerbadge_250.png',
               class: 'mwtda-lp-footer__badge',
-              alt: 'Shopify Partner',
+              alt: t('home.footer.shopify_partner_alt'),
               style: 'display:block !important; height:56px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important; opacity:0.9;' %>
       </div>
 
       <div class="mwtda-lp-footer__column">
-        <span class="mwtda-lp-footer__title">Produto</span>
-        <a href="#recursos">Recursos</a>
-        <a href="#automacoes">Como Funciona</a>
-        <a href="#integracoes">Integrações</a>
+        <span class="mwtda-lp-footer__title"><%= t('home.footer.produto_title') %></span>
+        <a href="#recursos"><%= t('home.footer.recursos') %></a>
+        <a href="#automacoes"><%= t('home.footer.como_funciona') %></a>
+        <a href="#integracoes"><%= t('home.footer.integracoes') %></a>
       </div>
 
       <div class="mwtda-lp-footer__column">
-        <span class="mwtda-lp-footer__title">Contato</span>
-        <a href="https://wa.me/5516991997608" target="_blank">WhatsApp</a>
-        <%= link_to 'Entrar', new_user_session_path %>
+        <span class="mwtda-lp-footer__title"><%= t('home.footer.contato_title') %></span>
+        <a href="https://wa.me/5516991997608" target="_blank"><%= t('home.footer.whatsapp') %></a>
+        <%= link_to t('home.footer.entrar'), new_user_session_path %>
       </div>
     </div>
 
@@ -479,10 +473,10 @@
   import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js"
 
   var SCREENS = [
-    { title: "Dashboard de Vendas", tag: "01", from: "#fc7107", to: "#00247e", imageUrl: null },
-    { title: "Automações no WhatsApp", tag: "02", from: "#00c853", to: "#00247e", imageUrl: null },
-    { title: "Afiliados & Campanhas", tag: "03", from: "#7c4dff", to: "#00247e", imageUrl: null },
-    { title: "Integrações nativas", tag: "04", from: "#ff8a33", to: "#001233", imageUrl: null },
+    { title: <%= t('home.phones.dashboard.screen_title').to_json.html_safe %>, tag: "01", from: "#fc7107", to: "#00247e", imageUrl: null },
+    { title: <%= t('home.phones.whatsapp.screen_title').to_json.html_safe %>, tag: "02", from: "#00c853", to: "#00247e", imageUrl: null },
+    { title: <%= t('home.phones.afiliados.screen_title').to_json.html_safe %>, tag: "03", from: "#7c4dff", to: "#00247e", imageUrl: null },
+    { title: <%= t('home.phones.integracoes.screen_title').to_json.html_safe %>, tag: "04", from: "#ff8a33", to: "#001233", imageUrl: null },
   ]
 
   var imageCache = {}
@@ -690,11 +684,29 @@
     screenMesh.position.z = frontZ
     phone.add(screenMesh)
 
-    // tela traseira (pra não ficar transparente vendo o "miolo" ao girar)
-    var backMesh = new THREE.Mesh(screenGeo, screenMat)
+    // painel traseiro — um celular só tem tela na FRENTE; usar a mesma
+    // screenMat aqui (bug antigo) fazia o verso mostrar o dashboard
+    // espelhado, como se fosse um celular de tela dupla. Usa o material
+    // do corpo (vidro/metal escuro) + módulo de câmera, igual ao verso
+    // real de um smartphone.
+    var backMesh = new THREE.Mesh(screenGeo, bodyMat)
     backMesh.position.z = -frontZ
     backMesh.rotation.y = Math.PI
     phone.add(backMesh)
+
+    var lensMat = new THREE.MeshStandardMaterial({ color: 0x05060a, metalness: 0.9, roughness: 0.15 })
+    var lensRingMat = new THREE.MeshStandardMaterial({ color: 0x2a2d38, metalness: 0.8, roughness: 0.3 })
+    ;[0, 1].forEach(function (i) {
+      var ring = new THREE.Mesh(new THREE.CircleGeometry(0.16, 24), lensRingMat)
+      var lens = new THREE.Mesh(new THREE.CircleGeometry(0.11, 24), lensMat)
+      var x = -bodyW / 2 + 0.46
+      var y = bodyH / 2 - 0.5 - i * 0.36
+      ring.position.set(x, y, -frontZ - 0.004)
+      lens.position.set(x, y, -frontZ - 0.006)
+      ring.rotation.y = lens.rotation.y = Math.PI
+      phone.add(ring)
+      phone.add(lens)
+    })
 
     // notch/câmera
     var notchGeo = new THREE.CircleGeometry(0.045, 24)
@@ -732,6 +744,26 @@
     var currentRotationY = 0
     var time = 0
 
+    // --- tilt ao passar o mouse (só efeito visual, por cima da rotação
+    // "de verdade" — currentRotationY continua sendo só o scroll, senão
+    // o cálculo de qual tela mostrar ficaria bagunçado pelo mouse) ------
+    var mouseTargetX = 0
+    var mouseTargetY = 0
+    var mouseX = 0
+    var mouseY = 0
+
+    if (!prefersReducedMotion) {
+      mount.addEventListener("mousemove", function (e) {
+        var rect = mount.getBoundingClientRect()
+        mouseTargetX = ((e.clientX - rect.left) / rect.width) * 2 - 1
+        mouseTargetY = ((e.clientY - rect.top) / rect.height) * 2 - 1
+      })
+      mount.addEventListener("mouseleave", function () {
+        mouseTargetX = 0
+        mouseTargetY = 0
+      })
+    }
+
     function resize() {
       camera.aspect = mount.clientWidth / mount.clientHeight
       camera.updateProjectionMatrix()
@@ -748,17 +780,20 @@
     function tick() {
       time += 0.016
       currentRotationY += (targetRotationY - currentRotationY) * (prefersReducedMotion ? 1 : 0.09)
-      phone.rotation.y = currentRotationY
-      phone.rotation.x = Math.sin(time * 0.6) * 0.035
-      phone.position.y = Math.sin(time * 0.8) * 0.08
+      mouseX += (mouseTargetX - mouseX) * 0.08
+      mouseY += (mouseTargetY - mouseY) * 0.08
 
       // troca a textura quando o celular está "de costas" pra câmera —
-      // baseado na rotação ATUAL (com lerp), não na alvo, pra ficar
-      // sempre coerente com o que está sendo desenhado na tela.
-      var normalized = ((currentRotationY % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
-      var segment = Math.floor(currentRotationY / (Math.PI * 2) + 0.0001)
-      var facingBack = normalized > Math.PI * 0.5 && normalized < Math.PI * 1.5
-      var desiredIndex = facingBack ? segment + 1 : segment
+      // baseado na rotação ATUAL (com lerp) e SEM o tilt do mouse, pra
+      // ficar sempre coerente com a história do scroll (o mouse é só um
+      // wobble visual por cima, não pode interferir em qual card/tela
+      // está "ativo"). O índice sobe em degrau exatamente em cada π ímpar
+      // (meia-volta, quando o verso está de frente pra câmera) e FICA
+      // nesse valor até o próximo degrau — antes tinha uma janela
+      // (0.5π–1.5π) que fechava antes da volta completar, fazendo o
+      // índice voltar pro anterior por um instante e "repetir" o card ao
+      // rolar (bug reportado pelo usuário).
+      var desiredIndex = Math.floor((currentRotationY + Math.PI) / (Math.PI * 2))
       setScreen(desiredIndex)
 
       // a legenda de texto usa o MESMO índice/threshold da textura 3D —
@@ -769,6 +804,10 @@
         lastReportedIndex = clampedIndex
         updateCopyAndDots(clampedIndex)
       }
+
+      phone.rotation.y = currentRotationY + mouseX * 0.28
+      phone.rotation.x = Math.sin(time * 0.6) * 0.035 - mouseY * 0.14
+      phone.position.y = Math.sin(time * 0.8) * 0.08
 
       renderer.render(scene, camera)
       rafId = requestAnimationFrame(tick)
