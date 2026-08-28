@@ -10,7 +10,7 @@
           — <i class="fa-brands fa-shopify sd-header__shopify-icon" title="Shopify"></i> <%= @client.name %>
         <% end %>
       </div>
-      <div class="sd-header__subtitle">Ticket médio, faturamento, conversão, ROAS e CAC do mês</div>
+      <div class="sd-header__subtitle">Ticket médio, faturamento, ROAS e CAC do mês</div>
       <% if @client %>
         <div class="sd-header__sync-info">
           <i class="fa-solid fa-arrows-rotate"></i>
@@ -102,7 +102,7 @@
       </div>
     </div>
 
-    <% any_goal = %i[revenue_target roas_target avg_ticket_target conversion_rate_target cac_target tagged_revenue_target]
+    <% any_goal = %i[revenue_target roas_target avg_ticket_target cac_target tagged_revenue_target]
                   .any? { |k| @metrics[k].present? } %>
     <div class="sd-chart-card sd-goals-card">
       <div class="sd-goals-card__header">
@@ -133,13 +133,6 @@
                 label: 'Ticket Médio', format: :currency,
                 current: @metrics[:avg_ticket] || 0, target: @metrics[:avg_ticket_target],
                 progress_pct: @metrics[:avg_ticket_target_progress_pct], remaining: @metrics[:avg_ticket_target_remaining] %>
-          <% end %>
-
-          <% if @metrics[:conversion_rate_target].present? %>
-            <%= render 'sales_dashboard/goal_summary_bar',
-                label: 'Taxa de Conversão', format: :percent, warning: true,
-                current: @metrics[:conversion_rate] || 0, target: @metrics[:conversion_rate_target],
-                progress_pct: @metrics[:conversion_rate_target_progress_pct], remaining: @metrics[:conversion_rate_target_remaining] %>
           <% end %>
 
           <% if @metrics[:roas_target].present? %>
@@ -179,13 +172,6 @@
             label: 'Ticket Médio', format: :currency, reference: @metrics[:avg_ticket_target],
             current: @metrics[:avg_ticket] || 0, target: @metrics[:avg_ticket_target],
             progress_pct: @metrics[:avg_ticket_target_progress_pct], remaining: @metrics[:avg_ticket_target_remaining] %>
-      <% end %>
-
-      <% if @metrics[:conversion_rate_target].present? %>
-        <%= render 'sales_dashboard/goal_progress', chart_id: 'goal-gauge-conversion', metric: 'conversionRate',
-            label: 'Taxa de Conversão', format: :percent, warning: true, reference: @metrics[:conversion_rate_target],
-            current: @metrics[:conversion_rate] || 0, target: @metrics[:conversion_rate_target],
-            progress_pct: @metrics[:conversion_rate_target_progress_pct], remaining: @metrics[:conversion_rate_target_remaining] %>
       <% end %>
 
       <% if @metrics[:roas_target].present? %>
@@ -335,7 +321,6 @@ document.addEventListener("DOMContentLoaded", function () {
     days: <%= raw @goal_daily[:days].to_json %>,
     revenue: <%= raw @goal_daily[:revenue_by_day].to_json %>,
     avgTicket: <%= raw @goal_daily[:avg_ticket_by_day].to_json %>,
-    conversionRate: <%= raw @goal_daily[:conversion_rate_by_day].to_json %>,
     roas: <%= raw @goal_daily[:roas_by_day].to_json %>,
     cac: <%= raw @goal_daily[:cac_by_day].to_json %>,
     taggedRevenue: <%= raw @goal_daily[:tagged_revenue_by_day].to_json %>,
@@ -403,7 +388,6 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   function fmtCurrency(v) { return 'R$ ' + (v || 0).toFixed(2).replace('.', ','); }
-  function fmtPercent(v) { return v === null || v === undefined ? '—' : v.toFixed(1) + '%'; }
   function fmtMultiplier(v) { return v === null || v === undefined ? '—' : v.toFixed(2) + 'x'; }
 
   function dayMetricCard(label, value, opts) {
@@ -433,7 +417,6 @@ document.addEventListener("DOMContentLoaded", function () {
       day + ' de ' + monthNames[dayModalMonth - 1] + ' de ' + dayModalYear;
 
     var avgTicket = goalDaily.avgTicket[idx];
-    var conversion = goalDaily.conversionRate[idx];
     var roas = goalDaily.roas[idx];
     var cac = goalDaily.cac[idx];
 
@@ -442,8 +425,7 @@ document.addEventListener("DOMContentLoaded", function () {
       dayMetricCard('Pedidos', goalDaily.ordersCount[idx], { clickable: true }),
       dayMetricCard('Ticket Médio', avgTicket === null ? '—' : fmtCurrency(avgTicket)),
       dayMetricCard('Acessos', goalDaily.sessions[idx], { warning: true }),
-      dayMetricCard('Checkouts Completos', goalDaily.checkoutCompleted[idx], { warning: true }),
-      dayMetricCard('Taxa de Conversão', fmtPercent(conversion), { warning: true })
+      dayMetricCard('Checkouts Completos', goalDaily.checkoutCompleted[idx], { warning: true })
     ];
 
     if (roas !== null && roas !== undefined) cards.push(dayMetricCard('ROAS', fmtMultiplier(roas)));
