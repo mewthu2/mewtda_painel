@@ -5,6 +5,7 @@ class Client < ApplicationRecord
   has_many :refunds, dependent: :destroy
   has_many :goals, dependent: :destroy
   has_many :abandoned_checkouts, dependent: :destroy
+  has_one :popup, dependent: :destroy
 
   encrypts :meta_access_token, :google_ads_refresh_token, :shopify_api_secret
 
