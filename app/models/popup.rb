@@ -6,6 +6,11 @@ class Popup < ApplicationRecord
   TEMPLATES = %w[template_1 template_2 template_3 template_4].freeze
   SIZES = %w[small medium large].freeze
 
+  # Host fixo usado no snippet do script (app/views/popups/edit.html.erb) —
+  # o widget deve sempre apontar para o domínio público real, mesmo quando o
+  # snippet é gerado a partir do painel rodando em localhost ou staging.
+  WIDGET_HOST = 'https://www.mewtda.com.br'.freeze
+
   before_create :generate_public_token
 
   validates :template, inclusion: { in: TEMPLATES }

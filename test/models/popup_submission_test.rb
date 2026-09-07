@@ -32,4 +32,36 @@ class PopupSubmissionTest < ActiveSupport::TestCase
 
     assert_includes popup.popup_submissions, submission
   end
+
+  test 'is not integrated without a shopify_customer_id' do
+    submission = PopupSubmission.new(popup: build_popup, name: 'Ana', email: 'ana@example.com', status: 'shopify_error')
+
+    assert_not submission.integrated?
+    assert_nil submission.shopify_admin_customer_url
+  end
+
+  test 'builds the Shopify admin customer URL from the GID and the client shop handle' do
+    client = Client.create!(
+      name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com",
+      shopify_shop_url: 'loja-teste.myshopify.com'
+    )
+    popup = Popup.create!(client: client)
+    submission = PopupSubmission.create!(
+      popup: popup, name: 'Ana', email: 'ana@example.com', status: 'success',
+      shopify_customer_id: 'gid://shopify/Customer/123456'
+    )
+
+    assert submission.integrated?
+    assert_equal 'https://admin.shopify.com/store/loja-teste/customers/123456', submission.shopify_admin_customer_url
+  end
+
+  test 'has no admin URL when integrated but the client has no shop configured' do
+    submission = PopupSubmission.create!(
+      popup: build_popup, name: 'Ana', email: 'ana@example.com', status: 'success',
+      shopify_customer_id: 'gid://shopify/Customer/123456'
+    )
+
+    assert submission.integrated?
+    assert_nil submission.shopify_admin_customer_url
+  end
 end

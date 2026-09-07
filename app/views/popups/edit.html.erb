@@ -1,7 +1,7 @@
 <% title 'Pop-up de Cadastro' %>
 
-<div class="users-form-page">
-  <div class="crm-card users-form-page__card">
+<div class="users-form-page popups-layout">
+  <div class="crm-card users-form-page__card popups-layout__form">
 
     <div class="users-form-page__header">
       <div class="users-form-page__header-icon">
@@ -122,7 +122,7 @@
               </svg>
               Snippet para o site do cliente
             </div>
-            <pre class="popups-script-box"><code>&lt;script src=&quot;<%= request.base_url %>/widget/popup.js&quot; data-token=&quot;<%= @popup.public_token %>&quot; async&gt;&lt;/script&gt;</code></pre>
+            <pre class="popups-script-box"><code>&lt;script src=&quot;<%= Popup::WIDGET_HOST %>/widget/popup.js&quot; data-token=&quot;<%= @popup.public_token %>&quot; async&gt;&lt;/script&gt;</code></pre>
           </div>
         <% else %>
           <span class="cpform-field__hint">Salve o pop-up pra gerar o snippet de instalação.</span>
@@ -140,4 +140,96 @@
     <% end %>
 
   </div>
+
+  <div class="crm-card popups-preview">
+    <div class="popups-preview__header">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      Preview
+    </div>
+    <div class="popups-preview__stage">
+      <div class="mewtda-popup-preview" id="popup-preview">
+        <button type="button" class="mewtda-popup-preview__close" aria-label="Fechar">&times;</button>
+        <div class="mewtda-popup-preview__image" id="popup-preview-image-wrap" <%= 'hidden' unless @popup.image.attached? %>>
+          <img id="popup-preview-image" alt="" <% if @popup.image.attached? %>src="<%= url_for(@popup.image) %>"<% end %>>
+        </div>
+        <div class="mewtda-popup-preview__content">
+          <h2 class="mewtda-popup-preview__title" id="popup-preview-title"><%= @popup.title.presence || 'Título do pop-up' %></h2>
+          <p class="mewtda-popup-preview__description" id="popup-preview-description" <%= 'hidden' if @popup.description.blank? %>><%= @popup.description %></p>
+          <div class="mewtda-popup-preview__form">
+            <div class="mewtda-popup-preview__input">Seu nome</div>
+            <div class="mewtda-popup-preview__input">Seu e-mail</div>
+            <div class="mewtda-popup-preview__input">Seu telefone</div>
+            <button type="button" class="mewtda-popup-preview__submit" id="popup-preview-button" disabled><%= @popup.button_text.presence || 'Cadastrar' %></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  (function () {
+    var stage = document.getElementById('popup-preview');
+    if (!stage) return;
+
+    var hasImage = <%= @popup.image.attached? ? 'true' : 'false' %>;
+
+    function byId(id) { return document.getElementById(id); }
+
+    function updateText() {
+      var titleEl = byId('popup_title');
+      var descEl = byId('popup_description');
+      var buttonEl = byId('popup_button_text');
+
+      byId('popup-preview-title').textContent = (titleEl.value || 'Título do pop-up');
+      byId('popup-preview-description').textContent = descEl.value;
+      byId('popup-preview-description').hidden = !descEl.value;
+      byId('popup-preview-button').textContent = (buttonEl.value || 'Cadastrar');
+    }
+
+    function updateColor() {
+      var colorEl = byId('popup_accent_color');
+      stage.style.setProperty('--mewtda-preview-accent', colorEl.value || '#7c3aed');
+    }
+
+    function refreshImageVisibility() {
+      var template = byId('popup_template').value;
+      byId('popup-preview-image-wrap').hidden = !hasImage || template === 'template_4';
+    }
+
+    function updateTemplateAndSize() {
+      var template = byId('popup_template').value;
+      var size = byId('popup_size').value;
+      stage.className = 'mewtda-popup-preview mewtda-popup-preview--' + template + ' mewtda-popup-preview--' + size;
+      refreshImageVisibility();
+    }
+
+    function updateImage() {
+      var fileInput = byId('popup_image');
+      var file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        byId('popup-preview-image').src = e.target.result;
+        hasImage = true;
+        refreshImageVisibility();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    ['popup_title', 'popup_description', 'popup_button_text'].forEach(function (id) {
+      byId(id).addEventListener('input', updateText);
+    });
+    byId('popup_accent_color').addEventListener('input', updateColor);
+    byId('popup_template').addEventListener('change', updateTemplateAndSize);
+    byId('popup_size').addEventListener('change', updateTemplateAndSize);
+    byId('popup_image').addEventListener('change', updateImage);
+
+    updateColor();
+    updateTemplateAndSize();
+  })();
+</script>

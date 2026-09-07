@@ -8,7 +8,7 @@ class ShopifyAuthController < ApplicationController
   before_action :authorize_client_owner!, only: [:auth]
 
   STATE_EXPIRY = 15.minutes
-  SCOPE = 'read_orders,write_orders,read_products,read_checkouts'.freeze
+  SCOPE = 'read_orders,write_orders,read_products,read_checkouts,write_customers'.freeze
 
   def auth
     shop = params[:shop]

@@ -45,6 +45,7 @@
           <th>E-mail</th>
           <th>Telefone</th>
           <th>Status</th>
+          <th>Shopify</th>
           <th>Data</th>
         </tr>
       </thead>
@@ -61,12 +62,21 @@
                 <span class="crm-tag crm-tag--warning">Erro Shopify</span>
               <% end %>
             </td>
+            <td>
+              <% if submission.integrated? %>
+                <%= link_to submission.shopify_admin_customer_url, target: '_blank', rel: 'noopener', class: 'crm-tag crm-tag--success' do %>
+                  Ver cliente ↗
+                <% end %>
+              <% else %>
+                <span class="crm-tag crm-tag--neutral">Não integrado</span>
+              <% end %>
+            </td>
             <td><%= submission.created_at.strftime('%d/%m/%Y %H:%M') %></td>
           </tr>
         <% end %>
         <% if @popup_submissions.empty? %>
           <tr>
-            <td colspan="5" class="clients-table__empty">Nenhum cadastro encontrado.</td>
+            <td colspan="6" class="clients-table__empty">Nenhum cadastro encontrado.</td>
           </tr>
         <% end %>
       </tbody>

@@ -21,7 +21,7 @@ class PopupsController < ApplicationController
     @status_filter = params[:status].presence
     @popup_submissions =
       if @popup.persisted?
-        scope = @popup.popup_submissions.order(created_at: :desc)
+        scope = @popup.popup_submissions.includes(popup: :client).order(created_at: :desc)
         @status_filter.present? ? scope.where(status: @status_filter) : scope
       else
         PopupSubmission.none

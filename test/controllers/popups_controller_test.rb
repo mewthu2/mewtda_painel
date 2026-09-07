@@ -12,8 +12,8 @@ class PopupsControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
-  def build_client
-    Client.create!(name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com")
+  def build_client(attrs = {})
+    Client.create!({ name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com" }.merge(attrs))
   end
 
   test 'the Marketing sidebar menu shows an active Pop Up link instead of the Campanhas placeholder' do
@@ -117,6 +117,24 @@ class PopupsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match 'Beto', response.body
     assert_no_match 'Ana', response.body
+  end
+
+  test 'submissions shows a Shopify link for integrated entries and a badge for the rest' do
+    client = build_client(shopify_shop_url: 'loja-teste.myshopify.com')
+    popup = Popup.create!(client: client)
+    popup.popup_submissions.create!(
+      name: 'Ana', email: 'ana@example.com', status: 'success',
+      shopify_customer_id: 'gid://shopify/Customer/123456'
+    )
+    popup.popup_submissions.create!(name: 'Beto', email: 'beto@example.com', status: 'shopify_error')
+    user = build_user(client: client)
+    sign_in user
+
+    get submissions_popup_path
+
+    assert_response :success
+    assert_match 'https://admin.shopify.com/store/loja-teste/customers/123456', response.body
+    assert_match 'Não integrado', response.body
   end
 
   test 'submissions shows an empty state when the client has no popup yet' do
