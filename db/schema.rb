@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_06_233408) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_06_233420) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -319,6 +319,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_06_233408) do
     t.index ["shopify_order_number"], name: "index_orders_on_shopify_order_number"
   end
 
+  create_table "popup_submissions", force: :cascade do |t|
+    t.bigint "popup_id", null: false
+    t.string "name", null: false
+    t.string "email", null: false
+    t.string "phone"
+    t.string "shopify_customer_id"
+    t.string "status", default: "success", null: false
+    t.datetime "created_at", null: false
+    t.index ["popup_id", "status"], name: "index_popup_submissions_on_popup_id_and_status"
+    t.index ["popup_id"], name: "index_popup_submissions_on_popup_id"
+  end
+
   create_table "popups", force: :cascade do |t|
     t.bigint "client_id", null: false
     t.boolean "active", default: false, null: false
@@ -465,6 +477,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_06_233408) do
   add_foreign_key "orders", "clients"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "locations"
+  add_foreign_key "popup_submissions", "popups"
   add_foreign_key "popups", "clients"
   add_foreign_key "products", "clients"
   add_foreign_key "refunds", "clients"

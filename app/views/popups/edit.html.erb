@@ -1,0 +1,143 @@
+<% title 'Pop-up de Cadastro' %>
+
+<div class="users-form-page">
+  <div class="crm-card users-form-page__card">
+
+    <div class="users-form-page__header">
+      <div class="users-form-page__header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="users-form-page__title">Pop-up de Cadastro</h2>
+        <p class="users-form-page__subtitle"><%= @client.name %></p>
+      </div>
+    </div>
+
+    <%= render 'tabs' %>
+
+    <% if @popup.errors.any? %>
+      <div class="users-form-page__errors">
+        <div class="users-form-page__errors-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <div>
+          <strong>Corrija os erros abaixo:</strong>
+          <ul>
+            <% @popup.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+
+    <%= form_for @popup, as: :popup, url: popup_path, method: :patch,
+                 html: { autocomplete: 'off', multipart: true } do |form| %>
+      <div class="users-form-page__body">
+
+        <div class="users-form-page__field">
+          <label class="crm-label">Ativo</label>
+          <div class="cform-toggle">
+            <%= form.check_box :active, class: 'cform-toggle__input' %>
+            <span class="cform-toggle__label">Pop-up ativo no site do cliente</span>
+          </div>
+        </div>
+
+        <div class="users-form-page__field">
+          <%= form.label :title, 'Título', class: 'crm-label' %>
+          <%= form.text_field :title, class: 'crm-input', placeholder: 'Ex.: Ganhe 10% de desconto!' %>
+        </div>
+
+        <div class="users-form-page__field">
+          <%= form.label :description, 'Descrição', class: 'crm-label' %>
+          <%= form.text_area :description, class: 'crm-input', rows: 3, placeholder: 'Texto de apoio abaixo do título' %>
+        </div>
+
+        <div class="users-form-page__row">
+          <div class="users-form-page__field">
+            <%= form.label :coupon_code, 'Código do cupom', class: 'crm-label' %>
+            <%= form.text_field :coupon_code, class: 'crm-input', placeholder: 'Ex.: BEMVINDO10' %>
+            <span class="cpform-field__hint">Código já criado na Shopify — só é exibido após o envio.</span>
+          </div>
+          <div class="users-form-page__field">
+            <%= form.label :button_text, 'Texto do botão', class: 'crm-label' %>
+            <%= form.text_field :button_text, class: 'crm-input' %>
+          </div>
+        </div>
+
+        <div class="users-form-page__row">
+          <div class="users-form-page__field">
+            <%= form.label :template, 'Template', class: 'crm-label' %>
+            <%= form.select :template,
+                options_for_select([
+                  ['Centralizado', 'template_1'],
+                  ['Imagem à esquerda', 'template_2'],
+                  ['Imagem à direita', 'template_3'],
+                  ['Banner sem imagem', 'template_4']
+                ], form.object.template),
+                {}, class: 'crm-input' %>
+          </div>
+          <div class="users-form-page__field">
+            <%= form.label :size, 'Tamanho', class: 'crm-label' %>
+            <%= form.select :size,
+                options_for_select([['Pequeno', 'small'], ['Médio', 'medium'], ['Grande', 'large']], form.object.size),
+                {}, class: 'crm-input' %>
+          </div>
+        </div>
+
+        <div class="users-form-page__row">
+          <div class="users-form-page__field">
+            <%= form.label :accent_color, 'Cor de destaque', class: 'crm-label' %>
+            <%= form.color_field :accent_color, class: 'crm-input popups-color-input' %>
+          </div>
+          <div class="users-form-page__field">
+            <%= form.label :reappear_after_hours, 'Reexibir após (horas)', class: 'crm-label' %>
+            <%= form.number_field :reappear_after_hours, class: 'crm-input', min: 1 %>
+          </div>
+        </div>
+
+        <div class="users-form-page__field">
+          <%= form.label :image, 'Imagem (opcional, ignorada no template Banner)', class: 'crm-label' %>
+          <% if @popup.image.attached? %>
+            <div class="popups-image-preview">
+              <%= image_tag url_for(@popup.image), class: 'popups-image-preview__img' %>
+              <label class="cform-toggle">
+                <%= check_box_tag 'popup[remove_image]', '1', false, class: 'cform-toggle__input' %>
+                <span class="cform-toggle__label">Remover imagem atual</span>
+              </label>
+            </div>
+          <% end %>
+          <%= form.file_field :image, class: 'crm-input' %>
+        </div>
+
+        <% if @popup.persisted? %>
+          <div class="users-form-page__section">
+            <div class="users-form-page__section-header">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+              </svg>
+              Snippet para o site do cliente
+            </div>
+            <pre class="popups-script-box"><code>&lt;script src=&quot;<%= request.base_url %>/widget/popup.js&quot; data-token=&quot;<%= @popup.public_token %>&quot; async&gt;&lt;/script&gt;</code></pre>
+          </div>
+        <% else %>
+          <span class="cpform-field__hint">Salve o pop-up pra gerar o snippet de instalação.</span>
+        <% end %>
+      </div>
+
+      <div class="users-form-page__footer">
+        <%= form.button class: 'crm-btn crm-btn--primary', data: { disable_with: 'Salvando...' } do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Salvar Pop-up
+        <% end %>
+      </div>
+    <% end %>
+
+  </div>
+</div>

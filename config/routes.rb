@@ -7,6 +7,11 @@ Rails.application.routes.draw do
     match 'shopify/events', to: 'shopify_events#create', via: [:post, :options]
   end
 
+  namespace :widget do
+    get  'popup/config',      to: 'popup#show_config'
+    post 'popup/submissions', to: 'popup#create_submission'
+  end
+
   scope '/crm' do
     devise_for :user, skip: [:registrations]
 
@@ -73,6 +78,8 @@ Rails.application.routes.draw do
 
     resources :ad_costs, except: [:show]
     resource :goal, only: %i[edit update]
+    resource :popup, only: %i[edit update]
+    get 'popup/cadastros', to: 'popups#submissions', as: :submissions_popup
 
     resource :settings, path: 'configuracoes', controller: 'settings', only: [:edit, :update]
     resource :account, path: 'minha-conta', controller: 'account', only: [:edit, :update]

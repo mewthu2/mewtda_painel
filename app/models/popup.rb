@@ -1,6 +1,7 @@
 class Popup < ApplicationRecord
   belongs_to :client
   has_one_attached :image
+  has_many :popup_submissions, dependent: :destroy
 
   TEMPLATES = %w[template_1 template_2 template_3 template_4].freeze
   SIZES = %w[small medium large].freeze
