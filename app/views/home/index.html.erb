@@ -31,9 +31,11 @@
             alt: 'Mewtda',
             style: 'display:block !important; height:42px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important;' %>
       <div class="mwtda-lp-nav__links">
-        <% landing_products.each do |product| %>
-          <a href="#<%= product[:anchor] %>" class="mwtda-lp-nav__product"><%= render 'home/product_logo', product: product, size: 'sm' %></a>
-        <% end %>
+        <a href="#crm"><%= t('home.nav.crm') %></a>
+        <a href="#trocas"><%= t('home.nav.trocas') %></a>
+        <a href="#sites"><%= t('home.nav.sites') %></a>
+        <a href="#apps"><%= t('home.nav.apps') %></a>
+        <a href="#clientes"><%= t('home.nav.clientes') %></a>
         <a href="#contato"><%= t('home.nav.contato') %></a>
       </div>
       <%= render 'home/language_switcher', wrapper_class: 'mwtda-lp-nav__lang' %>
@@ -57,9 +59,11 @@
       <i class="fa-solid fa-xmark"></i>
     </button>
     <nav class="mwtda-lp-mobile-menu__links">
-      <% landing_products.each do |product| %>
-        <a href="#<%= product[:anchor] %>" data-mobile-menu-link><%= render 'home/product_logo', product: product, size: 'lg' %></a>
-      <% end %>
+      <a href="#crm" data-mobile-menu-link><%= t('home.nav.crm') %></a>
+      <a href="#trocas" data-mobile-menu-link><%= t('home.nav.trocas') %></a>
+      <a href="#sites" data-mobile-menu-link><%= t('home.nav.sites') %></a>
+      <a href="#apps" data-mobile-menu-link><%= t('home.nav.apps') %></a>
+      <a href="#clientes" data-mobile-menu-link><%= t('home.nav.clientes') %></a>
       <a href="#contato" data-mobile-menu-link><%= t('home.nav.contato') %></a>
     </nav>
     <%= render 'home/language_switcher', wrapper_class: 'mwtda-lp-mobile-menu__lang' %>

@@ -321,7 +321,7 @@
   .mwtda-lp-nav__links {
     display: flex;
     align-items: center;
-    gap: 1.6rem;
+    gap: 2rem;
     font-size: 0.9rem;
     color: var(--mw-fg-muted);
     margin: 0 auto;
@@ -434,7 +434,7 @@
     border: 1px solid var(--mw-border-strong);
   }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 860px) {
     .mwtda-lp-nav__links,
     .mwtda-lp-nav__cta,
     .mwtda-lp-nav__lang {
@@ -515,7 +515,7 @@
     position: relative;
   }
 
-  @media (min-width: 1101px) {
+  @media (min-width: 861px) {
     .mwtda-lp-mobile-menu {
       display: none;
     }
@@ -2292,9 +2292,6 @@
     font-size: inherit;
   }
 
-  .mwtda-lp-plogo--sm { font-size: 0.92rem; }
-  .mwtda-lp-plogo--lg { font-size: 1.6rem; }
-
   .mwtda-lp-plogo__word {
     font-family: var(--mw-font-heading);
     font-weight: 700;
@@ -2331,16 +2328,6 @@
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--plogo);
-  }
-
-  /* links de produto no cabeçalho */
-  .mwtda-lp-nav__product {
-    display: inline-flex;
-    padding: 0.35rem 0;
-  }
-
-  .mwtda-lp-nav__links a.mwtda-lp-nav__product::after {
-    background: currentColor;
   }
 
   /* visão geral: 4 cartões, um por produto */

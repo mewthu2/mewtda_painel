@@ -2,6 +2,7 @@ en:
   home:
     nav:
       crm: "CRM"
+      trocas: "Exchanges"
       sites: "Websites"
       apps: "Apps"
       clientes: "Clients"
@@ -272,6 +273,7 @@ es:
   home:
     nav:
       crm: "CRM"
+      trocas: "Cambios"
       sites: "Sitios"
       apps: "Apps"
       clientes: "Clientes"
@@ -542,6 +544,7 @@ pt-BR:
   home:
     nav:
       crm: "CRM"
+      trocas: "Trocas"
       sites: "Sites"
       apps: "Apps"
       clientes: "Clientes"
