@@ -663,6 +663,22 @@
       var zapLabel = zap && zap.querySelector('[data-zap-label]')
       var zapTimer = null
 
+      // ruído do chiado: bitmap pequeno gerado uma vez aqui (barato de
+      // compor) em vez de filtro SVG rasterizado na hora do clique
+      if (zap && !prefersReducedMotion) {
+        try {
+          var noise = document.createElement('canvas')
+          noise.width = noise.height = 160
+          var nctx = noise.getContext('2d')
+          var img = nctx.createImageData(160, 160)
+          for (var p = 0; p < img.data.length; p += 4) {
+            img.data[p + 3] = Math.random() * 150 // preto com alfa aleatório
+          }
+          nctx.putImageData(img, 0, 0)
+          zap.style.setProperty('--mw-zap-noise', 'url(' + noise.toDataURL() + ')')
+        } catch (e) {}
+      }
+
       function zapTo(index) {
         if (!zap) return
         zapCh.textContent = channels[index].ch
