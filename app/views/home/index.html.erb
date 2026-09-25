@@ -22,9 +22,12 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
 <% end %>
 
-<div class="mwtda-lp">
+<%# controle remoto + efeito de canal ficam fora do container que rola
+    (.mwtda-lp): position:fixed dentro de um elemento com overflow:auto
+    erra o toque no iOS enquanto a página ainda está rolando %>
+<%= render 'home/remote' %>
 
-  <%= render 'home/remote' %>
+<div class="mwtda-lp">
 
   <section class="mwtda-lp-hero" id="inicio">
     <div class="mwtda-lp-hero__inner">
@@ -485,6 +488,10 @@
     if (root.parentElement !== document.body) {
       document.body.appendChild(root)
     }
+    // controle remoto e efeito de canal: mesmo motivo (position:fixed)
+    document.querySelectorAll('[data-remote], [data-remote-zap]').forEach(function (el) {
+      if (el.parentElement !== document.body) document.body.appendChild(el)
+    })
 
     var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -603,14 +610,26 @@
       var ir = remote.querySelector('[data-remote-ir]')
       var channelLinks = remote.querySelectorAll('[data-remote-channel]')
       var currentChannel = -1
+      var lockedChannel = null
+      var lockTimer = null
 
-      function pad(n) { return (n < 10 ? '0' : '') + n }
+      // encolhe o texto até caber na largura (nomes mais longos em
+      // EN/ES, ex: "Soluciones"), sem quebrar o layout do controle
+      function fitText(el) {
+        el.style.fontSize = ''
+        if (el.scrollWidth <= el.clientWidth) return
+        var size = parseFloat(getComputedStyle(el).fontSize)
+        el.style.fontSize = (size * el.clientWidth / el.scrollWidth * 0.97) + 'px'
+      }
+
+      remote.querySelectorAll('.mwtda-lp-remote__key small').forEach(fitText)
 
       function showChannel(index) {
         if (index === currentChannel) return
         currentChannel = index
-        chEl.textContent = 'CH ' + pad(index + 1)
+        chEl.textContent = channels[index].ch
         labelEl.textContent = channels[index].label
+        fitText(labelEl)
         channelLinks.forEach(function (link) {
           var active = link.getAttribute('data-remote-channel') === channels[index].id
           if (active) link.setAttribute('aria-current', 'true')
@@ -629,6 +648,11 @@
 
       function setOpen(open) {
         remote.classList.toggle('is-open', open)
+        // no mobile o controle aberto é maior: recalcula o encaixe do visor
+        if (open) {
+          fitText(labelEl)
+          remote.querySelectorAll('.mwtda-lp-remote__key small').forEach(fitText)
+        }
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
       }
 
@@ -641,7 +665,7 @@
 
       function zapTo(index) {
         if (!zap) return
-        zapCh.textContent = 'CH ' + pad(index + 1)
+        zapCh.textContent = channels[index].ch
         zapLabel.textContent = channels[index].label
         zap.classList.remove('is-zapping')
         void zap.offsetWidth
@@ -656,6 +680,9 @@
         blink()
         zapTo(index)
         showChannel(index)
+        lockedChannel = index
+        clearTimeout(lockTimer)
+        lockTimer = setTimeout(function () { lockedChannel = null }, 1200)
         target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' })
         setOpen(false)
       }
@@ -694,7 +721,7 @@
       // visor acompanha a seção que cruza o meio da tela
       var sectionObserver = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return
+          if (!entry.isIntersecting || lockedChannel !== null) return
           var index = channels.findIndex(function (c) { return c.id === entry.target.id })
           if (index >= 0) showChannel(index)
         })
@@ -704,6 +731,9 @@
         var section = document.getElementById(c.id)
         if (section) sectionObserver.observe(section)
       })
+
+      // rolagem terminou: o visor volta a acompanhar a página
+      root.addEventListener('scrollend', function () { lockedChannel = null })
     }
   })
 </script>

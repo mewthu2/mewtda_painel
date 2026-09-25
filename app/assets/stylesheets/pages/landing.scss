@@ -7,8 +7,12 @@
 
   /* -----------------------------------------------------------------
      1. TOKENS
+     (também no controle remoto e no efeito de troca de canal, que ficam
+     fora de .mwtda-lp — ver seções 16 e 17)
      ----------------------------------------------------------------- */
-  .mwtda-lp {
+  .mwtda-lp,
+  .mwtda-lp-remote,
+  .mwtda-lp-zap {
     /* neutros (tema claro, no estilo da kobe.io: fundo branco, texto preto) */
     --mw-bg: #ffffff;
     --mw-bg-elevated: #ffffff;
@@ -39,7 +43,9 @@
     /* estado de scroll, controlado via JS (scroll_effects.js) */
     --mw-scroll-y: 0px;
     --mw-progress: 0;
+  }
 
+  .mwtda-lp {
     /*
       Isolamento de layout: se essa página for renderizada dentro do
       layout padrão da aplicação (ex: shell com sidebar em display:flex),
@@ -2366,9 +2372,26 @@
     position: fixed;
     left: 20px;
     bottom: 24px;
-    z-index: 60;
+    z-index: 10001;
     font-size: 14px;
     font-family: var(--mw-font-heading);
+    color: #f2f3f6;
+  }
+
+  .mwtda-lp-remote,
+  .mwtda-lp-remote * {
+    box-sizing: border-box;
+  }
+
+  // toque no celular: sem espera de duplo toque (zoom) e sem o flash cinza
+  .mwtda-lp-remote a,
+  .mwtda-lp-remote button {
+    color: inherit;
+    text-decoration: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   // layouts/global.scss aplica `* { font-size: 13px }` — aqui dentro tudo
@@ -2465,7 +2488,7 @@
     100% { opacity: 0;   transform: translate(-50%, 0) scale(2.4); }
   }
 
-  .mwtda-lp .mwtda-lp-remote__power {
+  .mwtda-lp-remote .mwtda-lp-remote__power {
     position: relative;
     display: flex;
     align-items: center;
@@ -2480,11 +2503,11 @@
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
 
-  .mwtda-lp .mwtda-lp-remote__power:hover {
+  .mwtda-lp-remote .mwtda-lp-remote__power:hover {
     box-shadow: 0 3px 0 #7a1504, 0 0 16px 2px rgba(255, 90, 60, 0.6);
   }
 
-  .mwtda-lp .mwtda-lp-remote__power:active {
+  .mwtda-lp-remote .mwtda-lp-remote__power:active {
     transform: translateY(3px);
     box-shadow: 0 0 0 #7a1504, 0 2px 6px -2px rgba(214, 38, 10, 0.7);
   }
@@ -2586,8 +2609,10 @@
     width: 100%;
   }
 
-  .mwtda-lp .mwtda-lp-remote__key {
+  .mwtda-lp-remote .mwtda-lp-remote__key {
     position: relative;
+    // sem isso a legenda mais longa (EN/ES) alarga a coluna do grid
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2600,8 +2625,8 @@
     transition: transform 0.1s ease, box-shadow 0.1s ease, color 0.2s ease;
   }
 
-  .mwtda-lp .mwtda-lp-remote__key:active,
-  .mwtda-lp .mwtda-lp-remote__mini:active {
+  .mwtda-lp-remote .mwtda-lp-remote__key:active,
+  .mwtda-lp-remote .mwtda-lp-remote__mini:active {
     transform: translateY(2px);
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
   }
@@ -2625,12 +2650,12 @@
     text-overflow: ellipsis;
   }
 
-  .mwtda-lp .mwtda-lp-remote__key[aria-current] b {
+  .mwtda-lp-remote .mwtda-lp-remote__key[aria-current] b {
     color: var(--mw-primary-light);
     text-shadow: 0 0 8px rgba(252, 113, 7, 0.7);
   }
 
-  .mwtda-lp .mwtda-lp-remote__key[aria-current]::after {
+  .mwtda-lp-remote .mwtda-lp-remote__key[aria-current]::after {
     content: '';
     position: absolute;
     top: 0.3em;
@@ -2649,7 +2674,7 @@
     width: 100%;
   }
 
-  .mwtda-lp .mwtda-lp-remote__mini {
+  .mwtda-lp-remote .mwtda-lp-remote__mini {
     position: relative;
     display: flex;
     align-items: center;
@@ -2664,8 +2689,8 @@
     transition: transform 0.1s ease, color 0.2s ease;
   }
 
-  .mwtda-lp .mwtda-lp-remote__mini:hover,
-  .mwtda-lp .mwtda-lp-remote__mini[aria-current] {
+  .mwtda-lp-remote .mwtda-lp-remote__mini:hover,
+  .mwtda-lp-remote .mwtda-lp-remote__mini[aria-current] {
     color: var(--mw-primary-light);
   }
 
@@ -2676,7 +2701,7 @@
     width: 100%;
   }
 
-  .mwtda-lp .mwtda-lp-remote__lang .mwtda-lp-lang__option {
+  .mwtda-lp-remote__lang .mwtda-lp-lang__option {
     flex: 1;
     padding: 0.3em 0;
     border-radius: 0.4em;
@@ -2688,7 +2713,7 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
-  .mwtda-lp .mwtda-lp-remote__lang .mwtda-lp-lang__option.is-active {
+  .mwtda-lp-remote__lang .mwtda-lp-lang__option.is-active {
     background: var(--mw-primary);
     color: #fff;
   }
@@ -2817,6 +2842,31 @@
         visibility 0s linear 0.35s;
     }
 
+    .mwtda-lp-remote .mwtda-lp-remote__rocker button {
+      height: 2.3em;
+    }
+
+    .mwtda-lp-remote .mwtda-lp-remote__mini {
+      width: 1.9em;
+      height: 1.9em;
+    }
+
+    // a largura do controle não comporta botões maiores lado a lado: cresce
+    // a altura do idioma e uma área de toque invisível nos redondos
+    .mwtda-lp-remote__lang .mwtda-lp-lang__option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      padding: 0;
+    }
+
+    .mwtda-lp-remote .mwtda-lp-remote__mini::after {
+      content: '';
+      position: absolute;
+      inset: -8px -2px;
+    }
+
     .mwtda-lp-remote.is-open .mwtda-lp-remote__body {
       opacity: 1;
       visibility: visible;
@@ -2843,7 +2893,7 @@
   .mwtda-lp-zap {
     position: fixed;
     inset: 0;
-    z-index: 55;
+    z-index: 10000;
     pointer-events: none;
     visibility: hidden;
   }

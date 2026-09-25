@@ -18,9 +18,18 @@
     { id: 'contato',  label: t('home.nav.contato') }
   ]
   extras = { 'inicio' => 'fa-solid fa-house', 'clientes' => 'fa-solid fa-users', 'contato' => 'fa-regular fa-comment' }
+
+  # o que o visor mostra em cima do nome: teclas numéricas = mesmo número
+  # (tecla 3 → CH 03), início = CH 00, o resto (sem tecla) = MENU
+  channel_code = lambda do |c|
+    if c[:key] then format('CH %02d', c[:key])
+    elsif c[:id] == 'inicio' then 'CH 00'
+    else 'MENU'
+    end
+  end
 %>
 <nav class="mwtda-lp-remote" data-remote aria-label="<%= t('home.nav.remote_label') %>"
-     data-remote-channels="<%= channels.map { |c| { id: c[:id], label: c[:label] } }.to_json %>">
+     data-remote-channels="<%= channels.map { |c| { id: c[:id], label: c[:label], ch: channel_code.(c) } }.to_json %>">
   <button type="button" class="mwtda-lp-remote__toggle" data-remote-toggle aria-expanded="false" aria-controls="mwtda-remote-body" aria-label="<%= t('home.nav.remote_open') %>">
     <span class="mwtda-lp-remote__toggle-led"></span>
     <span class="mwtda-lp-remote__toggle-grip"><i></i><i></i><i></i></span>
@@ -36,7 +45,7 @@
     </div>
 
     <div class="mwtda-lp-remote__screen" aria-live="polite">
-      <span class="mwtda-lp-remote__ch" data-remote-ch>CH 01</span>
+      <span class="mwtda-lp-remote__ch" data-remote-ch><%= channel_code.(channels.first) %></span>
       <strong class="mwtda-lp-remote__label" data-remote-label><%= channels.first[:label] %></strong>
     </div>
 
@@ -79,7 +88,7 @@
   <div class="mwtda-lp-zap__static"></div>
   <div class="mwtda-lp-zap__bar"></div>
   <div class="mwtda-lp-zap__osd">
-    <span data-zap-ch>CH 01</span>
+    <span data-zap-ch></span>
     <strong data-zap-label></strong>
   </div>
 </div>
