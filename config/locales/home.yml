@@ -3,6 +3,11 @@ en:
     nav:
       crm: "CRM"
       trocas: "Exchanges"
+      inicio: "Home"
+      remote_label: "Remote control: page menu"
+      remote_open: "Open remote control"
+      ch_up: "Previous channel"
+      ch_down: "Next channel"
       sites: "Websites"
       apps: "Apps"
       clientes: "Clients"
@@ -17,7 +22,7 @@ en:
       language_switcher_label: "Select language"
     hero:
       badge: "E-commerce solutions"
-      headline: "Technology to keep your online store organized as it grows"
+      headline: "You in control of your business"
       subheadline: "We build Shopify stores and create tools for the day-to-day operation: a CRM to manage customers and sales, and an exchange system integrated with Shopify."
       cta_contato: "Talk to us"
       cta_ver_solucoes: "Explore our solutions"
@@ -274,6 +279,11 @@ es:
     nav:
       crm: "CRM"
       trocas: "Cambios"
+      inicio: "Inicio"
+      remote_label: "Control remoto: menú de la página"
+      remote_open: "Abrir control remoto"
+      ch_up: "Canal anterior"
+      ch_down: "Canal siguiente"
       sites: "Sitios"
       apps: "Apps"
       clientes: "Clientes"
@@ -288,7 +298,7 @@ es:
       language_switcher_label: "Seleccionar idioma"
     hero:
       badge: "Soluciones para e-commerce"
-      headline: "Tecnología para que tu tienda online crezca con organización"
+      headline: "Tú en control de tu negocio"
       subheadline: "Creamos tiendas en Shopify y desarrollamos herramientas para la operación del día a día: un CRM para gestionar clientes y ventas, y un sistema de cambios integrado a Shopify."
       cta_contato: "Habla con nosotros"
       cta_ver_solucoes: "Conoce las soluciones"
@@ -545,6 +555,11 @@ pt-BR:
     nav:
       crm: "CRM"
       trocas: "Trocas"
+      inicio: "Início"
+      remote_label: "Controle remoto: menu da página"
+      remote_open: "Abrir controle remoto"
+      ch_up: "Canal anterior"
+      ch_down: "Próximo canal"
       sites: "Sites"
       apps: "Apps"
       clientes: "Clientes"
@@ -559,7 +574,7 @@ pt-BR:
       language_switcher_label: "Selecionar idioma"
     hero:
       badge: "Soluções para e-commerce"
-      headline: "Tecnologia para sua loja virtual crescer com organização"
+      headline: "Você no controle do seu negócio"
       subheadline: "Criamos lojas na Shopify e desenvolvemos ferramentas para a operação do dia a dia: um CRM para gestão de clientes e vendas e um sistema de trocas integrado à Shopify."
       cta_contato: "Fale com a gente"
       cta_ver_solucoes: "Conheça as soluções"

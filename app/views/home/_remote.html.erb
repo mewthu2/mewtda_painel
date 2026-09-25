@@ -1,0 +1,85 @@
+<%#
+  Controle remoto fixo no canto inferior esquerdo — substitui o cabeçalho.
+  Cada tecla é um "canal" (seção da página): clicar rola até ela, CH ▲/▼
+  pula pro canal anterior/seguinte e o visor mostra o canal atual conforme
+  a pessoa rola. Em telas estreitas ele fica recolhido num mini controle e
+  abre ao tocar. O JS fica no fim de home/index.html.erb (bloco 6).
+%>
+<%
+  # ordem = ordem das seções na página (é o que o CH ▲/▼ percorre)
+  channels = [
+    { id: 'inicio',   label: t('home.nav.inicio') },
+    { id: 'produtos', label: t('home.nav.produtos') },
+    { id: 'clientes', label: t('home.nav.clientes') },
+    { id: 'crm',      label: t('home.nav.crm'),    key: 1 },
+    { id: 'trocas',   label: t('home.nav.trocas'), key: 2 },
+    { id: 'sites',    label: t('home.nav.sites'),  key: 3 },
+    { id: 'apps',     label: t('home.nav.apps'),   key: 4 },
+    { id: 'contato',  label: t('home.nav.contato') }
+  ]
+  extras = { 'inicio' => 'fa-solid fa-house', 'clientes' => 'fa-solid fa-users', 'contato' => 'fa-regular fa-comment' }
+%>
+<nav class="mwtda-lp-remote" data-remote aria-label="<%= t('home.nav.remote_label') %>"
+     data-remote-channels="<%= channels.map { |c| { id: c[:id], label: c[:label] } }.to_json %>">
+  <button type="button" class="mwtda-lp-remote__toggle" data-remote-toggle aria-expanded="false" aria-controls="mwtda-remote-body" aria-label="<%= t('home.nav.remote_open') %>">
+    <span class="mwtda-lp-remote__toggle-led"></span>
+    <span class="mwtda-lp-remote__toggle-grip"><i></i><i></i><i></i></span>
+    <span class="mwtda-lp-remote__toggle-label">Menu</span>
+  </button>
+
+  <div class="mwtda-lp-remote__body" id="mwtda-remote-body">
+    <div class="mwtda-lp-remote__top">
+      <span class="mwtda-lp-remote__ir" data-remote-ir aria-hidden="true"></span>
+      <%= link_to new_user_session_path, class: 'mwtda-lp-remote__power', data: { tip: t('home.nav.entrar') }, aria: { label: t('home.nav.entrar') } do %>
+        <i class="fa-solid fa-power-off"></i>
+      <% end %>
+    </div>
+
+    <div class="mwtda-lp-remote__screen" aria-live="polite">
+      <span class="mwtda-lp-remote__ch" data-remote-ch>CH 01</span>
+      <strong class="mwtda-lp-remote__label" data-remote-label><%= channels.first[:label] %></strong>
+    </div>
+
+    <div class="mwtda-lp-remote__rocker">
+      <button type="button" data-remote-step="-1" aria-label="<%= t('home.nav.ch_up') %>" data-tip="CH ▲"><i class="fa-solid fa-chevron-up"></i></button>
+      <span aria-hidden="true">CH</span>
+      <button type="button" data-remote-step="1" aria-label="<%= t('home.nav.ch_down') %>" data-tip="CH ▼"><i class="fa-solid fa-chevron-down"></i></button>
+    </div>
+
+    <div class="mwtda-lp-remote__keys">
+      <% channels.select { |c| c[:key] }.each do |c| %>
+        <a href="#<%= c[:id] %>" class="mwtda-lp-remote__key" data-remote-channel="<%= c[:id] %>" data-tip="<%= c[:label] %>">
+          <b><%= c[:key] %></b>
+          <small><%= c[:label] %></small>
+        </a>
+      <% end %>
+    </div>
+
+    <div class="mwtda-lp-remote__extras">
+      <% extras.each do |id, icon| %>
+        <% label = channels.find { |c| c[:id] == id }[:label] %>
+        <a href="#<%= id %>" class="mwtda-lp-remote__mini" data-remote-channel="<%= id %>" data-tip="<%= label %>" aria-label="<%= label %>">
+          <i class="<%= icon %>"></i>
+        </a>
+      <% end %>
+    </div>
+
+    <%= render 'home/language_switcher', wrapper_class: 'mwtda-lp-remote__lang' %>
+
+    <div class="mwtda-lp-remote__brand" aria-hidden="true">
+      <span class="mwtda-lp-plogo__bars"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      mewtda
+    </div>
+  </div>
+</nav>
+
+<%# Efeito de "troca de canal" na tela inteira quando uma tecla do controle
+    é apertada: chiado de TV, faixa rolando e o letreiro do canal (OSD). %>
+<div class="mwtda-lp-zap" data-remote-zap aria-hidden="true">
+  <div class="mwtda-lp-zap__static"></div>
+  <div class="mwtda-lp-zap__bar"></div>
+  <div class="mwtda-lp-zap__osd">
+    <span data-zap-ch>CH 01</span>
+    <strong data-zap-label></strong>
+  </div>
+</div>

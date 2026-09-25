@@ -35,7 +35,6 @@
     --mw-radius: 18px;
     --mw-radius-lg: 28px;
     --mw-container: 1180px;
-    --mw-nav-h: 76px;
 
     /* estado de scroll, controlado via JS (scroll_effects.js) */
     --mw-scroll-y: 0px;
@@ -273,264 +272,11 @@
   }
 
   /* -----------------------------------------------------------------
-     4. NAV
-     ----------------------------------------------------------------- */
-  .mwtda-lp-nav {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    z-index: 50;
-    height: var(--mw-nav-h);
-    display: flex !important;
-    align-items: center;
-    background: transparent;
-    border-bottom: 1px solid transparent;
-    transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
-  }
-
-  .mwtda-lp-nav.is-scrolled {
-    background: rgba(255, 255, 255, 0.82);
-    border-color: var(--mw-border);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-  }
-
-  .mwtda-lp-nav__inner {
-    width: 100%;
-    max-width: var(--mw-container);
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between;
-    gap: 1.5rem;
-  }
-
-  .mwtda-lp-nav__logo {
-    display: block !important;
-    height: 42px !important;
-    width: auto !important;
-    max-width: none !important;
-    min-width: 0 !important;
-    object-fit: contain !important;
-    flex-shrink: 0 !important;
-  }
-
-  .mwtda-lp-nav__links {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    font-size: 0.9rem;
-    color: var(--mw-fg-muted);
-    margin: 0 auto;
-  }
-
-  .mwtda-lp-nav__links a {
-    position: relative;
-    transition: color 0.25s ease;
-  }
-
-  .mwtda-lp-nav__links a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -6px;
-    width: 0%;
-    height: 1px;
-    background: var(--mw-primary-light);
-    transition: width 0.3s ease;
-  }
-
-  .mwtda-lp-nav__links a:hover {
-    color: var(--mw-fg);
-  }
-
-  .mwtda-lp-nav__links a:hover::after {
-    width: 100%;
-  }
-
-  .mwtda-lp-nav__cta {
-    flex-shrink: 0;
-    padding: 0.55rem 1.25rem;
-    font-size: 0.85rem;
-  }
-
-  .mwtda-lp-nav__burger {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    background: transparent;
-    border: 1px solid var(--mw-border-strong);
-    border-radius: var(--mw-radius-sm);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .mwtda-lp-nav__burger span {
-    display: block;
-    width: 18px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--mw-fg);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-  }
-
-  .mwtda-lp-nav__burger[aria-expanded='true'] span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-  }
-
-  .mwtda-lp-nav__burger[aria-expanded='true'] span:nth-child(2) {
-    opacity: 0;
-  }
-
-  .mwtda-lp-nav__burger[aria-expanded='true'] span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
-  }
-
-  /* -----------------------------------------------------------------
-     4c. SELETOR DE IDIOMA (PT / EN / ES)
-     ----------------------------------------------------------------- */
-  .mwtda-lp-lang {
-    display: flex;
-    align-items: center;
-    gap: 0.15rem;
-    flex-shrink: 0;
-  }
-
-  .mwtda-lp-lang__option {
-    padding: 0.3rem 0.55rem;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    border-radius: var(--mw-radius-sm);
-    color: var(--mw-fg-muted);
-    transition: color 0.2s ease, background 0.2s ease;
-  }
-
-  .mwtda-lp-lang__option:hover {
-    color: var(--mw-fg);
-  }
-
-  .mwtda-lp-lang__option.is-active {
-    color: var(--mw-fg);
-    background: rgba(11, 12, 16, 0.06);
-  }
-
-  .mwtda-lp-mobile-menu__lang {
-    position: relative;
-    gap: 0.4rem;
-  }
-
-  .mwtda-lp-mobile-menu__lang .mwtda-lp-lang__option {
-    padding: 0.4rem 0.85rem;
-    font-size: 0.9rem;
-    border: 1px solid var(--mw-border-strong);
-  }
-
-  @media (max-width: 860px) {
-    .mwtda-lp-nav__links,
-    .mwtda-lp-nav__cta,
-    .mwtda-lp-nav__lang {
-      display: none;
-    }
-
-    .mwtda-lp-nav__burger {
-      display: flex;
-    }
-  }
-
-  /* -----------------------------------------------------------------
-     4b. MENU MOBILE (off-canvas com fundo animado em Three.js)
-     ----------------------------------------------------------------- */
-  .mwtda-lp-mobile-menu {
-    position: fixed;
-    inset: 0;
-    z-index: 90;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2.5rem;
-    background: var(--mw-bg);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-12px);
-    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;
-  }
-
-  .mwtda-lp-mobile-menu.is-open {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    transition: opacity 0.35s ease, transform 0.35s ease;
-  }
-
-  .mwtda-lp-mobile-menu__canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .mwtda-lp-mobile-menu__close {
-    position: absolute;
-    top: 1.25rem;
-    right: 1.25rem;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: 1px solid var(--mw-border-strong);
-    border-radius: 50%;
-    color: var(--mw-fg);
-    font-size: 1.1rem;
-    cursor: pointer;
-  }
-
-  .mwtda-lp-mobile-menu__links {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.75rem;
-  }
-
-  .mwtda-lp-mobile-menu__links a {
-    font-family: var(--mw-font-heading);
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: var(--mw-fg);
-  }
-
-  .mwtda-lp-mobile-menu__cta {
-    position: relative;
-  }
-
-  @media (min-width: 861px) {
-    .mwtda-lp-mobile-menu {
-      display: none;
-    }
-  }
-
-  .mwtda-lp.is-menu-open {
-    overflow: hidden !important;
-  }
-
-  /* -----------------------------------------------------------------
      5. HERO
      ----------------------------------------------------------------- */
   .mwtda-lp-hero {
     position: relative;
-    padding: calc(var(--mw-nav-h) + 7rem) 1.5rem 8rem;
+    padding: 6rem 1.5rem 8rem;
     overflow: hidden;
     isolation: isolate;
   }
@@ -2607,6 +2353,629 @@
     }
 
     .mwtda-lp-exchange__notification--approved {
+      display: none;
+    }
+  }
+
+  /* -----------------------------------------------------------------
+     16. CONTROLE REMOTO — menu fixo no canto inferior esquerdo (substitui
+     o cabeçalho). Tudo em `em`: o tamanho do controle inteiro sai do
+     font-size de .mwtda-lp-remote.
+     ----------------------------------------------------------------- */
+  .mwtda-lp-remote {
+    position: fixed;
+    left: 20px;
+    bottom: 24px;
+    z-index: 60;
+    font-size: 14px;
+    font-family: var(--mw-font-heading);
+  }
+
+  // layouts/global.scss aplica `* { font-size: 13px }` — aqui dentro tudo
+  // herda, e cada peça define o próprio tamanho em em
+  .mwtda-lp-remote * {
+    font-size: inherit;
+  }
+
+  .mwtda-lp-remote button {
+    appearance: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .mwtda-lp-remote__body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75em;
+    width: 5.6em;
+    padding: 0.9em 0.6em 1em;
+    border-radius: 2.8em 2.8em 2.2em 2.2em;
+    background: linear-gradient(170deg, #353945 0%, #16171c 55%, #0b0c10 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      inset 0 -3px 8px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(0, 0, 0, 0.5),
+      0 30px 50px -20px rgba(11, 12, 16, 0.55);
+    transform: rotate(-4deg);
+    transform-origin: 50% 50%;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mwtda-lp-remote__body:hover,
+  .mwtda-lp-remote__body:focus-within {
+    transform: rotate(0deg);
+  }
+
+  /* LED de infravermelho + "ondas" do sinal a cada comando */
+  .mwtda-lp-remote__top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55em;
+  }
+
+  .mwtda-lp-remote__ir {
+    position: relative;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: #4a1f08;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
+  }
+
+  .mwtda-lp-remote__ir::before,
+  .mwtda-lp-remote__ir::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 50%;
+    width: 1.4em;
+    height: 1.4em;
+    border: 2px solid var(--mw-primary);
+    border-color: var(--mw-primary) transparent transparent;
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, 50%) scale(0.4);
+    pointer-events: none;
+  }
+
+  .mwtda-lp-remote__ir.is-sending {
+    animation: mw-remote-led 0.5s ease;
+  }
+
+  .mwtda-lp-remote__ir.is-sending::before {
+    animation: mw-remote-wave 0.7s ease-out;
+  }
+
+  .mwtda-lp-remote__ir.is-sending::after {
+    animation: mw-remote-wave 0.7s ease-out 0.15s;
+  }
+
+  @keyframes mw-remote-led {
+    0%, 100% { background: #4a1f08; box-shadow: none; }
+    20%, 60% { background: #ff8a33; box-shadow: 0 0 10px 3px rgba(252, 113, 7, 0.8); }
+  }
+
+  @keyframes mw-remote-wave {
+    0%   { opacity: 0.9; transform: translate(-50%, 50%) scale(0.4); }
+    100% { opacity: 0;   transform: translate(-50%, 0) scale(2.4); }
+  }
+
+  .mwtda-lp .mwtda-lp-remote__power {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1em;
+    height: 2.1em;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff7a4d, #d6260a 70%);
+    color: #fff;
+    font-size: 0.95em;
+    box-shadow: 0 3px 0 #7a1504, 0 6px 14px -4px rgba(214, 38, 10, 0.7);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .mwtda-lp .mwtda-lp-remote__power:hover {
+    box-shadow: 0 3px 0 #7a1504, 0 0 16px 2px rgba(255, 90, 60, 0.6);
+  }
+
+  .mwtda-lp .mwtda-lp-remote__power:active {
+    transform: translateY(3px);
+    box-shadow: 0 0 0 #7a1504, 0 2px 6px -2px rgba(214, 38, 10, 0.7);
+  }
+
+  /* visor LCD com o canal atual */
+  .mwtda-lp-remote__screen {
+    position: relative;
+    width: 100%;
+    padding: 0.45em 0.4em;
+    border-radius: 0.6em;
+    background: linear-gradient(180deg, #0c2417, #07160e);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.8), 0 1px 0 rgba(255, 255, 255, 0.08);
+    color: #7dfca8;
+    text-align: center;
+    text-shadow: 0 0 6px rgba(125, 252, 168, 0.55);
+    overflow: hidden;
+  }
+
+  // linhas de varredura do LCD
+  .mwtda-lp-remote__screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px);
+    pointer-events: none;
+  }
+
+  .mwtda-lp-remote__screen.is-changing {
+    animation: mw-remote-flicker 0.35s steps(3);
+  }
+
+  @keyframes mw-remote-flicker {
+    0%   { opacity: 0.2; }
+    50%  { opacity: 1; }
+    75%  { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  .mwtda-lp-remote__ch {
+    display: block;
+    font-size: 0.55em;
+    letter-spacing: 0.12em;
+    opacity: 0.75;
+  }
+
+  .mwtda-lp-remote__label {
+    display: block;
+    font-size: 0.68em;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* CH ▲ / ▼ */
+  .mwtda-lp-remote__rocker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 2.5em;
+    padding: 0.2em 0;
+    border-radius: 1.3em;
+    background: linear-gradient(180deg, #2b2e37, #1a1c22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 0 #050507;
+  }
+
+  .mwtda-lp-remote__rocker button {
+    width: 100%;
+    height: 1.9em;
+    background: transparent;
+    color: #d6d9e0;
+    font-size: 0.8em;
+    border-radius: 1em;
+    transition: color 0.2s ease, background 0.2s ease;
+  }
+
+  .mwtda-lp-remote__rocker button:hover {
+    color: var(--mw-primary-light);
+  }
+
+  .mwtda-lp-remote__rocker button:active {
+    background: rgba(0, 0, 0, 0.35);
+  }
+
+  .mwtda-lp-remote__rocker span {
+    font-size: 0.55em;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #7b8190;
+  }
+
+  /* teclas numéricas = produtos */
+  .mwtda-lp-remote__keys {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35em;
+    width: 100%;
+  }
+
+  .mwtda-lp .mwtda-lp-remote__key {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 2.4em;
+    border-radius: 0.7em;
+    background: linear-gradient(180deg, #30333d, #1c1e24);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 2px 0 #050507;
+    color: #f2f3f6;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, color 0.2s ease;
+  }
+
+  .mwtda-lp .mwtda-lp-remote__key:active,
+  .mwtda-lp .mwtda-lp-remote__mini:active {
+    transform: translateY(2px);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+  }
+
+  .mwtda-lp-remote__key b {
+    font-size: 0.95em;
+    line-height: 1;
+  }
+
+  .mwtda-lp-remote__key small {
+    max-width: 100%;
+    margin-top: 0.2em;
+    padding: 0 0.2em;
+    font-size: 0.45em;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #8d93a1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mwtda-lp .mwtda-lp-remote__key[aria-current] b {
+    color: var(--mw-primary-light);
+    text-shadow: 0 0 8px rgba(252, 113, 7, 0.7);
+  }
+
+  .mwtda-lp .mwtda-lp-remote__key[aria-current]::after {
+    content: '';
+    position: absolute;
+    top: 0.3em;
+    right: 0.3em;
+    width: 0.25em;
+    height: 0.25em;
+    border-radius: 50%;
+    background: var(--mw-primary);
+    box-shadow: 0 0 6px var(--mw-primary);
+  }
+
+  /* início / clientes / contato */
+  .mwtda-lp-remote__extras {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .mwtda-lp .mwtda-lp-remote__mini {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #30333d, #1c1e24);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 2px 0 #050507;
+    color: #aeb3bf;
+    font-size: 0.8em;
+    transition: transform 0.1s ease, color 0.2s ease;
+  }
+
+  .mwtda-lp .mwtda-lp-remote__mini:hover,
+  .mwtda-lp .mwtda-lp-remote__mini[aria-current] {
+    color: var(--mw-primary-light);
+  }
+
+  /* idioma: 3 teclinhas */
+  .mwtda-lp-remote__lang {
+    display: flex;
+    gap: 0.2em;
+    width: 100%;
+  }
+
+  .mwtda-lp .mwtda-lp-remote__lang .mwtda-lp-lang__option {
+    flex: 1;
+    padding: 0.3em 0;
+    border-radius: 0.4em;
+    background: #1c1e24;
+    color: #7b8190;
+    font-size: 0.5em;
+    font-weight: 700;
+    text-align: center;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .mwtda-lp .mwtda-lp-remote__lang .mwtda-lp-lang__option.is-active {
+    background: var(--mw-primary);
+    color: #fff;
+  }
+
+  /* "marca" do controle */
+  .mwtda-lp-remote__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    font-size: 0.6em;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #8d93a1;
+  }
+
+  .mwtda-lp-remote__brand .mwtda-lp-plogo__bars {
+    height: 0.9em;
+  }
+
+  /* dica com o nome do canal ao passar o mouse (só com mouse) */
+  @media (hover: hover) {
+    .mwtda-lp-remote [data-tip]:hover::before {
+      content: attr(data-tip);
+      position: absolute;
+      left: calc(100% + 0.9em);
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 0.35em 0.7em;
+      border-radius: 0.5em;
+      background: var(--mw-bg-dark);
+      color: #fff;
+      font-family: var(--mw-font-body);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .mwtda-lp-remote__rocker button {
+      position: relative;
+    }
+  }
+
+  /* mini controle (só em tela estreita): abre/fecha o controle completo */
+  .mwtda-lp-remote__toggle {
+    display: none;
+  }
+
+  // controle completo só quando cabe na margem ao lado do conteúdo; fora
+  // disso ele fica recolhido pra não cobrir texto
+  @media (max-width: 1419px), (max-height: 600px) {
+    .mwtda-lp-remote {
+      left: 16px;
+      bottom: 16px;
+    }
+
+    .mwtda-lp-remote .mwtda-lp-remote__toggle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35em;
+      width: 3.4em;
+      padding: 0.6em 0 0.55em;
+      border-radius: 1.6em 1.6em 1.3em 1.3em;
+      background: linear-gradient(170deg, #353945, #0b0c10);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 0 0 1px rgba(0, 0, 0, 0.5),
+        0 16px 30px -12px rgba(11, 12, 16, 0.6);
+      transform: rotate(-6deg);
+      transition: transform 0.3s ease;
+    }
+
+    .mwtda-lp-remote.is-open .mwtda-lp-remote__toggle {
+      transform: rotate(0deg);
+    }
+
+    .mwtda-lp-remote__toggle-led {
+      width: 0.4em;
+      height: 0.4em;
+      border-radius: 50%;
+      background: var(--mw-primary);
+      box-shadow: 0 0 8px var(--mw-primary);
+      animation: mw-remote-idle 2.4s ease-in-out infinite;
+    }
+
+    @keyframes mw-remote-idle {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.35; }
+    }
+
+    .mwtda-lp-remote__toggle-grip {
+      display: grid;
+      grid-template-columns: repeat(3, 0.45em);
+      gap: 0.2em;
+    }
+
+    .mwtda-lp-remote__toggle-grip i {
+      height: 0.45em;
+      border-radius: 50%;
+      background: #5a5f6c;
+    }
+
+    .mwtda-lp-remote__toggle-label {
+      font-size: 0.55em;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #c7cbd4;
+    }
+
+    // controle completo sobe a partir do mini controle
+    .mwtda-lp-remote__body {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 12px);
+      font-size: 18px;
+      opacity: 0;
+      visibility: hidden;
+      transform: rotate(-4deg) scale(0.6);
+      transform-origin: bottom left;
+      transition:
+        transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.25s ease,
+        visibility 0s linear 0.35s;
+    }
+
+    .mwtda-lp-remote.is-open .mwtda-lp-remote__body {
+      opacity: 1;
+      visibility: visible;
+      transform: rotate(-2deg) scale(1);
+      transition:
+        transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.25s ease;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mwtda-lp-remote__body,
+    .mwtda-lp-remote__body:hover {
+      transform: none;
+    }
+  }
+
+  /* -----------------------------------------------------------------
+     17. TROCA DE CANAL — efeito na tela inteira ao apertar o controle:
+     chiado de TV + linhas de varredura, uma faixa rolando de cima pra
+     baixo e o letreiro verde do canal (OSD) no canto, como TV antiga.
+     Fica por baixo do controle (z-index 55 < 60) e não bloqueia clique.
+     ----------------------------------------------------------------- */
+  .mwtda-lp-zap {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .mwtda-lp-zap.is-zapping {
+    visibility: visible;
+  }
+
+  // chiado: ruído (SVG feTurbulence) + linhas de varredura, pulando de
+  // posição em degraus pra "chiar"
+  .mwtda-lp-zap__static {
+    position: absolute;
+    inset: -50%;
+    opacity: 0;
+    background:
+      repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0 1px, transparent 1px 3px),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: auto, 220px 220px;
+    mix-blend-mode: multiply;
+  }
+
+  .mwtda-lp-zap.is-zapping .mwtda-lp-zap__static {
+    animation:
+      mw-zap-static 0.75s ease-out forwards,
+      mw-zap-jitter 0.12s steps(4) infinite;
+  }
+
+  @keyframes mw-zap-static {
+    0%   { opacity: 0; }
+    8%   { opacity: 0.95; }
+    35%  { opacity: 0.7; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes mw-zap-jitter {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-7%, 4%); }
+    50%  { transform: translate(5%, -6%); }
+    75%  { transform: translate(-3%, -2%); }
+    100% { transform: translate(6%, 5%); }
+  }
+
+  // faixa clara rolando (a "barra" de sincronismo de TV)
+  .mwtda-lp-zap__bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -30%;
+    height: 22%;
+    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.55) 45%, rgba(252, 113, 7, 0.18) 55%, transparent);
+    opacity: 0;
+  }
+
+  .mwtda-lp-zap.is-zapping .mwtda-lp-zap__bar {
+    animation: mw-zap-bar 0.7s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  }
+
+  @keyframes mw-zap-bar {
+    0%   { top: -30%; opacity: 1; }
+    100% { top: 110%; opacity: 0.4; }
+  }
+
+  // letreiro do canal (on-screen display)
+  .mwtda-lp-zap__osd {
+    position: absolute;
+    top: 28px;
+    right: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 0.7rem 1.1rem;
+    border-radius: 12px;
+    background: rgba(7, 22, 14, 0.82);
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.6);
+    color: #7dfca8;
+    font-family: var(--mw-font-heading);
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(125, 252, 168, 0.7);
+    opacity: 0;
+  }
+
+  .mwtda-lp-zap__osd * {
+    font-size: inherit;
+  }
+
+  .mwtda-lp-zap__osd span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    opacity: 0.8;
+  }
+
+  .mwtda-lp-zap__osd strong {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+  }
+
+  .mwtda-lp-zap.is-zapping .mwtda-lp-zap__osd {
+    animation: mw-zap-osd 1.9s steps(1, end) forwards, mw-zap-osd-fade 1.9s ease forwards;
+  }
+
+  // entra "piscando" (liga/desliga em degraus) e depois some suave
+  @keyframes mw-zap-osd {
+    0%   { visibility: hidden; }
+    6%   { visibility: visible; }
+    10%  { visibility: hidden; }
+    14%  { visibility: visible; }
+    100% { visibility: visible; }
+  }
+
+  @keyframes mw-zap-osd-fade {
+    0%, 70% { opacity: 1; }
+    100%    { opacity: 0; }
+  }
+
+  @media (max-width: 560px) {
+    .mwtda-lp-zap__osd {
+      top: 16px;
+      right: 16px;
+      padding: 0.55rem 0.85rem;
+    }
+
+    .mwtda-lp-zap__osd strong {
+      font-size: 1.4rem;
+    }
+  }
+
+  // sem movimento: sem efeito (o visor do controle já mostra o canal)
+  @media (prefers-reduced-motion: reduce) {
+    .mwtda-lp-zap {
       display: none;
     }
   }

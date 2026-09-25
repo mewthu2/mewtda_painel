@@ -8,8 +8,8 @@
      admin.scss, entra no precompile normal do Sprockets).
   2) markup  → classes mwtda-lp-*, com atributos data-reveal /
      data-reveal-self nos pontos onde entra efeito de rolagem.
-  3) <script> → JS puro (sem dependência nenhuma) com os 4 efeitos de
-     scroll: nav com fundo ao rolar, parallax sutil no hero, reveal
+  3) <script> → JS puro (sem dependência nenhuma) com os efeitos de
+     scroll: controle remoto (menu fixo), parallax sutil no hero, reveal
      em cascata nos cards (fade + slide + blur) via IntersectionObserver,
      e uma barra de progresso que "acende" os 3 passos de "Como
      funciona" conforme você rola. Pode virar
@@ -24,53 +24,9 @@
 
 <div class="mwtda-lp">
 
-  <nav class="mwtda-lp-nav">
-    <div class="mwtda-lp-nav__inner">
-      <%= image_tag 'admin/logonovo.png',
-            class: 'mwtda-lp-nav__logo',
-            alt: 'Mewtda',
-            style: 'display:block !important; height:42px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important;' %>
-      <div class="mwtda-lp-nav__links">
-        <a href="#crm"><%= t('home.nav.crm') %></a>
-        <a href="#trocas"><%= t('home.nav.trocas') %></a>
-        <a href="#sites"><%= t('home.nav.sites') %></a>
-        <a href="#apps"><%= t('home.nav.apps') %></a>
-        <a href="#clientes"><%= t('home.nav.clientes') %></a>
-        <a href="#contato"><%= t('home.nav.contato') %></a>
-      </div>
-      <%= render 'home/language_switcher', wrapper_class: 'mwtda-lp-nav__lang' %>
-      <%= link_to t('home.nav.entrar'), new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-nav__cta' %>
-      <button
-        type="button"
-        class="mwtda-lp-nav__burger"
-        aria-label="<%= t('home.nav.abrir_menu') %>"
-        aria-expanded="false"
-        aria-controls="mwtda-mobile-menu"
-        data-mobile-menu-trigger
-      >
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+  <%= render 'home/remote' %>
 
-  <div class="mwtda-lp-mobile-menu" id="mwtda-mobile-menu" data-mobile-menu inert>
-    <canvas class="mwtda-lp-mobile-menu__canvas" data-mobile-menu-canvas></canvas>
-    <button type="button" class="mwtda-lp-mobile-menu__close" aria-label="<%= t('home.nav.fechar_menu') %>" data-mobile-menu-close>
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-    <nav class="mwtda-lp-mobile-menu__links">
-      <a href="#crm" data-mobile-menu-link><%= t('home.nav.crm') %></a>
-      <a href="#trocas" data-mobile-menu-link><%= t('home.nav.trocas') %></a>
-      <a href="#sites" data-mobile-menu-link><%= t('home.nav.sites') %></a>
-      <a href="#apps" data-mobile-menu-link><%= t('home.nav.apps') %></a>
-      <a href="#clientes" data-mobile-menu-link><%= t('home.nav.clientes') %></a>
-      <a href="#contato" data-mobile-menu-link><%= t('home.nav.contato') %></a>
-    </nav>
-    <%= render 'home/language_switcher', wrapper_class: 'mwtda-lp-mobile-menu__lang' %>
-    <%= link_to t('home.nav.entrar'), new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg mwtda-lp-mobile-menu__cta', data: { 'mobile-menu-link': true } %>
-  </div>
-
-  <section class="mwtda-lp-hero">
+  <section class="mwtda-lp-hero" id="inicio">
     <div class="mwtda-lp-hero__inner">
       <div class="mwtda-lp-hero__logo3d" data-mwtda-wave-logo aria-hidden="true">
         <canvas class="mwtda-lp-hero__logo3d-canvas"></canvas>
@@ -504,7 +460,6 @@
   // ===================================================================
   // MEWTDA — efeitos de rolagem (JS puro, sem dependências)
   // -------------------------------------------------------------------
-  // 1) alterna .is-scrolled na nav quando a página rola;
   // 2) escreve --mw-scroll-y na raiz .mwtda-lp pro parallax sutil do hero;
   // 3) alterna .is-visible em [data-reveal] / [data-reveal-self] via
   //    IntersectionObserver (fade + slide + blur escalonado);
@@ -515,7 +470,6 @@
   // ===================================================================
   document.addEventListener('DOMContentLoaded', function () {
     var root = document.querySelector('.mwtda-lp')
-    var nav = document.querySelector('.mwtda-lp-nav')
     var processGrid = document.querySelector('.mwtda-lp-process-grid')
     if (!root) return
 
@@ -537,21 +491,17 @@
     // --- quem realmente rola ------------------------------------------
     // `root` é position:fixed + overflow-y:auto (ver bloco acima) — é
     // ELE que dispara o evento `scroll`, a `window` NUNCA rola nesse
-    // esquema. Todo o resto do script (nav, parallax, progresso, e o
-    // showcase 3D do celular) precisa escutar `root`, não `window`.
+    // esquema. Todo o resto do script (parallax, progresso, controle
+    // remoto) precisa escutar `root`, não `window`.
     var scroller = root
 
-    // --- 1 & 2: estado da nav + var de parallax do hero, com throttle via rAF
+    // --- 2: var de parallax do hero, com throttle via rAF
     var ticking = false
     function onScroll() {
       if (ticking) return
       ticking = true
       requestAnimationFrame(function () {
         var y = root.scrollTop
-
-        if (nav) {
-          nav.classList.toggle('is-scrolled', y > 8)
-        }
 
         if (!prefersReducedMotion) {
           root.style.setProperty('--mw-scroll-y', (Math.min(y, 800) * -1) + 'px')
@@ -636,6 +586,124 @@
           showSegment((current + 1) % keys.length)
         }, 4500)
       }
+    }
+
+    // --- 6: controle remoto (menu fixo no canto) ------------------------
+    // Teclas = canais (seções). Clique rola suave até a seção, CH ▲/▼
+    // anda pela lista, o visor acompanha a seção que está no meio da tela
+    // e o LED de infravermelho "pisca" a cada comando. Em tela estreita o
+    // controle fica recolhido e abre/fecha pelo mini controle.
+    var remote = document.querySelector('[data-remote]')
+    if (remote) {
+      var channels = JSON.parse(remote.getAttribute('data-remote-channels'))
+      var toggle = remote.querySelector('[data-remote-toggle]')
+      var chEl = remote.querySelector('[data-remote-ch]')
+      var labelEl = remote.querySelector('[data-remote-label]')
+      var screenEl = remote.querySelector('.mwtda-lp-remote__screen')
+      var ir = remote.querySelector('[data-remote-ir]')
+      var channelLinks = remote.querySelectorAll('[data-remote-channel]')
+      var currentChannel = -1
+
+      function pad(n) { return (n < 10 ? '0' : '') + n }
+
+      function showChannel(index) {
+        if (index === currentChannel) return
+        currentChannel = index
+        chEl.textContent = 'CH ' + pad(index + 1)
+        labelEl.textContent = channels[index].label
+        channelLinks.forEach(function (link) {
+          var active = link.getAttribute('data-remote-channel') === channels[index].id
+          if (active) link.setAttribute('aria-current', 'true')
+          else link.removeAttribute('aria-current')
+        })
+        screenEl.classList.remove('is-changing')
+        void screenEl.offsetWidth // reinicia a animação do visor
+        screenEl.classList.add('is-changing')
+      }
+
+      function blink() {
+        ir.classList.remove('is-sending')
+        void ir.offsetWidth
+        ir.classList.add('is-sending')
+      }
+
+      function setOpen(open) {
+        remote.classList.toggle('is-open', open)
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
+      }
+
+      // troca de canal na tela: reinicia as animações do overlay a cada
+      // clique (remove a classe, força reflow, põe de volta)
+      var zap = document.querySelector('[data-remote-zap]')
+      var zapCh = zap && zap.querySelector('[data-zap-ch]')
+      var zapLabel = zap && zap.querySelector('[data-zap-label]')
+      var zapTimer = null
+
+      function zapTo(index) {
+        if (!zap) return
+        zapCh.textContent = 'CH ' + pad(index + 1)
+        zapLabel.textContent = channels[index].label
+        zap.classList.remove('is-zapping')
+        void zap.offsetWidth
+        zap.classList.add('is-zapping')
+        clearTimeout(zapTimer)
+        zapTimer = setTimeout(function () { zap.classList.remove('is-zapping') }, 1900)
+      }
+
+      function goTo(index) {
+        var target = document.getElementById(channels[index].id)
+        if (!target) return
+        blink()
+        zapTo(index)
+        showChannel(index)
+        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' })
+        setOpen(false)
+      }
+
+      channelLinks.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault()
+          var id = link.getAttribute('data-remote-channel')
+          goTo(channels.findIndex(function (c) { return c.id === id }))
+        })
+      })
+
+      remote.querySelectorAll('[data-remote-step]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var step = parseInt(btn.getAttribute('data-remote-step'), 10)
+          goTo(Math.min(channels.length - 1, Math.max(0, currentChannel + step)))
+        })
+      })
+
+      toggle.addEventListener('click', function () {
+        setOpen(!remote.classList.contains('is-open'))
+      })
+
+      // no mobile, tocar fora do controle aberto fecha ele
+      document.addEventListener('click', function (e) {
+        if (remote.classList.contains('is-open') && !remote.contains(e.target)) setOpen(false)
+      })
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && remote.classList.contains('is-open')) {
+          setOpen(false)
+          toggle.focus()
+        }
+      })
+
+      // visor acompanha a seção que cruza o meio da tela
+      var sectionObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return
+          var index = channels.findIndex(function (c) { return c.id === entry.target.id })
+          if (index >= 0) showChannel(index)
+        })
+      }, { rootMargin: '-45% 0px -50% 0px' })
+
+      channels.forEach(function (c) {
+        var section = document.getElementById(c.id)
+        if (section) sectionObserver.observe(section)
+      })
     }
   })
 </script>
@@ -810,185 +878,5 @@
       requestAnimationFrame(tick)
     }
     requestAnimationFrame(tick)
-  })
-</script>
-
-<script type="module">
-  // ===================================================================
-  // MEWTDA — menu mobile off-canvas com fundo de partículas em Three.js
-  // -------------------------------------------------------------------
-  // O menu em si (abrir/fechar, foco, Esc, trava de scroll) é JS puro.
-  // O WebGL só entra na primeira vez que o usuário abre o menu — em vez
-  // de inicializar de cara pra todo mundo que carrega a página no
-  // celular — e o loop de animação para assim que o menu fecha, pra não
-  // gastar bateria à toa com o menu escondido.
-  // ===================================================================
-  document.addEventListener('DOMContentLoaded', function () {
-    var trigger = document.querySelector('[data-mobile-menu-trigger]')
-    var menu = document.querySelector('[data-mobile-menu]')
-    var closeBtn = document.querySelector('[data-mobile-menu-close]')
-    var canvas = document.querySelector('[data-mobile-menu-canvas]')
-    var links = document.querySelectorAll('[data-mobile-menu-link]')
-    var root = document.querySelector('.mwtda-lp')
-    if (!trigger || !menu || !closeBtn || !canvas || !root) return
-
-    var particles = null // { start, stop } — só existe depois da 1ª abertura
-
-    function openMenu () {
-      menu.classList.add('is-open')
-      menu.removeAttribute('inert')
-      root.classList.add('is-menu-open')
-      trigger.setAttribute('aria-expanded', 'true')
-      closeBtn.focus()
-
-      if (particles) {
-        particles.start()
-      } else {
-        initParticles(canvas).then(function (api) {
-          particles = api
-          if (menu.classList.contains('is-open')) particles.start()
-        })
-      }
-    }
-
-    function closeMenu () {
-      menu.classList.remove('is-open')
-      menu.setAttribute('inert', '')
-      root.classList.remove('is-menu-open')
-      trigger.setAttribute('aria-expanded', 'false')
-      trigger.focus()
-      if (particles) particles.stop()
-    }
-
-    trigger.addEventListener('click', function () {
-      if (menu.classList.contains('is-open')) closeMenu()
-      else openMenu()
-    })
-
-    closeBtn.addEventListener('click', closeMenu)
-    links.forEach(function (a) { a.addEventListener('click', closeMenu) })
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && menu.classList.contains('is-open')) closeMenu()
-    })
-
-    // --- fundo: partículas soltas nas cores da marca, com leve deriva ---
-    async function initParticles (canvas) {
-      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-      var THREE
-      try {
-        THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js')
-      } catch (e) {
-        return { start: function () {}, stop: function () {} } // sem THREE, fundo fica só a cor sólida do CSS
-      }
-
-      var renderer
-      try {
-        renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true })
-      } catch (e) {
-        return { start: function () {}, stop: function () {} }
-      }
-      renderer.setClearColor(0x000000, 0)
-
-      var scene = new THREE.Scene()
-      var camera = new THREE.PerspectiveCamera(50, 1, 0.1, 20)
-      camera.position.z = 6
-
-      // sprite circular suave (canvas 2D) em vez de quadrado cru do ponto
-      var spriteCanvas = document.createElement('canvas')
-      spriteCanvas.width = 64
-      spriteCanvas.height = 64
-      var sctx = spriteCanvas.getContext('2d')
-      var grad = sctx.createRadialGradient(32, 32, 0, 32, 32, 32)
-      grad.addColorStop(0, 'rgba(255,255,255,1)')
-      grad.addColorStop(0.4, 'rgba(255,255,255,0.7)')
-      grad.addColorStop(1, 'rgba(255,255,255,0)')
-      sctx.fillStyle = grad
-      sctx.fillRect(0, 0, 64, 64)
-      var spriteTexture = new THREE.CanvasTexture(spriteCanvas)
-
-      var PALETTE = [0x7c3aed, 0xd946ef, 0xfb7115, 0xf5b301, 0x22c55e, 0x14e0a4]
-      var COUNT = 90
-      var positions = new Float32Array(COUNT * 3)
-      var colors = new Float32Array(COUNT * 3)
-      var basePositions = new Float32Array(COUNT * 3)
-      var phases = new Float32Array(COUNT)
-      var speeds = new Float32Array(COUNT)
-      var tmpColor = new THREE.Color()
-
-      for (var i = 0; i < COUNT; i++) {
-        var x = (Math.random() - 0.5) * 8
-        var y = (Math.random() - 0.5) * 9
-        var z = (Math.random() - 0.5) * 4
-        positions[i * 3] = basePositions[i * 3] = x
-        positions[i * 3 + 1] = basePositions[i * 3 + 1] = y
-        positions[i * 3 + 2] = basePositions[i * 3 + 2] = z
-        phases[i] = Math.random() * Math.PI * 2
-        speeds[i] = 0.4 + Math.random() * 0.6
-
-        tmpColor.set(PALETTE[i % PALETTE.length])
-        colors[i * 3] = tmpColor.r
-        colors[i * 3 + 1] = tmpColor.g
-        colors[i * 3 + 2] = tmpColor.b
-      }
-
-      var geometry = new THREE.BufferGeometry()
-      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
-
-      var material = new THREE.PointsMaterial({
-        size: 0.22,
-        map: spriteTexture,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.8,
-        depthWrite: false,
-        blending: THREE.NormalBlending
-      })
-
-      var points = new THREE.Points(geometry, material)
-      scene.add(points)
-
-      function layout () {
-        var width = canvas.clientWidth || 1
-        var height = canvas.clientHeight || 1
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
-        renderer.setSize(width, height, false)
-        camera.aspect = width / height
-        camera.updateProjectionMatrix()
-      }
-
-      function renderFrame (t) {
-        var posAttr = geometry.attributes.position
-        for (var i = 0; i < COUNT; i++) {
-          posAttr.array[i * 3 + 1] = basePositions[i * 3 + 1] + Math.sin(t * speeds[i] + phases[i]) * 0.4
-        }
-        posAttr.needsUpdate = true
-        points.rotation.y = t * 0.06
-        renderer.render(scene, camera)
-      }
-
-      layout()
-      renderFrame(0)
-      window.addEventListener('resize', layout, { passive: true })
-
-      var rafId = null
-      function loop (now) {
-        renderFrame((now || 0) / 1000)
-        rafId = requestAnimationFrame(loop)
-      }
-
-      return {
-        start: function () {
-          if (reduceMotion || rafId) return
-          rafId = requestAnimationFrame(loop)
-        },
-        stop: function () {
-          if (rafId) cancelAnimationFrame(rafId)
-          rafId = null
-        }
-      }
-    }
   })
 </script>
