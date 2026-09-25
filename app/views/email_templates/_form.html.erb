@@ -1,0 +1,281 @@
+<div class="users-form-page__card email-templates-layout__form">
+  <% if email_template.errors.any? %>
+    <div class="users-form-page__errors">
+      <div class="users-form-page__errors-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+        </svg>
+      </div>
+      <div>
+        <strong>Corrija os erros abaixo:</strong>
+        <ul>
+          <% email_template.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <%= form_for email_template, as: :email_template,
+               url: (email_template.persisted? ? email_template_path(email_template) : email_templates_path),
+               method: (email_template.persisted? ? :patch : :post),
+               html: { autocomplete: 'off', multipart: true, id: 'email-template-form' } do |form| %>
+    <div class="users-form-page__body">
+
+      <div class="users-form-page__field">
+        <label class="crm-label">Ativo</label>
+        <div class="cform-toggle">
+          <%= form.check_box :active, class: 'cform-toggle__input' %>
+          <span class="cform-toggle__label">E-mail pronto pra ser usado</span>
+        </div>
+      </div>
+
+      <div class="users-form-page__field">
+        <%= form.label :name, 'Nome interno', class: 'crm-label' %>
+        <%= form.text_field :name, class: 'crm-input', placeholder: 'Ex.: Carrinho abandonado — padrão' %>
+      </div>
+
+      <div class="users-form-page__field">
+        <%= form.label :subject, 'Assunto', class: 'crm-label' %>
+        <%= form.text_field :subject, class: 'crm-input', id: 'email-field-subject', placeholder: 'O que aparece na caixa de entrada' %>
+      </div>
+
+      <div class="users-form-page__field">
+        <%= form.label :heading, 'Título', class: 'crm-label' %>
+        <%= form.text_field :heading, class: 'crm-input', id: 'email-field-heading' %>
+      </div>
+
+      <div class="users-form-page__field">
+        <%= form.label :body, 'Texto', class: 'crm-label' %>
+        <%= form.text_area :body, class: 'crm-input', rows: 4, id: 'email-field-body' %>
+      </div>
+
+      <div class="users-form-page__row">
+        <div class="users-form-page__field">
+          <%= form.label :button_text, 'Texto do botão', class: 'crm-label' %>
+          <%= form.text_field :button_text, class: 'crm-input', id: 'email-field-button-text' %>
+        </div>
+        <div class="users-form-page__field">
+          <%= form.label :button_url, 'Link do botão', class: 'crm-label' %>
+          <%= form.text_field :button_url, class: 'crm-input', placeholder: 'https://...' %>
+        </div>
+      </div>
+
+      <div class="users-form-page__field">
+        <%= form.label :coupon_code, 'Cupom (opcional)', class: 'crm-label' %>
+        <%= form.text_field :coupon_code, class: 'crm-input', id: 'email-field-coupon', placeholder: 'Ex.: VOLTA10' %>
+      </div>
+
+      <div class="users-form-page__row">
+        <div class="users-form-page__field">
+          <%= form.label :layout, 'Layout', class: 'crm-label' %>
+          <%= form.select :layout,
+              options_for_select([
+                ['Imagem no topo', 'image_top'],
+                ['Imagem à esquerda', 'image_left'],
+                ['Imagem à direita', 'image_right'],
+                ['Banner em cima e embaixo', 'image_top_bottom'],
+                ['Banner sem imagem', 'banner']
+              ], form.object.layout),
+              {}, class: 'crm-input', id: 'email-field-layout' %>
+        </div>
+        <div class="users-form-page__field">
+          <%= form.label :accent_color, 'Cor de destaque', class: 'crm-label' %>
+          <%= form.color_field :accent_color, class: 'crm-input email-templates-color-input', id: 'email-field-color' %>
+        </div>
+      </div>
+
+      <div class="users-form-page__field">
+        <%= form.label :image, 'Imagem (topo) — ignorada no layout Banner sem imagem', class: 'crm-label' %>
+        <% if email_template.image.attached? %>
+          <div class="popups-image-preview">
+            <%= image_tag url_for(email_template.image), class: 'popups-image-preview__img' %>
+            <label class="cform-toggle">
+              <%= check_box_tag 'email_template[remove_image]', '1', false, class: 'cform-toggle__input' %>
+              <span class="cform-toggle__label">Remover imagem atual</span>
+            </label>
+          </div>
+        <% end %>
+        <%= form.file_field :image, class: 'crm-input', id: 'email-field-image' %>
+      </div>
+
+      <div class="users-form-page__field email-templates-layout-config" data-layout="image_top_bottom">
+        <%= form.label :image_bottom, 'Imagem (rodapé) — só usada no layout Banner em cima e embaixo', class: 'crm-label' %>
+        <% if email_template.image_bottom.attached? %>
+          <div class="popups-image-preview">
+            <%= image_tag url_for(email_template.image_bottom), class: 'popups-image-preview__img' %>
+            <label class="cform-toggle">
+              <%= check_box_tag 'email_template[remove_image_bottom]', '1', false, class: 'cform-toggle__input' %>
+              <span class="cform-toggle__label">Remover imagem atual</span>
+            </label>
+          </div>
+        <% end %>
+        <%= form.file_field :image_bottom, class: 'crm-input', id: 'email-field-image-bottom' %>
+      </div>
+
+      <div class="users-form-page__section">
+        <div class="users-form-page__section-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.795l-.75-1.3M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+          </svg>
+          Configuração de envio (finalidade)
+        </div>
+
+        <div class="users-form-page__field">
+          <%= form.label :trigger_kind, 'Quando enviar', class: 'crm-label' %>
+          <%= form.select :trigger_kind,
+              options_for_select([
+                ['Envio manual', 'manual'],
+                ['Boas-vindas (novo cadastro)', 'welcome'],
+                ['Carrinho abandonado', 'cart_recovery'],
+                ['Cliente inativo', 'inactive_customer'],
+                ['Pós-compra', 'post_purchase'],
+                ['Cashback disponível', 'cashback']
+              ], form.object.trigger_kind),
+              {}, class: 'crm-input', id: 'email-field-trigger' %>
+          <span class="cpform-field__hint">O disparo automático será configurado numa próxima etapa — por enquanto isso só marca a finalidade do e-mail.</span>
+        </div>
+
+        <div class="users-form-page__field email-templates-trigger-config" data-trigger="cart_recovery">
+          <%= form.label :trigger_delay_hours, 'Enviar quantas horas após o carrinho ser abandonado', class: 'crm-label' %>
+          <%= form.text_field :trigger_delay_hours, class: 'crm-input', value: email_template.trigger_delay_hours %>
+        </div>
+
+        <div class="users-form-page__field email-templates-trigger-config" data-trigger="inactive_customer">
+          <%= form.label :trigger_inactive_days, 'Enviar após quantos dias sem comprar', class: 'crm-label' %>
+          <%= form.text_field :trigger_inactive_days, class: 'crm-input', value: email_template.trigger_inactive_days %>
+        </div>
+
+        <div class="users-form-page__field email-templates-trigger-config" data-trigger="post_purchase">
+          <%= form.label :trigger_days_after_purchase, 'Enviar quantos dias após a compra', class: 'crm-label' %>
+          <%= form.text_field :trigger_days_after_purchase, class: 'crm-input', value: email_template.trigger_days_after_purchase %>
+        </div>
+      </div>
+    </div>
+
+    <div class="users-form-page__footer">
+      <%= form.button class: 'crm-btn crm-btn--primary', data: { disable_with: 'Salvando...' } do %>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Salvar e-mail
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div class="crm-card email-templates-preview">
+  <div class="email-templates-preview__header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+    Preview
+  </div>
+  <div class="email-templates-preview__stage">
+    <div class="email-preview" id="email-preview">
+      <div class="email-preview__subject" id="email-preview-subject"><%= email_template.subject.presence || 'Assunto do e-mail' %></div>
+      <div class="email-preview__card">
+        <div class="email-preview__image" id="email-preview-image-wrap" <%= 'hidden' unless email_template.image.attached? %>>
+          <img id="email-preview-image" alt="" <% if email_template.image.attached? %>src="<%= url_for(email_template.image) %>"<% end %>>
+        </div>
+        <div class="email-preview__content">
+          <h2 class="email-preview__heading" id="email-preview-heading"><%= email_template.heading.presence || 'Título do e-mail' %></h2>
+          <p class="email-preview__body" id="email-preview-body"><%= email_template.body.presence || 'Texto do e-mail.' %></p>
+          <div class="email-preview__coupon" id="email-preview-coupon" <%= 'hidden' if email_template.coupon_code.blank? %>><%= email_template.coupon_code %></div>
+          <button type="button" class="email-preview__button" id="email-preview-button"><%= email_template.button_text.presence || 'Ver mais' %></button>
+        </div>
+        <div class="email-preview__image" id="email-preview-image-bottom-wrap" <%= 'hidden' unless email_template.image_bottom.attached? %>>
+          <img id="email-preview-image-bottom" alt="" <% if email_template.image_bottom.attached? %>src="<%= url_for(email_template.image_bottom) %>"<% end %>>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var stage = document.getElementById('email-preview');
+    if (!stage) return;
+
+    var subjectEl = document.getElementById('email-field-subject');
+    var headingEl = document.getElementById('email-field-heading');
+    var bodyEl = document.getElementById('email-field-body');
+    var buttonEl = document.getElementById('email-field-button-text');
+    var couponEl = document.getElementById('email-field-coupon');
+    var layoutEl = document.getElementById('email-field-layout');
+    var colorEl = document.getElementById('email-field-color');
+    var triggerEl = document.getElementById('email-field-trigger');
+    var imageInput = document.getElementById('email-field-image');
+    var imageBottomInput = document.getElementById('email-field-image-bottom');
+
+    function byId(id) { return document.getElementById(id); }
+
+    function updatePreview() {
+      byId('email-preview-subject').textContent = subjectEl.value || 'Assunto do e-mail';
+      byId('email-preview-heading').textContent = headingEl.value || 'Título do e-mail';
+      byId('email-preview-body').textContent = bodyEl.value || 'Texto do e-mail.';
+      byId('email-preview-button').textContent = buttonEl.value || 'Ver mais';
+
+      var couponWrap = byId('email-preview-coupon');
+      couponWrap.textContent = couponEl.value;
+      couponWrap.hidden = !couponEl.value;
+
+      var layout = layoutEl.value;
+      stage.className = 'email-preview email-preview--' + layout;
+      byId('email-preview-image-wrap').hidden = layout === 'banner' || !byId('email-preview-image').getAttribute('src');
+      byId('email-preview-image-bottom-wrap').hidden = layout !== 'image_top_bottom' || !byId('email-preview-image-bottom').getAttribute('src');
+
+      var color = colorEl.value || '#7c3aed';
+      stage.style.setProperty('--email-preview-accent', color);
+    }
+
+    function updateTriggerFields() {
+      var current = triggerEl.value;
+      document.querySelectorAll('.email-templates-trigger-config').forEach(function (el) {
+        el.hidden = el.getAttribute('data-trigger') !== current;
+      });
+    }
+
+    function updateLayoutFields() {
+      var current = layoutEl.value;
+      document.querySelectorAll('.email-templates-layout-config').forEach(function (el) {
+        el.hidden = el.getAttribute('data-layout') !== current;
+      });
+    }
+
+    [subjectEl, headingEl, bodyEl, buttonEl, couponEl, colorEl].forEach(function (el) {
+      el.addEventListener('input', updatePreview);
+      el.addEventListener('change', updatePreview);
+    });
+
+    layoutEl.addEventListener('change', function () {
+      updatePreview();
+      updateLayoutFields();
+    });
+
+    triggerEl.addEventListener('change', updateTriggerFields);
+
+    function bindImageInput(input, previewImgId) {
+      if (!input) return;
+      input.addEventListener('change', function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          byId(previewImgId).src = e.target.result;
+          updatePreview();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    bindImageInput(imageInput, 'email-preview-image');
+    bindImageInput(imageBottomInput, 'email-preview-image-bottom');
+
+    updatePreview();
+    updateTriggerFields();
+    updateLayoutFields();
+  })();
+</script>

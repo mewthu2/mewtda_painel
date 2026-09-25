@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_06_233420) do
+ActiveRecord::Schema[7.2].define(version: 2026_09_10_020000) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -192,6 +192,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_06_233420) do
     t.datetime "orders_synced_at"
     t.datetime "refunds_synced_at"
     t.string "site_url"
+    t.string "email_sending_domain"
+    t.string "ses_verification_status", default: "unverified", null: false
+    t.string "ses_dkim_tokens", default: [], null: false, array: true
+    t.datetime "ses_verified_at"
     t.index ["shopify_shop_url"], name: "index_clients_on_shopify_shop_url", unique: true
   end
 
@@ -226,6 +230,77 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_06_233420) do
     t.jsonb "addresses", default: [], null: false
     t.index ["email"], name: "index_customers_on_email"
     t.index ["shopify_customer_id"], name: "index_customers_on_shopify_customer_id", unique: true
+  end
+
+  create_table "email_templates", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "name", null: false
+    t.string "subject", null: false
+    t.string "heading", null: false
+    t.text "body", null: false
+    t.string "button_text", null: false
+    t.string "button_url"
+    t.string "coupon_code"
+    t.string "accent_color", default: "#7c3aed", null: false
+    t.string "layout", default: "image_top", null: false
+    t.integer "trigger_kind", default: 0, null: false
+    t.jsonb "trigger_config", default: {}, null: false
+    t.boolean "active", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_email_templates_on_client_id"
+  end
+
+  create_table "exchange_configs", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.boolean "active", default: false, null: false
+    t.string "company_name"
+    t.string "accent_color", default: "#7c3aed", null: false
+    t.text "instructions"
+    t.integer "return_window_days", default: 7, null: false
+    t.integer "coupon_validity_days", default: 30, null: false
+    t.string "slug", null: false
+    t.string "requested_email_subject"
+    t.text "requested_email_body"
+    t.string "approved_email_subject"
+    t.text "approved_email_body"
+    t.string "rejected_email_subject"
+    t.text "rejected_email_body"
+    t.string "completed_email_subject"
+    t.text "completed_email_body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_exchange_configs_on_client_id", unique: true
+    t.index ["slug"], name: "index_exchange_configs_on_slug", unique: true
+  end
+
+  create_table "exchange_request_items", force: :cascade do |t|
+    t.bigint "exchange_request_id", null: false
+    t.string "sku"
+    t.string "product_name", null: false
+    t.string "variant_title"
+    t.integer "quantity", default: 1, null: false
+    t.decimal "price", precision: 10, scale: 2, null: false
+    t.integer "kind", null: false
+    t.text "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exchange_request_id"], name: "index_exchange_request_items_on_exchange_request_id"
+  end
+
+  create_table "exchange_requests", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "shopify_order_id", null: false
+    t.string "shopify_order_number", null: false
+    t.string "customer_email", null: false
+    t.string "customer_name"
+    t.integer "status", default: 0, null: false
+    t.string "coupon_code"
+    t.text "internal_notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id", "status"], name: "index_exchange_requests_on_client_id_and_status"
+    t.index ["client_id"], name: "index_exchange_requests_on_client_id"
   end
 
   create_table "goals", force: :cascade do |t|
@@ -469,6 +544,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_06_233420) do
   add_foreign_key "campaign_actions", "customers"
   add_foreign_key "campaign_actions", "orders"
   add_foreign_key "campaigns", "clients"
+  add_foreign_key "email_templates", "clients"
+  add_foreign_key "exchange_configs", "clients"
+  add_foreign_key "exchange_request_items", "exchange_requests"
+  add_foreign_key "exchange_requests", "clients"
   add_foreign_key "goals", "clients"
   add_foreign_key "integration_users", "clients"
   add_foreign_key "locations", "clients"

@@ -1,0 +1,45 @@
+<%# Réplica em HTML do print do painel (Trackeamento site → Analytics),
+    usada dentro do notebook da landing enquanto não houver
+    app/assets/images/landing/crm-analytics.png. É só ilustração: os
+    números são fixos. %>
+<div class="mwtda-lp-crm-screen">
+  <div class="mwtda-lp-crm-screen__top">
+    <%= image_tag 'admin/logonovo.png', alt: '', class: 'mwtda-lp-crm-screen__logo' %>
+    <span class="mwtda-lp-crm-screen__search"><i class="fa-solid fa-magnifying-glass"></i> Buscar telas...</span>
+    <span class="mwtda-lp-crm-screen__avatar">D</span>
+  </div>
+  <div class="mwtda-lp-crm-screen__body">
+    <aside class="mwtda-lp-crm-screen__side">
+      <span class="is-active"><i class="fa-solid fa-chart-line"></i> Trackeamento</span>
+      <span><i class="fa-solid fa-sack-dollar"></i> Vendas</span>
+      <span><i class="fa-solid fa-boxes-stacked"></i> Operações</span>
+      <span><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>
+      <span><i class="fa-solid fa-bullseye"></i> Marketing</span>
+    </aside>
+    <main class="mwtda-lp-crm-screen__main">
+      <div class="mwtda-lp-crm-screen__hero">
+        <strong>Analytics</strong>
+        <small>Funil de conversão e comportamento dos visitantes</small>
+        <div class="mwtda-lp-crm-screen__range"><em>Hoje</em><em class="is-active">7 dias</em><em>15 dias</em><em>30 dias</em></div>
+      </div>
+      <div class="mwtda-lp-crm-screen__kpis">
+        <% [['Sessões únicas', '11.540', '#3b82f6'], ['Checkouts', '112', '#22c55e'], ['Taxa conversão', '0.32%', '#f59e0b'], ['Não convertidos', '11.431', '#ef4444'], ['Total eventos', '51.992', '#8b5cf6']].each do |label, value, color| %>
+          <div style="--kpi: <%= color %>"><small><%= label %></small><b><%= value %></b></div>
+        <% end %>
+      </div>
+      <div class="mwtda-lp-crm-screen__funnel">
+        <strong><i class="fa-solid fa-filter"></i> Funil de Conversão</strong>
+        <div>
+          <% [['fa-house', '34.572', 'Páginas vistas', 100], ['fa-cube', '15.520', 'Produtos vistos', 45], ['fa-cart-shopping', '1.295', 'Add ao carrinho', 4], ['fa-circle-check', '112', 'Checkout', 1]].each do |icon, value, label, pct| %>
+            <span>
+              <i class="fa-solid <%= icon %>"></i>
+              <b><%= value %></b>
+              <small><%= label %></small>
+              <em style="--pct: <%= [pct, 3].max %>%"></em>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

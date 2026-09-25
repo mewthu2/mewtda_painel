@@ -1,0 +1,75 @@
+<% title 'Central de Trocas e Devoluções' %>
+
+<div class="exchange-wizard">
+  <div class="exchange-wizard__card">
+    <h1 class="exchange-wizard__title">Pedido <%= @order[:number] %></h1>
+
+    <% case @eligibility
+       when :not_fulfilled %>
+      <p class="exchange-wizard__notice">Esse pedido ainda não foi enviado — assim que for despachado você poderá solicitar troca ou devolução aqui.</p>
+    <% when :cancelled %>
+      <p class="exchange-wizard__notice">Esse pedido foi cancelado e não é elegível para troca ou devolução.</p>
+    <% else %>
+      <% if @eligibility == :exchange_only %>
+        <p class="exchange-wizard__notice">O prazo de devolução desse pedido já passou — só é possível solicitar troca.</p>
+      <% end %>
+
+      <%= form_with url: troca_path(@config.slug), method: :post, local: true, multipart: true do %>
+        <input type="hidden" name="order_number" value="<%= @order_number %>">
+        <input type="hidden" name="email" value="<%= @email %>">
+        <div class="exchange-wizard__field">
+          <label for="customer_name">Seu nome</label>
+          <input type="text" name="customer_name" id="customer_name">
+        </div>
+
+        <% @order[:items].each_with_index do |item, index| %>
+          <div class="exchange-wizard__item">
+            <p><strong><%= item[:product_name] %></strong> <%= item[:variant_title] %> — qtd. <%= item[:quantity] %></p>
+            <label>
+              <input type="checkbox" name="items[<%= index %>][sku]" value="<%= item[:sku] %>" class="exchange-wizard__item-check">
+              Selecionar este item
+            </label>
+            <select name="items[<%= index %>][kind]">
+              <option value="troca">Troca</option>
+              <% if @eligibility == :return_and_exchange %>
+                <option value="devolucao">Devolução</option>
+              <% end %>
+            </select>
+            <select name="items[<%= index %>][reason]" class="exchange-wizard__reason-select" data-item-index="<%= index %>">
+              <option value="">Motivo da troca/devolução</option>
+              <% ExchangeRequestItem::REASONS.each do |value, label| %>
+                <option value="<%= value %>"><%= label %></option>
+              <% end %>
+            </select>
+            <div class="exchange-wizard__photo-field" data-item-index="<%= index %>" hidden>
+              <label for="item-photo-<%= index %>">Foto do defeito/avaria</label>
+              <input type="file" name="items[<%= index %>][photo]" id="item-photo-<%= index %>" accept="image/*">
+            </div>
+          </div>
+        <% end %>
+
+        <button type="submit" class="exchange-wizard__submit" style="background: <%= @config.accent_color %>">
+          Enviar solicitação
+        </button>
+      <% end %>
+
+      <script>
+        (function () {
+          var DEFECT_REASON = '<%= ExchangeRequestItem::DEFECT_REASON %>';
+
+          document.querySelectorAll('.exchange-wizard__reason-select').forEach(function (select) {
+            var index = select.getAttribute('data-item-index');
+            var photoField = document.querySelector('.exchange-wizard__photo-field[data-item-index="' + index + '"]');
+            var photoInput = photoField.querySelector('input[type="file"]');
+
+            select.addEventListener('change', function () {
+              var isDefect = select.value === DEFECT_REASON;
+              photoField.hidden = !isDefect;
+              photoInput.required = isDefect;
+            });
+          });
+        })();
+      </script>
+    <% end %>
+  </div>
+</div>

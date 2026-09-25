@@ -1,110 +1,177 @@
 en:
   home:
     nav:
-      recursos: "Features"
-      automacoes: "How It Works"
-      integracoes: "Integrations"
+      crm: "CRM"
+      sites: "Websites"
+      apps: "Apps"
+      clientes: "Clients"
+      produtos: "Solutions"
+      beneficios: "Benefits"
       sua_loja: "Your Store"
-      planos: "Pricing"
+      em_breve: "Coming Soon"
+      contato: "Contact"
       entrar: "Sign In"
       abrir_menu: "Open menu"
       fechar_menu: "Close menu"
       language_switcher_label: "Select language"
     hero:
-      badge: "CRM for Shopify stores"
-      headline: "Run your store smarter, all in one place"
-      subheadline: "Centralize orders, customers, sales goals, and WhatsApp automations — with real-time dashboards that run on their own, no spreadsheets, no rework."
-      cta_entrar: "Sign In"
-      cta_ver_recursos: "See Features"
+      badge: "E-commerce solutions"
+      headline: "Technology to keep your online store organized as it grows"
+      subheadline: "We build Shopify stores and create tools for the day-to-day operation: a CRM to manage customers and sales, and an exchange system integrated with Shopify."
+      cta_contato: "Talk to us"
+      cta_ver_solucoes: "Explore our solutions"
+      whatsapp_message: "Hi, I'd like to learn about Mewtda's solutions."
     strip:
-      shopify: "Native Shopify integration"
-      whatsapp: "WhatsApp automations"
-      dashboards: "Real-time dashboards"
-      metas: "Goals, ROAS & CAC"
+      crm: "E-commerce CRM"
+      trocas: "Exchanges integrated with Shopify"
+      lojas: "Shopify store development"
+      apps: "Android and macOS apps coming soon"
     clients:
+      headline: "Brands already selling with Mewtda"
+      lead: "Real stores using the Mewtda panel every day to sell more."
       title: "Stores that trust Mewtda"
       logo_alt: "Mewtda client logo"
     phones:
-      eyebrow: "IN ACTION"
-      dashboard:
-        eyebrow: "DASHBOARD"
-        title: "Your whole operation in one panel"
-        text: "Revenue, ROAS, and CAC in real time, with visual goals the whole team can follow."
-        screen_title: "Sales Dashboard"
-      whatsapp:
-        eyebrow: "WHATSAPP"
-        title: "Automations that run on their own"
-        text: "Order tracking, cashback, and cart recovery — set up once, no team dependency."
-        screen_title: "WhatsApp Automations"
-      afiliados:
-        eyebrow: "AFFILIATES"
-        title: "Every partnership, a measurable return"
-        text: "Track coupons, generate affiliate links, and measure the real return of every campaign and partner."
-        screen_title: "Affiliates & Campaigns"
-      integracoes:
-        eyebrow: "INTEGRATIONS"
-        title: "Connected with what your store already uses"
-        text: "Shopify, WhatsApp, and marketing tools talking to each other, no workarounds."
-        screen_title: "Native Integrations"
-    recursos:
-      eyebrow: "FEATURES"
-      title: "Everything your Shopify operation needs, in one panel"
-      lead: "Fewer open tabs, less manual spreadsheet work — more visibility into what actually moves the business."
-      dashboard:
-        title: "Sales Dashboard"
+      eyebrow: "OUR SOLUTIONS"
+      crm:
+        eyebrow: "CRM"
+        title: "Customers, orders, and sales in one panel"
+        text: "Dashboards, goals, and WhatsApp automations to follow the operation and build better relationships with your buyers."
+        screen_title: "Mewtda CRM"
+      trocas:
+        eyebrow: "EXCHANGES"
+        title: "Organized exchanges, straight from Shopify"
+        text: "The customer requests the exchange and your team follows every request in one place, connected to your store."
+        screen_title: "Exchange System"
+      lojas:
+        eyebrow: "SHOPIFY STORES"
+        title: "Your store built from scratch by people who know the operation"
+        text: "Design that looks like your brand and a store ready to sell, already connected to our tools."
+        screen_title: "Store Development"
+      apps:
+        eyebrow: "COMING SOON"
+        title: "Mewtda on your phone and your Mac"
+        text: "Apps for Android and macOS are on the way."
+        screen_title: "Android & macOS Apps"
+    produtos:
+      eyebrow: "SOLUTIONS"
+      title: "One platform, covering several parts of your operation"
+      lead: "Each solution handles a part of your store's routine — and they were all designed to work together."
+      crm:
+        title: "Mewtda CRM"
+        text: "Customer relationship and store operations management."
         items:
-          - "Real-time revenue, ROAS, and CAC"
-          - "Monthly goals with progress bar"
-          - "Daily sales and conversion charts"
-          - "Google Ads vs. Meta Ads comparison"
-          - "Spreadsheet report exports"
-      whatsapp:
-        title: "WhatsApp Automations"
+          - "Sales dashboard with revenue, ROAS, and CAC"
+          - "Monthly goals the whole team can follow"
+          - "WhatsApp automations: tracking, cashback, and abandoned carts"
+          - "Affiliate and coupon management"
+          - "Integration with Shopify, Google Ads, and Meta Ads"
+      trocas:
+        title: "Exchange System"
+        text: "An exchange process integrated with your Shopify store."
         items:
-          - "Automatic order tracking notifications"
-          - "Scheduled post-purchase cashback"
-          - "Abandoned cart recovery"
-          - "Real-time message preview"
-          - "One-click notification resend"
-      afiliados:
-        title: "Affiliates & Marketing"
+          - "Connected to your Shopify orders"
+          - "A dedicated page where customers request exchanges"
+          - "All requests centralized in the panel"
+          - "Email updates at every step of the process"
+      lojas:
+        title: "Shopify Store Development"
+        text: "We build your store from scratch, ready to sell."
         items:
-          - "One-click affiliate link generation"
-          - "Coupon-based sales tracking"
-          - "Per-affiliate performance dashboard"
-          - "Full conversion funnel"
-          - "Session and top-product analytics"
-    automacoes:
-      eyebrow: "HOW IT WORKS"
-      title: "From first login to results, in three steps"
-      step1:
-        title: "Connect your store"
-        text: "Authorize access to your Shopify in a few clicks — no installs, no developer needed."
-      step2:
-        title: "Set up your automations"
-        text: "Define messages, deadlines, and coupons for your WhatsApp automations and monthly goals."
-      step3:
-        title: "Track your results"
-        text: "Dashboards update automatically, with a daily history of sales and conversion."
-    integracoes:
-      eyebrow: "INTEGRATIONS"
-      title: "Connected with the tools you already use"
+          - "Custom design for your brand"
+          - "Products, payments, shipping, and domain configured"
+          - "Launches already connected to Mewtda's solutions"
+    beneficios:
+      eyebrow: "FOR STORE OWNERS"
+      title: "What changes in your store's routine"
+      lead: "Solutions built for owners and teams of online stores who want an operation that's simpler to run."
+      organizacao:
+        title: "Organized operation"
+        text: "Orders, customers, goals, and exchanges in clear panels instead of scattered spreadsheets."
+      relacionamento:
+        title: "Closer customer relationships"
+        text: "Communication at the right time with people who already bought, from order tracking to after-sales."
+      processos:
+        title: "Simpler processes"
+        text: "Repetitive tasks automated and clear workflows, so your team can focus on what matters."
       shopify:
-        title: "Shopify"
-        text: "Order, product, and customer sync straight from your store."
-      whatsapp:
-        title: "WhatsApp (Z-API)"
-        text: "Tracking, cashback, and cart recovery automations."
-      google_ads:
-        title: "Google Ads"
-        text: "Ad spend feeding straight into your ROAS and CAC calculations."
-      meta_ads:
-        title: "Meta Ads"
-        text: "Facebook and Instagram spend in the same panel."
-    ecommerce:
-      eyebrow: "WE BUILD YOUR STORE"
-      title: "Don't have a store yet? We'll build it for you"
-      lead: "Besides the CRM, we also build your Shopify store from scratch — design that looks like your brand, already integrated with Mewtda from day one, no setup headaches."
+        title: "Built for Shopify"
+        text: "Solutions from a Shopify Partner, integrated directly with your store."
+    products:
+      eyebrow: "PRODUCTS"
+      title: "Four products, one connected operation"
+      lead: "Each product solves one part of your store, and they all talk to each other in the same panel."
+      more: "Learn more"
+      crm:
+        tagline: "Customers, sales and conversion funnel in one panel."
+      trocas:
+        tagline: "Automated exchanges and returns, with store credit on Shopify."
+      new:
+        tagline: "Shopify stores built to sell."
+      app:
+        tagline: "Your store's own iOS and Android app."
+    trocas_part:
+      number: "02"
+      title: "Exchanges and returns without spreadsheets or WhatsApp"
+      lead: "Customers open the exchange on their own, in a portal that looks like your store. You approve it in the panel and the store credit becomes a Shopify coupon automatically."
+      features:
+        portal:
+          title: "Self-service portal"
+          text: "Customers find the order by number and email and pick the items."
+        regras:
+          title: "Automatic deadlines"
+          text: "Exchanges and returns unlocked according to each order's window."
+        foto:
+          title: "Defect photo"
+          text: "Required reason, plus a photo when the product arrives damaged."
+        cupom:
+          title: "Store credit on Shopify"
+          text: "Once approved, the coupon is created and emailed to the customer."
+      portal:
+        title: "Exchange Center"
+        order: "Order #1042"
+        select_item: "Select this item"
+        kind: "Exchange"
+        reason: "Size didn't fit"
+        submit: "Send request"
+        coupon_label: "Your store credit"
+        coupon_value: "TROCA-1042 · $59.90"
+        items: ["Bomber jacket · M", "Oversized tee · L"]
+      notifications:
+        new_title: "New exchange request"
+        new_text: "Order #1042 · 1 item"
+        approved_title: "Exchange approved"
+        approved_text: "Coupon TROCA-1042 emailed"
+      cta_button: "I want Troca Fácil"
+      whatsapp_message: "Hi, I'd like to know Mewtda Troca Fácil."
+    crm_part:
+      number: "01"
+      title: "Your whole store in one panel"
+      lead: "Customers, orders, exchanges, WhatsApp and marketing connected to your Shopify. See the entire funnel and know exactly where you're losing sales."
+      screen_alt: "Mewtda analytics panel"
+      features:
+        analytics:
+          title: "Conversion funnel"
+          text: "Visits, product views, carts and checkouts, day by day."
+        clientes:
+          title: "Customer CRM"
+          text: "Every customer's history, segmented and ready for campaigns."
+        trocas:
+          title: "Exchanges and returns"
+          text: "A self-service exchange portal, approved in a few clicks."
+        whatsapp:
+          title: "WhatsApp and email"
+          text: "Talk to your customers and recover carts straight from the panel."
+      cta_button: "I want to see the CRM"
+      whatsapp_message: "Hi, I'd like to know Mewtda's CRM."
+    sites:
+      number: "03"
+      title: "Stores that sell from day one"
+      lead: "We build your Shopify store from scratch: a design that looks like your brand, built to convert on desktop and mobile, and already connected to the Mewtda CRM."
+      case_label: "Store built by Mewtda"
+      case_link: "See the live store"
+      desktop_alt: "Fernanda Farah store on desktop"
+      mobile_alt: "Fernanda Farah store on mobile"
       design:
         title: "Custom design"
         text: "A layout built for your brand and your product, not a generic template."
@@ -112,23 +179,91 @@ en:
         title: "Complete Shopify store"
         text: "Products, payments, shipping, and domain, fully configured end to end."
       crm:
-        title: "Already integrated with the CRM"
-        text: "No extra work later — your store launches already connected to the Mewtda panel."
+        title: "Connected to Mewtda's solutions"
+        text: "No extra work later — your store goes live already connected to the Mewtda panel."
       cta_button: "I want my store"
       whatsapp_message: "Hi, I'd like to build my store with Mewtda."
+    apps:
+      number: "04"
+      badge: "Coming soon"
+      title: "Your store, ready to sell 24 hours a day"
+      lead: "Your store's own iOS and Android app: storefront, push and checkout in your customer's hand, connected to the Mewtda CRM."
+      segments_label: "Built for your industry"
+      pills:
+        - "iOS and Android"
+        - "Push notifications"
+        - "Fast checkout"
+      segments:
+        moda:
+          label: "Fashion"
+          pitch: "Collections, size charts and easy exchanges: your fashion brand selling straight to customers, no marketplace needed."
+          banner_tag: "New collection"
+          banner_title: "Up to 30% OFF your first order"
+          products: ["Bomber jacket", "Oversized tee", "Runner sneaker", "Oxford shoe"]
+          prices: ["$59.90", "$19.90", "$74.90", "$54.90"]
+        beleza:
+          label: "Beauty"
+          pitch: "Bundles, repurchase and skin-type storefronts: turn one-time buyers into loyal customers of your brand."
+          banner_tag: "Skincare"
+          banner_title: "Build your routine with free shipping"
+          products: ["Face serum", "Body lotion", "Routine kit", "Face toner"]
+          prices: ["$24.90", "$14.90", "$39.90", "$16.90"]
+        eletronicos:
+          label: "Electronics"
+          pitch: "Specs, installments and launch showcases: everything customers need to decide and buy on the spot."
+          banner_tag: "New arrivals"
+          banner_title: "Pay in interest-free installments"
+          products: ["Smartwatch", "Headphones", "Instant camera", "Minimal watch"]
+          prices: ["$399", "$99.90", "$149.90", "$79.90"]
+        casa:
+          label: "Home & Decor"
+          pitch: "Inspiring rooms, photos that sell and instant shipping quotes: your home brand's store, ready to make money."
+          banner_tag: "Decor"
+          banner_title: "Refresh your living room"
+          products: ["Velvet sofa", "Tufted armchair", "Pendant lamp", "Floor lamp"]
+          prices: ["$699", "$259", "$49.90", "$139.90"]
+      phone:
+        search: "Search products"
+        shop_now: "Shop now"
+        add: "Add"
+        checkout: "Checkout"
+      notifications:
+        sale_title: "New sale!"
+        sale_text: "Order #1042 · $59.90"
+        pix_title: "Payment approved"
+        pix_text: "Money received instantly"
+        cart_title: "Cart recovered"
+        cart_text: "Customer came back and checked out"
+        now: "now"
+      cta_button: "Notify me"
+      whatsapp_message: "Hi, I'd like to know when Mewtda's apps launch."
+    em_breve:
+      eyebrow: "COMING SOON"
+      title: "Apps on the way"
+      lead: "We're building apps so you can keep up with your store wherever you are."
+      tag: "Coming soon"
+      android:
+        title: "Android"
+        text: "An app for Android phones and tablets."
+      macos:
+        title: "macOS"
+        text: "An app for Mac computers."
+      cta_button: "Let me know when they launch"
+      whatsapp_message: "Hi, I'd like to be notified when Mewtda's apps launch."
     cta:
-      title: "Want to see Mewtda running in your store?"
-      text: "Talk to us and we'll show you how it works in practice, with your own operation's data."
+      title: "Let's talk about your store?"
+      text: "Tell us how your operation works today and we'll show you which Mewtda solutions fit where you are right now."
       whatsapp_button: "Chat on WhatsApp"
-      whatsapp_message: "Hi, I'd like to learn about Mewtda."
+      whatsapp_message: "Hi, I'd like to learn about Mewtda's solutions."
       entrar: "Sign In"
     footer:
-      description: "Complete CRM for Shopify stores — sales, automations, and affiliates in one place."
+      description: "E-commerce solutions: CRM, exchange system, and Shopify store development."
       shopify_partner_alt: "Shopify Partner"
-      produto_title: "Product"
-      recursos: "Features"
-      como_funciona: "How It Works"
-      integracoes: "Integrations"
+      solucoes_title: "Solutions"
+      crm: "CRM"
+      trocas: "Exchange System"
+      lojas: "Shopify Stores"
+      apps: "Apps (coming soon)"
       contato_title: "Contact"
       whatsapp: "WhatsApp"
       entrar: "Sign In"
@@ -136,110 +271,177 @@ en:
 es:
   home:
     nav:
-      recursos: "Funciones"
-      automacoes: "Cómo Funciona"
-      integracoes: "Integraciones"
+      crm: "CRM"
+      sites: "Sitios"
+      apps: "Apps"
+      clientes: "Clientes"
+      produtos: "Soluciones"
+      beneficios: "Beneficios"
       sua_loja: "Tu Tienda"
-      planos: "Planes"
+      em_breve: "Próximamente"
+      contato: "Contacto"
       entrar: "Ingresar"
       abrir_menu: "Abrir menú"
       fechar_menu: "Cerrar menú"
       language_switcher_label: "Seleccionar idioma"
     hero:
-      badge: "CRM para tiendas Shopify"
-      headline: "Gestiona tu tienda con inteligencia, todo en un solo lugar"
-      subheadline: "Centraliza pedidos, clientes, metas de ventas y automatizaciones de WhatsApp — con paneles en tiempo real que funcionan solos, sin hojas de cálculo ni retrabajo."
-      cta_entrar: "Ingresar"
-      cta_ver_recursos: "Ver Funciones"
+      badge: "Soluciones para e-commerce"
+      headline: "Tecnología para que tu tienda online crezca con organización"
+      subheadline: "Creamos tiendas en Shopify y desarrollamos herramientas para la operación del día a día: un CRM para gestionar clientes y ventas, y un sistema de cambios integrado a Shopify."
+      cta_contato: "Habla con nosotros"
+      cta_ver_solucoes: "Conoce las soluciones"
+      whatsapp_message: "Hola, quiero conocer las soluciones de Mewtda."
     strip:
-      shopify: "Integración nativa con Shopify"
-      whatsapp: "Automatizaciones vía WhatsApp"
-      dashboards: "Paneles en tiempo real"
-      metas: "Metas, ROAS y CAC"
+      crm: "CRM para e-commerce"
+      trocas: "Cambios integrados a Shopify"
+      lojas: "Creación de tiendas Shopify"
+      apps: "Apps Android y macOS próximamente"
     clients:
+      headline: "Marcas que ya venden con Mewtda"
+      lead: "Tiendas reales que usan el panel Mewtda todos los días para vender más."
       title: "Tiendas que confían en Mewtda"
       logo_alt: "Logo de cliente Mewtda"
     phones:
-      eyebrow: "EN ACCIÓN"
-      dashboard:
-        eyebrow: "PANEL"
-        title: "Toda tu operación en un solo panel"
-        text: "Facturación, ROAS y CAC en tiempo real, con metas visuales para que todo el equipo las siga."
-        screen_title: "Panel de Ventas"
-      whatsapp:
-        eyebrow: "WHATSAPP"
-        title: "Automatizaciones que funcionan solas"
-        text: "Seguimiento de pedidos, cashback y recuperación de carritos — configurados una vez, sin depender del equipo."
-        screen_title: "Automatizaciones de WhatsApp"
-      afiliados:
-        eyebrow: "AFILIADOS"
-        title: "Cada alianza con un retorno medible"
-        text: "Rastrea cupones, genera enlaces de afiliado y mide el retorno real de cada campaña y socio."
-        screen_title: "Afiliados y Campañas"
-      integracoes:
-        eyebrow: "INTEGRACIONES"
-        title: "Conectado con lo que tu tienda ya usa"
-        text: "Shopify, WhatsApp y herramientas de marketing conectadas entre sí, sin parches."
-        screen_title: "Integraciones Nativas"
-    recursos:
-      eyebrow: "FUNCIONES"
-      title: "Todo lo que tu operación en Shopify necesita, en un solo panel"
-      lead: "Menos pestañas abiertas, menos hojas de cálculo manuales — más visibilidad sobre lo que realmente mueve tu negocio."
-      dashboard:
-        title: "Panel de Ventas"
+      eyebrow: "NUESTRAS SOLUCIONES"
+      crm:
+        eyebrow: "CRM"
+        title: "Clientes, pedidos y ventas en el mismo panel"
+        text: "Paneles, metas y automatizaciones de WhatsApp para seguir la operación y relacionarte mejor con quien compra."
+        screen_title: "CRM Mewtda"
+      trocas:
+        eyebrow: "CAMBIOS"
+        title: "Cambios organizados, directo desde Shopify"
+        text: "El cliente solicita el cambio y tu equipo sigue cada solicitud en un solo lugar, conectado a tu tienda."
+        screen_title: "Sistema de Cambios"
+      lojas:
+        eyebrow: "TIENDAS SHOPIFY"
+        title: "Tu tienda creada desde cero por quien entiende de operación"
+        text: "Diseño con la cara de tu marca y una tienda lista para vender, ya conectada a nuestras herramientas."
+        screen_title: "Creación de Tiendas"
+      apps:
+        eyebrow: "PRÓXIMAMENTE"
+        title: "Mewtda en tu celular y en tu Mac"
+        text: "Las aplicaciones para Android y macOS están en camino."
+        screen_title: "Apps Android y macOS"
+    produtos:
+      eyebrow: "SOLUCIONES"
+      title: "Una plataforma para varias áreas de tu operación"
+      lead: "Cada solución resuelve una parte del día a día de la tienda — y todas fueron pensadas para funcionar juntas."
+      crm:
+        title: "CRM Mewtda"
+        text: "Gestión de la relación con los clientes y de la operación de la tienda."
         items:
-          - "Facturación, ROAS y CAC en tiempo real"
-          - "Metas mensuales con barra de progreso"
-          - "Gráficos diarios de ventas y conversión"
-          - "Comparativo entre Google Ads y Meta Ads"
-          - "Exportación de reportes en hoja de cálculo"
-      whatsapp:
-        title: "Automatizaciones vía WhatsApp"
+          - "Panel de ventas con facturación, ROAS y CAC"
+          - "Metas mensuales que todo el equipo puede seguir"
+          - "Automatizaciones de WhatsApp: seguimiento, cashback y carritos abandonados"
+          - "Gestión de afiliados y cupones"
+          - "Integración con Shopify, Google Ads y Meta Ads"
+      trocas:
+        title: "Sistema de Cambios"
+        text: "Proceso de cambios integrado a tu tienda Shopify."
         items:
-          - "Notificación automática de seguimiento de pedido"
-          - "Cashback programado después de la compra"
-          - "Recuperación de carritos abandonados"
-          - "Vista previa del mensaje en tiempo real"
-          - "Reenvío de notificaciones con un clic"
-      afiliados:
-        title: "Afiliados y Marketing"
+          - "Conectado a los pedidos de Shopify"
+          - "Página propia para que el cliente solicite el cambio"
+          - "Solicitudes centralizadas en el panel"
+          - "Avisos por correo en cada etapa del proceso"
+      lojas:
+        title: "Creación de Tiendas Shopify"
+        text: "Creamos tu tienda desde cero, lista para vender."
         items:
-          - "Generación de enlace de afiliado con un clic"
-          - "Seguimiento de ventas por cupón"
-          - "Panel de rendimiento por afiliado"
-          - "Embudo de conversión completo"
-          - "Analítica de sesiones y productos más vistos"
-    automacoes:
-      eyebrow: "CÓMO FUNCIONA"
-      title: "Del primer acceso al resultado, en tres pasos"
-      step1:
-        title: "Conecta tu tienda"
-        text: "Autoriza el acceso a tu Shopify en pocos clics — sin instalar nada, sin depender de un desarrollador."
-      step2:
-        title: "Configura tus automatizaciones"
-        text: "Define mensajes, plazos y cupones de tus automatizaciones de WhatsApp y las metas del mes."
-      step3:
-        title: "Sigue tus resultados"
-        text: "Paneles actualizados automáticamente, con historial diario de ventas y conversión."
-    integracoes:
-      eyebrow: "INTEGRACIONES"
-      title: "Conectado con las herramientas que ya usas"
+          - "Diseño a medida para tu marca"
+          - "Productos, pagos, envíos y dominio configurados"
+          - "Sale al aire ya conectada a las soluciones Mewtda"
+    beneficios:
+      eyebrow: "PARA COMERCIANTES"
+      title: "Lo que cambia en la rutina de tu tienda"
+      lead: "Soluciones hechas para dueños y equipos de tiendas online que quieren una operación más simple de llevar."
+      organizacao:
+        title: "Operación organizada"
+        text: "Pedidos, clientes, metas y cambios en paneles claros, en lugar de hojas de cálculo dispersas."
+      relacionamento:
+        title: "Relación más cercana"
+        text: "Comunicación en el momento justo con quien ya compró, del seguimiento del pedido a la posventa."
+      processos:
+        title: "Procesos más simples"
+        text: "Tareas repetitivas automatizadas y flujos definidos, para que el equipo se enfoque en lo importante."
       shopify:
-        title: "Shopify"
-        text: "Sincronización de pedidos, productos y clientes directo desde tu tienda."
-      whatsapp:
-        title: "WhatsApp (Z-API)"
-        text: "Automatizaciones de seguimiento, cashback y recuperación de carritos."
-      google_ads:
-        title: "Google Ads"
-        text: "Costo de anuncios directo en el cálculo de ROAS y CAC."
-      meta_ads:
-        title: "Meta Ads"
-        text: "Inversión en Facebook e Instagram en el mismo panel."
-    ecommerce:
-      eyebrow: "CREAMOS TU TIENDA"
-      title: "¿Todavía no tienes una tienda? Nosotros la creamos por ti"
-      lead: "Además del CRM, también creamos tu tienda en Shopify desde cero — diseño con la cara de tu marca y ya integrada a Mewtda desde el primer día, sin dolores de cabeza con la configuración."
+        title: "Hecho para Shopify"
+        text: "Soluciones de un Shopify Partner, integradas directamente a tu tienda."
+    products:
+      eyebrow: "PRODUCTOS"
+      title: "Cuatro productos, una operación conectada"
+      lead: "Cada producto resuelve una parte de tu tienda, y todos se comunican en el mismo panel."
+      more: "Conocer"
+      crm:
+        tagline: "Clientes, ventas y embudo de conversión en un solo panel."
+      trocas:
+        tagline: "Cambios y devoluciones en automático, con vale en Shopify."
+      new:
+        tagline: "Creación de tiendas Shopify pensadas para vender."
+      app:
+        tagline: "La app de tu tienda para iOS y Android."
+    trocas_part:
+      number: "02"
+      title: "Cambios y devoluciones sin planillas ni WhatsApp"
+      lead: "Tu cliente abre el cambio solo, en un portal con la cara de tu tienda. Apruebas en el panel y el vale se convierte en cupón de Shopify automáticamente."
+      features:
+        portal:
+          title: "Portal self-service"
+          text: "El cliente busca el pedido por número y e-mail y elige los ítems."
+        regras:
+          title: "Plazos automáticos"
+          text: "Cambios y devoluciones habilitados según el plazo de cada pedido."
+        foto:
+          title: "Foto del defecto"
+          text: "Motivo obligatorio y foto cuando el producto llega con daño."
+        cupom:
+          title: "Vale en Shopify"
+          text: "Al aprobar, el cupón se crea y el cliente lo recibe por e-mail."
+      portal:
+        title: "Central de Cambios"
+        order: "Pedido #1042"
+        select_item: "Seleccionar este ítem"
+        kind: "Cambio"
+        reason: "La talla no sirvió"
+        submit: "Enviar solicitud"
+        coupon_label: "Tu vale de cambio"
+        coupon_value: "TROCA-1042 · $59.90"
+        items: ["Chaqueta bomber · M", "Camiseta oversized · L"]
+      notifications:
+        new_title: "Nueva solicitud de cambio"
+        new_text: "Pedido #1042 · 1 ítem"
+        approved_title: "Cambio aprobado"
+        approved_text: "Cupón TROCA-1042 enviado por e-mail"
+      cta_button: "Quiero Troca Fácil"
+      whatsapp_message: "Hola, quiero conocer Mewtda Troca Fácil."
+    crm_part:
+      number: "01"
+      title: "Toda tu tienda en un solo panel"
+      lead: "Clientes, pedidos, cambios, WhatsApp y marketing conectados a tu Shopify. Ves el embudo completo y sabes exactamente dónde pierdes ventas."
+      screen_alt: "Panel de analytics de Mewtda"
+      features:
+        analytics:
+          title: "Embudo de conversión"
+          text: "Visitas, productos vistos, carritos y checkouts, día a día."
+        clientes:
+          title: "CRM de clientes"
+          text: "El historial de cada cliente, segmentado y listo para campañas."
+        trocas:
+          title: "Cambios y devoluciones"
+          text: "Portal de cambios para el cliente y aprobación en pocos clics."
+        whatsapp:
+          title: "WhatsApp y e-mail"
+          text: "Habla con tu base y recupera carritos directo desde el panel."
+      cta_button: "Quiero conocer el CRM"
+      whatsapp_message: "Hola, quiero conocer el CRM de Mewtda."
+    sites:
+      number: "03"
+      title: "Tiendas que venden desde el primer día"
+      lead: "Creamos tu tienda en Shopify desde cero: diseño con la cara de tu marca, pensada para convertir en computador y celular, y ya conectada al CRM Mewtda."
+      case_label: "Tienda creada por Mewtda"
+      case_link: "Ver la tienda en línea"
+      desktop_alt: "Tienda Fernanda Farah en computador"
+      mobile_alt: "Tienda Fernanda Farah en celular"
       design:
         title: "Diseño a medida"
         text: "Un diseño pensado para tu marca y tu producto, no una plantilla genérica."
@@ -247,23 +449,91 @@ es:
         title: "Tienda completa en Shopify"
         text: "Productos, pagos, envíos y dominio configurados de principio a fin."
       crm:
-        title: "Ya nace integrada al CRM"
+        title: "Conectada a las soluciones Mewtda"
         text: "Sin trabajo extra después: tu tienda sale al aire ya conectada al panel de Mewtda."
       cta_button: "Quiero mi tienda"
       whatsapp_message: "Hola, quiero crear mi tienda con Mewtda."
+    apps:
+      number: "04"
+      badge: "Próximamente"
+      title: "Tu tienda lista para vender las 24 horas"
+      lead: "La app de tu tienda para iOS y Android: vitrina, push y checkout en la mano del cliente, conectada al CRM Mewtda."
+      segments_label: "Hecha para tu segmento"
+      pills:
+        - "iOS y Android"
+        - "Push notifications"
+        - "Checkout rápido"
+      segments:
+        moda:
+          label: "Moda"
+          pitch: "Colecciones, guía de tallas y cambios fáciles: tu marca de moda vendiendo directo al cliente, sin depender de marketplaces."
+          banner_tag: "Nueva colección"
+          banner_title: "Hasta 30% OFF en tu primera compra"
+          products: ["Chaqueta bomber", "Camiseta oversized", "Zapatilla runner", "Zapato oxford"]
+          prices: ["$59.90", "$19.90", "$74.90", "$54.90"]
+        beleza:
+          label: "Belleza"
+          pitch: "Kits, recompra y vitrinas por tipo de piel: convierte a quien compra una vez en cliente fiel de tu marca."
+          banner_tag: "Skincare"
+          banner_title: "Arma tu rutina con envío gratis"
+          products: ["Sérum facial", "Loción corporal", "Kit rutina", "Tónico facial"]
+          prices: ["$24.90", "$14.90", "$39.90", "$16.90"]
+        eletronicos:
+          label: "Electrónica"
+          pitch: "Ficha técnica, cuotas y vitrina de lanzamientos: todo lo que el cliente necesita para decidir y comprar en el momento."
+          banner_tag: "Lanzamientos"
+          banner_title: "En cuotas sin interés"
+          products: ["Smartwatch", "Audífonos", "Cámara instantánea", "Reloj minimal"]
+          prices: ["$399", "$99.90", "$149.90", "$79.90"]
+        casa:
+          label: "Hogar & Deco"
+          pitch: "Ambientes que inspiran, fotos que venden y envío calculado al instante: la tienda de tu marca de hogar lista para facturar."
+          banner_tag: "Deco"
+          banner_title: "Renueva tu sala"
+          products: ["Sofá de terciopelo", "Sillón capitoné", "Lámpara colgante", "Lámpara de pie"]
+          prices: ["$699", "$259", "$49.90", "$139.90"]
+      phone:
+        search: "Buscar productos"
+        shop_now: "Comprar ahora"
+        add: "Agregar"
+        checkout: "Finalizar compra"
+      notifications:
+        sale_title: "¡Nueva venta!"
+        sale_text: "Pedido #1042 · $59.90"
+        pix_title: "Pago aprobado"
+        pix_text: "Dinero recibido al instante"
+        cart_title: "Carrito recuperado"
+        cart_text: "El cliente volvió y finalizó la compra"
+        now: "ahora"
+      cta_button: "Quiero que me avisen"
+      whatsapp_message: "Hola, quiero saber cuándo se lanzan las apps de Mewtda."
+    em_breve:
+      eyebrow: "PRÓXIMAMENTE"
+      title: "Aplicaciones en camino"
+      lead: "Estamos desarrollando aplicaciones para que sigas tu tienda desde donde estés."
+      tag: "Próximamente"
+      android:
+        title: "Android"
+        text: "Aplicación para celulares y tablets Android."
+      macos:
+        title: "macOS"
+        text: "Aplicación para computadoras Mac."
+      cta_button: "Quiero que me avisen"
+      whatsapp_message: "Hola, quiero que me avisen cuando se lancen las apps de Mewtda."
     cta:
-      title: "¿Quieres ver Mewtda funcionando en tu tienda?"
-      text: "Habla con nosotros y te mostramos cómo funciona en la práctica, con los datos de tu propia operación."
+      title: "¿Hablamos sobre tu tienda?"
+      text: "Cuéntanos cómo funciona tu operación hoy y te mostramos qué soluciones de Mewtda tienen sentido para tu momento."
       whatsapp_button: "Hablar por WhatsApp"
-      whatsapp_message: "Hola, quiero conocer Mewtda."
+      whatsapp_message: "Hola, quiero conocer las soluciones de Mewtda."
       entrar: "Ingresar"
     footer:
-      description: "CRM completo para tiendas Shopify — ventas, automatizaciones y afiliados en un solo lugar."
+      description: "Soluciones para e-commerce: CRM, sistema de cambios y creación de tiendas Shopify."
       shopify_partner_alt: "Shopify Partner"
-      produto_title: "Producto"
-      recursos: "Funciones"
-      como_funciona: "Cómo Funciona"
-      integracoes: "Integraciones"
+      solucoes_title: "Soluciones"
+      crm: "CRM"
+      trocas: "Sistema de Cambios"
+      lojas: "Tiendas Shopify"
+      apps: "Apps (próximamente)"
       contato_title: "Contacto"
       whatsapp: "WhatsApp"
       entrar: "Ingresar"
@@ -271,110 +541,177 @@ es:
 pt-BR:
   home:
     nav:
-      recursos: "Recursos"
-      automacoes: "Automações"
-      integracoes: "Integrações"
+      crm: "CRM"
+      sites: "Sites"
+      apps: "Apps"
+      clientes: "Clientes"
+      produtos: "Soluções"
+      beneficios: "Benefícios"
       sua_loja: "Sua Loja"
-      planos: "Planos"
+      em_breve: "Em breve"
+      contato: "Contato"
       entrar: "Entrar"
       abrir_menu: "Abrir menu"
       fechar_menu: "Fechar menu"
       language_switcher_label: "Selecionar idioma"
     hero:
-      badge: "CRM para lojas Shopify"
-      headline: "Gerencie sua loja com inteligência, em um só lugar"
-      subheadline: "Centralize pedidos, clientes, metas de vendas e automações de WhatsApp — com dashboards em tempo real que rodam sozinhos, sem planilha e sem retrabalho."
-      cta_entrar: "Entrar"
-      cta_ver_recursos: "Ver Recursos"
+      badge: "Soluções para e-commerce"
+      headline: "Tecnologia para sua loja virtual crescer com organização"
+      subheadline: "Criamos lojas na Shopify e desenvolvemos ferramentas para a operação do dia a dia: um CRM para gestão de clientes e vendas e um sistema de trocas integrado à Shopify."
+      cta_contato: "Fale com a gente"
+      cta_ver_solucoes: "Conheça as soluções"
+      whatsapp_message: "Olá, quero conhecer as soluções da Mewtda."
     strip:
-      shopify: "Integração nativa com Shopify"
-      whatsapp: "Automações via WhatsApp"
-      dashboards: "Dashboards em tempo real"
-      metas: "Metas, ROAS e CAC"
+      crm: "CRM para e-commerce"
+      trocas: "Trocas integradas à Shopify"
+      lojas: "Criação de lojas Shopify"
+      apps: "Apps Android e macOS em breve"
     clients:
+      headline: "Marcas que já vendem com a Mewtda"
+      lead: "Lojas reais que usam o painel Mewtda todos os dias pra vender mais."
       title: "Lojas que confiam na Mewtda"
       logo_alt: "Logo de cliente Mewtda"
     phones:
-      eyebrow: "EM AÇÃO"
-      dashboard:
-        eyebrow: "DASHBOARD"
-        title: "Toda sua operação em um painel só"
-        text: "Faturamento, ROAS e CAC em tempo real, com metas visuais pra toda a equipe acompanhar."
-        screen_title: "Dashboard de Vendas"
-      whatsapp:
-        eyebrow: "WHATSAPP"
-        title: "Automações que rodam sozinhas"
-        text: "Rastreio de pedido, cashback e recuperação de carrinho — configuradas uma vez, sem depender da equipe."
-        screen_title: "Automações no WhatsApp"
-      afiliados:
-        eyebrow: "AFILIADOS"
-        title: "Cada parceria com retorno mensurável"
-        text: "Rastreie cupons, gere links de afiliado e meça o retorno real de cada campanha e parceiro."
-        screen_title: "Afiliados & Campanhas"
-      integracoes:
-        eyebrow: "INTEGRAÇÕES"
-        title: "Conectado com o que sua loja já usa"
-        text: "Shopify, WhatsApp e ferramentas de marketing conversando entre si, sem gambiarra."
-        screen_title: "Integrações nativas"
-    recursos:
-      eyebrow: "RECURSOS"
-      title: "Tudo que sua operação Shopify precisa, em um painel só"
-      lead: "Menos abas abertas, menos planilha manual — mais visibilidade sobre o que realmente move o negócio."
-      dashboard:
-        title: "Dashboard de Vendas"
+      eyebrow: "NOSSAS SOLUÇÕES"
+      crm:
+        eyebrow: "CRM"
+        title: "Clientes, pedidos e vendas no mesmo painel"
+        text: "Dashboards, metas e automações de WhatsApp para acompanhar a operação e se relacionar melhor com quem compra."
+        screen_title: "CRM Mewtda"
+      trocas:
+        eyebrow: "TROCAS"
+        title: "Trocas organizadas, direto da Shopify"
+        text: "O cliente solicita a troca e sua equipe acompanha cada pedido em um só lugar, conectado à sua loja."
+        screen_title: "Sistema de Trocas"
+      lojas:
+        eyebrow: "LOJAS SHOPIFY"
+        title: "Sua loja criada do zero por quem entende de operação"
+        text: "Design com a cara da sua marca e loja pronta para vender, já conectada às nossas ferramentas."
+        screen_title: "Criação de Lojas"
+      apps:
+        eyebrow: "EM BREVE"
+        title: "A Mewtda no celular e no Mac"
+        text: "Aplicativos para Android e macOS estão a caminho."
+        screen_title: "Apps Android & macOS"
+    produtos:
+      eyebrow: "SOLUÇÕES"
+      title: "Uma plataforma para várias frentes da sua operação"
+      lead: "Cada solução resolve uma parte do dia a dia da loja — e todas foram pensadas para funcionar juntas."
+      crm:
+        title: "CRM Mewtda"
+        text: "Gestão do relacionamento com clientes e da operação da loja."
         items:
-          - "Faturamento, ROAS e CAC em tempo real"
-          - "Metas mensais com barra de progresso"
-          - "Gráficos diários de vendas e conversão"
-          - "Comparativo entre Google Ads e Meta Ads"
-          - "Exportação de relatórios em planilha"
-      whatsapp:
-        title: "Automações via WhatsApp"
+          - "Dashboard de vendas com faturamento, ROAS e CAC"
+          - "Metas mensais para toda a equipe acompanhar"
+          - "Automações de WhatsApp: rastreio, cashback e carrinho abandonado"
+          - "Gestão de afiliados e cupons"
+          - "Integração com Shopify, Google Ads e Meta Ads"
+      trocas:
+        title: "Sistema de Trocas"
+        text: "Processo de trocas integrado à sua loja Shopify."
         items:
-          - "Notificação automática de rastreio de pedido"
-          - "Cashback programado após a compra"
-          - "Recuperação de carrinho abandonado"
-          - "Pré-visualização da mensagem em tempo real"
-          - "Reenvio de notificações com um clique"
-      afiliados:
-        title: "Afiliados & Marketing"
+          - "Conectado aos pedidos da Shopify"
+          - "Página própria para o cliente solicitar a troca"
+          - "Solicitações centralizadas no painel"
+          - "Avisos por e-mail em cada etapa do processo"
+      lojas:
+        title: "Criação de Lojas Shopify"
+        text: "Montamos sua loja do zero, pronta para vender."
         items:
-          - "Geração de link de afiliado com um clique"
-          - "Rastreamento de vendas por cupom"
-          - "Dashboard de performance por afiliado"
-          - "Funil de conversão completo"
-          - "Analytics de sessões e produtos mais vistos"
-    automacoes:
-      eyebrow: "COMO FUNCIONA"
-      title: "Do primeiro acesso ao resultado, em três passos"
-      step1:
-        title: "Conecte sua loja"
-        text: "Autorize o acesso à sua Shopify em poucos cliques — sem instalar nada, sem depender de dev."
-      step2:
-        title: "Configure suas automações"
-        text: "Defina mensagens, prazos e cupons das automações de WhatsApp e as metas do mês."
-      step3:
-        title: "Acompanhe os resultados"
-        text: "Dashboards atualizados automaticamente, com histórico diário de vendas e conversão."
-    integracoes:
-      eyebrow: "INTEGRAÇÕES"
-      title: "Conectado com as ferramentas que você já usa"
+          - "Design sob medida para a sua marca"
+          - "Produtos, pagamentos, frete e domínio configurados"
+          - "Entra no ar já conectada às soluções Mewtda"
+    beneficios:
+      eyebrow: "PARA LOJISTAS"
+      title: "O que muda na rotina da sua loja"
+      lead: "Soluções feitas para donos e equipes de lojas virtuais que querem uma operação mais simples de tocar."
+      organizacao:
+        title: "Operação organizada"
+        text: "Pedidos, clientes, metas e trocas em painéis claros, em vez de planilhas espalhadas."
+      relacionamento:
+        title: "Relacionamento mais próximo"
+        text: "Comunicação no momento certo com quem já comprou, do rastreio do pedido ao pós-venda."
+      processos:
+        title: "Processos mais simples"
+        text: "Tarefas repetitivas automatizadas e fluxos definidos, para a equipe focar no que importa."
       shopify:
-        title: "Shopify"
-        text: "Sincronização de pedidos, produtos e clientes direto da sua loja."
-      whatsapp:
-        title: "WhatsApp (Z-API)"
-        text: "Automações de rastreio, cashback e recuperação de carrinho."
-      google_ads:
-        title: "Google Ads"
-        text: "Custo de anúncios direto no cálculo de ROAS e CAC."
-      meta_ads:
-        title: "Meta Ads"
-        text: "Investimento em Facebook e Instagram no mesmo painel."
-    ecommerce:
-      eyebrow: "MONTAMOS SUA LOJA"
-      title: "Ainda não tem uma loja? A gente cria pra você"
-      lead: "Além do CRM, também montamos sua loja na Shopify do zero — design com a cara da sua marca e já de saída integrada ao Mewtda, sem dor de cabeça com configuração."
+        title: "Feito para Shopify"
+        text: "Soluções de um Shopify Partner, integradas direto à sua loja."
+    products:
+      eyebrow: "PRODUTOS"
+      title: "Quatro produtos, uma operação conectada"
+      lead: "Cada produto resolve uma parte da sua loja, e todos conversam entre si no mesmo painel."
+      more: "Conhecer"
+      crm:
+        tagline: "Clientes, vendas e funil de conversão num painel só."
+      trocas:
+        tagline: "Trocas e devoluções no automático, com vale-troca na Shopify."
+      new:
+        tagline: "Criação de lojas Shopify pensadas pra vender."
+      app:
+        tagline: "O app da sua loja pra iOS e Android."
+    trocas_part:
+      number: "02"
+      title: "Troca e devolução sem planilha nem WhatsApp"
+      lead: "Seu cliente abre a troca sozinho, num portal com a cara da sua loja. Você aprova no painel e o vale-troca vira cupom na Shopify automaticamente."
+      features:
+        portal:
+          title: "Portal self-service"
+          text: "O cliente busca o pedido pelo número e e-mail e escolhe os itens."
+        regras:
+          title: "Prazos automáticos"
+          text: "Troca e devolução liberadas conforme o prazo de cada pedido."
+        foto:
+          title: "Foto do defeito"
+          text: "Motivo obrigatório e foto quando o produto chega com avaria."
+        cupom:
+          title: "Vale-troca na Shopify"
+          text: "Aprovou, o cupom é criado e o cliente recebe por e-mail."
+      portal:
+        title: "Central de Trocas"
+        order: "Pedido #1042"
+        select_item: "Selecionar este item"
+        kind: "Troca"
+        reason: "Tamanho não serviu"
+        submit: "Enviar solicitação"
+        coupon_label: "Seu vale-troca"
+        coupon_value: "TROCA-1042 · R$ 289,90"
+        items: ["Jaqueta bomber · M", "Camiseta oversized · G"]
+      notifications:
+        new_title: "Nova solicitação de troca"
+        new_text: "Pedido #1042 · 1 item"
+        approved_title: "Troca aprovada"
+        approved_text: "Cupom TROCA-1042 enviado por e-mail"
+      cta_button: "Quero a Troca Fácil"
+      whatsapp_message: "Olá, quero conhecer o Mewtda Troca Fácil."
+    crm_part:
+      number: "01"
+      title: "Tudo da sua loja num painel só"
+      lead: "Clientes, pedidos, trocas, WhatsApp e marketing conectados à sua Shopify. Você enxerga o funil inteiro e sabe exatamente onde está perdendo venda."
+      screen_alt: "Painel de analytics da Mewtda"
+      features:
+        analytics:
+          title: "Funil de conversão"
+          text: "Visitas, produtos vistos, carrinhos e checkouts, dia a dia."
+        clientes:
+          title: "CRM de clientes"
+          text: "Histórico de cada cliente, segmentado e pronto pra campanha."
+        trocas:
+          title: "Trocas e devoluções"
+          text: "Portal de trocas pro cliente e aprovação em poucos cliques."
+        whatsapp:
+          title: "WhatsApp e e-mail"
+          text: "Fale com sua base e recupere carrinhos direto do painel."
+      cta_button: "Quero conhecer o CRM"
+      whatsapp_message: "Olá, quero conhecer o CRM da Mewtda."
+    sites:
+      number: "03"
+      title: "Lojas que vendem desde o primeiro dia"
+      lead: "Criamos sua loja na Shopify do zero: design com a cara da sua marca, pensada pra converter no computador e no celular, e já conectada ao CRM Mewtda."
+      case_label: "Loja criada pela Mewtda"
+      case_link: "Ver a loja no ar"
+      desktop_alt: "Loja Fernanda Farah no computador"
+      mobile_alt: "Loja Fernanda Farah no celular"
       design:
         title: "Design sob medida"
         text: "Layout pensado pra sua marca e pro seu produto, não um template genérico."
@@ -382,23 +719,91 @@ pt-BR:
         title: "Loja completa na Shopify"
         text: "Produtos, pagamentos, frete e domínio configurados de ponta a ponta."
       crm:
-        title: "Já nasce integrada ao CRM"
-        text: "Sem trabalho extra depois: a loja sai do ar já conectada ao painel Mewtda."
+        title: "Conectada às soluções Mewtda"
+        text: "Sem trabalho extra depois: a loja entra no ar já conectada ao painel Mewtda."
       cta_button: "Quero minha loja"
       whatsapp_message: "Olá, quero criar minha loja com a Mewtda."
+    apps:
+      number: "04"
+      badge: "Em breve"
+      title: "Sua loja pronta pra vender, 24 horas por dia"
+      lead: "O app da sua loja pra iOS e Android: vitrine, push e checkout na palma da mão do cliente, conectado ao CRM Mewtda."
+      segments_label: "Feita pro seu segmento"
+      pills:
+        - "iOS e Android"
+        - "Push notifications"
+        - "Checkout com Pix"
+      segments:
+        moda:
+          label: "Moda"
+          pitch: "Coleções, grade de tamanhos e trocas fáceis: sua marca de moda vendendo direto pro cliente, sem depender de marketplace."
+          banner_tag: "Nova coleção"
+          banner_title: "Até 30% OFF na primeira compra"
+          products: ["Jaqueta bomber", "Camiseta oversized", "Tênis runner", "Sapato oxford"]
+          prices: ["R$ 289,90", "R$ 89,90", "R$ 349,90", "R$ 259,90"]
+        beleza:
+          label: "Beleza"
+          pitch: "Kits, recompra e vitrines por tipo de pele: transforme quem compra uma vez em cliente fiel da sua marca."
+          banner_tag: "Skincare"
+          banner_title: "Monte sua rotina com frete grátis"
+          products: ["Sérum facial", "Loção hidratante", "Kit rotina", "Tônico facial"]
+          prices: ["R$ 119,90", "R$ 69,90", "R$ 199,90", "R$ 79,90"]
+        eletronicos:
+          label: "Eletrônicos"
+          pitch: "Ficha técnica, parcelamento e vitrine de lançamentos: tudo o que o cliente precisa pra decidir e comprar na hora."
+          banner_tag: "Lançamentos"
+          banner_title: "Em até 10x sem juros"
+          products: ["Smartwatch", "Headphone", "Câmera instantânea", "Relógio minimal"]
+          prices: ["R$ 1.899", "R$ 499,90", "R$ 749,90", "R$ 399,90"]
+        casa:
+          label: "Casa & Decor"
+          pitch: "Ambientes inspiradores, fotos que vendem e frete calculado na hora: a loja da sua marca de casa pronta pra faturar."
+          banner_tag: "Decor"
+          banner_title: "Renove a sala com até 12x"
+          products: ["Sofá veludo", "Poltrona capitonê", "Pendente", "Luminária de piso"]
+          prices: ["R$ 3.490", "R$ 1.290", "R$ 249,90", "R$ 689,90"]
+      phone:
+        search: "Buscar produtos"
+        shop_now: "Comprar agora"
+        add: "Adicionar"
+        checkout: "Finalizar compra"
+      notifications:
+        sale_title: "Nova venda!"
+        sale_text: "Pedido #1042 · R$ 289,90"
+        pix_title: "Pix aprovado"
+        pix_text: "Pagamento recebido na hora"
+        cart_title: "Carrinho recuperado"
+        cart_text: "Cliente voltou e finalizou a compra"
+        now: "agora"
+      cta_button: "Quero ser avisado"
+      whatsapp_message: "Olá, quero saber quando os apps da Mewtda forem lançados."
+    em_breve:
+      eyebrow: "EM BREVE"
+      title: "Aplicativos a caminho"
+      lead: "Estamos desenvolvendo aplicativos para você acompanhar sua loja de onde estiver."
+      tag: "Em breve"
+      android:
+        title: "Android"
+        text: "Aplicativo para celulares e tablets Android."
+      macos:
+        title: "macOS"
+        text: "Aplicativo para computadores Mac."
+      cta_button: "Quero ser avisado"
+      whatsapp_message: "Olá, quero ser avisado quando os aplicativos da Mewtda forem lançados."
     cta:
-      title: "Quer ver o Mewtda funcionando na sua loja?"
-      text: "Fale com a gente e a gente te mostra como fica na prática, com os dados da sua própria operação."
+      title: "Vamos conversar sobre a sua loja?"
+      text: "Conte como funciona sua operação hoje e mostramos quais soluções da Mewtda fazem sentido para o seu momento."
       whatsapp_button: "Falar no WhatsApp"
-      whatsapp_message: "Olá, quero conhecer o Mewtda."
+      whatsapp_message: "Olá, quero conhecer as soluções da Mewtda."
       entrar: "Entrar"
     footer:
-      description: "CRM completo para lojas Shopify — vendas, automações e afiliados em um só lugar."
+      description: "Soluções para e-commerce: CRM, sistema de trocas e criação de lojas Shopify."
       shopify_partner_alt: "Shopify Partner"
-      produto_title: "Produto"
-      recursos: "Recursos"
-      como_funciona: "Como Funciona"
-      integracoes: "Integrações"
+      solucoes_title: "Soluções"
+      crm: "CRM"
+      trocas: "Sistema de Trocas"
+      lojas: "Lojas Shopify"
+      apps: "Aplicativos (em breve)"
       contato_title: "Contato"
       whatsapp: "WhatsApp"
       entrar: "Entrar"

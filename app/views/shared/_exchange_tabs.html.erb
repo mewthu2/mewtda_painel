@@ -1,0 +1,6 @@
+<div class="popups-tabs">
+  <%= link_to 'Solicitações', exchange_requests_path, class: "popups-tabs__link #{'active' if request.path.start_with?(exchange_requests_path)}" %>
+  <%= link_to 'Configurações', edit_exchange_config_path, class: "popups-tabs__link #{'active' if current_page?(edit_exchange_config_path)}" %>
+  <%= link_to 'Templates de E-mail', email_templates_exchange_config_path, class: "popups-tabs__link #{'active' if current_page?(email_templates_exchange_config_path)}" %>
+  <%= link_to 'Config. de E-mail', edit_email_configuration_path, class: "popups-tabs__link #{'active' if request.path.start_with?('/crm/email_configuration')}" %>
+</div>

@@ -7,6 +7,7 @@ class CustomersController < ApplicationController
                                  .includes(orders: { order_items: :product })
                                  .order(created_at: :desc)
                                  .paginate(page: params[:page], per_page: params_per_page(params[:per_page]))
+    @popup_submission_emails = popup_submission_emails
   end
 
   def details
@@ -100,6 +101,16 @@ class CustomersController < ApplicationController
 
   def customers_scope
     Customer.joins(:orders).where(orders: { client_id: current_client_id }).distinct
+  end
+
+  # E-mails (normalizados em minúsculas) que já enviaram o formulário do
+  # pop-up de cadastro deste cliente — usado pra marcar na tabela quem
+  # interagiu com o modal.
+  def popup_submission_emails
+    popup = Popup.find_by(client_id: current_client_id)
+    return Set.new unless popup
+
+    popup.popup_submissions.pluck(:email).filter_map { |email| email&.downcase }.to_set
   end
 
   def set_filter_scope

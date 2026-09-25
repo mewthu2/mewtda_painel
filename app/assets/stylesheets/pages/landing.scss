@@ -9,16 +9,17 @@
      1. TOKENS
      ----------------------------------------------------------------- */
   .mwtda-lp {
-    /* neutros (navy quase-preto, com variações de profundidade) */
-    --mw-bg: #05070f;
-    --mw-bg-elevated: #0d1330;
-    --mw-bg-tint: #0a0f22;
-    --mw-border: rgba(255, 255, 255, 0.08);
-    --mw-border-strong: rgba(255, 255, 255, 0.14);
+    /* neutros (tema claro, no estilo da kobe.io: fundo branco, texto preto) */
+    --mw-bg: #ffffff;
+    --mw-bg-elevated: #ffffff;
+    --mw-bg-tint: #f5f6f8;
+    --mw-bg-dark: #0b0c10;
+    --mw-border: rgba(11, 12, 16, 0.08);
+    --mw-border-strong: rgba(11, 12, 16, 0.16);
 
     /* texto */
-    --mw-fg: #f5f7fb;
-    --mw-fg-muted: #8b96b8;
+    --mw-fg: #0b0c10;
+    --mw-fg-muted: #5c6373;
 
     /* marca */
     --mw-primary: #fc7107;
@@ -88,7 +89,6 @@
   }
 
   .mwtda-lp-hero,
-  .mwtda-lp-strip,
   .mwtda-lp-section,
   .mwtda-lp-cta,
   .mwtda-lp-footer {
@@ -231,6 +231,18 @@
     border-color: rgba(255, 255, 255, 0.4);
   }
 
+  /* botão escuro (CTA das 3 partes, como os botões pretos da kobe.io) */
+  .mwtda-lp-btn--dark,
+  .mwtda-lp a.mwtda-lp-btn--dark {
+    background: var(--mw-bg-dark);
+    color: #fff;
+    box-shadow: 0 10px 24px -12px rgba(11, 12, 16, 0.6);
+  }
+
+  .mwtda-lp-btn--dark:hover {
+    background: #22252e;
+  }
+
   .mwtda-lp-btn--lg {
     padding: 0.95rem 2rem;
     font-size: 1rem;
@@ -256,7 +268,7 @@
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.14em;
-    color: var(--mw-primary-light);
+    color: var(--mw-primary);
     margin-bottom: 0.75rem;
   }
 
@@ -279,7 +291,7 @@
   }
 
   .mwtda-lp-nav.is-scrolled {
-    background: rgba(5, 7, 15, 0.72);
+    background: rgba(255, 255, 255, 0.82);
     border-color: var(--mw-border);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
@@ -309,7 +321,7 @@
   .mwtda-lp-nav__links {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1.6rem;
     font-size: 0.9rem;
     color: var(--mw-fg-muted);
     margin: 0 auto;
@@ -408,7 +420,7 @@
 
   .mwtda-lp-lang__option.is-active {
     color: var(--mw-fg);
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(11, 12, 16, 0.06);
   }
 
   .mwtda-lp-mobile-menu__lang {
@@ -422,7 +434,7 @@
     border: 1px solid var(--mw-border-strong);
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 1100px) {
     .mwtda-lp-nav__links,
     .mwtda-lp-nav__cta,
     .mwtda-lp-nav__lang {
@@ -503,7 +515,7 @@
     position: relative;
   }
 
-  @media (min-width: 861px) {
+  @media (min-width: 1101px) {
     .mwtda-lp-mobile-menu {
       display: none;
     }
@@ -540,7 +552,7 @@
     top: -220px;
     left: 50%;
     transform: translate(-50%, calc(var(--mw-scroll-y) * 0.18));
-    background: radial-gradient(circle, rgba(252, 113, 7, 0.32), transparent 70%);
+    background: radial-gradient(circle, rgba(252, 113, 7, 0.18), transparent 70%);
   }
 
   .mwtda-lp-hero::after {
@@ -549,7 +561,7 @@
     top: 120px;
     right: -160px;
     transform: translateY(calc(var(--mw-scroll-y) * -0.1));
-    background: radial-gradient(circle, rgba(0, 36, 126, 0.55), transparent 70%);
+    background: radial-gradient(circle, rgba(51, 85, 255, 0.14), transparent 70%);
   }
 
   .mwtda-lp-hero__inner {
@@ -609,7 +621,7 @@
     line-height: 1.08;
     font-weight: 700;
     letter-spacing: -0.02em;
-    background: linear-gradient(180deg, #ffffff 0%, #cfd6e8 100%);
+    background: linear-gradient(180deg, #0b0c10 0%, #3b4150 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -630,56 +642,19 @@
   }
 
   /* -----------------------------------------------------------------
-     6. STRIP (marquee infinito)
+     6. MARQUEE (usado pelas faixas de logos de clientes)
      ----------------------------------------------------------------- */
-  .mwtda-lp-strip {
-    position: relative;
-    border-top: 1px solid var(--mw-border);
-    border-bottom: 1px solid var(--mw-border);
-    background: var(--mw-bg-tint);
-    padding: 1.1rem 0;
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  }
-
-  .mwtda-lp-strip__inner {
-    display: flex;
-    align-items: center;
-    gap: 3.5rem;
-    width: max-content;
-    animation: mw-marquee 26s linear infinite;
-  }
-
-  .mwtda-lp-strip:hover .mwtda-lp-strip__inner {
-    animation-play-state: paused;
-  }
-
-  .mwtda-lp-strip__item {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    white-space: nowrap;
-    font-size: 0.92rem;
-    font-weight: 500;
-    color: var(--mw-fg-muted);
-  }
-
-  .mwtda-lp-strip__item i {
-    color: var(--mw-primary-light);
-    font-size: 1rem;
-  }
-
   @keyframes mw-marquee {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
 
   /* -----------------------------------------------------------------
-     6b. CLIENTS (carrossel de logos, mesmo mecanismo do marquee acima)
+     6b. CLIENTS — duas faixas de logos em sentidos opostos, dentro de um
+     cartão (animação mw-marquee, logo acima)
      ----------------------------------------------------------------- */
   .mwtda-lp-clients {
-    padding: 3.5rem 1.5rem;
+    padding: 6rem 1.5rem 5rem;
   }
 
   .mwtda-lp-clients__inner {
@@ -688,48 +663,93 @@
     text-align: center;
   }
 
-  .mwtda-lp-clients__title {
-    display: block;
-    margin-bottom: 1.75rem;
+  .mwtda-lp-clients__headline,
+  .mwtda-lp-clients__lead {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .mwtda-lp-clients__lead {
+    margin-bottom: 2.5rem;
+  }
+
+  .mwtda-lp-clients__board {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem 0;
+    border-radius: var(--mw-radius-lg);
+    background: var(--mw-bg-tint);
+    border: 1px solid var(--mw-border);
   }
 
   .mwtda-lp-clients__strip {
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
   }
 
   .mwtda-lp-clients__track {
     display: flex;
     align-items: center;
-    gap: 3.5rem;
+    gap: 1rem;
     width: max-content;
-    animation: mw-marquee 30s linear infinite;
+    animation: mw-marquee 40s linear infinite;
   }
 
-  .mwtda-lp-clients__strip:hover .mwtda-lp-clients__track {
+  .mwtda-lp-clients__track--reverse {
+    animation-direction: reverse;
+    animation-duration: 46s;
+  }
+
+  .mwtda-lp-clients__board:hover .mwtda-lp-clients__track {
     animation-play-state: paused;
+  }
+
+  .mwtda-lp-clients__tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 190px;
+    height: 88px;
+    padding: 0 1.75rem;
+    flex-shrink: 0;
+    border-radius: var(--mw-radius);
+    background: var(--mw-bg);
+    border: 1px solid var(--mw-border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .mwtda-lp-clients__tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px -18px rgba(11, 12, 16, 0.35);
   }
 
   .mwtda-lp-clients__logo {
     display: block;
-    height: 34px;
+    max-height: 36px;
+    max-width: 100%;
     width: auto;
-    max-width: none;
     object-fit: contain;
-    flex-shrink: 0;
-    opacity: 0.55;
-    transition: opacity 0.2s ease;
-    // logos de clientes vêm em cores/variantes bem diferentes (algumas já
-    // são versões "negativo" claras, outras escuras/coloridas de origem);
-    // pra não depender de qual variante cada cliente manda, força tudo pra
-    // um silhueta branca uniforme — brightness(0) zera a cor mantendo o
-    // alfa, invert(1) vira essa cor (preta) em branco.
-    filter: brightness(0) invert(1);
+    opacity: 0.7;
+    transition: opacity 0.25s ease;
+    // logos de clientes vêm em cores/variantes bem diferentes (várias são
+    // versões "negativo" brancas); pra ficarem legíveis no fundo claro e
+    // uniformes, vira tudo silhueta escura — brightness(0) zera a cor
+    // mantendo o alfa.
+    filter: brightness(0);
   }
 
-  .mwtda-lp-clients__logo:hover {
-    opacity: 0.9;
+  .mwtda-lp-clients__tile:hover .mwtda-lp-clients__logo {
+    opacity: 1;
+  }
+
+  @media (max-width: 640px) {
+    .mwtda-lp-clients__tile {
+      width: 150px;
+      height: 72px;
+      padding: 0 1.25rem;
+    }
   }
 
   /* -----------------------------------------------------------------
@@ -786,7 +806,7 @@
   .mwtda-lp-card:hover {
     transform: translateY(-6px);
     border-color: rgba(252, 113, 7, 0.35);
-    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 20px 40px -20px rgba(11, 12, 16, 0.25);
   }
 
   /* --- intro cards (topo) --- */
@@ -898,6 +918,36 @@
     color: var(--mw-fg-muted);
     font-size: 0.9rem;
     margin: 0;
+  }
+
+  .mwtda-lp-platform-card__icon--brand {
+    color: var(--mw-primary-light);
+  }
+
+  /* --- produtos: parágrafo curto entre o título e a lista --- */
+  .mwtda-lp-feature-card__text {
+    color: var(--mw-fg-muted);
+    font-size: 0.95rem;
+    margin: -0.5rem 0 1.1rem;
+  }
+
+  /* --- em breve: 2 cards centralizados + selo --- */
+  .mwtda-lp-platform-grid--duo {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .mwtda-lp-platform-card {
+    position: relative;
+  }
+
+  .mwtda-lp-soon-tag {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.7rem;
   }
 
   @media (max-width: 980px) {
@@ -1037,7 +1087,7 @@
     left: 50%;
     transform: translateX(-50%);
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(252, 113, 7, 0.25), rgba(0, 36, 126, 0.28) 45%, transparent 75%);
+    background: radial-gradient(circle, rgba(252, 113, 7, 0.16), rgba(51, 85, 255, 0.1) 45%, transparent 75%);
     filter: blur(40px);
     animation: mw-cta-pulse 6s ease-in-out infinite;
   }
@@ -1160,213 +1210,1416 @@
     }
   }
 
-  /* =========================================================================
-     SHOWCASE 3D — celular único girando via WebGL (Three.js), com troca de
-     tela sincronizada ao scroll. A seção "prende" (sticky) por N x 100vh
-     enquanto o usuário rola, e o celular dá uma volta completa entre cada
-     parada, trocando de tela exatamente no ponto em que está "de costas"
-     pra câmera (por isso a troca é invisível/suave).
-     ========================================================================= */
-
-  .mwtda-lp-phones {
+  /* -----------------------------------------------------------------
+     12. AS 3 PARTES (01 CRM · 02 Sites · 03 Apps) — texto de um lado,
+     aparelho do outro, alternando o lado a cada seção
+     ----------------------------------------------------------------- */
+  .mwtda-lp-part {
     position: relative;
-    background: radial-gradient(120% 100% at 50% 0%, #0a1230 0%, var(--mw-bg) 60%);
+    display: block !important;
+    width: 100% !important;
+    padding: 7rem 1.5rem;
+    overflow: hidden;
   }
 
-  .mwtda-lp-phones__pinwrap {
-    height: 400vh;
-    position: relative;
+  .mwtda-lp-part--tint {
+    background: var(--mw-bg-tint);
   }
 
-  .mwtda-lp-phones__stage {
-    position: sticky;
-    /* a nav é position:fixed e fica POR CIMA do conteúdo (não empurra
-       layout) — sem esse offset, o celular fica preso atrás da nav
-       enquanto a seção rola. */
-    top: var(--mw-nav-h);
-    height: calc(100vh - var(--mw-nav-h));
+  .mwtda-lp-part__inner {
+    max-width: var(--mw-container);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .mwtda-lp-part--flip .mwtda-lp-part__copy {
+    order: 2;
+  }
+
+  .mwtda-lp-part__label {
     display: flex;
     align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .mwtda-lp-part__label .mwtda-lp-eyebrow {
+    margin: 0;
+  }
+
+  .mwtda-lp-part__number {
+    font-family: var(--mw-font-heading);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--mw-fg-muted);
+    padding-right: 0.75rem;
+    border-right: 1px solid var(--mw-border-strong);
+  }
+
+  .mwtda-lp-part__title {
+    font-family: var(--mw-font-heading);
+    font-size: clamp(2.1rem, 4.2vw, 3.3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.06;
+    margin: 0 0 1.25rem;
+  }
+
+  .mwtda-lp-part__lead {
+    color: var(--mw-fg-muted);
+    font-size: 1.08rem;
+    max-width: 520px;
+    margin: 0 0 2.25rem;
+  }
+
+  /* CRM: grade 2x2 de recursos */
+  .mwtda-lp-part__features {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+    margin-bottom: 2.5rem !important;
+  }
+
+  .mwtda-lp-part__features strong,
+  .mwtda-lp-part__list strong {
+    display: block;
+    font-family: var(--mw-font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0.75rem 0 0.25rem;
+  }
+
+  .mwtda-lp-part__list strong {
+    margin-top: 0;
+  }
+
+  .mwtda-lp-part__features p,
+  .mwtda-lp-part__list p {
+    margin: 0;
+    color: var(--mw-fg-muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .mwtda-lp-part__feature-icon {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(252, 113, 7, 0.1);
+    color: var(--mw-primary);
+    font-size: 1rem;
+  }
+
+  /* Sites: lista vertical com ícone ao lado */
+  .mwtda-lp-part__list {
+    display: flex !important;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem !important;
+  }
+
+  .mwtda-lp-part__list li {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .mwtda-lp-part__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.1rem;
+  }
+
+  .mwtda-lp-part__visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+
+  .mwtda-lp-part__glow {
+    position: absolute;
+    inset: 5% 0;
+    background:
+      radial-gradient(closest-side, rgba(252, 113, 7, 0.22), transparent 70%),
+      radial-gradient(closest-side at 75% 70%, rgba(51, 85, 255, 0.16), transparent 70%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  /* --- 01: notebook --- */
+  .mwtda-lp-laptop {
+    position: relative;
+    width: 100%;
+    max-width: 680px;
+    // passa um pouco da coluna no desktop, como na kobe.io
+    margin-right: -6%;
+  }
+
+  .mwtda-lp-laptop__screen {
+    position: relative;
+    padding: 2.2% 2.2% 3%;
+    border-radius: 18px 18px 6px 6px;
+    background: linear-gradient(160deg, #2b2e37, #0b0c10);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+      0 40px 80px -40px rgba(11, 12, 16, 0.55);
+  }
+
+  .mwtda-lp-laptop__camera {
+    position: absolute;
+    top: 0.9%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: #3a3d47;
+  }
+
+  .mwtda-lp-laptop__display {
+    // a réplica do painel escala com a largura da tela do notebook (cqw)
+    container-type: inline-size;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
-    gap: clamp(2rem, 6vw, 6rem);
-    padding: 0 1.5rem;
+    border-radius: 4px;
+    background: #f4f5f7;
+  }
+
+  .mwtda-lp-laptop__display > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left top;
+  }
+
+  .mwtda-lp-laptop__base {
+    position: relative;
+    height: 16px;
+    margin: 0 -7%;
+    border-radius: 2px 2px 14px 14px;
+    background: linear-gradient(180deg, #d9dbe1, #a9adb8);
+    box-shadow: 0 20px 30px -18px rgba(11, 12, 16, 0.5);
+  }
+
+  .mwtda-lp-laptop__base span {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 16%;
+    height: 6px;
+    transform: translateX(-50%);
+    border-radius: 0 0 8px 8px;
+    background: #9398a4;
+  }
+
+  /* réplica do painel dentro do notebook (fallback sem o print) */
+  .mwtda-lp-crm-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    font-family: var(--mw-font-body);
+    font-size: 1.3cqw;
+    color: #0b0c10;
+    background: #f4f5f7;
+  }
+
+  // layouts/global.scss aplica `* { font-size: 13px }` — aqui dentro tudo
+  // precisa herdar o tamanho em cqw pra réplica escalar junto com a tela
+  .mwtda-lp-crm-screen * {
+    font-size: inherit;
+  }
+
+  .mwtda-lp-crm-screen i {
+    font-size: 0.95em;
+  }
+
+  .mwtda-lp-crm-screen__top {
+    display: flex;
+    align-items: center;
+    gap: 2em;
+    height: 4.8em;
+    padding: 0 2em;
+    background: #0a2472;
+  }
+
+  .mwtda-lp-crm-screen__logo {
+    height: 2em;
+    width: auto;
+    filter: brightness(0) invert(1);
+  }
+
+  .mwtda-lp-crm-screen__search {
+    flex: 0 1 40%;
+    margin: 0 auto;
+    padding: 0.7em 1em;
+    border-radius: 0.6em;
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .mwtda-lp-crm-screen__avatar {
+    width: 2.6em;
+    height: 2.6em;
+    border-radius: 50%;
+    background: var(--mw-primary);
+    color: #fff;
+    font-weight: 700;
+    line-height: 2.6em;
+    text-align: center;
+  }
+
+  .mwtda-lp-crm-screen__body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+  }
+
+  .mwtda-lp-crm-screen__side {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    width: 17%;
+    padding: 1.5em 1em;
+    background: #fff;
+    border-right: 1px solid #e6e8ec;
+  }
+
+  .mwtda-lp-crm-screen__side span {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.8em;
+    border-radius: 0.6em;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .mwtda-lp-crm-screen__side .is-active {
+    background: #fff1e6;
+    color: var(--mw-primary);
+  }
+
+  .mwtda-lp-crm-screen__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4em;
+    padding: 1.8em;
+    min-width: 0;
+  }
+
+  .mwtda-lp-crm-screen__hero {
+    position: relative;
+    padding: 1.8em 2em;
+    border-radius: 0.8em;
+    background: #0a2472;
+    color: #fff;
+  }
+
+  .mwtda-lp-crm-screen__hero strong {
+    display: block;
+    font-size: 1.8em;
+    font-family: var(--mw-font-heading);
+  }
+
+  .mwtda-lp-crm-screen__hero small {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .mwtda-lp-crm-screen__range {
+    position: absolute;
+    top: 50%;
+    right: 2em;
+    display: flex;
+    gap: 0.3em;
+    padding: 0.3em;
+    transform: translateY(-50%);
+    border-radius: 0.6em;
+    background: rgba(255, 255, 255, 0.85);
+    color: #5c6373;
+  }
+
+  .mwtda-lp-crm-screen__range em {
+    padding: 0.5em 0.9em;
+    border-radius: 0.4em;
+    font-style: normal;
+  }
+
+  .mwtda-lp-crm-screen__range .is-active {
+    background: #fff;
+    color: #0b0c10;
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  .mwtda-lp-crm-screen__kpis {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1em;
+  }
+
+  .mwtda-lp-crm-screen__kpis div {
+    padding: 1.2em;
+    border-radius: 0.6em;
+    background: #fff;
+    border: 1px solid #e6e8ec;
+    border-left: 0.35em solid var(--kpi);
+  }
+
+  .mwtda-lp-crm-screen__kpis small {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #5c6373;
+  }
+
+  .mwtda-lp-crm-screen__kpis b {
+    font-family: var(--mw-font-heading);
+    font-size: 2em;
+  }
+
+  .mwtda-lp-crm-screen__funnel {
+    flex: 1;
+    padding: 1.6em 2em;
+    border-radius: 0.8em;
+    background: #0a2472;
+    color: #fff;
+  }
+
+  .mwtda-lp-crm-screen__funnel > div {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 1.4em;
+  }
+
+  .mwtda-lp-crm-screen__funnel span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4em;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mwtda-lp-crm-screen__funnel span:first-child {
+    border-left: 0;
+  }
+
+  .mwtda-lp-crm-screen__funnel span i {
+    width: 3.2em;
+    height: 3.2em;
+    border-radius: 0.6em;
+    background: rgba(255, 255, 255, 0.1);
+    line-height: 3.2em;
+    text-align: center;
+  }
+
+  .mwtda-lp-crm-screen__funnel b {
+    font-family: var(--mw-font-heading);
+    font-size: 2.4em;
+    line-height: 1.1;
+  }
+
+  .mwtda-lp-crm-screen__funnel small {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .mwtda-lp-crm-screen__funnel em {
+    position: relative;
+    width: 45%;
+    height: 0.4em;
+    border-radius: 1em;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+  }
+
+  .mwtda-lp-crm-screen__funnel em::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--pct);
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+  }
+
+  /* --- 02: janela de navegador (desktop) + celular (mobile) --- */
+  .mwtda-lp-devices {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    padding: 0 0 4.5rem;
+    margin-left: -4%;
+  }
+
+  .mwtda-lp-browser {
+    overflow: hidden;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid var(--mw-border);
+    box-shadow: 0 40px 80px -40px rgba(11, 12, 16, 0.45);
+  }
+
+  .mwtda-lp-browser__bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    background: #f1f2f5;
+    border-bottom: 1px solid var(--mw-border);
+  }
+
+  .mwtda-lp-browser__bar > span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+
+  .mwtda-lp-browser__bar > span:nth-child(2) { background: #febc2e; }
+  .mwtda-lp-browser__bar > span:nth-child(3) { background: #28c840; }
+
+  .mwtda-lp-browser__bar em {
+    flex: 0 1 55%;
+    margin: 0 auto;
+    padding: 4px 10px;
+    border-radius: 7px;
+    background: #fff;
+    color: var(--mw-fg-muted);
+    font: 500 0.72rem var(--mw-font-body);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mwtda-lp-browser__bar em i {
+    font-size: 0.6rem;
+    margin-right: 3px;
+  }
+
+  .mwtda-lp-browser__shot {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  .mwtda-lp-devices__phone {
+    position: absolute;
+    right: -6%;
+    bottom: 0;
+    width: 34%;
+    min-width: 150px;
+  }
+
+  .mwtda-lp-devices__phone .mwtda-lp-shop__phone {
+    width: 100%;
+    padding: 7px;
+    border-radius: 30px;
+  }
+
+  .mwtda-lp-devices__phone .mwtda-lp-shop__screen {
+    border-radius: 24px;
+  }
+
+  .mwtda-lp-devices__phone .mwtda-lp-shop__notch {
+    top: 12px;
+    width: 30%;
+    height: 14px;
+  }
+
+  .mwtda-lp-devices__phone-shot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .mwtda-lp-devices__case {
+    position: absolute;
+    left: 4%;
+    bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid var(--mw-border);
+    box-shadow: 0 18px 40px -18px rgba(11, 12, 16, 0.35);
+    transition: transform 0.3s ease;
+  }
+
+  .mwtda-lp-devices__case:hover {
+    transform: translateY(-3px);
+  }
+
+  .mwtda-lp-devices__case span {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mw-primary);
+  }
+
+  .mwtda-lp-devices__case strong {
+    font-family: var(--mw-font-heading);
+    font-size: 1.05rem;
+  }
+
+  .mwtda-lp-devices__case em {
+    font-style: normal;
+    font-size: 0.8rem;
+    color: var(--mw-fg-muted);
+  }
+
+  .mwtda-lp-devices__case em i {
+    font-size: 0.65rem;
+    margin-left: 2px;
+  }
+
+  @media (max-width: 980px) {
+    .mwtda-lp-part {
+      padding: 5rem 1.5rem;
+    }
+
+    .mwtda-lp-part__inner {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .mwtda-lp-part--flip .mwtda-lp-part__copy {
+      order: 0;
+    }
+
+    .mwtda-lp-laptop,
+    .mwtda-lp-devices {
+      margin: 0 auto;
+    }
+
+    .mwtda-lp-devices__phone {
+      right: 0;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .mwtda-lp-part__features {
+      grid-template-columns: 1fr;
+    }
+
+    .mwtda-lp-laptop__base {
+      margin: 0 -4%;
+    }
+
+    .mwtda-lp-devices__case {
+      left: 0;
+      padding: 0.65rem 0.85rem;
+    }
+  }
+
+  /* -----------------------------------------------------------------
+     13. APPS (03) — celular com vitrine de e-commerce (inspirado na kobe.io)
+     ----------------------------------------------------------------- */
+  /* --- abas de segmento --- */
+  .mwtda-lp-shop__segments-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mw-fg-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .mwtda-lp-shop__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .mwtda-lp-shop__tab {
+    appearance: none;
+    border: 1px solid var(--mw-border-strong);
+    background: var(--mw-bg);
+    color: var(--mw-fg-muted);
+    font: 500 0.9rem var(--mw-font-body);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .mwtda-lp-shop__tab:hover {
+    color: var(--mw-fg);
+    border-color: rgba(252, 113, 7, 0.45);
+  }
+
+  .mwtda-lp-shop__tab[aria-selected="true"] {
+    background: var(--mw-primary);
+    border-color: var(--mw-primary);
+    color: #fff;
+  }
+
+  .mwtda-lp-shop__tab:focus-visible {
+    outline: 2px solid var(--mw-primary-light);
+    outline-offset: 2px;
+  }
+
+  /* textos de cada segmento empilhados no mesmo espaço (sem pular layout) */
+  .mwtda-lp-shop__pitches {
+    display: grid;
+    margin: 1.1rem 0 2.25rem;
+  }
+
+  .mwtda-lp-shop__pitch {
+    grid-area: 1 / 1;
+    margin: 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--mw-primary);
+    color: var(--mw-fg);
+    font-size: 1rem;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+
+  .mwtda-lp-shop__pitch[data-active="true"] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .mwtda-lp-shop__pills {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    font-size: 0.85rem;
+    color: var(--mw-fg-muted);
+  }
+
+  .mwtda-lp-shop__pills i {
+    color: var(--mw-primary);
+    font-size: 0.75rem;
+    margin-right: 0.25rem;
+  }
+
+  .mwtda-lp-shop__phone {
+    position: relative;
+    width: 300px;
+    aspect-ratio: 9 / 19;
+    padding: 11px;
+    border-radius: 46px;
+    background: linear-gradient(145deg, #2a2d38, #0b0c10);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+      0 40px 80px -30px rgba(0, 0, 0, 0.8),
+      0 0 0 1px rgba(0, 0, 0, 0.6);
+    transform: rotate(-3deg);
+    animation: mw-shop-float 6s ease-in-out infinite;
+  }
+
+  // celular "parado" (seção Sites): sem inclinação nem flutuação
+  .mwtda-lp-shop__phone--static {
+    transform: none;
+    animation: none;
+  }
+
+  @keyframes mw-shop-float {
+    0%, 100% { transform: rotate(-3deg) translateY(0); }
+    50%      { transform: rotate(-3deg) translateY(-10px); }
+  }
+
+  .mwtda-lp-shop__notch {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 86px;
+    height: 24px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: #000;
+    z-index: 3;
+  }
+
+  .mwtda-lp-shop__screen {
+    position: relative;
+    height: 100%;
+    border-radius: 36px;
+    overflow: hidden;
+    background: #fff;
+    color: #111827;
+    font-family: var(--mw-font-body);
+  }
+
+  .mwtda-lp-shop__statusbar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 22px 0;
+    height: 36px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .mwtda-lp-shop__statusbar i {
+    font-size: 0.6rem;
+    margin-left: 2px;
+  }
+
+  /* cada loja (segmento) ocupa a tela inteira; só a ativa aparece */
+  .mwtda-lp-shop__store {
+    position: absolute;
+    inset: 36px 0 0;
+    padding: 0 14px 64px;
+    opacity: 0;
+    transform: scale(1.02);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .mwtda-lp-shop__store[data-active="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .mwtda-lp-shop__store-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 2px 10px;
+    font-size: 0.85rem;
+  }
+
+  .mwtda-lp-shop__store-name {
+    font-family: var(--mw-font-heading);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    color: var(--shop-accent);
+  }
+
+  .mwtda-lp-shop__bag {
+    position: relative;
+  }
+
+  .mwtda-lp-shop__bag em {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    min-width: 15px;
+    height: 15px;
+    border-radius: 999px;
+    background: var(--shop-accent);
+    color: #fff;
+    font: 700 0.55rem/15px var(--mw-font-body);
+    text-align: center;
+  }
+
+  .mwtda-lp-shop__search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    border-radius: 10px;
+    background: #f1f2f5;
+    color: #9ca3af;
+    font-size: 0.68rem;
+    margin-bottom: 10px;
+  }
+
+  .mwtda-lp-shop__banner {
+    position: relative;
+    height: 128px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--shop-accent), #111827);
+  }
+
+  .mwtda-lp-shop__banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mwtda-lp-shop__banner-copy {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 2px;
+    padding: 12px;
+    background: linear-gradient(180deg, transparent 20%, rgba(0, 0, 0, 0.72));
+    color: #fff;
+  }
+
+  .mwtda-lp-shop__banner-copy span {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .mwtda-lp-shop__banner-copy strong {
+    font-family: var(--mw-font-heading);
+    font-size: 0.92rem;
+    line-height: 1.2;
+  }
+
+  .mwtda-lp-shop__banner-copy em {
+    align-self: flex-start;
+    margin-top: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fff;
+    color: #111827;
+    font: 600 0.58rem var(--mw-font-body);
+  }
+
+  .mwtda-lp-shop__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .mwtda-lp-shop__product {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .mwtda-lp-shop__product-img {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #eef0f4;
+    margin-bottom: 5px;
+  }
+
+  .mwtda-lp-shop__product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .mwtda-lp-shop__product-img i {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 0.55rem;
+    line-height: 20px;
+    text-align: center;
+  }
+
+  .mwtda-lp-shop__product-name {
+    font-size: 0.64rem;
+    color: #4b5563;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mwtda-lp-shop__product-price {
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+
+  .mwtda-lp-shop__product-add {
+    margin-top: 4px;
+    padding: 3px 0;
+    border-radius: 7px;
+    border: 1px solid var(--shop-accent);
+    color: var(--shop-accent);
+    font-size: 0.56rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .mwtda-lp-shop__checkout {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    z-index: 2;
+    padding: 11px;
+    border-radius: 14px;
+    background: #111827;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.5);
+  }
+
+  .mwtda-lp-shop__checkout i {
+    font-size: 0.6rem;
+    margin-right: 4px;
+  }
+
+  /* --- notificações de venda flutuando ao redor do celular --- */
+  .mwtda-lp-shop__notification {
+    position: absolute;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    width: 250px;
+    padding: 0.7rem 0.85rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid var(--mw-border);
+    color: #111827;
+    box-shadow: 0 18px 40px -18px rgba(11, 12, 16, 0.4);
+    backdrop-filter: blur(10px);
+    font-size: 0.75rem;
+    line-height: 1.3;
+    animation: mw-shop-notify 9s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 3s);
+    opacity: 0;
+  }
+
+  .mwtda-lp-shop__notification strong {
+    display: block;
+    font-size: 0.8rem;
+  }
+
+  .mwtda-lp-shop__notification span:not(.mwtda-lp-shop__notification-icon) {
+    display: block;
+    color: #6b7280;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
+  .mwtda-lp-shop__notification small {
+    align-self: flex-start;
+    margin-left: auto;
+    color: #9ca3af;
+    font-size: 0.62rem;
+  }
+
+  .mwtda-lp-shop__notification-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--mw-primary);
+    color: #fff;
+    font-size: 0.85rem;
+  }
+
+  .mwtda-lp-shop__notification--sale { top: 12%; left: -4%; }
+  .mwtda-lp-shop__notification--pix { top: 44%; right: -6%; }
+  .mwtda-lp-shop__notification--pix .mwtda-lp-shop__notification-icon { background: #16a34a; }
+  .mwtda-lp-shop__notification--cart { bottom: 14%; left: 0; }
+  .mwtda-lp-shop__notification--cart .mwtda-lp-shop__notification-icon { background: #2563eb; }
+
+  /* cada notificação "chega", fica um tempo e sai — em cascata (--i) */
+  @keyframes mw-shop-notify {
+    0%       { opacity: 0; transform: translateY(12px) scale(0.96); }
+    6%, 30%  { opacity: 1; transform: none; }
+    38%, 100% { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  }
+
+  @media (max-width: 520px) {
+    .mwtda-lp-shop__phone {
+      width: 260px;
+    }
+
+    .mwtda-lp-shop__notification {
+      width: 220px;
+      font-size: 0.7rem;
+    }
+
+    .mwtda-lp-shop__notification span:not(.mwtda-lp-shop__notification-icon) {
+      white-space: normal;
+    }
+
+    .mwtda-lp-shop__notification--sale { left: 0; }
+    .mwtda-lp-shop__notification--pix { right: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mwtda-lp-shop__phone {
+      animation: none;
+    }
+
+    .mwtda-lp-shop__notification {
+      animation: none;
+      opacity: 1;
+    }
+
+    .mwtda-lp-shop__notification--pix,
+    .mwtda-lp-shop__notification--cart {
+      display: none;
+    }
+  }
+
+  /* -----------------------------------------------------------------
+     14. LOGOS DE PRODUTO (mewtda ||||| CRM) + visão geral dos produtos
+     ----------------------------------------------------------------- */
+  .mwtda-lp-plogo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 1.15rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  // layouts/global.scss aplica `* { font-size: 13px }` — o logo escala
+  // tudo em em a partir do tamanho do próprio .mwtda-lp-plogo
+  .mwtda-lp-plogo * {
+    font-size: inherit;
+  }
+
+  .mwtda-lp-plogo--sm { font-size: 0.92rem; }
+  .mwtda-lp-plogo--lg { font-size: 1.6rem; }
+
+  .mwtda-lp-plogo__word {
+    font-family: var(--mw-font-heading);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #22b6ff, #1d4ed8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  // mesmas 6 barras (e cores) do logo da marca
+  .mwtda-lp-plogo__bars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.09em;
+    height: 1em;
+  }
+
+  .mwtda-lp-plogo__bars i {
+    display: block;
+    width: 0.13em;
+    border-radius: 1em;
+  }
+
+  .mwtda-lp-plogo__bars i:nth-child(1) { height: 70%;  background: #7c3aed; }
+  .mwtda-lp-plogo__bars i:nth-child(2) { height: 45%;  background: #d946ef; }
+  .mwtda-lp-plogo__bars i:nth-child(3) { height: 100%; background: #fb7115; }
+  .mwtda-lp-plogo__bars i:nth-child(4) { height: 50%;  background: #f5b301; }
+  .mwtda-lp-plogo__bars i:nth-child(5) { height: 75%;  background: #22c55e; }
+  .mwtda-lp-plogo__bars i:nth-child(6) { height: 40%;  background: #14e0a4; }
+
+  .mwtda-lp-plogo__name {
+    font-family: var(--mw-font-heading);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--plogo);
+  }
+
+  /* links de produto no cabeçalho */
+  .mwtda-lp-nav__product {
+    display: inline-flex;
+    padding: 0.35rem 0;
+  }
+
+  .mwtda-lp-nav__links a.mwtda-lp-nav__product::after {
+    background: currentColor;
+  }
+
+  /* visão geral: 4 cartões, um por produto */
+  .mwtda-lp-products {
+    padding: 2rem 1.5rem 5rem;
+  }
+
+  .mwtda-lp-products__inner {
     max-width: var(--mw-container);
     margin: 0 auto;
   }
 
-  .mwtda-lp-phones__glow {
-    position: absolute;
-    inset: -20% -10%;
-    background: radial-gradient(circle at 62% 45%, rgba(252, 113, 7, 0.16), transparent 55%),
-      radial-gradient(circle at 30% 60%, rgba(0, 36, 126, 0.35), transparent 55%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .mwtda-lp-phones__text {
-    position: relative;
-    z-index: 1;
-    flex: 1 1 380px;
-    max-width: 480px;
-    display: flex;
-    flex-direction: column;
+  .mwtda-lp-products__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
   }
 
-  /* Altura fixa reservada pro texto que troca — todos os 4 estados ficam
-     SEMPRE `position:absolute` no mesmo lugar (nunca alternam pra
-     `position:relative`), senão o texto que está saindo (absoluto) e o
-     que está entrando (em fluxo normal) ocupam posições diferentes e
-     aparecem sobrepostos/ilegíveis durante a troca. O timing é escalonado
-     (saída rápida e sem atraso, entrada com um pequeno delay) pra
-     minimizar a janela em que os dois textos ficam visíveis ao mesmo
-     tempo. */
-  .mwtda-lp-phones__copy-stack {
+  .mwtda-lp .mwtda-lp-products__card {
     position: relative;
-    min-height: 11.5rem;
-  }
-
-  .mwtda-lp-phones__copy {
-    position: absolute;
-    inset: 0 0 auto 0;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.22s ease, transform 0.22s ease;
-    pointer-events: none;
-  }
-
-  .mwtda-lp-phones__copy[data-active="true"] {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-    transition: opacity 0.3s ease 0.14s, transform 0.3s ease 0.14s;
-  }
-
-  .mwtda-lp-phones__copy-eyebrow {
-    display: inline-block;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--mw-primary-light);
-    text-transform: uppercase;
-    margin-bottom: 0.6rem;
-  }
-
-  .mwtda-lp-phones__copy h2 {
-    font-family: var(--mw-font-heading);
-    font-size: clamp(1.6rem, 3vw, 2.3rem);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--mw-fg);
-    margin: 0 0 0.85rem;
-    line-height: 1.15;
-  }
-
-  .mwtda-lp-phones__copy p {
-    color: var(--mw-fg-muted);
-    font-size: 1.02rem;
-    line-height: 1.6;
-    max-width: 420px;
-    margin: 0;
-  }
-
-  .mwtda-lp-phones__dots {
-    position: relative;
-    margin-top: 8.5rem;
     display: flex;
-    gap: 0.5rem;
-    z-index: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+    padding: 1.75rem 1.5rem;
+    border-radius: var(--mw-radius-lg);
+    background: var(--mw-bg);
+    border: 1px solid var(--mw-border);
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
   }
 
-  .mwtda-lp-phones__dots span {
-    height: 6px;
-    width: 6px;
-    border-radius: 999px;
-    background: var(--mw-border);
-    transition: width 0.35s ease, background 0.35s ease;
+  // faixa com a cor do produto no topo do cartão
+  .mwtda-lp-products__card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    background: var(--plogo);
   }
 
-  .mwtda-lp-phones__dots span[data-active="true"] {
-    width: 26px;
-    background: var(--mw-primary);
+  .mwtda-lp .mwtda-lp-products__card:hover {
+    transform: translateY(-6px);
+    border-color: var(--plogo);
+    box-shadow: 0 24px 40px -24px rgba(11, 12, 16, 0.35);
   }
 
-  .mwtda-lp-phones__canvas {
-    position: relative;
-    z-index: 1;
-    flex: 0 0 clamp(220px, 26vw, 340px);
-    height: clamp(420px, 68vh, 620px);
-    cursor: grab;
+  .mwtda-lp-products__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--plogo) 12%, transparent);
+    color: var(--plogo);
+    font-size: 1.1rem;
   }
 
-  @media (max-width: 860px) {
-    .mwtda-lp-phones__pinwrap {
-      height: 320vh;
-    }
+  .mwtda-lp-products__card p {
+    flex: 1;
+    margin: 0;
+    color: var(--mw-fg-muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
 
-    .mwtda-lp-phones__stage {
-      flex-direction: column-reverse;
-      justify-content: center;
-      gap: 2rem;
-      padding-top: 4rem;
-    }
+  .mwtda-lp-products__card em {
+    font-style: normal;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--plogo);
+  }
 
-    .mwtda-lp-phones__canvas {
-      flex: 0 0 auto;
-      width: 100%;
-      height: 46vh;
-    }
+  .mwtda-lp-products__card em i {
+    font-size: 0.7rem;
+    margin-left: 0.2rem;
+    transition: transform 0.25s ease;
+  }
 
-    .mwtda-lp-phones__text {
-      max-width: 100%;
-      text-align: center;
-    }
+  .mwtda-lp-products__card:hover em i {
+    transform: translateX(3px);
+  }
 
-    .mwtda-lp-phones__copy-stack {
-      min-height: 0;
+  @media (max-width: 1100px) {
+    .mwtda-lp-products__grid {
+      grid-template-columns: repeat(2, 1fr);
     }
+  }
 
-    .mwtda-lp-phones__copy {
-      position: static;
-      inset: auto;
-      display: none;
-      transition: none;
+  @media (max-width: 560px) {
+    .mwtda-lp-products__grid {
+      grid-template-columns: 1fr;
     }
+  }
 
-    .mwtda-lp-phones__copy[data-active="true"] {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  /* -----------------------------------------------------------------
+     15. TROCA FÁCIL (02) — celular com o portal de trocas do cliente
+     ----------------------------------------------------------------- */
+  .mwtda-lp-exchange {
+    transform: rotate(3deg);
+    animation-name: mw-exchange-float;
+  }
 
-    .mwtda-lp-phones__copy p {
-      max-width: 100%;
-    }
+  @keyframes mw-exchange-float {
+    0%, 100% { transform: rotate(3deg) translateY(0); }
+    50%      { transform: rotate(3deg) translateY(-10px); }
+  }
 
-    .mwtda-lp-phones__dots {
-      margin-top: 0.5rem;
-      justify-content: center;
-    }
+  // global.scss força `* { font-size: 13px }`: aqui tudo herda do item/body
+  .mwtda-lp-exchange__body * {
+    font-size: inherit;
+  }
+
+  .mwtda-lp-exchange__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 8px 16px 16px;
+  }
+
+  .mwtda-lp-exchange__store {
+    font-family: var(--mw-font-heading);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    color: #e4572e;
+    text-align: center;
+  }
+
+  .mwtda-lp-exchange__title {
+    font-family: var(--mw-font-heading);
+    font-size: 1.05rem;
+    margin-top: 4px;
+  }
+
+  .mwtda-lp-exchange__order {
+    margin-top: -6px;
+    font-size: 0.7rem;
+    color: #6b7280;
+  }
+
+  .mwtda-lp-exchange__item {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    font-size: 0.66rem;
+  }
+
+  .mwtda-lp-exchange__item.is-selected {
+    border-color: #16a34a;
+    background: #f0fdf4;
+  }
+
+  .mwtda-lp-exchange__item img {
+    width: 54px;
+    height: 54px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    object-fit: cover;
+    background: #eef0f4;
+  }
+
+  .mwtda-lp-exchange__item > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .mwtda-lp-exchange__item b {
+    font-size: 0.72rem;
+  }
+
+  .mwtda-lp-exchange__check {
+    color: #6b7280;
+  }
+
+  .mwtda-lp-exchange__check i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 13px;
+    height: 13px;
+    margin-right: 3px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    color: transparent;
+    font-size: 0.5rem;
+  }
+
+  .mwtda-lp-exchange__item.is-selected .mwtda-lp-exchange__check i {
+    background: #16a34a;
+    border-color: #16a34a;
+    color: #fff;
+  }
+
+  .mwtda-lp-exchange__select {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 7px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #111827;
+  }
+
+  .mwtda-lp-exchange__select i {
+    font-size: 0.5rem;
+    color: #9ca3af;
+  }
+
+  .mwtda-lp-exchange__submit {
+    margin-top: 4px;
+    padding: 11px;
+    border-radius: 12px;
+    background: #16a34a;
+    color: #fff;
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  // resultado da troca aprovada: vale-troca virou cupom na Shopify
+  .mwtda-lp-exchange__coupon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px dashed #16a34a;
+    background: #f0fdf4;
+  }
+
+  .mwtda-lp-exchange__coupon > i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #16a34a;
+    color: #fff;
+    font-size: 0.8rem;
+  }
+
+  .mwtda-lp-exchange__coupon small {
+    display: block;
+    font-size: 0.6rem;
+    color: #6b7280;
+  }
+
+  .mwtda-lp-exchange__coupon b {
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+  }
+
+  .mwtda-lp-exchange__notification--new { top: 14%; right: -6%; }
+  .mwtda-lp-exchange__notification--new .mwtda-lp-shop__notification-icon { background: #16a34a; }
+  .mwtda-lp-exchange__notification--approved { bottom: 16%; left: -4%; }
+  .mwtda-lp-exchange__notification--approved .mwtda-lp-shop__notification-icon { background: #1d4ed8; }
+
+  @media (max-width: 520px) {
+    .mwtda-lp-exchange__notification--new { right: 0; }
+    .mwtda-lp-exchange__notification--approved { left: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .mwtda-lp-phones__pinwrap {
-      height: auto;
+    .mwtda-lp-exchange {
+      animation: none;
     }
 
-    .mwtda-lp-phones__stage {
-      position: relative;
-      height: auto;
-      flex-direction: column;
-      padding: 4rem 1.5rem;
-    }
-
-    .mwtda-lp-phones__copy {
-      position: relative;
-      opacity: 1;
-      transform: none;
-      display: block;
-      margin-bottom: 2rem;
+    .mwtda-lp-exchange__notification--approved {
+      display: none;
     }
   }

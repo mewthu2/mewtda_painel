@@ -1,0 +1,26 @@
+<% title 'Trocas e Devoluções' %>
+
+<%= render 'shared/exchange_tabs' %>
+
+<div class="crm-card">
+  <table class="crm-table">
+    <thead>
+      <tr>
+        <th>Pedido</th>
+        <th>Cliente</th>
+        <th>Status</th>
+        <th>Criado em</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @exchange_requests.each do |request| %>
+        <tr>
+          <td><%= link_to request.shopify_order_number, exchange_request_path(request) %></td>
+          <td><%= request.customer_name.presence || request.customer_email %></td>
+          <td><%= request.status %></td>
+          <td><%= request.created_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

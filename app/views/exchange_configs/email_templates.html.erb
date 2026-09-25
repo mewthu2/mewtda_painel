@@ -1,0 +1,204 @@
+<% title 'Templates de E-mail — Trocas e Devoluções' %>
+
+<%= render 'shared/exchange_tabs' %>
+
+<div class="users-form-page email-templates-layout">
+  <div class="crm-card users-form-page__card email-templates-layout__form">
+    <div class="users-form-page__header">
+      <div class="users-form-page__header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+        </svg>
+      </div>
+      <div>
+        <h2 class="users-form-page__title">Templates de E-mail — Trocas e Devoluções</h2>
+        <p class="users-form-page__subtitle"><%= @client.name %></p>
+      </div>
+    </div>
+
+    <% if @exchange_config.errors.any? %>
+      <div class="users-form-page__errors">
+        <div class="users-form-page__errors-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <div>
+          <strong>Corrija os erros abaixo:</strong>
+          <ul>
+            <% @exchange_config.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+
+    <%= form_for @exchange_config, as: :exchange_config, url: exchange_config_path, method: :patch,
+                 html: { autocomplete: 'off', multipart: true } do |form| %>
+      <div class="users-form-page__body">
+        <% [
+             ['requested', 'Solicitação recebida', 'Enviado assim que o cliente final registra o pedido de troca/devolução.'],
+             ['approved', 'Aprovado', 'Enviado quando a equipe aprova — inclui o código do cupom, se a solicitação tiver item de troca.'],
+             ['rejected', 'Rejeitado', 'Enviado quando a equipe rejeita a solicitação.'],
+             ['completed', 'Concluído', 'Enviado quando a equipe marca a solicitação como concluída.']
+           ].each do |kind, label, description| %>
+          <div class="users-form-page__section">
+            <div class="users-form-page__section-header">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+              <%= label %>
+            </div>
+            <p class="cpform-field__hint"><%= description %></p>
+
+            <div class="users-form-page__field">
+              <%= form.label :"#{kind}_email_subject", 'Assunto', class: 'crm-label' %>
+              <%= form.text_field :"#{kind}_email_subject", class: 'crm-input', placeholder: 'O que aparece na caixa de entrada',
+                                  id: "exchange-field-#{kind}-subject" %>
+            </div>
+
+            <div class="users-form-page__field">
+              <%= form.label :"#{kind}_email_body", 'Corpo', class: 'crm-label' %>
+              <%= form.text_area :"#{kind}_email_body", class: 'crm-input', rows: 4, id: "exchange-field-#{kind}-body" %>
+              <span class="cpform-field__hint">
+                Placeholders disponíveis: <code>{{customer_name}}</code>, <code>{{order_number}}</code><%= ', <code>{{coupon_code}}</code>'.html_safe if kind == 'approved' %>
+              </span>
+            </div>
+
+            <% image = @exchange_config.public_send(:"#{kind}_email_image") %>
+            <div class="users-form-page__field">
+              <%= form.label :"#{kind}_email_image", 'Imagem (opcional)', class: 'crm-label' %>
+              <% if image.attached? %>
+                <div class="popups-image-preview">
+                  <%= image_tag url_for(image), class: 'popups-image-preview__img' %>
+                  <label class="cform-toggle">
+                    <%= check_box_tag "exchange_config[remove_#{kind}_email_image]", '1', false, class: 'cform-toggle__input' %>
+                    <span class="cform-toggle__label">Remover imagem atual</span>
+                  </label>
+                </div>
+              <% end %>
+              <%= form.file_field :"#{kind}_email_image", class: 'crm-input', id: "exchange-field-#{kind}-image" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <%= hidden_field_tag :return_to, 'email_templates' %>
+      <div class="users-form-page__footer">
+        <%= form.button class: 'crm-btn crm-btn--primary', data: { disable_with: 'Salvando...' } do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Salvar templates
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="crm-card email-templates-preview">
+    <div class="email-templates-preview__header">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      Preview
+    </div>
+
+    <% button_reset = 'background: none; border: none; cursor: pointer; font: inherit;' %>
+    <div class="popups-tabs" id="exchange-preview-tabs" style="margin: 0 0 0.75rem;">
+      <button type="button" class="popups-tabs__link active" data-preview-kind="requested" style="<%= button_reset %>">Solicitado</button>
+      <button type="button" class="popups-tabs__link" data-preview-kind="approved" style="<%= button_reset %>">Aprovado</button>
+      <button type="button" class="popups-tabs__link" data-preview-kind="rejected" style="<%= button_reset %>">Rejeitado</button>
+      <button type="button" class="popups-tabs__link" data-preview-kind="completed" style="<%= button_reset %>">Concluído</button>
+    </div>
+
+    <div class="email-templates-preview__stage">
+      <div class="email-preview email-preview--image_top" id="exchange-email-preview">
+        <div class="email-preview__subject" id="exchange-preview-subject">Assunto do e-mail</div>
+        <div class="email-preview__card">
+          <div class="email-preview__image" id="exchange-preview-image-wrap" hidden>
+            <img id="exchange-preview-image" alt="">
+          </div>
+          <div class="email-preview__content">
+            <h2 class="email-preview__heading" id="exchange-preview-heading">Assunto do e-mail</h2>
+            <p class="email-preview__body" id="exchange-preview-body">Texto do e-mail.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var stage = document.getElementById('exchange-email-preview');
+    if (!stage) return;
+
+    var kinds = ['requested', 'approved', 'rejected', 'completed'];
+    var currentKind = 'requested';
+    var images = {
+      requested: <%= @exchange_config.requested_email_image.attached? ? url_for(@exchange_config.requested_email_image).to_json.html_safe : 'null' %>,
+      approved: <%= @exchange_config.approved_email_image.attached? ? url_for(@exchange_config.approved_email_image).to_json.html_safe : 'null' %>,
+      rejected: <%= @exchange_config.rejected_email_image.attached? ? url_for(@exchange_config.rejected_email_image).to_json.html_safe : 'null' %>,
+      completed: <%= @exchange_config.completed_email_image.attached? ? url_for(@exchange_config.completed_email_image).to_json.html_safe : 'null' %>
+    };
+
+    function byId(id) { return document.getElementById(id); }
+
+    function updatePreview() {
+      var subjectEl = byId('exchange-field-' + currentKind + '-subject');
+      var bodyEl = byId('exchange-field-' + currentKind + '-body');
+
+      var subject = subjectEl.value || 'Assunto do e-mail';
+      byId('exchange-preview-subject').textContent = subject;
+      byId('exchange-preview-heading').textContent = subject;
+      byId('exchange-preview-body').textContent = bodyEl.value || 'Texto do e-mail.';
+
+      var imgWrap = byId('exchange-preview-image-wrap');
+      var dataUrl = images[currentKind];
+      if (dataUrl) {
+        byId('exchange-preview-image').src = dataUrl;
+        imgWrap.hidden = false;
+      } else {
+        imgWrap.hidden = true;
+      }
+    }
+
+    kinds.forEach(function (kind) {
+      var subjectEl = byId('exchange-field-' + kind + '-subject');
+      var bodyEl = byId('exchange-field-' + kind + '-body');
+      var imageInput = byId('exchange-field-' + kind + '-image');
+
+      [subjectEl, bodyEl].forEach(function (el) {
+        el.addEventListener('input', function () {
+          if (currentKind === kind) updatePreview();
+        });
+      });
+
+      imageInput.addEventListener('change', function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          images[kind] = ev.target.result;
+          if (currentKind === kind) updatePreview();
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    document.querySelectorAll('#exchange-preview-tabs [data-preview-kind]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        currentKind = btn.getAttribute('data-preview-kind');
+        document.querySelectorAll('#exchange-preview-tabs [data-preview-kind]').forEach(function (b) {
+          b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        updatePreview();
+      });
+    });
+
+    updatePreview();
+  })();
+</script>

@@ -1,0 +1,111 @@
+<% title 'Configuração de E-mail' %>
+
+<div class="clients-wrapper">
+  <%= render 'shared/email_marketing_tabs' %>
+
+  <div class="users-form-page">
+    <div class="users-form-page__card">
+      <div class="users-form-page__header">
+        <div class="users-form-page__header-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="users-form-page__title">Domínio de envio</h2>
+          <p class="users-form-page__subtitle"><%= current_client.name %></p>
+        </div>
+      </div>
+
+      <% if current_client.errors.any? %>
+        <div class="users-form-page__errors">
+          <div class="users-form-page__errors-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+          </div>
+          <div>
+            <strong>Corrija os erros abaixo:</strong>
+            <ul>
+              <% current_client.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+      <%= form_for current_client, as: :client, url: email_configuration_path, method: :patch,
+                   html: { autocomplete: 'off' } do |form| %>
+        <div class="users-form-page__body">
+          <div class="users-form-page__field">
+            <%= form.label :email_sending_domain, 'Domínio de envio', class: 'crm-label' %>
+            <%= form.text_field :email_sending_domain, class: 'crm-input', placeholder: 'Ex.: loja.com.br' %>
+            <span class="cpform-field__hint">Os e-mails de marketing desse cliente serão enviados a partir desse domínio, via AWS SES.</span>
+          </div>
+
+          <div class="users-form-page__field">
+            <label class="crm-label">Status</label>
+            <div>
+              <% case current_client.ses_verification_status %>
+              <% when 'verified' %>
+                <span class="crm-tag crm-tag--success">Verificado</span>
+              <% when 'pending' %>
+                <span class="crm-tag crm-tag--warning">Verificação pendente</span>
+              <% else %>
+                <span class="crm-tag crm-tag--neutral">Não configurado</span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="users-form-page__footer">
+          <%= form.button class: 'crm-btn crm-btn--primary', data: { disable_with: 'Salvando...' } do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Salvar domínio
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if current_client.email_sending_domain.present? && current_client.ses_dns_records.any? %>
+        <div class="users-form-page__section">
+          <div class="users-form-page__section-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
+            </svg>
+            Registros de DNS
+          </div>
+          <p class="cpform-field__hint">
+            Cadastre os 3 registros CNAME abaixo no DNS do domínio <strong><%= current_client.email_sending_domain %></strong>.
+            Depois de propagar (pode levar algumas horas), clique em "Verificar novamente".
+          </p>
+
+          <div class="email-config-dns-table-wrap">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Tipo</th>
+                  <th>Nome</th>
+                  <th>Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% current_client.ses_dns_records.each do |record| %>
+                  <tr>
+                    <td><%= record[:type] %></td>
+                    <td class="email-config-dns-table__mono"><%= record[:name] %></td>
+                    <td class="email-config-dns-table__mono"><%= record[:value] %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+
+          <%= button_to 'Verificar novamente', refresh_email_configuration_path, method: :post, class: 'crm-btn crm-btn--secondary' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,9 +1,9 @@
-# Cria um cupom de desconto percentual na Shopify pro cliente informado.
-# Diferente de Shopify::CreateCashbackDiscount (que usa credenciais fixas de
-# um único cliente via ENV — um bug pré-existente), este serviço usa sempre
-# as credenciais do `client` passado, funcionando pra qualquer loja.
+# Cria um cupom de desconto (percentual ou valor fixo) na Shopify pro cliente
+# informado. Diferente de Shopify::CreateCashbackDiscount (que usa credenciais
+# fixas de um único cliente via ENV — um bug pré-existente), este serviço usa
+# sempre as credenciais do `client` passado, funcionando pra qualquer loja.
 class Shopify::CreateDiscountCode
-  def self.call(client:, title:, percentage:, customer_shopify_id: nil, expires_in: 7.days)
+  def self.call(client:, title:, percentage: nil, amount: nil, customer_shopify_id: nil, expires_in: 7.days)
     session = ShopifyAPI::Auth::Session.new(shop: client.shopify_shop_url, access_token: client.shopify_access_token)
     api_client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
@@ -16,6 +16,12 @@ class Shopify::CreateDiscountCode
                          else
                            { all: true }
                          end
+
+    value = if amount.present?
+              { discountAmount: { amount: amount.to_f, appliesOnEachItem: false } }
+            else
+              { percentage: percentage.to_f / 100 }
+            end
 
     mutation = <<~GRAPHQL
       mutation discountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
@@ -39,7 +45,7 @@ class Shopify::CreateDiscountCode
         code: code,
         startsAt: starts_at.iso8601,
         endsAt: ends_at.iso8601,
-        customerGets: { value: { percentage: percentage.to_f / 100 }, items: { all: true } },
+        customerGets: { value: value, items: { all: true } },
         customerSelection: customer_selection,
         usageLimit: 1
       }

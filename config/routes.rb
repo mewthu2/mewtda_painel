@@ -13,6 +13,14 @@ Rails.application.routes.draw do
   end
 
   scope '/crm' do
+    # Página pública de troca/devolução do cliente final — vive sob /crm por
+    # pedido do produto, mas não exige login (skip_before_action no
+    # controller); o slug de ExchangeConfig (nome do cliente parametrizado)
+    # é quem identifica de qual loja puxar os pedidos.
+    get  'troca/:token',        to: 'widget/exchanges#new',    as: :new_troca
+    post 'troca/:token/lookup', to: 'widget/exchanges#lookup', as: :lookup_troca
+    post 'troca/:token',        to: 'widget/exchanges#create', as: :troca
+
     devise_for :user, skip: [:registrations]
 
     authenticate :user do
@@ -80,6 +88,15 @@ Rails.application.routes.draw do
     resource :goal, only: %i[edit update]
     resource :popup, only: %i[edit update]
     get 'popup/cadastros', to: 'popups#submissions', as: :submissions_popup
+
+    resource :exchange_config, only: %i[edit update] do
+      get :email_templates
+    end
+    resources :exchange_requests, only: %i[index show update]
+
+    resources :email_templates, except: [:show]
+    resource :email_configuration, only: %i[edit update]
+    post 'email_configuration/refresh', to: 'email_configurations#refresh_status', as: :refresh_email_configuration
 
     resource :settings, path: 'configuracoes', controller: 'settings', only: [:edit, :update]
     resource :account, path: 'minha-conta', controller: 'account', only: [:edit, :update]

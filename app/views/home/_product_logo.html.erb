@@ -1,0 +1,8 @@
+<%# Logo de produto: wordmark "mewtda" + barrinhas da marca + nome do
+    produto na cor dele (ex: mewtda ||||| CRM). `size`: nil, 'sm' ou 'lg'. %>
+<% size = local_assigns[:size] %>
+<span class="mwtda-lp-plogo<%= " mwtda-lp-plogo--#{size}" if size %>" style="--plogo: <%= product[:color] %>">
+  <span class="mwtda-lp-plogo__word">mewtda</span>
+  <span class="mwtda-lp-plogo__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+  <span class="mwtda-lp-plogo__name"><%= product[:name] %></span>
+</span>

@@ -1,5 +1,7 @@
 <% title 'Clientes' %>
 
+<%= render 'shared/loja_tabs' %>
+
 <div class="customers-wrapper">
 
   <%# Filtros %>
@@ -89,6 +91,7 @@
           <th>E-mail</th>
           <th>Telefone</th>
           <th class="text-center">Pedidos</th>
+          <th class="text-center">Pop-up</th>
           <th class="text-center">Cadastrado em</th>
           <th class="text-center">Detalhes</th>
         </tr>
@@ -96,7 +99,7 @@
       <tbody>
         <% if @customers.empty? %>
           <tr>
-            <td colspan="6" class="customers-table__empty">Nenhum cliente encontrado.</td>
+            <td colspan="7" class="customers-table__empty">Nenhum cliente encontrado.</td>
           </tr>
         <% else %>
           <% @customers.each do |customer| %>
@@ -130,6 +133,13 @@
               <td class="text-center">
                 <span class="customers-badge customers-badge--orders"><%= orders_count %></span>
               </td>
+              <td class="text-center">
+                <% if customer.email.present? && @popup_submission_emails.include?(customer.email.downcase) %>
+                  <span class="crm-tag crm-tag--success">Cadastrado</span>
+                <% else %>
+                  <span class="crm-tag crm-tag--neutral">—</span>
+                <% end %>
+              </td>
               <td class="text-center"><%= customer.created_at.strftime('%d/%m/%Y') %></td>
               <td class="text-center">
                 <button class="crm-btn customers-btn--details"
@@ -147,7 +157,7 @@
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="6"><%= page_entries_info @customers %></th>
+          <th colspan="7"><%= page_entries_info @customers %></th>
         </tr>
       </tfoot>
     </table>

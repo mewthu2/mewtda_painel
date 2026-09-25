@@ -16,6 +16,7 @@ gem 'font-awesome-sass', '~> 6.4'
 # This library provides support for Ruby Shopify apps to access the Shopify
 # Admin API, by making it easier to perform the following actions:
 gem 'shopify_api'
+gem 'aws-sdk-sesv2'
 
 # Use postgresql as the database for Active Record
 gem 'pg'

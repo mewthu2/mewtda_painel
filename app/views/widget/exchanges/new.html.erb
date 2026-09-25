@@ -1,0 +1,27 @@
+<% title 'Central de Trocas e Devoluções' %>
+
+<div class="exchange-wizard">
+  <div class="exchange-wizard__card">
+    <% if @config.logo.attached? %>
+      <%= image_tag @config.logo, class: 'exchange-wizard__logo' %>
+    <% end %>
+    <h1 class="exchange-wizard__title"><%= @config.company_name %></h1>
+    <% if @config.instructions.present? %>
+      <p class="exchange-wizard__instructions"><%= simple_format(@config.instructions) %></p>
+    <% end %>
+
+    <%= form_with url: lookup_troca_path(@config.slug), method: :post, local: true do %>
+      <div class="exchange-wizard__field">
+        <label for="order_number">Número do pedido</label>
+        <input type="text" name="order_number" id="order_number" required placeholder="#1001">
+      </div>
+      <div class="exchange-wizard__field">
+        <label for="email">E-mail usado na compra</label>
+        <input type="email" name="email" id="email" required>
+      </div>
+      <button type="submit" class="exchange-wizard__submit" style="background: <%= @config.accent_color %>">
+        Buscar pedido
+      </button>
+    <% end %>
+  </div>
+</div>

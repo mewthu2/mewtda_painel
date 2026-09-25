@@ -1,0 +1,51 @@
+<% title "Solicitação #{@exchange_request.shopify_order_number}" %>
+
+<%= render 'shared/exchange_tabs' %>
+
+<div class="crm-card">
+  <h2>Pedido <%= @exchange_request.shopify_order_number %></h2>
+  <p>Cliente: <%= @exchange_request.customer_name %> — <%= @exchange_request.customer_email %></p>
+  <p>Status atual: <strong><%= @exchange_request.status %></strong></p>
+  <% if @exchange_request.coupon_code.present? %>
+    <p>Cupom gerado: <code><%= @exchange_request.coupon_code %></code></p>
+  <% end %>
+
+  <table class="crm-table">
+    <thead>
+      <tr><th>Produto</th><th>Variante</th><th>Qtd.</th><th>Preço</th><th>Tipo</th><th>Motivo</th><th>Foto</th></tr>
+    </thead>
+    <tbody>
+      <% @exchange_request.exchange_request_items.each do |item| %>
+        <tr>
+          <td><%= item.product_name %></td>
+          <td><%= item.variant_title %></td>
+          <td><%= item.quantity %></td>
+          <td><%= number_to_currency item.price %></td>
+          <td><%= item.kind %></td>
+          <td><%= item.reason_label %></td>
+          <td>
+            <% if item.photo.attached? %>
+              <%= link_to 'Ver foto', url_for(item.photo), target: '_blank', rel: 'noopener' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @exchange_request.pending? %>
+    <%= button_to 'Aprovar', exchange_request_path(@exchange_request), method: :patch,
+                  params: { status: 'approved' }, class: 'crm-btn crm-btn--primary' %>
+    <%= button_to 'Rejeitar', exchange_request_path(@exchange_request), method: :patch,
+                  params: { status: 'rejected' }, class: 'crm-btn crm-btn--danger' %>
+  <% elsif @exchange_request.approved? %>
+    <%= button_to 'Marcar como concluída', exchange_request_path(@exchange_request), method: :patch,
+                  params: { status: 'completed' }, class: 'crm-btn crm-btn--primary' %>
+  <% end %>
+
+  <%= form_with url: exchange_request_path(@exchange_request), method: :patch, local: true do %>
+    <label>Nota interna</label>
+    <%= text_area_tag 'internal_notes', @exchange_request.internal_notes %>
+    <%= submit_tag 'Salvar nota' %>
+  <% end %>
+</div>
