@@ -46,8 +46,7 @@
       <% end %>
 
       <% operacoes_active = request.path.start_with?(orders_path) || request.path.start_with?(customers_path) ||
-                             request.path.start_with?(products_path) || request.path.start_with?(exchange_requests_path) ||
-                             request.path.start_with?('/crm/exchange_config') %>
+                             request.path.start_with?(products_path) %>
       <details class="crm-sidebar__submenu" <%= 'open' if operacoes_active %>>
         <summary class="crm-sidebar__link crm-sidebar__link--parent">
           <i class="fa-solid fa-boxes-stacked crm-fa"></i>
@@ -60,11 +59,6 @@
           <%= link_to orders_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if loja_active}" do %>
             <i class="fa-solid fa-store crm-fa"></i>
             Loja
-          <% end %>
-
-          <%= link_to exchange_requests_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(exchange_requests_path) || request.path.start_with?('/crm/exchange_config')}" do %>
-            <i class="fa-solid fa-rotate crm-fa"></i>
-            Trocas e Devoluções
           <% end %>
         </div>
       </details>

@@ -7,8 +7,6 @@ class Client < ApplicationRecord
   has_many :abandoned_checkouts, dependent: :destroy
   has_one :popup, dependent: :destroy
   has_many :email_templates, dependent: :destroy
-  has_one :exchange_config, dependent: :destroy
-  has_many :exchange_requests, dependent: :destroy
 
   encrypts :meta_access_token, :google_ads_refresh_token, :shopify_api_secret
 
