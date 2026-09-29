@@ -1,7 +1,12 @@
 <%# Logo de produto: wordmark "mewtda" + barrinhas da marca + nome do
-    produto na cor dele (ex: mewtda ||||| CRM). %>
+    produto na cor dele (ex: mewtda ||||| CRM). Produto com marca própria
+    (`logo`, ex: Quero Trocar) usa a imagem no lugar. %>
+<% if product[:logo] %>
+  <%= image_tag product[:logo], alt: product[:name], class: "mwtda-lp-plogo-img mwtda-lp-plogo-img--#{product[:key]}" %>
+<% else %>
 <span class="mwtda-lp-plogo" style="--plogo: <%= product[:color] %>">
   <span class="mwtda-lp-plogo__word">mewtda</span>
   <span class="mwtda-lp-plogo__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
   <span class="mwtda-lp-plogo__name"><%= product[:name] %></span>
 </span>
+<% end %>

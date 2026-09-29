@@ -34,7 +34,7 @@ en:
       apps: "Android and macOS apps coming soon"
     clients:
       headline: "Brands already selling with Mewtda"
-      lead: "Real stores using the Mewtda panel every day to sell more."
+      lead: "Real stores using our solutions."
       title: "Stores that trust Mewtda"
       logo_alt: "Mewtda client logo"
     phones:
@@ -133,23 +133,36 @@ en:
         cupom:
           title: "Store credit on Shopify"
           text: "Once approved, the coupon is created and emailed to the customer."
-      portal:
-        title: "Exchange Center"
-        order: "Order #1042"
-        select_item: "Select this item"
-        kind: "Exchange"
-        reason: "Size didn't fit"
-        submit: "Send request"
-        coupon_label: "Your store credit"
-        coupon_value: "TROCA-1042 · $59.90"
-        items: ["Bomber jacket · M", "Oversized tee · L"]
+      panel:
+        title: "Requests"
+        subtitle: "Exchanges and returns for Ateliê"
+        public_page: "Public page"
+        search: "Search by order, protocol, name or email"
+        stats:
+          all: "All"
+          pending: "Pending"
+          approved: "Approved"
+          received: "Received"
+          done: "Completed"
+          rejected: "Rejected"
+        badges:
+          pending: "Pending"
+          approved: "Approved"
+          done: "Completed"
+        kinds:
+          exchange: "Exchange"
+          refund: "Return"
+        nav:
+          requests: "Requests"
+          settings: "Settings"
+          help: "How to use"
       notifications:
         new_title: "New exchange request"
         new_text: "Order #1042 · 1 item"
         approved_title: "Exchange approved"
         approved_text: "Coupon TROCA-1042 emailed"
-      cta_button: "I want Troca Fácil"
-      whatsapp_message: "Hi, I'd like to know Mewtda Troca Fácil."
+      cta_button: "Get Quero Trocar"
+      whatsapp_message: "Hi, I'd like to know Quero Trocar by Mewtda."
     crm_part:
       number: "01"
       title: "Your whole store in one panel"
@@ -310,7 +323,7 @@ es:
       apps: "Apps Android y macOS próximamente"
     clients:
       headline: "Marcas que ya venden con Mewtda"
-      lead: "Tiendas reales que usan el panel Mewtda todos los días para vender más."
+      lead: "Tiendas reales que usan nuestras soluciones."
       title: "Tiendas que confían en Mewtda"
       logo_alt: "Logo de cliente Mewtda"
     phones:
@@ -409,23 +422,36 @@ es:
         cupom:
           title: "Vale en Shopify"
           text: "Al aprobar, el cupón se crea y el cliente lo recibe por e-mail."
-      portal:
-        title: "Central de Cambios"
-        order: "Pedido #1042"
-        select_item: "Seleccionar este ítem"
-        kind: "Cambio"
-        reason: "La talla no sirvió"
-        submit: "Enviar solicitud"
-        coupon_label: "Tu vale de cambio"
-        coupon_value: "TROCA-1042 · $59.90"
-        items: ["Chaqueta bomber · M", "Camiseta oversized · L"]
+      panel:
+        title: "Solicitudes"
+        subtitle: "Cambios y devoluciones de Ateliê"
+        public_page: "Página pública"
+        search: "Buscar por pedido, protocolo, nombre o e-mail"
+        stats:
+          all: "Todas"
+          pending: "Pendientes"
+          approved: "Aprobadas"
+          received: "Recibidas"
+          done: "Concluidas"
+          rejected: "Rechazadas"
+        badges:
+          pending: "Pendiente"
+          approved: "Aprobada"
+          done: "Concluida"
+        kinds:
+          exchange: "Cambio"
+          refund: "Devolución"
+        nav:
+          requests: "Solicitudes"
+          settings: "Configuración"
+          help: "Cómo usar"
       notifications:
         new_title: "Nueva solicitud de cambio"
         new_text: "Pedido #1042 · 1 ítem"
         approved_title: "Cambio aprobado"
         approved_text: "Cupón TROCA-1042 enviado por e-mail"
-      cta_button: "Quiero Troca Fácil"
-      whatsapp_message: "Hola, quiero conocer Mewtda Troca Fácil."
+      cta_button: "Conocer Quero Trocar"
+      whatsapp_message: "Hola, quiero conocer Quero Trocar by Mewtda."
     crm_part:
       number: "01"
       title: "Toda tu tienda en un solo panel"
@@ -586,7 +612,7 @@ pt-BR:
       apps: "Apps Android e macOS em breve"
     clients:
       headline: "Marcas que já vendem com a Mewtda"
-      lead: "Lojas reais que usam o painel Mewtda todos os dias pra vender mais."
+      lead: "Lojas reais que usam nossas soluções."
       title: "Lojas que confiam na Mewtda"
       logo_alt: "Logo de cliente Mewtda"
     phones:
@@ -685,23 +711,36 @@ pt-BR:
         cupom:
           title: "Vale-troca na Shopify"
           text: "Aprovou, o cupom é criado e o cliente recebe por e-mail."
-      portal:
-        title: "Central de Trocas"
-        order: "Pedido #1042"
-        select_item: "Selecionar este item"
-        kind: "Troca"
-        reason: "Tamanho não serviu"
-        submit: "Enviar solicitação"
-        coupon_label: "Seu vale-troca"
-        coupon_value: "TROCA-1042 · R$ 289,90"
-        items: ["Jaqueta bomber · M", "Camiseta oversized · G"]
+      panel:
+        title: "Solicitações"
+        subtitle: "Trocas e devoluções de Ateliê"
+        public_page: "Página pública"
+        search: "Buscar por pedido, protocolo, nome ou e-mail"
+        stats:
+          all: "Todas"
+          pending: "Pendentes"
+          approved: "Aprovadas"
+          received: "Recebidas"
+          done: "Concluídas"
+          rejected: "Rejeitadas"
+        badges:
+          pending: "Pendente"
+          approved: "Aprovada"
+          done: "Concluída"
+        kinds:
+          exchange: "Troca"
+          refund: "Devolução"
+        nav:
+          requests: "Solicitações"
+          settings: "Configuração"
+          help: "Como usar"
       notifications:
         new_title: "Nova solicitação de troca"
         new_text: "Pedido #1042 · 1 item"
         approved_title: "Troca aprovada"
         approved_text: "Cupom TROCA-1042 enviado por e-mail"
-      cta_button: "Quero a Troca Fácil"
-      whatsapp_message: "Olá, quero conhecer o Mewtda Troca Fácil."
+      cta_button: "Conhecer o Quero Trocar"
+      whatsapp_message: "Olá, quero conhecer o Quero Trocar by Mewtda."
     crm_part:
       number: "01"
       title: "Tudo da sua loja num painel só"

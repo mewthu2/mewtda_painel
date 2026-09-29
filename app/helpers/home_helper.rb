@@ -18,12 +18,17 @@ module HomeHelper
   end
 
   # Os 4 produtos da landing, na ordem das seções. Nomes são marca (não
-  # traduzem); `anchor` é o id da seção na página.
+  # traduzem); `anchor` é o id da seção na página. `logo` (opcional)
+  # troca o wordmark em CSS pela imagem da marca própria.
   LANDING_PRODUCTS = [
-    { key: 'crm',    name: 'CRM',         color: '#1d4ed8', icon: 'fa-solid fa-chart-line',              anchor: 'crm' },
-    { key: 'trocas', name: 'Troca Fácil', color: '#16a34a', icon: 'fa-solid fa-arrow-right-arrow-left', anchor: 'trocas' },
-    { key: 'new',    name: 'New',         color: '#fc7107', icon: 'fa-brands fa-shopify',                anchor: 'sites' },
-    { key: 'app',    name: 'App',         color: '#7c3aed', icon: 'fa-solid fa-mobile-screen',          anchor: 'apps' }
+    { key: 'crm',    name: 'MeuCRM',      color: '#0b72e7', icon: 'fa-solid fa-chart-line',              anchor: 'crm',
+      logo: 'landing/meu-crm-logo.png' },
+    { key: 'trocas', name: 'Quero Trocar', color: '#04432f', icon: 'fa-solid fa-arrow-right-arrow-left', anchor: 'trocas',
+      logo: 'landing/quero-trocar-logo.png' },
+    { key: 'new',    name: 'Sua Loja',    color: '#1a7fdc', icon: 'fa-brands fa-shopify',                anchor: 'sites',
+      logo: 'landing/sua-loja-logo.png' },
+    { key: 'app',    name: 'App',         color: '#1a7fdc', icon: 'fa-solid fa-mobile-screen',          anchor: 'apps',
+      logo: 'landing/app-logo.png' }
   ].freeze
 
   def landing_products

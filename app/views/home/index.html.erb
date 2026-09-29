@@ -61,7 +61,10 @@
       <div class="mwtda-lp-products__grid" data-reveal>
         <% landing_products.each do |product| %>
           <a href="#<%= product[:anchor] %>" class="mwtda-lp-products__card" style="--plogo: <%= product[:color] %>">
-            <span class="mwtda-lp-products__icon"><i class="<%= product[:icon] %>"></i></span>
+            <%# logo em imagem (Quero Trocar) já traz o ícone — não repete %>
+            <% unless product[:logo] %>
+              <span class="mwtda-lp-products__icon"><i class="<%= product[:icon] %>"></i></span>
+            <% end %>
             <%= render 'home/product_logo', product: product %>
             <p><%= t("home.products.#{product[:key]}.tagline") %></p>
             <em><%= t('home.products.more') %> <i class="fa-solid fa-arrow-right"></i></em>
@@ -150,7 +153,7 @@
     </div>
   </section>
 
-  <%# ======================== 02 — TROCA FÁCIL ======================== %>
+  <%# ======================== 02 — QUERO TROCAR======================= %>
   <section class="mwtda-lp-part mwtda-lp-part--tint mwtda-lp-part--flip" id="trocas">
     <div class="mwtda-lp-part__inner">
       <div class="mwtda-lp-part__copy">
@@ -180,42 +183,80 @@
 
       <div class="mwtda-lp-part__visual" data-reveal-self>
         <div class="mwtda-lp-part__glow"></div>
-        <%# Celular com o portal de trocas que o cliente final usa
-            (widget/exchanges) — só ilustração, dados fixos %>
+        <%# Celular com o painel do Quero Trocar (tela "Solicitações" que o
+            lojista usa no dia a dia). Usa o print real em
+            app/assets/images/landing/quero-trocar-mobile.png; sem o arquivo,
+            cai numa versão em HTML da mesma tela. %>
+        <% panel = 'home.trocas_part.panel' %>
         <div class="mwtda-lp-shop__phone mwtda-lp-exchange" aria-hidden="true">
           <div class="mwtda-lp-shop__notch"></div>
-          <div class="mwtda-lp-shop__screen">
+          <% if landing_image?('landing/quero-trocar-mobile.png') %>
+          <div class="mwtda-lp-shop__screen mwtda-lp-exchange__screen mwtda-lp-exchange__screen--print">
+            <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <%= image_tag 'landing/quero-trocar-mobile.png', alt: '', loading: 'lazy' %>
+          </div>
+          <% else %>
+          <div class="mwtda-lp-shop__screen mwtda-lp-exchange__screen">
             <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
             <div class="mwtda-lp-exchange__body">
-              <span class="mwtda-lp-exchange__store">ATELIÊ</span>
-              <strong class="mwtda-lp-exchange__title"><%= t('home.trocas_part.portal.title') %></strong>
-              <span class="mwtda-lp-exchange__order"><%= t('home.trocas_part.portal.order') %></span>
+              <div class="mwtda-lp-exchange__topbar">
+                <%= image_tag 'landing/quero-trocar-icon.png', alt: '', class: 'mwtda-lp-exchange__icon' %>
+                <span class="mwtda-lp-exchange__store"><i class="fa-solid fa-store"></i> Ateliê <i class="fa-solid fa-chevron-down"></i></span>
+                <span class="mwtda-lp-exchange__avatar">A</span>
+              </div>
 
-              <% t('home.trocas_part.portal.items').zip(%w[1591047139829-d91aecb6caea 1503342217505-b0a15ec3261c]).each_with_index do |(item, photo), i| %>
-                <div class="mwtda-lp-exchange__item<%= ' is-selected' if i.zero? %>">
-                  <img src="https://images.unsplash.com/photo-<%= photo %>?w=160&q=70&auto=format&fit=crop" alt="" loading="lazy">
-                  <div>
-                    <b><%= item %></b>
-                    <span class="mwtda-lp-exchange__check"><i class="fa-solid fa-check"></i> <%= t('home.trocas_part.portal.select_item') %></span>
-                    <% if i.zero? %>
-                      <span class="mwtda-lp-exchange__select"><%= t('home.trocas_part.portal.kind') %> <i class="fa-solid fa-chevron-down"></i></span>
-                      <span class="mwtda-lp-exchange__select"><%= t('home.trocas_part.portal.reason') %> <i class="fa-solid fa-chevron-down"></i></span>
-                    <% end %>
-                  </div>
-                </div>
-              <% end %>
-
-              <span class="mwtda-lp-exchange__submit"><%= t('home.trocas_part.portal.submit') %></span>
-
-              <div class="mwtda-lp-exchange__coupon">
-                <i class="fa-solid fa-ticket"></i>
+              <div class="mwtda-lp-exchange__heading">
                 <div>
-                  <small><%= t('home.trocas_part.portal.coupon_label') %></small>
-                  <b><%= t('home.trocas_part.portal.coupon_value') %></b>
+                  <strong><%= t("#{panel}.title") %></strong>
+                  <small><%= t("#{panel}.subtitle") %></small>
                 </div>
+                <span class="mwtda-lp-exchange__public"><i class="fa-solid fa-arrow-up-right-from-square"></i> <%= t("#{panel}.public_page") %></span>
+              </div>
+
+              <div class="mwtda-lp-exchange__stats">
+                <% [
+                     ['all',      128, 'fa-solid fa-inbox'],
+                     ['pending',    6, 'fa-solid fa-hourglass-half'],
+                     ['approved',   9, 'fa-regular fa-thumbs-up'],
+                     ['received',   4, 'fa-solid fa-clipboard-check'],
+                     ['done',     104, 'fa-regular fa-circle-check'],
+                     ['rejected',   5, 'fa-solid fa-ban']
+                   ].each do |key, count, icon| %>
+                  <div class="mwtda-lp-exchange__stat mwtda-lp-exchange__stat--<%= key %>">
+                    <span><i class="<%= icon %>"></i></span>
+                    <div><b><%= count %></b><small><%= t("#{panel}.stats.#{key}") %></small></div>
+                  </div>
+                <% end %>
+              </div>
+
+              <div class="mwtda-lp-exchange__list">
+                <span class="mwtda-lp-exchange__search"><i class="fa-solid fa-magnifying-glass"></i> <%= t("#{panel}.search") %></span>
+                <% [
+                     ['#1042', 'Mariana Costa', 'exchange', 'pending'],
+                     ['#1039', 'Rafael Lima',   'exchange', 'approved'],
+                     ['#1035', 'Juliana Alves', 'refund',   'done'],
+                     ['#1031', 'Bruno Souza',   'exchange', 'done'],
+                     ['#1027', 'Camila Rocha',  'exchange', 'done']
+                   ].each do |order, name, kind, status| %>
+                  <div class="mwtda-lp-exchange__row">
+                    <span class="mwtda-lp-exchange__initials"><%= name.split.map(&:first).join %></span>
+                    <div>
+                      <b><%= name %></b>
+                      <small><%= order %> · <%= t("#{panel}.kinds.#{kind}") %></small>
+                    </div>
+                    <em class="mwtda-lp-exchange__badge mwtda-lp-exchange__badge--<%= status %>"><%= t("#{panel}.badges.#{status}") %></em>
+                  </div>
+                <% end %>
               </div>
             </div>
+
+            <nav class="mwtda-lp-exchange__tabbar">
+              <span class="is-active"><i class="fa-solid fa-inbox"></i><%= t("#{panel}.nav.requests") %></span>
+              <span><i class="fa-solid fa-sliders"></i><%= t("#{panel}.nav.settings") %></span>
+              <span><i class="fa-regular fa-circle-question"></i><%= t("#{panel}.nav.help") %></span>
+            </nav>
           </div>
+          <% end %>
         </div>
 
         <div class="mwtda-lp-shop__notifications" aria-hidden="true">
@@ -441,7 +482,7 @@
       <div class="mwtda-lp-footer__column">
         <span class="mwtda-lp-footer__title"><%= t('home.footer.solucoes_title') %></span>
         <% landing_products.each do |product| %>
-          <a href="#<%= product[:anchor] %>">Mewtda <%= product[:name] %></a>
+          <a href="#<%= product[:anchor] %>"><%= product[:logo] ? "#{product[:name]} by Mewtda" : "Mewtda #{product[:name]}" %></a>
         <% end %>
       </div>
 

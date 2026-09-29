@@ -415,8 +415,10 @@
     text-align: center;
   }
 
-  .mwtda-lp-clients__headline,
-  .mwtda-lp-clients__lead {
+  // .mwtda-lp-clients__inner na frente: .mwtda-lp-section__title/__lead
+  // vêm depois no arquivo e zerariam as margens laterais (título descentralizado)
+  .mwtda-lp-clients__inner .mwtda-lp-clients__headline,
+  .mwtda-lp-clients__inner .mwtda-lp-clients__lead {
     margin-left: auto;
     margin-right: auto;
   }
@@ -2082,6 +2084,19 @@
     color: var(--plogo);
   }
 
+  // produto com marca própria: logo em imagem. Cada arte tem proporção
+  // diferente, então a altura é ajustada por produto pra ficarem com o
+  // mesmo peso visual (Sua Loja tem letras ocupando a altura toda).
+  .mwtda-lp-plogo-img {
+    display: block;
+    height: 2.2rem;
+    width: auto;
+  }
+
+  .mwtda-lp-plogo-img--crm    { height: 2rem; }
+  .mwtda-lp-plogo-img--new    { height: 1.6rem; }
+  .mwtda-lp-plogo-img--app    { height: 2.6rem; }
+
   /* visão geral: 4 cartões, um por produto */
   .mwtda-lp-products {
     padding: 2rem 1.5rem 5rem;
@@ -2177,7 +2192,7 @@
   }
 
   /* -----------------------------------------------------------------
-     15. TROCA FÁCIL (02) — celular com o portal de trocas do cliente
+     15. QUERO TROCAR (02) — celular com o painel de solicitações
      ----------------------------------------------------------------- */
   .mwtda-lp-exchange {
     transform: rotate(3deg);
@@ -2189,164 +2204,277 @@
     50%      { transform: rotate(3deg) translateY(-10px); }
   }
 
-  // global.scss força `* { font-size: 13px }`: aqui tudo herda do item/body
-  .mwtda-lp-exchange__body * {
+  // global.scss força `* { font-size: 13px }`: aqui tudo herda do body
+  .mwtda-lp-exchange__screen * {
     font-size: inherit;
+  }
+
+  // mesmas cores do painel do Quero Trocar (fundo verde-claro, verde-escuro da marca)
+  .mwtda-lp-exchange__screen {
+    --qt-green: #04432f;
+    --qt-soft: #d3e8d0;
+    background: #f1f6f0;
+    font-size: 0.62rem;
+  }
+
+  // print real do painel: preenche a tela abaixo da status bar
+  .mwtda-lp-exchange__screen--print {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+
+  .mwtda-lp-exchange__screen--print img {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    object-fit: cover;
+    object-position: top;
   }
 
   .mwtda-lp-exchange__body {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 8px 16px 16px;
+    gap: 8px;
+    padding: 4px 12px 0;
+  }
+
+  .mwtda-lp-exchange__topbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mwtda-lp-exchange__icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    margin-right: auto;
   }
 
   .mwtda-lp-exchange__store {
-    font-family: var(--mw-font-heading);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 8px;
+    border: 1px solid #c9d3c8;
+    background: #fff;
+    font-weight: 600;
+  }
+
+  .mwtda-lp-exchange__store i {
+    font-size: 0.5rem;
+    color: #4b5563;
+  }
+
+  .mwtda-lp-exchange__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #a7e3a2;
+    color: var(--qt-green);
     font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: 0.04em;
-    color: #e4572e;
-    text-align: center;
   }
 
-  .mwtda-lp-exchange__title {
-    font-family: var(--mw-font-heading);
-    font-size: 1.05rem;
-    margin-top: 4px;
-  }
-
-  .mwtda-lp-exchange__order {
-    margin-top: -6px;
-    font-size: 0.7rem;
-    color: #6b7280;
-  }
-
-  .mwtda-lp-exchange__item {
+  .mwtda-lp-exchange__heading {
     display: flex;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 14px;
-    border: 1px solid #e5e7eb;
-    font-size: 0.66rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
   }
 
-  .mwtda-lp-exchange__item.is-selected {
-    border-color: #16a34a;
-    background: #f0fdf4;
+  .mwtda-lp-exchange__heading strong {
+    display: block;
+    font-family: var(--mw-font-heading);
+    font-size: 0.98rem;
+    font-weight: 600;
   }
 
-  .mwtda-lp-exchange__item img {
-    width: 54px;
-    height: 54px;
+  .mwtda-lp-exchange__heading small {
+    display: block;
+    font-size: 0.52rem;
+    color: #4b5563;
+  }
+
+  .mwtda-lp-exchange__public {
     flex-shrink: 0;
-    border-radius: 10px;
-    object-fit: cover;
-    background: #eef0f4;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: var(--qt-soft);
+    color: var(--qt-green);
+    font-size: 0.54rem;
+    font-weight: 600;
   }
 
-  .mwtda-lp-exchange__item > div {
-    flex: 1;
+  .mwtda-lp-exchange__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+  }
+
+  .mwtda-lp-exchange__stat {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 8px;
+    border-radius: 9px;
+    border: 1px solid #d5dcd4;
+    background: #fff;
+  }
+
+  .mwtda-lp-exchange__stat--all {
+    grid-column: 1 / -1;
+    border: 1.5px solid var(--qt-green);
+    background: #f7faf6;
+  }
+
+  .mwtda-lp-exchange__stat > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    color: #1f2937;
+  }
+
+  .mwtda-lp-exchange__stat b {
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.1;
+  }
+
+  .mwtda-lp-exchange__stat small {
+    display: block;
+    font-size: 0.5rem;
+    color: #4b5563;
+  }
+
+  .mwtda-lp-exchange__stat--all > span      { background: #cfe3cc; }
+  .mwtda-lp-exchange__stat--pending > span  { background: #fde2a0; }
+  .mwtda-lp-exchange__stat--approved > span { background: #b9ebb4; }
+  .mwtda-lp-exchange__stat--received > span { background: #fde2a0; }
+  .mwtda-lp-exchange__stat--done > span     { background: #b4e7ee; }
+  .mwtda-lp-exchange__stat--rejected > span { background: #fcc9c5; color: #b91c1c; }
+
+  .mwtda-lp-exchange__list {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    padding: 7px;
+    border-radius: 11px;
+    border: 1px solid #d5dcd4;
+    background: #fff;
+  }
+
+  .mwtda-lp-exchange__search {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: #e8efe7;
+    color: #4b5563;
+    font-size: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .mwtda-lp-exchange__row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 2px;
+    border-bottom: 1px solid #edf1ec;
+  }
+
+  .mwtda-lp-exchange__row:last-child {
+    border-bottom: 0;
+  }
+
+  .mwtda-lp-exchange__initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--qt-soft);
+    color: var(--qt-green);
+    font-size: 0.5rem;
+    font-weight: 700;
+  }
+
+  .mwtda-lp-exchange__row > div {
+    flex: 1;
     min-width: 0;
   }
 
-  .mwtda-lp-exchange__item b {
-    font-size: 0.72rem;
-  }
-
-  .mwtda-lp-exchange__check {
-    color: #6b7280;
-  }
-
-  .mwtda-lp-exchange__check i {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 13px;
-    height: 13px;
-    margin-right: 3px;
-    border-radius: 4px;
-    border: 1px solid #d1d5db;
-    color: transparent;
-    font-size: 0.5rem;
-  }
-
-  .mwtda-lp-exchange__item.is-selected .mwtda-lp-exchange__check i {
-    background: #16a34a;
-    border-color: #16a34a;
-    color: #fff;
-  }
-
-  .mwtda-lp-exchange__select {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 8px;
-    border-radius: 7px;
-    border: 1px solid #d1d5db;
-    background: #fff;
-    color: #111827;
-  }
-
-  .mwtda-lp-exchange__select i {
-    font-size: 0.5rem;
-    color: #9ca3af;
-  }
-
-  .mwtda-lp-exchange__submit {
-    margin-top: 4px;
-    padding: 11px;
-    border-radius: 12px;
-    background: #16a34a;
-    color: #fff;
-    font-size: 0.74rem;
-    font-weight: 600;
-    text-align: center;
-  }
-
-  // resultado da troca aprovada: vale-troca virou cupom na Shopify
-  .mwtda-lp-exchange__coupon {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 6px;
-    padding: 12px;
-    border-radius: 14px;
-    border: 1px dashed #16a34a;
-    background: #f0fdf4;
-  }
-
-  .mwtda-lp-exchange__coupon > i {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    flex-shrink: 0;
-    border-radius: 10px;
-    background: #16a34a;
-    color: #fff;
-    font-size: 0.8rem;
-  }
-
-  .mwtda-lp-exchange__coupon small {
+  .mwtda-lp-exchange__row b {
     display: block;
     font-size: 0.6rem;
+  }
+
+  .mwtda-lp-exchange__row small {
+    display: block;
+    font-size: 0.5rem;
     color: #6b7280;
   }
 
-  .mwtda-lp-exchange__coupon b {
-    font-size: 0.74rem;
-    letter-spacing: 0.02em;
+  .mwtda-lp-exchange__badge {
+    flex-shrink: 0;
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-style: normal;
+    font-size: 0.5rem;
+    font-weight: 600;
+  }
+
+  .mwtda-lp-exchange__badge--pending  { background: #fef3c7; color: #92400e; }
+  .mwtda-lp-exchange__badge--approved { background: #dcfce7; color: #166534; }
+  .mwtda-lp-exchange__badge--done     { background: #cffafe; color: #155e75; }
+
+  .mwtda-lp-exchange__tabbar {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 7px 8px 16px;
+    border-top: 1px solid #dde4dc;
+    background: #fff;
+  }
+
+  .mwtda-lp-exchange__tabbar span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.5rem;
+    color: #374151;
+  }
+
+  .mwtda-lp-exchange__tabbar i {
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+  }
+
+  .mwtda-lp-exchange__tabbar .is-active i {
+    background: var(--qt-soft);
+    color: var(--qt-green);
   }
 
   .mwtda-lp-exchange__notification--new { top: 14%; right: -6%; }
-  .mwtda-lp-exchange__notification--new .mwtda-lp-shop__notification-icon { background: #16a34a; }
+  .mwtda-lp-exchange__notification--new .mwtda-lp-shop__notification-icon { background: #04432f; }
   .mwtda-lp-exchange__notification--approved { bottom: 16%; left: -4%; }
-  .mwtda-lp-exchange__notification--approved .mwtda-lp-shop__notification-icon { background: #1d4ed8; }
+  .mwtda-lp-exchange__notification--approved .mwtda-lp-shop__notification-icon { background: #16a34a; }
 
   @media (max-width: 520px) {
     .mwtda-lp-exchange__notification--new { right: 0; }
