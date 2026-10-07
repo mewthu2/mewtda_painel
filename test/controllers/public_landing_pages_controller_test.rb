@@ -69,6 +69,17 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
     assert_match 'Pré-venda encerrada', response.body
   end
 
+  test 'sends the campaign end to the page so an open tab stops selling when it passes' do
+    ends_at = Time.zone.local(2030, 10, 7, 23, 59)
+    @page.update!(ends_at: ends_at)
+
+    get '/use1822/drop-01'
+
+    assert_response :success
+    assert_match %("endsAt":#{(ends_at.to_f * 1000).to_i}), response.body
+    assert_match 'A campanha acabou em 07/10 às 23:59. As vendas estão encerradas.', response.body
+  end
+
   test 'does not shadow the CRM routes' do
     get '/crm/landing-pages'
     assert_response :redirect # login do Devise, não a landing page

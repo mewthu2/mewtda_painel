@@ -41,7 +41,7 @@
       --max: 1240px;
     }
     *, *::before, *::after { box-sizing: border-box; }
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    html { overflow-x: clip; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body { overflow-x: clip; margin: 0; background: var(--preto); color: var(--papel); font: 400 17px/1.55 'Archivo', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
     img { display: block; max-width: 100%; height: auto; }
     a { color: inherit; }
@@ -262,7 +262,7 @@
     .shape--diagonal { width: clamp(100px, 12vw, 170px); height: clamp(100px, 12vw, 170px); background: var(--azul); right: 9%; top: 30%;
                        clip-path: polygon(0 100%, 26% 100%, 100% 0, 74% 0); }
     @media (max-width: 1023px) {
-      .hero__shapes { opacity: .2; }
+      .hero__shapes { opacity: .2; overflow: hidden; }
       .shape--anel { top: 2%; right: -8%; } .shape--barra { right: 6%; top: 34%; } .shape--diagonal { right: -6%; top: 58%; }
     }
 

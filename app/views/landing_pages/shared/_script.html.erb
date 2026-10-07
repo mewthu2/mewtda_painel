@@ -9,8 +9,27 @@
     endpoint: @storefront&.configured? ? @storefront.endpoint : nil,
     token: @storefront&.configured? ? @storefront.token : nil,
     attributionKey: LandingPage::ATTRIBUTION_KEY,
-    landingPageId: @landing_page.id.to_s
+    landingPageId: @landing_page.id.to_s,
+    serverNow: (Time.current.to_f * 1000).to_i,
+    endsAt: @landing_page.ends_at && (@landing_page.ends_at.to_f * 1000).to_i,
+    endedText: @landing_page.ends_at && "A campanha acabou em #{l(@landing_page.ends_at.in_time_zone, format: '%d/%m às %H:%M')}. As vendas estão encerradas."
   }.to_json) %>;
+
+  // ---- Fim da campanha: quem abriu a página antes do prazo não pode comprar
+  // depois dele. O relógio vem do servidor, pra não depender do aparelho.
+  var clockOffset = config.serverNow - Date.now();
+  function campaignEnded() { return !!config.endsAt && Date.now() + clockOffset >= config.endsAt; }
+  function closeSales() {
+    document.querySelectorAll('[data-lp-submit]').forEach(function (button) {
+      button.disabled = true;
+      button.classList.remove('is-loading');
+      button.dataset.soldOut = '1';
+      button.textContent = 'Vendas encerradas';
+    });
+    document.querySelectorAll('[data-lp-message]').forEach(function (message) {
+      message.textContent = config.endedText;
+    });
+  }
 
   // ---- UTMs: primeira visita da sessão com UTM vence; sobrevive a navegação.
   var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'];
@@ -22,6 +41,7 @@
 
   // ---- Checkout: cartCreate na Storefront API -> checkoutUrl.
   function checkout(lines, submit, say) {
+    if (campaignEnded()) { closeSales(); return; }
     if (!config.endpoint) { say('Checkout ainda não configurado.'); return; }
 
     var attributes = [{ key: config.attributionKey, value: config.landingPageId }];
@@ -283,10 +303,18 @@
 
   // Volta do checkout pelo botão "voltar": destrava os botões (bfcache).
   window.addEventListener('pageshow', function () {
+    if (campaignEnded()) { closeSales(); return; }
     document.querySelectorAll('[data-lp-submit].is-loading').forEach(function (b) {
       b.disabled = false; b.classList.remove('is-loading');
     });
   });
+
+  // Página aberta na hora do fim: fecha as vendas sem esperar o clique.
+  if (config.endsAt) {
+    var remaining = config.endsAt - (Date.now() + clockOffset);
+    if (remaining <= 0) closeSales();
+    else if (remaining < 2147483647) setTimeout(closeSales, remaining);
+  }
 
   // ---- Lead
   document.querySelectorAll('[data-lp-lead]').forEach(function (form) {
