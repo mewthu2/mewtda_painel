@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title><%= content_for?(:title) ? yield(:title) : @landing_page.name %></title>
+    <% if @preview %><meta name="robots" content="noindex"><% end %>
+    <%= yield :head %>
+  </head>
+  <body class="<%= yield :body_class %>">
+    <% if @preview %>
+      <div style="position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#111;color:#F4F1EA;font:600 13px/1.4 system-ui,sans-serif;text-align:center;padding:8px 16px;">
+        Pré-visualização: esta página está inativa e só você (logado no painel) consegue ver.
+      </div>
+    <% end %>
+    <%= yield %>
+    <%= render 'landing_pages/shared/script' %>
+  </body>
+</html>

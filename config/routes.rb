@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     resources :ad_costs, except: [:show]
     resource :goal, only: %i[edit update]
     resource :popup, only: %i[edit update]
+    resources :landing_pages, path: 'landing-pages'
     get 'popup/cadastros', to: 'popups#submissions', as: :submissions_popup
 
     resources :email_templates, except: [:show]
@@ -124,5 +125,14 @@ Rails.application.routes.draw do
         get :verify_attempts
       end
     end
+  end
+
+  # Landing pages públicas — /:path_prefix/:slug (ex.: /use1822/drop-01).
+  # Fica por último pra nunca sombrear uma rota do app; prefixos reservados
+  # (LandingPage::RESERVED_PREFIXES) são recusados no model e no controller.
+  constraints(path_prefix: /[a-z0-9]+(?:-[a-z0-9]+)*/, slug: /[a-z0-9]+(?:-[a-z0-9]+)*/) do
+    get  '/:path_prefix/:slug',      to: 'public_landing_pages#show', as: :public_landing_page
+    post '/:path_prefix/:slug/lead', to: 'public_landing_pages#lead', as: :public_landing_page_lead
+    post '/:path_prefix/:slug/break', to: 'public_landing_pages#break_chain', as: :public_landing_page_break
   end
 end

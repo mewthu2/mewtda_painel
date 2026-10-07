@@ -1,0 +1,71 @@
+<div class="users-form-page__card">
+  <% if landing_page.errors.any? %>
+    <div class="users-form-page__errors">
+      <div>
+        <strong>Corrija os erros abaixo:</strong>
+        <ul>
+          <% landing_page.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <%= form_for landing_page, as: :landing_page,
+               url: (landing_page.persisted? ? landing_page_path(landing_page) : landing_pages_path),
+               method: (landing_page.persisted? ? :patch : :post),
+               html: { autocomplete: 'off' } do |form| %>
+    <div class="users-form-page__body">
+      <div class="users-form-page__field">
+        <label class="crm-label">Status</label>
+        <div class="cform-toggle">
+          <%= form.check_box :active, class: 'cform-toggle__input' %>
+          <span class="cform-toggle__label">Página no ar (desligada, só quem está logado consegue pré-visualizar)</span>
+        </div>
+      </div>
+
+      <div class="users-form-page__field">
+        <%= form.label :name, 'Nome interno', class: 'crm-label' %>
+        <%= form.text_field :name, class: 'crm-input', placeholder: 'Ex.: 1822 · Drop 01' %>
+      </div>
+
+      <div class="users-form-page__row">
+        <div class="users-form-page__field">
+          <%= form.label :path_prefix, 'Prefixo do link', class: 'crm-label' %>
+          <%= form.text_field :path_prefix, class: 'crm-input', placeholder: current_client.slug %>
+          <span class="cform-field__hint">Primeira parte do link. Use um nome neutro se a marca da loja não deve aparecer (ex.: use1822).</span>
+        </div>
+        <div class="users-form-page__field">
+          <%= form.label :slug, 'Slug da página', class: 'crm-label' %>
+          <%= form.text_field :slug, class: 'crm-input', placeholder: 'drop-01' %>
+          <span class="cform-field__hint">Só letras minúsculas, números e hífens.</span>
+        </div>
+      </div>
+
+      <div class="users-form-page__row">
+        <div class="users-form-page__field">
+          <%= form.label :template, 'Template', class: 'crm-label' %>
+          <%= form.select :template, LandingPage.templates, { include_blank: 'Selecione' }, class: 'crm-input' %>
+          <span class="cform-field__hint">Arquivos em app/views/landing_pages/templates.</span>
+        </div>
+        <div class="users-form-page__field">
+          <%= form.label :ends_at, 'Vendas até (opcional)', class: 'crm-label' %>
+          <%= form.datetime_field :ends_at, class: 'crm-input' %>
+          <span class="cform-field__hint">Depois disso o botão de compra vira "encerrado" e fica só o cadastro de lead.</span>
+        </div>
+      </div>
+
+      <div class="users-form-page__field">
+        <%= form.label :product_handles_text, 'Produtos', class: 'crm-label' %>
+        <%= form.text_area :product_handles_text, class: 'crm-input', rows: 3, placeholder: 'https://admin.shopify.com/store/sua-loja/products/123456789' %>
+        <span class="cform-field__hint">Um por linha, na ordem em que aparecem. Pode colar o link do produto no admin da Shopify, o ID ou o handle. O produto precisa estar publicado no canal de vendas do token da Storefront (pode ficar oculto na loja).</span>
+      </div>
+    </div>
+
+    <div class="users-form-page__footer">
+      <%= link_to 'Cancelar', landing_page.persisted? ? landing_page_path(landing_page) : landing_pages_path, class: 'crm-btn' %>
+      <%= form.submit 'Salvar', class: 'crm-btn crm-btn--primary' %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,28 @@
+<%#
+  Bloco de compra direta: escolhe as opções (cor/tamanho) e vai direto pro
+  checkout da Shopify. Locals: product (hash da Storefront API),
+  button_text (opcional), closed_text (opcional).
+  O estilo fica no template — aqui só a estrutura (classes lp-buy__*).
+%>
+<% options = lp_product_options(product) %>
+<div class="lp-buy" data-lp-buy data-variants="<%= lp_variants_json(product) %>">
+  <% options.each do |option| %>
+    <fieldset class="lp-buy__option" data-lp-option="<%= option['name'] %>" data-lp-label="<%= lp_option_label(option['name']) %>">
+      <legend class="lp-buy__legend"><%= lp_option_label(option['name']) %></legend>
+      <div class="lp-buy__values">
+        <% option['optionValues'].each do |value| %>
+          <button type="button" class="lp-buy__value" data-lp-value="<%= value['name'] %>"><%= value['name'] %></button>
+        <% end %>
+      </div>
+    </fieldset>
+  <% end %>
+
+  <% if @landing_page.sales_open? %>
+    <button type="button" class="lp-buy__submit" data-lp-submit <%= 'disabled' unless product['availableForSale'] %>>
+      <%= product['availableForSale'] ? local_assigns.fetch(:button_text, 'Comprar') : 'Esgotado' %>
+    </button>
+    <p class="lp-buy__message" data-lp-message role="status" aria-live="polite"></p>
+  <% else %>
+    <p class="lp-buy__closed"><%= local_assigns.fetch(:closed_text, 'Vendas encerradas.') %></p>
+  <% end %>
+</div>

@@ -2,6 +2,7 @@ class Order < ApplicationRecord
   belongs_to :customer, optional: true
   belongs_to :client
   belongs_to :location, optional: true
+  belongs_to :landing_page, optional: true
   has_many :order_items, dependent: :destroy
   has_many :campaign_actions, dependent: :nullify
 

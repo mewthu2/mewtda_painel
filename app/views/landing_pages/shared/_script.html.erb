@@ -1,0 +1,319 @@
+<%#
+  JS das landing pages (sem build, inline): guarda as UTMs da visita, cuida
+  do bloco de compra direta (cartCreate na Storefront API -> checkoutUrl) e do
+  formulário de lead.
+%>
+<script>
+(function () {
+  var config = <%= raw({
+    endpoint: @storefront&.configured? ? @storefront.endpoint : nil,
+    token: @storefront&.configured? ? @storefront.token : nil,
+    attributionKey: LandingPage::ATTRIBUTION_KEY,
+    landingPageId: @landing_page.id.to_s
+  }.to_json) %>;
+
+  // ---- UTMs: primeira visita da sessão com UTM vence; sobrevive a navegação.
+  var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'];
+  var utms = {};
+  try { utms = JSON.parse(sessionStorage.getItem('lp_utms') || '{}'); } catch (e) {}
+  var query = new URLSearchParams(window.location.search);
+  UTM_KEYS.forEach(function (key) { if (query.get(key)) utms[key] = query.get(key); });
+  try { sessionStorage.setItem('lp_utms', JSON.stringify(utms)); } catch (e) {}
+
+  // ---- Checkout: cartCreate na Storefront API -> checkoutUrl.
+  function checkout(lines, submit, say) {
+    if (!config.endpoint) { say('Checkout ainda não configurado.'); return; }
+
+    var attributes = [{ key: config.attributionKey, value: config.landingPageId }];
+    Object.keys(utms).forEach(function (key) { attributes.push({ key: '_' + key, value: String(utms[key]) }); });
+
+    submit.disabled = true;
+    submit.classList.add('is-loading');
+    say('');
+
+    fetch(config.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': config.token },
+      body: JSON.stringify({
+        query: 'mutation BuyNow($lines: [CartLineInput!]!, $attributes: [AttributeInput!]) {' +
+               ' cartCreate(input: { lines: $lines, attributes: $attributes }) {' +
+               ' cart { checkoutUrl } userErrors { field message } } }',
+        variables: { lines: lines, attributes: attributes }
+      })
+    }).then(function (response) { return response.json(); }).then(function (json) {
+      var payload = json && json.data && json.data.cartCreate;
+      var url = payload && payload.cart && payload.cart.checkoutUrl;
+      if (url) { window.location.href = url; return; }
+      throw new Error('checkout');
+    }).catch(function () {
+      submit.disabled = false;
+      submit.classList.remove('is-loading');
+      say('Não deu pra abrir o checkout. Tenta de novo.');
+    });
+  }
+
+  var money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  // ---- Compra direta
+  document.querySelectorAll('[data-lp-buy]').forEach(function (box) {
+    var variants = JSON.parse(box.dataset.variants || '[]');
+    var groups = Array.prototype.slice.call(box.querySelectorAll('[data-lp-option]'));
+    var submit = box.querySelector('[data-lp-submit]');
+    var message = box.querySelector('[data-lp-message]');
+    var selection = {};
+
+    // Opção com valor único já vem escolhida.
+    groups.forEach(function (group) {
+      var buttons = group.querySelectorAll('[data-lp-value]');
+      if (buttons.length === 1) selection[group.dataset.lpOption] = buttons[0].dataset.lpValue;
+    });
+
+    function matches(variant, sel) {
+      return Object.keys(sel).every(function (name) { return variant.options[name] === sel[name]; });
+    }
+
+    function currentVariant() {
+      if (Object.keys(selection).length < groups.length) return null;
+      return variants.find(function (v) { return matches(v, selection); }) || null;
+    }
+
+    function render() {
+      groups.forEach(function (group) {
+        var name = group.dataset.lpOption;
+        group.querySelectorAll('[data-lp-value]').forEach(function (button) {
+          var value = button.dataset.lpValue;
+          var trial = Object.assign({}, selection); trial[name] = value;
+          var possible = variants.some(function (v) { return v.available && matches(v, trial); });
+          button.classList.toggle('is-selected', selection[name] === value);
+          button.classList.toggle('is-unavailable', !possible);
+          button.setAttribute('aria-pressed', selection[name] === value ? 'true' : 'false');
+        });
+      });
+    }
+
+    function say(text) { if (message) message.textContent = text || ''; }
+
+    groups.forEach(function (group) {
+      group.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-lp-value]');
+        if (!button) return;
+        selection[group.dataset.lpOption] = button.dataset.lpValue;
+        box.classList.remove('needs-selection');
+        say('');
+        render();
+      });
+    });
+
+    if (submit) submit.addEventListener('click', function () {
+      var missing = groups.filter(function (g) { return !selection[g.dataset.lpOption]; });
+      if (missing.length) {
+        box.classList.add('needs-selection');
+        say('Escolha ' + missing.map(function (g) { return (g.dataset.lpLabel || g.dataset.lpOption).toLowerCase(); }).join(' e ') + '.');
+        return;
+      }
+      var variant = currentVariant();
+      if (!variant || !variant.available) { say('Essa combinação esgotou. Escolha outra.'); return; }
+      checkout([{ merchandiseId: variant.id, quantity: 1 }], submit, say);
+    });
+
+    render();
+  });
+
+
+  // ---- Kit: N peças, cada uma com suas opções; um checkout só.
+  document.querySelectorAll('[data-lp-kit]').forEach(function (kit) {
+    var variants = JSON.parse(kit.dataset.variants || '[]');
+    var max = parseInt(kit.dataset.max, 10) || 4;
+    var fallbackImage = kit.dataset.fallbackImage;
+    var slotsEl = kit.querySelector('[data-lp-slots]');
+    var template = kit.querySelector('[data-lp-slot-template]');
+    var qtyButtons = kit.querySelectorAll('[data-lp-qty]');
+    var summaryEl = kit.querySelector('[data-lp-kit-summary]');
+    var totalEl = kit.querySelector('[data-lp-kit-total]');
+    var fullEl = kit.querySelector('[data-lp-kit-full]');
+    var kitPrices = JSON.parse(kit.dataset.kitPrices || '{}');
+    var submit = kit.querySelector('[data-lp-submit]');
+    var message = kit.querySelector('[data-lp-message]');
+    var optionNames = Array.prototype.map.call(template.content.querySelectorAll('[data-lp-option]'),
+      function (el) { return el.dataset.lpOption; });
+    var labelOf = {};
+    template.content.querySelectorAll('[data-lp-option]').forEach(function (el) { labelOf[el.dataset.lpOption] = el.dataset.lpLabel || el.dataset.lpOption; });
+    var valuesOf = {};
+    optionNames.forEach(function (name) {
+      valuesOf[name] = Array.prototype.map.call(
+        template.content.querySelectorAll('[data-lp-option="' + name + '"] [data-lp-value]'),
+        function (b) { return b.dataset.lpValue; });
+    });
+    // A opção de cor (se houver) ganha valor padrão alternado: kit de 2 já vem 1 de cada.
+    var colorOption = optionNames.find(function (n) { return /^(cor|cores|color|colou?r)$/i.test(n); });
+    var qty = 1;
+    var slots = [];
+
+    function say(text) { if (message) message.textContent = text || ''; }
+    function matches(variant, sel) {
+      return Object.keys(sel).every(function (name) { return variant.options[name] === sel[name]; });
+    }
+    function newSlot(index) {
+      var sel = {};
+      optionNames.forEach(function (name) { if (valuesOf[name].length === 1) sel[name] = valuesOf[name][0]; });
+      if (colorOption) sel[colorOption] = valuesOf[colorOption][index % valuesOf[colorOption].length];
+      return sel;
+    }
+    function complete(sel) { return optionNames.every(function (n) { return sel[n]; }); }
+    function variantFor(sel) {
+      return complete(sel) ? (variants.find(function (v) { return matches(v, sel); }) || null) : null;
+    }
+    function imageFor(sel) {
+      var v = variants.find(function (v) { return v.image && matches(v, sel); });
+      return (v && v.image) || fallbackImage;
+    }
+    function cheapest() {
+      return variants.reduce(function (min, v) { return Math.min(min, parseFloat(v.price)); }, Infinity);
+    }
+
+    function render() {
+      qtyButtons.forEach(function (b) {
+        var on = parseInt(b.dataset.lpQty, 10) === qty;
+        b.classList.toggle('is-selected', on);
+        b.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+
+      while (slotsEl.children.length < qty) {
+        var node = template.content.firstElementChild.cloneNode(true);
+        node.dataset.index = slotsEl.children.length;
+        slotsEl.appendChild(node);
+      }
+      while (slotsEl.children.length > qty) slotsEl.removeChild(slotsEl.lastElementChild);
+
+      Array.prototype.forEach.call(slotsEl.children, function (node, i) {
+        var sel = slots[i];
+        node.querySelector('[data-lp-slot-title]').textContent = qty === 1 ? 'Sua camiseta' : 'Camiseta ' + (i + 1);
+        var img = node.querySelector('[data-lp-slot-img]');
+        var src = imageFor(sel);
+        if (src && img.getAttribute('src') !== src) img.setAttribute('src', src);
+        node.querySelectorAll('[data-lp-option]').forEach(function (group) {
+          var name = group.dataset.lpOption;
+          group.querySelectorAll('[data-lp-value]').forEach(function (button) {
+            var value = button.dataset.lpValue;
+            var trial = Object.assign({}, sel); trial[name] = value;
+            var possible = variants.some(function (v) { return v.available && matches(v, trial); });
+            button.classList.toggle('is-selected', sel[name] === value);
+            button.classList.toggle('is-unavailable', !possible);
+            button.setAttribute('aria-pressed', sel[name] === value ? 'true' : 'false');
+          });
+        });
+      });
+
+      // Resumo: "2× Branca · 1× Preta" e total.
+      var counts = {};
+      slots.slice(0, qty).forEach(function (sel) {
+        var key = colorOption ? (sel[colorOption] || '?') : 'Camiseta';
+        counts[key] = (counts[key] || 0) + 1;
+      });
+      summaryEl.textContent = Object.keys(counts).map(function (k) { return counts[k] + '× ' + k; }).join(' · ');
+      var full = slots.slice(0, qty).reduce(function (sum, sel) {
+        var v = variantFor(sel);
+        return sum + (v ? parseFloat(v.price) : cheapest());
+      }, 0);
+      // Desconto de kit da loja (cotado na Shopify), proporcional ao preço cheio.
+      var quoted = kitPrices[qty];
+      var total = quoted && isFinite(full) ? full * (quoted / (cheapest() * qty)) : full;
+      if (fullEl) fullEl.textContent = total < full - 0.005 ? money.format(full) : '';
+      var formatted = isFinite(total) ? money.format(total) : '';
+      if (totalEl.textContent && totalEl.textContent !== formatted) {
+        totalEl.classList.remove('bump'); void totalEl.offsetWidth; totalEl.classList.add('bump');
+      }
+      totalEl.textContent = formatted;
+      if (submit && !submit.classList.contains('is-loading') && submit.dataset.soldOut !== '1') {
+        submit.textContent = qty === 1 ? 'Comprar agora' : 'Comprar kit com ' + qty;
+      }
+    }
+
+    qtyButtons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        qty = Math.min(max, parseInt(b.dataset.lpQty, 10));
+        while (slots.length < qty) slots.push(newSlot(slots.length));
+        kit.classList.remove('needs-selection');
+        say('');
+        render();
+      });
+    });
+
+    slotsEl.addEventListener('click', function (event) {
+      var button = event.target.closest('[data-lp-value]');
+      if (!button) return;
+      var node = button.closest('[data-lp-slot]');
+      var group = button.closest('[data-lp-option]');
+      slots[parseInt(node.dataset.index, 10)][group.dataset.lpOption] = button.dataset.lpValue;
+      node.classList.remove('needs-selection');
+      say('');
+      render();
+    });
+
+    if (submit) {
+      if (submit.disabled) submit.dataset.soldOut = '1';
+      submit.addEventListener('click', function () {
+        var chosen = slots.slice(0, qty);
+        var missing = [];
+        Array.prototype.forEach.call(slotsEl.children, function (node, i) {
+          var incomplete = !complete(chosen[i]);
+          node.classList.toggle('needs-selection', incomplete);
+          if (incomplete) missing.push(i);
+        });
+        if (missing.length) {
+          var names = optionNames.filter(function (n) { return chosen.some(function (s) { return !s[n]; }); });
+          say('Escolha ' + names.map(function (n) { return labelOf[n].toLowerCase(); }).join(' e ') +
+              (qty > 1 ? ' de cada camiseta.' : '.'));
+          slotsEl.children[missing[0]].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        var lines = {};
+        for (var i = 0; i < chosen.length; i++) {
+          var v = variantFor(chosen[i]);
+          if (!v || !v.available) { say('A camiseta ' + (i + 1) + ' esgotou nessa combinação. Troca a opção.'); return; }
+          lines[v.id] = (lines[v.id] || 0) + 1;
+        }
+        checkout(Object.keys(lines).map(function (id) { return { merchandiseId: id, quantity: lines[id] }; }), submit, say);
+      });
+    }
+
+    slots.push(newSlot(0));
+    render();
+  });
+
+  // Volta do checkout pelo botão "voltar": destrava os botões (bfcache).
+  window.addEventListener('pageshow', function () {
+    document.querySelectorAll('[data-lp-submit].is-loading').forEach(function (b) {
+      b.disabled = false; b.classList.remove('is-loading');
+    });
+  });
+
+  // ---- Lead
+  document.querySelectorAll('[data-lp-lead]').forEach(function (form) {
+    var message = form.querySelector('[data-lp-lead-message]');
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var data = new FormData(form);
+      if (!String(data.get('name') || '').trim() || !/^\S+@\S+\.\S+$/.test(String(data.get('email') || '').trim())) {
+        message.textContent = 'Preenche nome e um e-mail válido.';
+        return;
+      }
+      Object.keys(utms).forEach(function (key) { data.append(key, utms[key]); });
+      var button = form.querySelector('[type=submit]');
+      button.disabled = true;
+      fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
+        .then(function (response) { return response.json().then(function (json) { return { ok: response.ok, json: json }; }); })
+        .then(function (result) {
+          if (!result.ok) throw new Error((result.json.errors || []).join(' '));
+          form.classList.add('is-done');
+          message.textContent = message.dataset.success;
+          form.reset();
+        })
+        .catch(function (error) {
+          button.disabled = false;
+          message.textContent = error.message || 'Não deu pra cadastrar agora. Tenta de novo.';
+        });
+    });
+  });
+})();
+</script>

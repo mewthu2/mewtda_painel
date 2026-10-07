@@ -1,0 +1,68 @@
+<%#
+  Monte seu kit: a pessoa escolhe quantas peças (1..max) e, pra cada uma, as
+  opções do produto (ex.: cor e tamanho). Vira um checkout só, com as linhas
+  agrupadas por variante. Locals: product (hash da Storefront API), max (4),
+  kit_prices ({ qtd => total com desconto da loja }, opcional), closed_text.
+  O estilo fica no template (classes lp-kit__*).
+%>
+<% options = lp_product_options(product) %>
+<% max = local_assigns.fetch(:max, 4) %>
+<% unit_price = lp_min_price(product) %>
+<% kit_prices = local_assigns.fetch(:kit_prices, {}) || {} %>
+<div class="lp-kit" data-lp-kit data-max="<%= max %>" data-variants="<%= lp_variants_json(product) %>"
+     data-kit-prices="<%= kit_prices.transform_values(&:to_f).to_json %>"
+     data-fallback-image="<%= lp_image_url(product.dig('featuredImage', 'url'), 300) %>">
+  <div class="lp-kit__step">
+    <span class="lp-kit__label">Quantas camisetas?</span>
+    <div class="lp-kit__qty" role="radiogroup" aria-label="Quantidade de camisetas">
+      <% (1..max).each do |n| %>
+        <% kit_price = kit_prices[n] || (unit_price && unit_price * n) %>
+        <% off = lp_kit_discount_percent(kit_prices[n], unit_price, n) %>
+        <button type="button" class="lp-kit__qty-btn" data-lp-qty="<%= n %>" role="radio" aria-checked="false">
+          <% if off.positive? %><b class="lp-kit__off">−<%= off %>%</b><% end %>
+          <strong><%= n %></strong>
+          <span><%= n == 1 ? 'Uma' : "Kit #{n}" %></span>
+          <% if kit_price %><em><%= lp_money(kit_price) %></em><% end %>
+        </button>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="lp-kit__step">
+    <span class="lp-kit__label">Escolha cada uma</span>
+    <div class="lp-kit__slots" data-lp-slots></div>
+  </div>
+
+  <template data-lp-slot-template>
+    <div class="lp-kit__slot" data-lp-slot>
+      <div class="lp-kit__thumb"><img data-lp-slot-img alt="" loading="lazy"></div>
+      <div class="lp-kit__slot-body">
+        <span class="lp-kit__slot-title" data-lp-slot-title></span>
+        <% options.each do |option| %>
+          <div class="lp-kit__option" data-lp-option="<%= option['name'] %>" data-lp-label="<%= lp_option_label(option['name']) %>">
+            <span class="lp-kit__option-name"><%= lp_option_label(option['name']) %></span>
+            <div class="lp-kit__values">
+              <% option['optionValues'].each do |value| %>
+                <button type="button" class="lp-kit__value" data-lp-value="<%= value['name'] %>"><%= value['name'] %></button>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </template>
+
+  <div class="lp-kit__summary">
+    <span data-lp-kit-summary></span>
+    <span class="lp-kit__totals"><s data-lp-kit-full></s><strong data-lp-kit-total></strong></span>
+  </div>
+
+  <% if @landing_page.sales_open? %>
+    <button type="button" class="lp-kit__submit" data-lp-submit <%= 'disabled' unless product['availableForSale'] %>>
+      <%= product['availableForSale'] ? 'Comprar agora' : 'Esgotado' %>
+    </button>
+    <p class="lp-kit__message" data-lp-message role="status" aria-live="polite"></p>
+  <% else %>
+    <p class="lp-kit__closed"><%= local_assigns.fetch(:closed_text, 'Vendas encerradas.') %></p>
+  <% end %>
+</div>

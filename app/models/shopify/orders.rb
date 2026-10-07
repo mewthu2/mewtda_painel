@@ -162,6 +162,8 @@ class Shopify::Orders
 
       staff_id   = note_attributes['staff_ID']
       staff_name = note_attributes['staff_name']
+      landing_page_id = client.landing_pages.where(id: note_attributes[LandingPage::ATTRIBUTION_KEY].to_s[/\A\d+\z/])
+                              .pick(:id)
 
       location = @location ||= Location.find_or_create_by!(slug: client.name.parameterize) do |loc|
         loc.name = client.name
@@ -190,6 +192,7 @@ class Shopify::Orders
         shopify_order_number: shopify_order_number,
         staff_id: staff_id.presence || order.staff_id,
         staff_name: staff_name.presence || order.staff_name,
+        landing_page_id: landing_page_id || order.landing_page_id,
         location_id: location.id,
         shopify_creation_date: shopify_created_at,
         customer_id: customer&.id,

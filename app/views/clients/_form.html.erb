@@ -55,6 +55,14 @@
             </div>
           </div>
 
+          <% if current_user.admin? && client.persisted? %>
+            <div class="cform-field">
+              <%= form.label :slug, 'Slug', class: 'crm-label' %>
+              <%= form.text_field :slug, class: 'crm-input', placeholder: 'nome-da-loja', disabled: read_only %>
+              <span class="cform-field__hint">Prefixo padrão dos links das landing pages deste cliente (cada página pode usar outro).</span>
+            </div>
+          <% end %>
+
           <% if current_user.admin? %>
             <div class="cform-field">
               <%= form.label :active, 'Status', class: 'crm-label' %>
@@ -99,6 +107,17 @@
                 <% end %>
               </div>
               <span class="cform-field__hint">Preenchido automaticamente ao conectar via OAuth, ou cole manualmente um token de app customizado.</span>
+            </div>
+
+            <div class="cform-field">
+              <%= form.label :shopify_storefront_token, 'Token da Storefront API', class: 'crm-label' %>
+              <div class="cform-field__input-wrapper">
+                <%= form.password_field :shopify_storefront_token, class: 'crm-input cform-field__input--password', placeholder: client.shopify_storefront_token.present? ? '••••••••••••••••' : 'Token público de acesso à Storefront API', disabled: read_only, value: '' %>
+                <% if client.shopify_storefront_token.present? %>
+                  <span class="crm-tag crm-tag--success">Configurado</span>
+                <% end %>
+              </div>
+              <span class="cform-field__hint">Usado pelas landing pages para mostrar produtos e abrir o checkout. Na Shopify: app Headless (ou app customizado com acesso à Storefront API) → token público. Deixe em branco para manter o valor atual.</span>
             </div>
 
             <% if current_user.admin? %>

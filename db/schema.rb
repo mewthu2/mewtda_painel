@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_28_120000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_06_180000) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -196,7 +196,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_28_120000) do
     t.string "ses_verification_status", default: "unverified", null: false
     t.string "ses_dkim_tokens", default: [], null: false, array: true
     t.datetime "ses_verified_at"
+    t.string "slug"
+    t.string "shopify_storefront_token"
     t.index ["shopify_shop_url"], name: "index_clients_on_shopify_shop_url", unique: true
+    t.index ["slug"], name: "index_clients_on_slug", unique: true
   end
 
   create_table "customers", force: :cascade do |t|
@@ -280,6 +283,42 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_28_120000) do
     t.index ["slug"], name: "index_integration_users_on_slug", unique: true
   end
 
+  create_table "landing_page_leads", force: :cascade do |t|
+    t.bigint "landing_page_id", null: false
+    t.string "name", null: false
+    t.string "email", null: false
+    t.string "phone"
+    t.string "utm_source"
+    t.string "utm_medium"
+    t.string "utm_campaign"
+    t.string "utm_content"
+    t.string "utm_term"
+    t.boolean "existing_customer", default: false, null: false
+    t.string "shopify_customer_id"
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["landing_page_id", "email"], name: "index_landing_page_leads_on_landing_page_id_and_email", unique: true
+    t.index ["landing_page_id"], name: "index_landing_page_leads_on_landing_page_id"
+  end
+
+  create_table "landing_pages", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "name", null: false
+    t.string "path_prefix", null: false
+    t.string "slug", null: false
+    t.string "template", null: false
+    t.boolean "active", default: false, null: false
+    t.datetime "ends_at"
+    t.string "product_handles", default: [], null: false, array: true
+    t.integer "views_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "chain_breaks_count", default: 0, null: false
+    t.index ["client_id"], name: "index_landing_pages_on_client_id"
+    t.index ["path_prefix", "slug"], name: "index_landing_pages_on_path_prefix_and_slug", unique: true
+  end
+
   create_table "locations", force: :cascade do |t|
     t.string "slug"
     t.string "name"
@@ -332,11 +371,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_28_120000) do
     t.string "tracking_url"
     t.datetime "fulfilled_at"
     t.string "discount_code"
+    t.bigint "landing_page_id"
     t.index ["cancelled_at"], name: "index_orders_on_cancelled_at"
     t.index ["client_id", "shopify_order_id"], name: "index_orders_on_client_id_and_shopify_order_id", unique: true
     t.index ["client_id"], name: "index_orders_on_client_id"
     t.index ["customer_id"], name: "index_orders_on_customer_id"
     t.index ["discount_code"], name: "index_orders_on_discount_code"
+    t.index ["landing_page_id"], name: "index_orders_on_landing_page_id"
     t.index ["location_id"], name: "index_orders_on_location_id"
     t.index ["shopify_order_id"], name: "index_orders_on_shopify_order_id", unique: true
     t.index ["shopify_order_number"], name: "index_orders_on_shopify_order_number"
@@ -495,11 +536,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_28_120000) do
   add_foreign_key "email_templates", "clients"
   add_foreign_key "goals", "clients"
   add_foreign_key "integration_users", "clients"
+  add_foreign_key "landing_page_leads", "landing_pages"
+  add_foreign_key "landing_pages", "clients"
   add_foreign_key "locations", "clients"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
   add_foreign_key "orders", "clients"
   add_foreign_key "orders", "customers"
+  add_foreign_key "orders", "landing_pages", on_delete: :nullify
   add_foreign_key "orders", "locations"
   add_foreign_key "popup_submissions", "popups"
   add_foreign_key "popups", "clients"

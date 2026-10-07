@@ -7,8 +7,11 @@ class Client < ApplicationRecord
   has_many :abandoned_checkouts, dependent: :destroy
   has_one :popup, dependent: :destroy
   has_many :email_templates, dependent: :destroy
+  has_many :landing_pages, dependent: :destroy
 
-  encrypts :meta_access_token, :google_ads_refresh_token, :shopify_api_secret
+  encrypts :meta_access_token, :google_ads_refresh_token, :shopify_api_secret, :shopify_storefront_token
+
+  before_validation :generate_slug, if: -> { slug.blank? && name.present? }
 
   validates :name, presence: true
   validates :email, presence: true
@@ -18,6 +21,9 @@ class Client < ApplicationRecord
             format: { with: /\A([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}\z/i,
                       message: 'não parece um domínio válido' },
             allow_blank: true
+  validates :slug, presence: true, uniqueness: true,
+                   format: { with: LandingPage::SLUG_FORMAT, message: 'use só letras minúsculas, números e hífens' },
+                   exclusion: { in: LandingPage::RESERVED_PREFIXES, message: 'é reservado pelo sistema' }
 
   def site_url_configured?
     site_url.present?
@@ -35,6 +41,10 @@ class Client < ApplicationRecord
 
   def shopify_admin_handle
     shopify_shop_url.to_s.sub(%r{\Ahttps?://}, '').split('.').first
+  end
+
+  def storefront_configured?
+    shopify_shop_url.present? && shopify_storefront_token.present?
   end
 
   def shopify_app_configured?
@@ -67,5 +77,18 @@ class Client < ApplicationRecord
         value: "#{token}.dkim.amazonses.com"
       }
     end
+  end
+
+  private
+
+  def generate_slug
+    base = name.parameterize.presence || 'cliente'
+    candidate = base
+    suffix = 1
+    while Client.where.not(id: id).exists?(slug: candidate) || LandingPage::RESERVED_PREFIXES.include?(candidate)
+      suffix += 1
+      candidate = "#{base}-#{suffix}"
+    end
+    self.slug = candidate
   end
 end

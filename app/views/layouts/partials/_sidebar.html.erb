@@ -81,6 +81,7 @@
       </details>
 
       <% marketing_active = request.path.start_with?(affiliates_path) || request.path.start_with?('/crm/popup') ||
+                             request.path.start_with?(landing_pages_path) ||
                              request.path.start_with?(email_templates_path) || request.path.start_with?('/crm/email_configuration') %>
       <details class="crm-sidebar__submenu" <%= 'open' if marketing_active %>>
         <summary class="crm-sidebar__link crm-sidebar__link--parent">
@@ -92,6 +93,11 @@
           <%= link_to edit_popup_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?('/crm/popup')}" do %>
             <i class="fa-solid fa-window-restore crm-fa"></i>
             Pop Up
+          <% end %>
+
+          <%= link_to landing_pages_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(landing_pages_path)}" do %>
+            <i class="fa-solid fa-rocket crm-fa"></i>
+            Landing Pages
           <% end %>
 
           <%= link_to email_templates_path, class: "crm-sidebar__link crm-sidebar__link--sub #{'active' if request.path.start_with?(email_templates_path)}" do %>

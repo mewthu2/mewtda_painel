@@ -1,0 +1,125 @@
+<% title @landing_page.name %>
+<% brl = ->(v) { number_to_currency(v || 0, unit: 'R$ ', separator: ',', delimiter: '.') } %>
+<% public_url = "#{request.base_url}#{@landing_page.public_path}" %>
+
+<div class="clients-wrapper">
+  <div class="clients-table-wrap">
+    <div class="clients-table-header">
+      <span class="clients-table-header__title">
+        <i class="fa-solid fa-rocket crm-fa"></i>
+        <%= @landing_page.name %>
+        <% if !@landing_page.active? %>
+          <span class="crm-tag crm-tag--neutral">Inativa</span>
+        <% elsif !@landing_page.sales_open? %>
+          <span class="crm-tag crm-tag--warning">Vendas encerradas</span>
+        <% else %>
+          <span class="crm-tag crm-tag--success">No ar</span>
+        <% end %>
+      </span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <%= link_to 'Abrir página', @landing_page.public_path, class: 'crm-btn', target: '_blank', rel: 'noopener' %>
+        <button type="button" class="crm-btn" onclick="navigator.clipboard.writeText('<%= j public_url %>').then(() => { this.textContent = 'Link copiado' })">Copiar link</button>
+        <%= link_to 'Editar', edit_landing_page_path(@landing_page), class: 'crm-btn crm-btn--primary' %>
+      </div>
+    </div>
+    <div style="padding: 0 16px 16px;"><code><%= public_url %></code></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0;">
+    <div class="crm-kpi-card">
+      <div class="crm-kpi-card__label">Visitas</div>
+      <div class="crm-kpi-card__value"><%= number_with_delimiter(@landing_page.views_count, delimiter: '.') %></div>
+    </div>
+    <div class="crm-kpi-card">
+      <div class="crm-kpi-card__label">Romperam a corrente</div>
+      <div class="crm-kpi-card__value"><%= number_with_delimiter(@landing_page.chain_breaks_count, delimiter: '.') %></div>
+    </div>
+    <div class="crm-kpi-card">
+      <div class="crm-kpi-card__label">Leads novos</div>
+      <div class="crm-kpi-card__value"><%= @leads.count { |l| !l.existing_customer? } %></div>
+    </div>
+    <div class="crm-kpi-card">
+      <div class="crm-kpi-card__label">Leads já na base</div>
+      <div class="crm-kpi-card__value"><%= @leads.count(&:existing_customer?) %></div>
+    </div>
+    <div class="crm-kpi-card">
+      <div class="crm-kpi-card__label">Pedidos</div>
+      <div class="crm-kpi-card__value"><%= @orders.size %></div>
+    </div>
+    <div class="crm-kpi-card">
+      <div class="crm-kpi-card__label">Faturamento</div>
+      <div class="crm-kpi-card__value"><%= brl.call(@revenue) %></div>
+    </div>
+    <div class="crm-kpi-card">
+      <div class="crm-kpi-card__label">Conversão</div>
+      <div class="crm-kpi-card__value">
+        <%= @landing_page.views_count.positive? ? number_to_percentage(@orders.size * 100.0 / @landing_page.views_count, precision: 1, separator: ',') : '—' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="clients-table-wrap" style="margin-bottom:16px;">
+    <div class="clients-table-header">
+      <span class="clients-table-header__title">Pedidos atribuídos</span>
+    </div>
+    <table class="crm-table">
+      <thead>
+        <tr><th>Pedido</th><th>Data</th><th>Cliente</th><th>Cupom</th><th class="text-end">Total</th></tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr>
+            <td><%= order.shopify_order_number %></td>
+            <td><%= l(order.shopify_creation_date, format: '%d/%m/%Y %H:%M') if order.shopify_creation_date %></td>
+            <td><%= order.customer&.name.presence || order.customer&.email %></td>
+            <td><%= order.discount_code %></td>
+            <td class="text-end"><%= brl.call(order.total_price) %></td>
+          </tr>
+        <% end %>
+        <% if @orders.empty? %>
+          <tr><td colspan="5" class="clients-table__empty">Nenhum pedido atribuído ainda. Pedidos aparecem aqui depois da sincronização com a Shopify.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="clients-table-wrap">
+    <div class="clients-table-header">
+      <span class="clients-table-header__title">Leads</span>
+      <span class="crm-tag crm-tag--neutral">Tag na Shopify: <%= @landing_page.lead_tag %></span>
+    </div>
+    <table class="crm-table">
+      <thead>
+        <tr><th>Data</th><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Origem</th><th class="text-center">Base</th><th class="text-center">Shopify</th></tr>
+      </thead>
+      <tbody>
+        <% @leads.each do |lead| %>
+          <tr>
+            <td><%= l(lead.created_at, format: '%d/%m/%Y %H:%M') %></td>
+            <td><%= lead.name %></td>
+            <td><%= lead.email %></td>
+            <td><%= lead.phone %></td>
+            <td><%= [lead.utm_source, lead.utm_campaign].compact_blank.join(' / ') %></td>
+            <td class="text-center">
+              <% if lead.existing_customer? %>
+                <span class="crm-tag crm-tag--warning">Já era cliente</span>
+              <% else %>
+                <span class="crm-tag crm-tag--success">Novo</span>
+              <% end %>
+            </td>
+            <td class="text-center">
+              <% if (url = lead.shopify_admin_customer_url) %>
+                <%= link_to 'Ver', url, target: '_blank', rel: 'noopener' %>
+              <% elsif lead.status == 'shopify_error' %>
+                <span class="crm-tag crm-tag--danger">Erro</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @leads.empty? %>
+          <tr><td colspan="7" class="clients-table__empty">Nenhum lead ainda.</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

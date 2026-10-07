@@ -56,4 +56,32 @@ class Shopify::OrdersTest < ActiveSupport::TestCase
 
     assert order.reload.cancelled_at.present?
   end
+
+  test 'attributes the order to the landing page from the _landing_page note attribute' do
+    client = build_client
+    landing_page = client.landing_pages.create!(name: 'Drop', slug: 'drop-01', template: 'drop_01_1822')
+
+    order = Shopify::Orders.create_or_update_order_from_shopify(
+      shopify_order_payload('id' => 555_003,
+                            'note_attributes' => [{ 'name' => '_landing_page', 'value' => landing_page.id.to_s }]),
+      session: nil,
+      client: client
+    )
+
+    assert_equal landing_page.id, order.reload.landing_page_id
+  end
+
+  test 'ignores a _landing_page attribute that belongs to another client' do
+    client = build_client
+    other_page = build_client.landing_pages.create!(name: 'Outra', slug: 'outra', template: 'drop_01_1822')
+
+    order = Shopify::Orders.create_or_update_order_from_shopify(
+      shopify_order_payload('id' => 555_004,
+                            'note_attributes' => [{ 'name' => '_landing_page', 'value' => other_page.id.to_s }]),
+      session: nil,
+      client: client
+    )
+
+    assert_nil order.reload.landing_page_id
+  end
 end
