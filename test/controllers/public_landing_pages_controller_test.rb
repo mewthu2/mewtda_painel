@@ -190,4 +190,27 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
     assert_match(/mewtda-logo-sm.*\.png/, response.body)
     assert_match 'href="https://www.mewtda.com.br"', response.body
   end
+
+  test 'shows the countdown to the runoff below the mailing list' do
+    travel_to Time.find_zone('America/Sao_Paulo').local(2026, 10, 7, 8) do
+      get '/use1822/drop-01'
+    end
+
+    assert_match 'Segundo turno começa em:', response.body
+    assert_match 'data-countdown="2026-10-25T08:00:00-03:00"', response.body
+    assert_match '<strong data-countdown-dias>18</strong>', response.body
+    assert response.body.index('data-lp-lead') < response.body.index('data-countdown=')
+  end
+
+  test 'says the runoff is today once the polls open, and drops the countdown after the 25th' do
+    travel_to Time.find_zone('America/Sao_Paulo').local(2026, 10, 25, 10) do
+      get '/use1822/drop-01'
+    end
+    assert_match 'O segundo turno é hoje.', response.body
+
+    travel_to Time.find_zone('America/Sao_Paulo').local(2026, 10, 26, 9) do
+      get '/use1822/drop-01'
+    end
+    assert_no_match 'data-countdown=', response.body
+  end
 end

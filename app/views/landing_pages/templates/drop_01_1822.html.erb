@@ -343,6 +343,17 @@
     @keyframes credit-rainbow { to { background-position: 200% 0; } }
     @media (min-width: 1024px) { .credit { padding-bottom: 24px; } }
 
+
+    /* ===== Contagem pro 2º turno (abaixo da lista) ===== */
+    .countdown { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px;
+                 padding-top: 32px; border-top: 1px solid #262626; }
+    .countdown__label { margin: 0; font: 400 clamp(28px, 3.4vw, 44px)/1.05 'Anton', Impact, sans-serif; text-transform: uppercase; color: var(--papel); }
+    .countdown__units { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; width: min(100%, 520px); }
+    .countdown__units[hidden] { display: none; }
+    .countdown__unit { display: grid; justify-items: center; gap: 6px; padding: 14px 6px 12px; border-radius: 6px; background: #181818; border: 1px solid #2A2A2A; }
+    .countdown__unit strong { font: 400 clamp(36px, 5vw, 60px)/1 'Anton', Impact, sans-serif; color: var(--amarelo); font-variant-numeric: tabular-nums; min-width: 2ch; text-align: center; }
+    .countdown__unit small { font: 700 11px/1 'Archivo', sans-serif; letter-spacing: .22em; text-transform: uppercase; color: #BDB8AE; }
+    .countdown__unit:last-child strong { color: var(--papel); }
     /* ===== Faixa corrida ===== */
     .marquee { background: var(--amarelo); color: var(--preto); overflow: hidden; padding: 16px 0; border-block: 2px solid var(--preto); }
     .marquee__track { display: flex; width: max-content; will-change: transform; }
@@ -597,6 +608,23 @@
       <p class="lead__text rv" data-reveal style="--d:2">Deixa teu contato. Você fica sabendo antes do próximo drop.</p>
     </div>
     <div class="rv" data-reveal style="--d:2"><%= render 'landing_pages/shared/lead_form', button_text: 'Entrar na lista', success_text: 'Feito. Você está na lista.' %></div>
+
+    <%# Contagem regressiva pro 2º turno (urnas abrem 8h de Brasília). Some a partir de 26/10. %>
+    <% runoff_at = Time.find_zone('America/Sao_Paulo').local(2026, 10, 25, 8) %>
+    <% if Time.current < runoff_at.end_of_day %>
+      <% left = [(runoff_at - Time.current).to_i, 0].max %>
+      <div class="countdown rv" data-reveal data-countdown="<%= runoff_at.iso8601 %>" data-hide-after="<%= runoff_at.end_of_day.iso8601 %>">
+        <p class="countdown__label" data-countdown-label><%= left.positive? ? 'Segundo turno começa em:' : 'O segundo turno é hoje.' %></p>
+        <div class="countdown__units" role="timer" aria-label="Contagem regressiva até o segundo turno, 25 de outubro de 2026 às 8h" <%= 'hidden' unless left.positive? %>>
+          <% [['dias', left / 86_400], ['horas', left % 86_400 / 3600], ['min', left % 3600 / 60], ['seg', left % 60]].each do |unit, value| %>
+            <span class="countdown__unit">
+              <strong data-countdown-<%= unit %>><%= format('%02d', value) %></strong>
+              <small><%= unit %></small>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </section>
 </main>
 
@@ -754,6 +782,37 @@
         requestAnimationFrame(loop);
       })();
     }
+  })();
+</script>
+
+<script>
+  // Contagem regressiva pro 2º turno.
+  (function () {
+    var box = document.querySelector('[data-countdown]');
+    if (!box) return;
+    var target = new Date(box.dataset.countdown).getTime();
+    var hideAfter = new Date(box.dataset.hideAfter).getTime();
+    var units = box.querySelector('.countdown__units');
+    var label = box.querySelector('[data-countdown-label]');
+    var el = {};
+    ['dias', 'horas', 'min', 'seg'].forEach(function (u) { el[u] = box.querySelector('[data-countdown-' + u + ']'); });
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    function tick() {
+      var now = Date.now();
+      if (now >= hideAfter) { box.hidden = true; return; }
+      var left = Math.max(0, Math.floor((target - now) / 1000));
+      if (left === 0) {
+        label.textContent = 'O segundo turno é hoje.';
+        units.hidden = true;
+        return;
+      }
+      el.dias.textContent = pad(Math.floor(left / 86400));
+      el.horas.textContent = pad(Math.floor(left % 86400 / 3600));
+      el.min.textContent = pad(Math.floor(left % 3600 / 60));
+      el.seg.textContent = pad(left % 60);
+      setTimeout(tick, 1000 - (now % 1000));
+    }
+    tick();
   })();
 </script>
 
