@@ -145,6 +145,14 @@
                           font: 400 clamp(22px, 2.4vw, 30px)/1 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: .02em; }
     .drop__tab-name i { width: 10px; height: 10px; border-radius: 50%; border: 2px solid currentColor; transition: background .2s; }
     .drop__tab[aria-selected="true"] .drop__tab-name i { background: var(--amarelo); border-color: var(--amarelo); }
+    /* Celular: abas lado a lado dividindo a largura (com auto-fill + máximo de 180px
+       o grid só cabia uma por linha). Tocar numa aba rola até a camiseta dela;
+       a folga no topo é pros botões flutuantes de som e carrinho não cobrirem. */
+    @media (max-width: 719px) {
+      .drop__tabs { grid-template-columns: repeat(var(--tabs, 2), minmax(0, 1fr)); gap: 10px; }
+      .drop__tab { padding: 8px 8px 12px; gap: 10px; }
+    }
+    .drop__grid { scroll-margin-top: 76px; }
 
     /* Navegação rápida das estampas: trilho fixo no canto esquerdo */
     .printnav { position: fixed; z-index: 55; left: 16px; top: 50%; display: grid; gap: 8px; padding: 8px; border-radius: 10px;
@@ -259,6 +267,8 @@
     .product__head .product__price { margin: 0; }
     .product__price small { font: 400 14px 'Archivo', sans-serif; color: #A9A59D; }
     .product__pricing { display: grid; justify-items: end; gap: 8px; }
+    /* celular: nome e preço quebram em linhas; preço e parcelas alinham à esquerda */
+    @media (max-width: 719px) { .product__pricing { justify-items: start; } }
     .product__installments { margin: 0; font-size: 14px; color: #BDB8AE; }
     .product__installments strong { color: var(--papel); font-weight: 600; }
 
@@ -294,6 +304,7 @@
     .lp-kit__summary strong { font: 700 28px/1 'Archivo', sans-serif; color: var(--amarelo); }
     .lp-kit__totals { display: inline-flex; align-items: baseline; gap: 10px; }
     .lp-kit__totals s { font: 400 15px/1 'Archivo', sans-serif; color: #8F8B83; }
+    .lp-kit__totals s:empty { display: none; } /* sem desconto: o espaço do riscado não empurra o total */
     .lp-kit__installments { margin: -4px 0 14px; text-align: right; font-size: 14px; color: #BDB8AE; }
     .lp-kit__installments strong { color: var(--papel); font-weight: 600; }
     .lp-kit__off { position: absolute; top: -9px; right: -4px; padding: 3px 6px; border-radius: 3px; background: var(--verde); color: var(--papel);
@@ -838,7 +849,7 @@
   <section class="wrap drop" id="comprar">
     <% tabbed = drop_tabs.size > 1 %>
     <% if tabbed %>
-      <div class="drop__tabs rv" role="tablist" aria-label="Escolha a estampa" data-reveal data-tabs>
+      <div class="drop__tabs rv" role="tablist" aria-label="Escolha a estampa" data-reveal data-tabs style="--tabs: <%= drop_tabs.size %>">
         <% drop_tabs.each_with_index do |tab, i| %>
           <button type="button" class="drop__tab" role="tab" id="aba-<%= tab[:key] %>" aria-controls="painel-<%= tab[:key] %>"
                   aria-selected="<%= i.zero? %>" tabindex="<%= i.zero? ? 0 : -1 %>">
@@ -1243,8 +1254,9 @@
       j.addEventListener('click', function () {
         j.classList.remove('is-stamped'); void j.offsetWidth; j.classList.add('is-stamped');
         if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) {} }
-        select(document.getElementById(j.getAttribute('data-print-jump')));
-        drop.scrollIntoView();
+        var tab = document.getElementById(j.getAttribute('data-print-jump'));
+        select(tab);
+        if (stacked()) showPanel(tab); else drop.scrollIntoView();
       });
       j.addEventListener('animationend', function (e) { if (e.target === j) j.classList.remove('is-stamped'); });
     });
@@ -1264,8 +1276,15 @@
     } else if (nav) {
       document.addEventListener('lp:chain-broken', function () { nav.classList.add('is-visible'); });
     }
+    // Abaixo de 1024px a camiseta fica embaixo das abas: escolher uma estampa
+    // rola direto pro começo dela ("Drop 01" / "Coleção 1822").
+    function stacked() { return window.innerWidth < 1024; }
+    function showPanel(tab) { document.getElementById(tab.getAttribute('aria-controls')).scrollIntoView({ block: 'start' }); }
     tabs.forEach(function (tab, i) {
-      tab.addEventListener('click', function () { select(tab); });
+      tab.addEventListener('click', function () {
+        select(tab);
+        if (stacked()) showPanel(tab);
+      });
       tab.addEventListener('keydown', function (e) {
         var step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
         if (!step) return;
