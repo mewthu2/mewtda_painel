@@ -1,0 +1,12 @@
+<%# Barra de anúncio no topo (estilo loja): destaques correndo em loop.
+    A lista vai duplicada pro marquee fechar o ciclo (o CSS anima -50%). %>
+<% items = t('home.announce.items') %>
+<div class="mwtda-lp-announce" role="region" aria-label="<%= t('home.announce.label') %>">
+  <div class="mwtda-lp-announce__track">
+    <% (items + items).each_with_index do |item, i| %>
+      <span class="mwtda-lp-announce__item"<%= ' aria-hidden="true"'.html_safe if i >= items.size %>>
+        <%= item %>
+      </span>
+    <% end %>
+  </div>
+</div>

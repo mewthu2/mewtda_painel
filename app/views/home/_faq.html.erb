@@ -1,0 +1,18 @@
+<section class="mwtda-lp-section mwtda-lp-faq" id="faq">
+  <div class="mwtda-lp-section__inner mwtda-lp-faq__inner">
+    <div class="mwtda-lp-faq__head">
+      <span class="mwtda-lp-eyebrow" data-reveal-self><%= t('home.faq.eyebrow') %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t('home.faq.title') %></h2>
+      <p class="mwtda-lp-section__lead" data-reveal-self><%= t('home.faq.lead') %></p>
+    </div>
+
+    <div class="mwtda-lp-faq__list" data-reveal>
+      <% t('home.faq.items').each do |item| %>
+        <details class="mwtda-lp-faq__item">
+          <summary><%= item[:q] %> <i class="fa-solid fa-plus" aria-hidden="true"></i></summary>
+          <p><%= item[:a] %></p>
+        </details>
+      <% end %>
+    </div>
+  </div>
+</section>

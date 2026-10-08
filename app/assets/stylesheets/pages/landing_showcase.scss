@@ -1,0 +1,816 @@
+// Landing pública (home/index.html.erb) — camada "vitrine": barra de
+// anúncio, chips 3D do hero, vantagens (cubo + cartões com tilt), Antes ×
+// Depois (cartões que viram), Como funciona em 3D e FAQ. Usa os tokens
+// --mw-* de pages/landing.scss (carregado antes, ver admin.scss).
+
+  /* -----------------------------------------------------------------
+     1. BARRA DE ANÚNCIO
+     ----------------------------------------------------------------- */
+  .mwtda-lp-announce {
+    overflow: hidden;
+    background: var(--mw-bg-dark);
+    color: #fff;
+    font-family: var(--mw-font-heading);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .mwtda-lp-announce__track {
+    display: flex;
+    width: max-content;
+    animation: mw-marquee 38s linear infinite;
+  }
+
+  .mwtda-lp-announce:hover .mwtda-lp-announce__track {
+    animation-play-state: paused;
+  }
+
+  .mwtda-lp-announce__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.75rem;
+    white-space: nowrap;
+  }
+
+  // separador: bolinha laranja da marca antes de cada destaque
+  .mwtda-lp-announce__item::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--mw-primary-light);
+  }
+
+  /* -----------------------------------------------------------------
+     2. HERO — chips de vantagem em profundidade
+     --mx/--my (-0.5…0.5) vêm do JS; cada chip tem a sua --d (profundidade)
+     ----------------------------------------------------------------- */
+  .mwtda-lp-hero {
+    --mx: 0;
+    --my: 0;
+    perspective: 1200px;
+  }
+
+  .mwtda-lp-hero__chips {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    transform-style: preserve-3d;
+  }
+
+  .mwtda-lp-hero__chip {
+    --d: 1;
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.7rem 1.1rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--mw-border);
+    box-shadow:
+      0 18px 40px -18px rgba(11, 12, 16, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    font-family: var(--mw-font-heading);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--mw-fg);
+    white-space: nowrap;
+    transform:
+      translate3d(calc(var(--mx) * var(--d) * 70px), calc(var(--my) * var(--d) * 50px), calc(var(--d) * 40px))
+      rotateX(calc(var(--my) * -22deg))
+      rotateY(calc(var(--mx) * 26deg));
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: mw-chip-in 1s cubic-bezier(0.16, 1, 0.3, 1) both, mw-chip-float 6s ease-in-out infinite;
+    animation-delay: calc(0.5s + var(--n, 0) * 0.15s), calc(var(--n, 0) * -1.5s);
+  }
+
+  .mwtda-lp-hero__chip i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--chip);
+    color: #fff;
+    font-size: 0.85rem;
+  }
+
+  .mwtda-lp-hero__chip--0 { --n: 0; --d: 1.4; top: 16%; left: 5%; }
+  .mwtda-lp-hero__chip--1 { --n: 1; --d: 0.8; top: 28%; right: 5%; }
+  .mwtda-lp-hero__chip--2 { --n: 2; --d: 1.1; bottom: 24%; left: 8%; }
+  .mwtda-lp-hero__chip--3 { --n: 3; --d: 1.7; bottom: 14%; right: 9%; }
+
+  @keyframes mw-chip-in {
+    from { opacity: 0; scale: 0.6; filter: blur(8px); }
+    to   { opacity: 1; scale: 1;   filter: blur(0); }
+  }
+
+  // `translate` separado do `transform` pra flutuar sem brigar com o parallax
+  @keyframes mw-chip-float {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -12px; }
+  }
+
+  @media (max-width: 1100px) {
+    .mwtda-lp-hero__chips { display: none; }
+  }
+
+  /* -----------------------------------------------------------------
+     3. TILT 3D (genérico, [data-tilt]) — produtos
+     ----------------------------------------------------------------- */
+  [data-tilt] {
+    --rx: 0deg;
+    --ry: 0deg;
+    --gx: 50%;
+    --gy: 50%;
+  }
+
+  .mwtda-lp .mwtda-lp-products__card.is-tilting {
+    transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-6px);
+    transition-delay: 0s;
+    transition-duration: 0.15s;
+  }
+
+  .mwtda-lp-products__card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--gx) var(--gy), rgba(255, 255, 255, 0.55), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .mwtda-lp-products__card.is-tilting::after { opacity: 1; }
+
+  /* -----------------------------------------------------------------
+     4. VANTAGENS — cubo + cartões 3D com legenda
+     ----------------------------------------------------------------- */
+  .mwtda-lp-adv {
+    --cube-turn: 0deg;
+    overflow: hidden;
+  }
+
+  .mwtda-lp-adv__head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .mwtda-lp-adv__hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: -1.5rem 0 3rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--mw-fg-muted);
+  }
+
+  .mwtda-lp-adv__hint i {
+    color: var(--mw-primary);
+    animation: mw-hint-tap 2.4s ease-in-out infinite;
+  }
+
+  @keyframes mw-hint-tap {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-4px) rotate(-8deg); }
+  }
+
+  @media (hover: none) {
+    .mwtda-lp-adv__hint { display: none; }
+  }
+
+  /* cubo: wrapper gira sem parar (rotate), corpo segue o scroll (transform) */
+  .mwtda-lp-cube {
+    --size: 170px;
+    position: relative;
+    width: var(--size);
+    height: var(--size);
+    margin: 0 3rem 3rem 0;
+    perspective: 900px;
+  }
+
+  .mwtda-lp-cube__body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(calc(-22deg + var(--cube-turn) * 0.15)) rotateY(var(--cube-turn));
+    animation: mw-cube-spin 22s linear infinite;
+  }
+
+  @keyframes mw-cube-spin {
+    from { rotate: y 0deg; }
+    to   { rotate: y 360deg; }
+  }
+
+  .mwtda-lp-cube__face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: 6px;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 55%),
+      var(--face);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25), inset 0 -18px 30px rgba(0, 0, 0, 0.18);
+    color: #fff;
+    font-family: var(--mw-font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.15;
+    backface-visibility: hidden;
+  }
+
+  .mwtda-lp-cube__face--0 { transform: rotateY(0deg)   translateZ(calc(var(--size) / 2)); }
+  .mwtda-lp-cube__face--1 { transform: rotateY(90deg)  translateZ(calc(var(--size) / 2)); }
+  .mwtda-lp-cube__face--2 { transform: rotateY(180deg) translateZ(calc(var(--size) / 2)); }
+  .mwtda-lp-cube__face--3 { transform: rotateY(-90deg) translateZ(calc(var(--size) / 2)); }
+  .mwtda-lp-cube__face--4 { transform: rotateX(90deg)  translateZ(calc(var(--size) / 2)); }
+  .mwtda-lp-cube__face--5 { transform: rotateX(-90deg) translateZ(calc(var(--size) / 2)); }
+
+  .mwtda-lp-cube__shadow {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: -48px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(11, 12, 16, 0.28), transparent 70%);
+    animation: mw-cube-shadow 4s ease-in-out infinite;
+  }
+
+  @keyframes mw-cube-shadow {
+    0%, 100% { transform: scaleX(1);    opacity: 1; }
+    50%      { transform: scaleX(0.82); opacity: 0.7; }
+  }
+
+  .mwtda-lp-adv__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  // filter (mesmo blur(0)) achata o 3D dos filhos: some depois do reveal
+  .mwtda-lp-adv__grid.is-visible > * { filter: none; }
+
+  .mwtda-lp-adv__card {
+    position: relative;
+    perspective: 900px;
+  }
+
+  .mwtda-lp-adv__inner {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 2rem 1.6rem 4.5rem;
+    border-radius: var(--mw-radius-lg);
+    background:
+      radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--adv) 14%, transparent), transparent 60%),
+      var(--mw-bg);
+    border: 1px solid var(--mw-border);
+    box-shadow: 0 20px 40px -30px rgba(11, 12, 16, 0.4);
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  }
+
+  .mwtda-lp-adv__card.is-tilting .mwtda-lp-adv__inner {
+    transition-duration: 0.12s;
+    box-shadow: 0 40px 60px -30px color-mix(in srgb, var(--adv) 55%, transparent);
+  }
+
+  .mwtda-lp-adv__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--adv);
+    color: #fff;
+    font-size: 1.35rem;
+    box-shadow: 0 14px 24px -12px var(--adv);
+    transform: translateZ(50px);
+  }
+
+  .mwtda-lp-adv__inner h3 {
+    margin: 0.5rem 0 0;
+    font-family: var(--mw-font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    transform: translateZ(35px);
+  }
+
+  .mwtda-lp-adv__inner p {
+    margin: 0;
+    color: var(--mw-fg-muted);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    transform: translateZ(20px);
+  }
+
+  /* a "legenda": faixa que varre da esquerda quando o cartão aparece
+     e salta pra frente no hover */
+  .mwtda-lp-adv__caption {
+    position: absolute;
+    left: 1.6rem;
+    bottom: 1.4rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    background: var(--adv);
+    color: #fff;
+    font-family: var(--mw-font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    clip-path: inset(0 100% 0 0 round 999px);
+    transform: translateZ(25px);
+    transition:
+      clip-path 0.9s cubic-bezier(0.65, 0, 0.35, 1),
+      transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mwtda-lp-adv__grid.is-visible .mwtda-lp-adv__caption {
+    clip-path: inset(0 0 0 0 round 999px);
+  }
+
+  .mwtda-lp-adv__grid.is-visible .mwtda-lp-adv__card:nth-child(1) .mwtda-lp-adv__caption { transition-delay: 0.6s, 0s; }
+  .mwtda-lp-adv__grid.is-visible .mwtda-lp-adv__card:nth-child(2) .mwtda-lp-adv__caption { transition-delay: 0.8s, 0s; }
+  .mwtda-lp-adv__grid.is-visible .mwtda-lp-adv__card:nth-child(3) .mwtda-lp-adv__caption { transition-delay: 1s, 0s; }
+  .mwtda-lp-adv__grid.is-visible .mwtda-lp-adv__card:nth-child(4) .mwtda-lp-adv__caption { transition-delay: 1.2s, 0s; }
+
+  .mwtda-lp-adv__card.is-tilting .mwtda-lp-adv__caption {
+    transform: translateZ(70px) scale(1.06);
+  }
+
+  .mwtda-lp-adv__glare {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--mw-radius-lg);
+    background: radial-gradient(circle at var(--gx) var(--gy), rgba(255, 255, 255, 0.6), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    mix-blend-mode: soft-light;
+  }
+
+  .mwtda-lp-adv__card.is-tilting .mwtda-lp-adv__glare { opacity: 1; }
+
+  @media (max-width: 1100px) {
+    .mwtda-lp-adv__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 760px) {
+    .mwtda-lp-adv__head { grid-template-columns: 1fr; gap: 0; }
+    .mwtda-lp-cube { --size: 120px; margin: 0 auto 4.5rem; }
+  }
+
+  @media (max-width: 560px) {
+    .mwtda-lp-adv__grid { grid-template-columns: 1fr; }
+  }
+
+  /* -----------------------------------------------------------------
+     5. ANTES × DEPOIS — cartões que viram (rotateY)
+     ----------------------------------------------------------------- */
+  .mwtda-lp-compare__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  .mwtda-lp .mwtda-lp-flip {
+    display: block;
+    width: 100%;
+    min-height: 230px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    perspective: 1000px;
+  }
+
+  .mwtda-lp-flip:focus-visible {
+    outline: 3px solid var(--mw-primary-light);
+    outline-offset: 4px;
+    border-radius: var(--mw-radius-lg);
+  }
+
+  .mwtda-lp-flip__body {
+    position: relative;
+    display: block;
+    height: 100%;
+    min-height: inherit;
+    transform-style: preserve-3d;
+    transition: transform 0.9s cubic-bezier(0.34, 1.4, 0.5, 1);
+  }
+
+  // espiadinha no hover (só mouse): inclina mostrando que o cartão vira
+  @media (hover: hover) {
+    .mwtda-lp-flip:hover .mwtda-lp-flip__body { transform: rotateY(-18deg) rotateX(4deg); }
+    .mwtda-lp-flip.is-flipped:hover .mwtda-lp-flip__body { transform: rotateY(198deg) rotateX(4deg); }
+  }
+
+  .mwtda-lp-flip.is-flipped .mwtda-lp-flip__body { transform: rotateY(180deg); }
+
+  .mwtda-lp-flip__face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.6rem;
+    border-radius: var(--mw-radius-lg);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .mwtda-lp-flip__face small {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--mw-font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .mwtda-lp-flip__face strong {
+    font-family: var(--mw-font-heading);
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .mwtda-lp-flip__face--before {
+    background: repeating-linear-gradient(-45deg, #eceef2 0 12px, #e4e7ec 12px 24px);
+    border: 1px dashed var(--mw-border-strong);
+    color: var(--mw-fg-muted);
+  }
+
+  .mwtda-lp-flip__face--before strong { text-decoration: line-through; text-decoration-color: rgba(228, 87, 46, 0.6); }
+  .mwtda-lp-flip__face--before small i { color: #e4572e; }
+
+  .mwtda-lp-flip__face--after {
+    transform: rotateY(180deg);
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(255, 138, 51, 0.45), transparent 60%),
+      linear-gradient(160deg, #00247e, #0b0c10);
+    color: #fff;
+    box-shadow: 0 30px 50px -30px rgba(0, 36, 126, 0.8);
+  }
+
+  .mwtda-lp-flip__face--after small { color: var(--mw-primary-light); }
+
+  @media (max-width: 1100px) {
+    .mwtda-lp-compare__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .mwtda-lp-compare__grid { grid-template-columns: 1fr; }
+    .mwtda-lp .mwtda-lp-flip { min-height: 190px; }
+  }
+
+  /* -----------------------------------------------------------------
+     6. COMO FUNCIONA — cartões ligados por um trilho que acende no scroll
+     Os números ficam centralizados em colunas iguais, então o trilho vai
+     do centro do 1º ao centro do 3º: (100% - 2 gaps) / 6 de cada lado.
+     ----------------------------------------------------------------- */
+  .mwtda-lp-flow__track {
+    --gap: 1.5rem;
+    --dot: 56px;
+    position: relative;
+  }
+
+  .mwtda-lp-flow__rail {
+    position: absolute;
+    top: calc(var(--dot) / 2 - 2px);
+    left: calc((100% - 2 * var(--gap)) / 6);
+    right: calc((100% - 2 * var(--gap)) / 6);
+    height: 4px;
+    border-radius: 4px;
+    background: var(--mw-border-strong);
+    overflow: hidden;
+  }
+
+  .mwtda-lp-flow__rail i {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--mw-primary), var(--mw-primary-light));
+    box-shadow: 0 0 14px rgba(255, 138, 51, 0.8);
+    transform-origin: 0 50%;
+    transform: scaleX(var(--mw-progress, 0));
+  }
+
+  .mwtda-lp-flow__steps {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    perspective: 1100px;
+  }
+
+  // reveal: o cartão "levanta" do chão (rotateX) em cascata
+  .mwtda-lp-flow__steps[data-reveal] > * {
+    transform: rotateX(55deg) translateY(40px);
+    transform-origin: 50% 100%;
+  }
+
+  .mwtda-lp-flow__steps[data-reveal].is-visible > * { transform: none; filter: none; }
+  .mwtda-lp-flow__steps[data-reveal] > *:nth-child(2) { transition-delay: 220ms; }
+  .mwtda-lp-flow__steps[data-reveal] > *:nth-child(3) { transition-delay: 440ms; }
+
+  .mwtda-lp-flow__step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  // número: disco com "espessura" (sombras empilhadas)
+  .mwtda-lp-flow__dot {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--dot);
+    height: var(--dot);
+    border-radius: 50%;
+    background: var(--mw-bg);
+    border: 2px solid var(--mw-border-strong);
+    font-family: var(--mw-font-heading);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--mw-fg-muted);
+    box-shadow: 0 2px 0 var(--mw-border-strong), 0 4px 0 var(--mw-border-strong), 0 12px 20px -10px rgba(11, 12, 16, 0.35);
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .mwtda-lp-flow__card {
+    width: 100%;
+    flex: 1;
+    padding: 1.6rem;
+    border-radius: var(--mw-radius-lg);
+    background: var(--mw-bg);
+    border: 1px solid var(--mw-border);
+    box-shadow: 0 24px 40px -32px rgba(11, 12, 16, 0.45);
+    text-align: center;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .mwtda-lp-flow__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 0.9rem;
+    border-radius: 14px;
+    background: var(--mw-bg-tint);
+    color: var(--mw-fg-muted);
+    font-size: 1.15rem;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  .mwtda-lp-flow__card h3 {
+    margin: 0 0 0.5rem;
+    font-family: var(--mw-font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .mwtda-lp-flow__card p {
+    margin: 0;
+    color: var(--mw-fg-muted);
+    font-size: 0.93rem;
+    line-height: 1.55;
+  }
+
+  // passo aceso: número laranja que "salta", cartão com borda e ícone na cor
+  [data-progress-lit-1] .mwtda-lp-flow__step:nth-child(1),
+  [data-progress-lit-2] .mwtda-lp-flow__step:nth-child(2),
+  [data-progress-lit-3] .mwtda-lp-flow__step:nth-child(3) {
+    .mwtda-lp-flow__dot {
+      background: linear-gradient(135deg, var(--mw-primary-light), var(--mw-primary));
+      border-color: var(--mw-primary);
+      color: #fff;
+      box-shadow: 0 2px 0 #c95a05, 0 4px 0 #c95a05, 0 14px 26px -8px rgba(252, 113, 7, 0.65);
+      transform: translateY(-3px) scale(1.06);
+    }
+    .mwtda-lp-flow__card {
+      border-color: rgba(252, 113, 7, 0.35);
+      box-shadow: 0 30px 50px -34px rgba(252, 113, 7, 0.7);
+    }
+    .mwtda-lp-flow__icon {
+      background: rgba(252, 113, 7, 0.12);
+      color: var(--mw-primary);
+    }
+  }
+
+  // celular: trilho vertical à esquerda, número ao lado do cartão
+  @media (max-width: 860px) {
+    .mwtda-lp-flow__steps { grid-template-columns: 1fr; }
+
+    // cartões têm alturas diferentes: em vez de um trilho só, cada passo
+    // desenha o trecho até o número do próximo (acende junto com ele)
+    .mwtda-lp-flow__rail { display: none; }
+
+    .mwtda-lp-flow__step {
+      position: relative;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .mwtda-lp-flow__step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      top: calc(var(--dot) / 2);
+      bottom: calc(-1 * var(--gap) - var(--dot) / 2);
+      left: calc(var(--dot) / 2 - 2px);
+      width: 4px;
+      border-radius: 4px;
+      background: var(--mw-border-strong);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    [data-progress-lit-2] .mwtda-lp-flow__step:nth-child(1)::before,
+    [data-progress-lit-3] .mwtda-lp-flow__step:nth-child(2)::before {
+      background: linear-gradient(180deg, var(--mw-primary), var(--mw-primary-light));
+      box-shadow: 0 0 12px rgba(255, 138, 51, 0.7);
+    }
+
+    .mwtda-lp-flow__card { text-align: left; padding: 1.25rem; }
+  }
+
+  /* -----------------------------------------------------------------
+     7. FAQ
+     ----------------------------------------------------------------- */
+  .mwtda-lp-faq__inner {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .mwtda-lp-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mwtda-lp-faq__item {
+    border: 1px solid var(--mw-border);
+    border-radius: var(--mw-radius);
+    background: var(--mw-bg);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .mwtda-lp-faq__item[open] {
+    border-color: rgba(252, 113, 7, 0.4);
+    box-shadow: 0 18px 36px -26px rgba(252, 113, 7, 0.6);
+  }
+
+  .mwtda-lp-faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.35rem;
+    font-family: var(--mw-font-heading);
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .mwtda-lp-faq__item summary::-webkit-details-marker { display: none; }
+
+  .mwtda-lp-faq__item summary i {
+    flex-shrink: 0;
+    color: var(--mw-primary);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mwtda-lp-faq__item[open] summary i { transform: rotate(135deg); }
+
+  .mwtda-lp-faq__item p {
+    margin: 0;
+    padding: 0 1.35rem 1.25rem;
+    color: var(--mw-fg-muted);
+    font-size: 0.95rem;
+    transform-origin: 50% 0;
+    animation: mw-faq-open 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes mw-faq-open {
+    from { opacity: 0; transform: perspective(600px) rotateX(-35deg); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @media (max-width: 860px) {
+    .mwtda-lp-faq__inner { grid-template-columns: 1fr; gap: 0; }
+  }
+
+  /* footer ganhou a coluna "Navegação" */
+  .mwtda-lp-footer__inner {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+  }
+
+  @media (max-width: 1100px) {
+    .mwtda-lp-footer__inner { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 720px) {
+    .mwtda-lp-footer__inner { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mwtda-lp-cube__body,
+    .mwtda-lp-hero__chip { animation: none; }
+    .mwtda-lp-adv__caption { clip-path: none; }
+  }
+
+  /* -----------------------------------------------------------------
+     8. SUA LOJA — vários cases no mesmo navegador/celular
+     ----------------------------------------------------------------- */
+  .mwtda-lp-cases__picker {
+    margin: 0 0 2rem;
+  }
+
+  // empilha as variantes no mesmo lugar e mostra só a ativa (crossfade)
+  .mwtda-lp-cases__stack {
+    display: grid;
+  }
+
+  .mwtda-lp-cases__stack > * {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+  }
+
+  .mwtda-lp-cases__stack > [data-active="true"] {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease, visibility 0s;
+  }
+
+  // a tela do celular já tem tamanho próprio; os prints preenchem ela
+  .mwtda-lp-devices__phone .mwtda-lp-cases__stack > * {
+    min-height: 0;
+  }
+
+  .mwtda-lp-devices__case[data-active="false"] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  [data-cases-stage] {
+    perspective: 1400px;
+  }
+
+  [data-cases-stage].is-swapping .mwtda-lp-browser {
+    animation: mw-case-swap 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  [data-cases-stage].is-swapping .mwtda-lp-devices__phone {
+    animation: mw-case-swap-phone 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+  }
+
+  @keyframes mw-case-swap {
+    from { transform: rotateY(-14deg) rotateX(4deg) scale(0.97); }
+    to   { transform: none; }
+  }
+
+  @keyframes mw-case-swap-phone {
+    from { transform: rotateY(18deg) translateY(10px); }
+    to   { transform: none; }
+  }

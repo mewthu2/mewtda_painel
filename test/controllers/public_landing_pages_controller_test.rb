@@ -181,8 +181,23 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
 
     body = response.body
     assert_match 'role="tablist"', body
-    assert_match %r{id="aba-colecao-1822"[^>]*aria-selected="true"[^>]*>1822</button>}, body
-    assert_match %r{id="aba-ladrao"[^>]*aria-selected="false"[^>]*>Ladrão</button>}, body
+    assert_match %r{id="aba-colecao-1822"[^>]*aria-selected="true"}, body
+    assert_match %r{id="aba-ladrao"[^>]*aria-selected="false"}, body
+    assert_match '<span class="drop__tab-name">1822<i></i></span>', body
+    assert_match '<span class="drop__tab-name">Ladrão<i></i></span>', body
+    # navegação rápida no canto: um atalho por estampa, apontando pra aba
+    assert_match %r{data-print-jump="aba-colecao-1822" aria-current="true"}, body
+    assert_match %r{data-print-jump="aba-ladrao" aria-current="false"}, body
+    assert_match '<span class="printnav__title" id="printnav-titulo">Estampas</span>', body
+    # tabela de medidas: um link por kit acima do botão, um modal só
+    assert_equal 2, body.scan('data-lp-size-chart ').size
+    assert_equal 1, body.scan('<dialog class="sizes"').size
+    # só os tamanhos à venda (os produtos daqui só têm P), com as medidas da HENRRI
+    assert_match '<tr><th scope="row">P</th><td>106 cm</td><td>69 cm</td></tr>', body
+    assert_no_match %r{<th scope="row">XGG</th>}, body
+    # botão de dúvidas (WhatsApp) acima do de compra, em cada kit
+    assert_equal 2, body.scan(%r{<a class="lp-kit__help" href="https://wa.me/553198025792\?text=}).size
+    assert_match %r{class="lp-kit__help".*?Estou com dúvidas\s*</a>\s*<button type="button" class="lp-kit__submit"}m, body
     panel_1822 = body[/id="painel-colecao-1822".*?(?=id="painel-ladrao")/m]
     panel_ladrao = body[/id="painel-ladrao".*/m]
     assert_match 'Coleção 1822', panel_1822

@@ -1,0 +1,49 @@
+<%# Vantagens: cubo 3D girando (as 4 marcas + Mewtda) ao lado do título e
+    4 cartões com tilt 3D seguindo o mouse. Cada cartão tem uma "legenda"
+    (faixa colorida) que entra varrendo quando o cartão aparece e salta
+    pra frente (translateZ) no hover. JS: bloco 7 de home/index. %>
+<%
+  advantages = {
+    organizacao:    { icon: 'fa-solid fa-table-cells-large', color: '#0b72e7' },
+    relacionamento: { icon: 'fa-solid fa-heart',             color: '#e4572e' },
+    processos:      { icon: 'fa-solid fa-bolt',              color: '#f5b301' },
+    shopify:        { icon: 'fa-brands fa-shopify',          color: '#04432f' }
+  }
+  cube_faces = landing_products.map { |p| { label: p[:name], color: p[:color] } } +
+               [{ label: 'mewtda', color: '#fc7107' }, { label: 'Shopify Partner', color: '#5e8e3e' }]
+%>
+<section class="mwtda-lp-section mwtda-lp-adv" id="vantagens" data-adv>
+  <div class="mwtda-lp-section__inner">
+    <div class="mwtda-lp-adv__head">
+      <div>
+        <span class="mwtda-lp-eyebrow" data-reveal-self><%= t('home.beneficios.eyebrow') %></span>
+        <h2 class="mwtda-lp-section__title" data-reveal-self><%= t('home.beneficios.title') %></h2>
+        <p class="mwtda-lp-section__lead" data-reveal-self><%= t('home.beneficios.lead') %></p>
+        <span class="mwtda-lp-adv__hint" data-reveal-self><i class="fa-solid fa-hand-pointer"></i> <%= t('home.vantagens.hint') %></span>
+      </div>
+
+      <div class="mwtda-lp-cube" aria-hidden="true">
+        <div class="mwtda-lp-cube__body">
+          <% cube_faces.each_with_index do |face, i| %>
+            <span class="mwtda-lp-cube__face mwtda-lp-cube__face--<%= i %>" style="--face: <%= face[:color] %>"><%= face[:label] %></span>
+          <% end %>
+        </div>
+        <span class="mwtda-lp-cube__shadow"></span>
+      </div>
+    </div>
+
+    <div class="mwtda-lp-adv__grid" data-reveal>
+      <% advantages.each do |key, adv| %>
+        <article class="mwtda-lp-adv__card" data-tilt style="--adv: <%= adv[:color] %>">
+          <div class="mwtda-lp-adv__inner">
+            <span class="mwtda-lp-adv__icon"><i class="<%= adv[:icon] %>"></i></span>
+            <h3><%= t("home.beneficios.#{key}.title") %></h3>
+            <p><%= t("home.beneficios.#{key}.text") %></p>
+            <span class="mwtda-lp-adv__caption"><i class="fa-solid fa-check"></i> <%= t("home.vantagens.captions.#{key}") %></span>
+          </div>
+          <span class="mwtda-lp-adv__glare" aria-hidden="true"></span>
+        </article>
+      <% end %>
+    </div>
+  </div>
+</section>

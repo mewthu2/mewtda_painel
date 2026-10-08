@@ -14,13 +14,35 @@
     esteja nos handles da página) e "Ladrão" (os demais produtos da página). %>
 <% product_1822_ref = 'gid://shopify/Product/10793095364902' %>
 <% product_1822 = @products.find { |p| p['id'] == product_1822_ref } || @storefront.product(product_1822_ref) %>
+<%# shirt = cor da camiseta no fundo da miniatura da estampa. %>
 <% drop_tabs = [
-     { key: 'colecao-1822', label: '1822', products: [product_1822].compact },
-     { key: 'ladrao', label: 'Ladrão', products: @products.reject { |p| p['id'] == product_1822_ref } }
+     { key: 'colecao-1822', label: '1822', shirt: '#111111', products: [product_1822].compact },
+     { key: 'ladrao', label: 'Ladrão', shirt: '#111111', products: @products.reject { |p| p['id'] == product_1822_ref } }
    ].select { |tab| tab[:products].any? } %>
+<%# Arte de cada estampa na aba: app/assets/images/lp/drop_01_1822/<key>.(svg|png|webp),
+    de preferência com fundo transparente. Sem o arquivo, usa uma versão
+    tipográfica provisória. %>
+<% print_art_path = lambda do |key|
+     ext = %w[svg png webp].find { |e| Rails.root.join('app/assets/images/lp/drop_01_1822', "#{key}.#{e}").exist? }
+     ext && "lp/drop_01_1822/#{key}.#{ext}"
+   end %>
 <% all_products = drop_tabs.flat_map { |tab| tab[:products] } %>
 <% first_product = all_products.first %>
 <% installments = 4 %>
+<% whatsapp_help_url = "https://wa.me/553198025792?text=#{ERB::Util.url_encode('Oi! Estou com dúvidas sobre as camisetas do Drop 01 da 1822.')}" %>
+<%# Tabela de medidas da camiseta gola O HENRRI (cm). Tórax = volta inteira da
+    peça no peito. O modal mostra só os tamanhos que os produtos da página
+    vendem; se não achar a opção de tamanho, mostra a tabela toda. %>
+<% size_chart = [
+     { size: 'P',   chest: 106, length: 69 },
+     { size: 'M',   chest: 110, length: 71 },
+     { size: 'G',   chest: 114, length: 73 },
+     { size: 'GG',  chest: 118, length: 77 },
+     { size: 'XGG', chest: 122, length: 79 }
+   ] %>
+<% sizes_on_sale = all_products.flat_map { |p| Array(p['options']).select { |o| o['name'].to_s.match?(/\A(size|tamanho)\z/i) } }
+                               .flat_map { |o| Array(o['optionValues']).map { |v| v['name'].to_s.upcase } } %>
+<% size_rows = size_chart.select { |row| sizes_on_sale.include?(row[:size]) }.presence || size_chart %>
 <% content_for :head do %>
   <meta name="description" content="1822 · Independência se veste. Drop 01: duas camisetas, uma estampa. <%= presale_text %>">
   <meta property="og:title" content="1822 · Independência se veste.">
@@ -107,15 +129,99 @@
     .products { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; }
     .drop__grid[hidden] { display: none; }
 
-    /* Abas do drop (1822 / Ladrão) */
-    .drop__tabs { display: flex; gap: 4px; margin-bottom: clamp(32px, 5vw, 56px); border-bottom: 1px solid #262626; }
-    .drop__tab { position: relative; padding: 10px 18px 14px; border: 0; background: none; color: #8F8B83; cursor: pointer;
-                 font: 400 clamp(28px, 3.4vw, 40px)/1 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: .02em; transition: color .2s; }
-    .drop__tab::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 4px; background: var(--amarelo);
-                        transform: scaleX(0); transform-origin: left; transition: transform .3s cubic-bezier(.2,.8,.2,1); }
-    .drop__tab:hover, .drop__tab[aria-selected="true"] { color: var(--papel); }
-    .drop__tab[aria-selected="true"]::after { transform: none; }
+    /* Abas do drop: cada aba mostra a estampa da camiseta */
+    .drop__tabs { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 180px)); gap: 12px; margin-bottom: clamp(32px, 5vw, 56px); }
+    .drop__tab { display: grid; gap: 12px; padding: 10px 10px 14px; border-radius: 8px; border: 1.5px solid #3A3A3A; background: #181818; color: #8F8B83; cursor: pointer;
+                     text-align: left; transition: border-color .2s, color .2s, transform .2s; }
+    .drop__tab:hover { border-color: var(--papel); color: var(--papel); }
+    .drop__tab:active { transform: translateY(1px); }
+    .drop__tab[aria-selected="true"] { border-color: var(--amarelo); color: var(--papel); }
     .drop__tab:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 2px; }
+    .drop__tab-thumb { position: relative; aspect-ratio: 1; border-radius: 4px; border: 1px solid #262626; background: var(--shirt, #111111); }
+    .drop__tab-thumb .print { inset: 16%; }
+    .drop__tab-name { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 4px;
+                          font: 400 clamp(22px, 2.4vw, 30px)/1 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: .02em; }
+    .drop__tab-name i { width: 10px; height: 10px; border-radius: 50%; border: 2px solid currentColor; transition: background .2s; }
+    .drop__tab[aria-selected="true"] .drop__tab-name i { background: var(--amarelo); border-color: var(--amarelo); }
+
+    /* Navegação rápida das estampas: trilho fixo no canto esquerdo */
+    .printnav { position: fixed; z-index: 55; left: 16px; top: 50%; display: grid; gap: 8px; padding: 8px; border-radius: 10px;
+                background: rgba(17, 17, 17, .88); border: 1px solid #3A3A3A; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+                box-shadow: 0 10px 28px rgba(0, 0, 0, .4); transform: translate(calc(-100% - 24px), -50%); transition: transform .45s cubic-bezier(.2,.9,.2,1); }
+    .printnav.is-visible { transform: translate(0, -50%); }
+    .printnav__title { margin: 2px -4px 0; text-align: center; font: 700 10px/1 'Archivo', sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--amarelo); }
+    .printnav__item { position: relative; display: block; width: 48px; aspect-ratio: 1; padding: 0; border-radius: 6px; border: 1.5px solid #3A3A3A;
+                      background: var(--shirt, #111111); cursor: pointer; transition: border-color .2s, transform .2s; }
+    .printnav__item .print { inset: 14%; }
+    .printnav__item:hover { border-color: var(--papel); transform: translateX(2px); }
+    .printnav__item[aria-current="true"] { border-color: var(--amarelo); }
+    .printnav__item:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 2px; }
+    .printnav__label { position: absolute; left: calc(100% + 12px); top: 50%; transform: translate(-4px, -50%); opacity: 0; pointer-events: none; white-space: nowrap;
+                       padding: 7px 10px; border-radius: 4px; background: var(--papel); color: var(--preto);
+                       font: 400 16px/1 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: .03em; transition: opacity .2s, transform .2s; }
+    .printnav__item:hover .printnav__label, .printnav__item:focus-visible .printnav__label { opacity: 1; transform: translate(0, -50%); }
+    /* "Carimbo": ao escolher, a miniatura afunda e solta as 3 formas da estampa (anel, barra, diagonal) */
+    .printnav__burst { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; }
+    .printnav__burst i { position: absolute; display: block; opacity: 0; }
+    .printnav__burst i:nth-child(3n+1) { width: 13px; height: 13px; margin: -6.5px; border-radius: 50%; border: 3px solid var(--verde); }
+    .printnav__burst i:nth-child(3n+2) { width: 5px; height: 16px; margin: -8px -2.5px; background: var(--amarelo); }
+    .printnav__burst i:nth-child(3n) { width: 14px; height: 14px; margin: -7px; background: var(--azul); clip-path: polygon(0 100%, 26% 100%, 100% 0, 74% 0); }
+    .printnav__item.is-stamped { animation: lp-stamp .45s cubic-bezier(.3,1.6,.5,1); }
+    .printnav__item.is-stamped .printnav__burst i { animation: lp-burst .85s cubic-bezier(.15,.8,.3,1) forwards; }
+    @keyframes lp-stamp { 0% { transform: scale(1); } 30% { transform: scale(.82) rotate(-4deg); } 100% { transform: scale(1); } }
+    @keyframes lp-burst {
+      0% { opacity: 1; transform: rotate(var(--a)) translateY(0) scale(.4); }
+      70% { opacity: 1; }
+      100% { opacity: 0; transform: rotate(var(--a)) translateY(-52px) rotate(calc(var(--a) * -2)) scale(1); }
+    }
+    .printnav.is-hello { animation: lp-pulse 1.2s ease-out 2; }
+
+    /* Celular: o trilho vira uma doca no canto inferior direito, com cursor amarelo
+       deslizando até a estampa ativa e uma etiqueta de papel com o nome dela.
+       Fica na tela também durante a compra (é ali que mais se troca de estampa). */
+    .printnav__tag, .printnav__cursor { display: none; }
+    @media (max-width: 1023px) {
+      .printnav { left: auto; right: 12px; top: auto; bottom: calc(12px + env(safe-area-inset-bottom)); grid-auto-flow: column; gap: 8px; padding: 6px; border-radius: 12px;
+                  transform: translateY(calc(100% + 80px)); transition: transform .5s cubic-bezier(.2,.9,.2,1), bottom .3s ease; }
+      .printnav.is-visible { transform: none; }
+      .stickybar-on .printnav { bottom: calc(80px + env(safe-area-inset-bottom)); }
+      /* faixa tricolor desenhando na borda de cima quando a doca entra */
+      .printnav::before { content: ""; position: absolute; left: 10px; right: 10px; top: -1px; height: 3px; border-radius: 3px;
+                          background: linear-gradient(90deg, var(--verde) 0 33.3%, var(--amarelo) 33.3% 66.6%, var(--azul) 66.6%);
+                          transform: scaleX(0); transform-origin: left; transition: transform .6s .25s cubic-bezier(.2,.9,.2,1); }
+      .printnav.is-visible::before { transform: scaleX(1); }
+      .printnav__title, .printnav__label { display: none; }
+      .printnav__item { width: 44px; z-index: 1; border-color: transparent; }
+      .printnav__item:hover { transform: none; border-color: transparent; }
+      .printnav__item[aria-current="true"] { border-color: transparent; }
+      .printnav__cursor { display: block; position: absolute; left: 6px; top: 6px; width: 44px; height: 44px; border-radius: 6px; border: 2px solid var(--amarelo);
+                          box-shadow: 0 0 0 3px rgba(244, 198, 24, .18), 0 6px 16px rgba(244, 198, 24, .25); pointer-events: none;
+                          transform: translateX(calc(var(--active, 0) * 52px)); transition: transform .45s cubic-bezier(.3,1.4,.5,1); }
+      .printnav__tag { display: block; position: absolute; right: 0; bottom: calc(100% + 8px); padding: 7px 10px 6px; border-radius: 4px; white-space: nowrap;
+                       background: var(--papel); color: var(--preto); box-shadow: 0 8px 20px rgba(0, 0, 0, .4); transform-origin: 50% 100%;
+                       font: 400 15px/1 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: .03em; }
+      .printnav__tag small { margin-right: 6px; font: 700 10px/1 'Archivo', sans-serif; letter-spacing: .16em; color: var(--cinza); vertical-align: 2px; }
+      .printnav__tag::after { content: ""; position: absolute; right: 22px; top: 100%; border: 6px solid transparent; border-top-color: var(--papel); }
+      .printnav__tag.is-flipping { animation: lp-tag-flip .5s cubic-bezier(.3,1.3,.5,1); }
+      @keyframes lp-tag-flip { 0% { transform: perspective(300px) rotateX(0); } 45% { transform: perspective(300px) rotateX(90deg); } 100% { transform: perspective(300px) rotateX(0); } }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .printnav, .printnav__item, .printnav__label, .printnav__cursor, .printnav::before { transition: none; }
+      .printnav.is-hello, .printnav__item.is-stamped, .printnav__tag.is-flipping { animation: none; }
+      .printnav__burst { display: none; }
+    }
+
+    /* Arte da estampa (imagem ou versão tipográfica provisória), escala pelo tamanho da caixa */
+    .print { position: absolute; inset: 0; display: grid; place-items: center; container-type: size; }
+    .print img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
+    .print .logo { font-size: 50cqmin; line-height: .82; }
+    .print__word { display: grid; justify-items: center; gap: 7cqmin; }
+    .print__word strong { font: 400 29cqmin/.95 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: .01em; color: var(--papel); padding-top: .08em; }
+    .print__shapes { display: flex; align-items: center; gap: 7cqmin; }
+    .print__shapes i { display: block; }
+    .print__shapes i:nth-child(1) { width: 15cqmin; height: 15cqmin; border-radius: 50%; border: 4cqmin solid var(--verde); }
+    .print__shapes i:nth-child(2) { width: 5cqmin; height: 18cqmin; background: var(--amarelo); }
+    .print__shapes i:nth-child(3) { width: 15cqmin; height: 15cqmin; background: var(--azul); clip-path: polygon(0 100%, 26% 100%, 100% 0, 74% 0); }
 
     .product__media { background: #E7E3DA; border-radius: 6px; overflow: hidden; aspect-ratio: 4 / 5; }
     .product__media img { width: 100%; height: 100%; object-fit: cover; }
@@ -197,6 +303,42 @@
     .lp-kit__submit.is-loading { background: var(--amarelo); color: var(--preto); opacity: .7; cursor: progress; }
     .lp-kit__message { min-height: 1.4em; margin: 10px 0 0; font-size: 15px; color: var(--amarelo); }
     .lp-kit__closed { margin: 6px 0 0; padding: 16px; border: 1.5px solid #3A3A3A; border-radius: 4px; font: 600 16px/1.4 'Archivo', sans-serif; color: #D9D5CC; }
+    .lp-kit__help { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 52px; margin: 0 0 10px; border-radius: 4px; background: var(--verde); color: var(--papel);
+                    text-decoration: none; font: 400 20px/1 'Anton', Impact, sans-serif; letter-spacing: .05em; text-transform: uppercase; transition: filter .12s ease; }
+    .lp-kit__help:hover { filter: brightness(1.08); }
+    .lp-kit__help:focus-visible { outline: 2px solid var(--papel); outline-offset: 2px; }
+    .lp-kit__help svg { width: 22px; height: 22px; fill: currentColor; }
+    .lp-kit__size-link { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 12px; padding: 4px 0; border: 0; background: none; cursor: pointer;
+                         color: var(--papel); font: 600 15px/1 'Archivo', sans-serif; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: #6B6862; }
+    .lp-kit__size-link:hover { color: var(--amarelo); text-decoration-color: currentColor; }
+    .lp-kit__size-link svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+
+    /* Modal da tabela de medidas */
+    .sizes { width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; border-radius: 8px; background: var(--papel); color: var(--preto);
+             box-shadow: 0 24px 60px rgba(0, 0, 0, .55); overflow: auto; }
+    .sizes::backdrop { background: rgba(17, 17, 17, .72); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+    .sizes[open] { animation: lp-sizes-in .28s cubic-bezier(.2,.9,.2,1); }
+    .sizes[open]::backdrop { animation: lp-fade .28s ease; }
+    @keyframes lp-sizes-in { from { opacity: 0; transform: translateY(12px) scale(.98); } }
+    .sizes__body { padding: 28px 24px 24px; }
+    .sizes__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .sizes__title { font-size: clamp(34px, 6vw, 44px); }
+    .sizes__close { flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin: -6px -6px 0 0; border: 0; border-radius: 50%; background: transparent; color: var(--preto); cursor: pointer; }
+    .sizes__close:hover { background: #E7E3DA; }
+    .sizes__close svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .sizes__figure { display: block; width: min(100%, 260px); margin: 0 auto 20px; }
+    .sizes__tee { fill: #E7E3DA; stroke: var(--preto); stroke-width: 2; stroke-linejoin: round; }
+    .sizes__measure { stroke-width: 2.5; stroke-linecap: round; }
+    .sizes__measure--a { stroke: var(--verde); } .sizes__measure--b { stroke: var(--azul); }
+    .sizes__tag { font: 400 18px 'Anton', Impact, sans-serif; fill: var(--papel); }
+    .sizes__table { width: 100%; border-collapse: collapse; font: 400 16px/1 'Archivo', sans-serif; font-variant-numeric: tabular-nums; }
+    .sizes__table th, .sizes__table td { padding: 12px 10px; text-align: center; border-bottom: 1px solid #D9D5CC; }
+    .sizes__table thead th { font: 600 11px/1.3 'Archivo', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--cinza); }
+    .sizes__table tbody th { font: 400 22px/1 'Anton', Impact, sans-serif; text-align: left; }
+    .sizes__key { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 6px; border-radius: 50%; color: var(--papel); font: 700 11px/1 'Archivo', sans-serif; letter-spacing: 0; vertical-align: middle; }
+    .sizes__key--a { background: var(--verde); } .sizes__key--b { background: var(--azul); }
+    .sizes__note { margin: 16px 0 0; font-size: 14px; color: var(--cinza); }
+    @media (prefers-reduced-motion: reduce) { .sizes[open], .sizes[open]::backdrop { animation: none; } }
     @media (max-width: 480px) { .lp-kit__summary { flex-direction: column; align-items: flex-start; gap: 8px; } .lp-kit__installments { text-align: left; } }
     @media (max-width: 400px) { .lp-kit { padding: 16px; } .lp-kit__option-name { min-width: 0; width: 100%; } .lp-kit__qty-btn { padding: 12px 2px; } .lp-kit__qty-btn em { font-size: 11.5px; letter-spacing: -.01em; } }
 
@@ -458,6 +600,16 @@
 <% split_words = ->(text) { safe_join(text.split(' ').map { |w| content_tag(:span, w, class: 'w') }, ' ') } %>
 <% marquee_items = ['Independência se veste.', 'Feita pra durar mais que a eleição.', presale_text, 'Branca ou preta.', 'O Brasil tem memória.'] %>
 <% logo = ->(variant) { content_tag(:span, safe_join(%w[1 8 2 2].map { |d| content_tag(:span, d) }), class: "logo logo--#{variant}", aria: { label: '1822' }, role: 'img') } %>
+<% print_art = lambda do |tab|
+     art = if (path = print_art_path.call(tab[:key]))
+             image_tag(path, alt: '', decoding: 'async')
+           elsif tab[:key] == 'colecao-1822'
+             logo.call('cores')
+           else
+             content_tag(:span, safe_join([content_tag(:strong, tab[:label]), content_tag(:span, safe_join(Array.new(3) { tag.i }), class: 'print__shapes')]), class: 'print__word')
+           end
+     content_tag(:span, art, class: 'print', aria: { hidden: true })
+   end %>
 
 <div class="flagbar" aria-hidden="true"><span></span><span></span><span></span></div>
 
@@ -536,10 +688,13 @@
   <section class="wrap drop" id="comprar">
     <% tabbed = drop_tabs.size > 1 %>
     <% if tabbed %>
-      <div class="drop__tabs rv" role="tablist" aria-label="Escolha a camiseta" data-reveal data-tabs>
+      <div class="drop__tabs rv" role="tablist" aria-label="Escolha a estampa" data-reveal data-tabs>
         <% drop_tabs.each_with_index do |tab, i| %>
           <button type="button" class="drop__tab" role="tab" id="aba-<%= tab[:key] %>" aria-controls="painel-<%= tab[:key] %>"
-                  aria-selected="<%= i.zero? %>" tabindex="<%= i.zero? ? 0 : -1 %>"><%= tab[:label] %></button>
+                  aria-selected="<%= i.zero? %>" tabindex="<%= i.zero? ? 0 : -1 %>">
+            <span class="drop__tab-thumb" style="--shirt: <%= tab[:shirt] %>"><%= print_art.call(tab) %></span>
+            <span class="drop__tab-name"><%= tab[:label] %><i></i></span>
+          </button>
         <% end %>
       </div>
     <% end %>
@@ -593,6 +748,8 @@
               <div class="rv" data-reveal style="--d:1">
               <%= render 'landing_pages/shared/kit_builder', product: product, max: 4, installments: installments,
                          kit_prices: @storefront.kit_prices(lp_first_available_variant_id(product), max: 4),
+                         size_chart_label: 'Tabela de medidas',
+                         help_url: whatsapp_help_url, help_label: 'Estou com dúvidas',
                          closed_text: 'Pré-venda encerrada. Deixa teu contato aí embaixo e fica sabendo do próximo drop.' %>
               </div>
             </article>
@@ -614,6 +771,60 @@
     </div>
     <% end %>
   </section>
+
+  <dialog class="sizes" id="tabela-medidas" aria-labelledby="tabela-medidas-titulo" data-sizes>
+    <div class="sizes__body">
+      <div class="sizes__head">
+        <div>
+          <p class="eyebrow eyebrow--verde">Camiseta 1822</p>
+          <h2 class="display sizes__title" id="tabela-medidas-titulo">Tabela de medidas</h2>
+        </div>
+        <button type="button" class="sizes__close" aria-label="Fechar" data-sizes-close>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+      </div>
+      <svg class="sizes__figure" viewBox="0 0 260 230" aria-hidden="true">
+        <path class="sizes__tee" d="M96 14 Q130 38 164 14 L214 32 L250 86 L216 106 L200 82 L202 220 L58 220 L60 82 L44 106 L10 86 L46 32 Z"></path>
+        <line class="sizes__measure sizes__measure--a" x1="64" y1="96" x2="196" y2="96"></line>
+        <path class="sizes__measure sizes__measure--a" d="M72 88 L64 96 L72 104 M188 88 L196 96 L188 104" fill="none"></path>
+        <line class="sizes__measure sizes__measure--b" x1="130" y1="34" x2="130" y2="214"></line>
+        <path class="sizes__measure sizes__measure--b" d="M122 42 L130 34 L138 42 M122 206 L130 214 L138 206" fill="none"></path>
+        <circle cx="96" cy="96" r="12" fill="#2B9A3E"></circle><text class="sizes__tag" x="96" y="103" text-anchor="middle">A</text>
+        <circle cx="130" cy="160" r="12" fill="#0A5CD6"></circle><text class="sizes__tag" x="130" y="167" text-anchor="middle">B</text>
+      </svg>
+      <table class="sizes__table">
+        <thead>
+          <tr>
+            <th scope="col">Tamanho</th>
+            <th scope="col"><span class="sizes__key sizes__key--a">A</span>Tórax</th>
+            <th scope="col"><span class="sizes__key sizes__key--b">B</span>Comprimento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% size_rows.each do |row| %>
+            <tr><th scope="row"><%= row[:size] %></th><td><%= row[:chest] %> cm</td><td><%= row[:length] %> cm</td></tr>
+          <% end %>
+        </tbody>
+      </table>
+      <p class="sizes__note">Medidas da peça, em centímetros. Tórax é a volta inteira da camiseta na altura do peito.</p>
+    </div>
+  </dialog>
+
+  <% if drop_tabs.size > 1 %>
+    <nav class="printnav" aria-labelledby="printnav-titulo" data-printnav>
+      <span class="printnav__title" id="printnav-titulo">Estampas</span>
+      <%# só no celular: etiqueta com o nome da estampa ativa e o cursor amarelo %>
+      <span class="printnav__tag" aria-hidden="true"><small>Estampa</small><span data-printnav-name><%= drop_tabs.first[:label] %></span></span>
+      <span class="printnav__cursor" aria-hidden="true"></span>
+      <% drop_tabs.each_with_index do |tab, i| %>
+        <button type="button" class="printnav__item" data-print-jump="aba-<%= tab[:key] %>" data-print-name="<%= tab[:label] %>" aria-label="<%= tab[:label] %>" aria-current="<%= i.zero? %>" style="--shirt: <%= tab[:shirt] %>">
+          <%= print_art.call(tab) %>
+          <span class="printnav__label"><%= tab[:label] %></span>
+          <span class="printnav__burst" aria-hidden="true"><% 6.times do |b| %><i style="--a: <%= b * 60 + 15 %>deg"></i><% end %></span>
+        </button>
+      <% end %>
+    </nav>
+  <% end %>
 
   <div class="paper">
     <section class="wrap why">
@@ -855,7 +1066,53 @@
         t.tabIndex = on ? 0 : -1;
         document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
       });
+      jumps.forEach(function (j, i) {
+        var on = j.getAttribute('data-print-jump') === tab.id;
+        j.setAttribute('aria-current', on ? 'true' : 'false');
+        if (!on) return;
+        // doca do celular: cursor desliza até a estampa e a etiqueta vira
+        nav.style.setProperty('--active', i);
+        if (navName && navName.textContent !== j.getAttribute('data-print-name')) {
+          navTag.classList.remove('is-flipping'); void navTag.offsetWidth; navTag.classList.add('is-flipping');
+          setTimeout(function () { navName.textContent = j.getAttribute('data-print-name'); }, 200);
+        }
+      });
       if (focus) tab.focus();
+    }
+
+    // Navegação rápida das estampas: trilho no canto esquerdo (desktop) ou
+    // doca no canto inferior direito (celular). Escolhe a estampa e leva até
+    // ela, com o "carimbo" na miniatura. Só aparece depois que a corrente rompe
+    // (evento do selo) e fora do topo — no celular inclusive durante a compra.
+    var nav = document.querySelector('[data-printnav]');
+    var jumps = nav ? Array.prototype.slice.call(nav.querySelectorAll('[data-print-jump]')) : [];
+    var navTag = nav && nav.querySelector('.printnav__tag');
+    var navName = nav && nav.querySelector('[data-printnav-name]');
+    var drop = document.getElementById('comprar');
+    jumps.forEach(function (j) {
+      j.addEventListener('click', function () {
+        j.classList.remove('is-stamped'); void j.offsetWidth; j.classList.add('is-stamped');
+        if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) {} }
+        select(document.getElementById(j.getAttribute('data-print-jump')));
+        drop.scrollIntoView();
+      });
+      j.addEventListener('animationend', function (e) { if (e.target === j) j.classList.remove('is-stamped'); });
+    });
+    var unlocked = document.documentElement.classList.contains('chain-broken');
+    if (nav && 'IntersectionObserver' in window) {
+      var heroVisible = true, greeted = false;
+      var place = function () {
+        var on = unlocked && !heroVisible;
+        nav.classList.toggle('is-visible', on);
+        // primeira aparição: pulso amarelo pra mostrar que dá pra trocar por ali
+        if (on && !greeted) { greeted = true; nav.classList.add('is-hello'); }
+      };
+      nav.addEventListener('animationend', function (e) { if (e.target === nav) nav.classList.remove('is-hello'); });
+      document.addEventListener('lp:chain-broken', function () { unlocked = true; place(); });
+      new IntersectionObserver(function (e) { heroVisible = e[0].isIntersecting; place(); }).observe(document.querySelector('.hero'));
+      window.addEventListener('resize', place);
+    } else if (nav) {
+      document.addEventListener('lp:chain-broken', function () { nav.classList.add('is-visible'); });
     }
     tabs.forEach(function (tab, i) {
       tab.addEventListener('click', function () { select(tab); });
@@ -866,6 +1123,20 @@
         select(tabs[(i + step + tabs.length) % tabs.length], true);
       });
     });
+  })();
+</script>
+
+<script>
+  // Tabela de medidas: o link acima do botão de compra abre o modal; fecha no
+  // X, no Esc (nativo do <dialog>) ou clicando fora.
+  (function () {
+    var dialog = document.querySelector('[data-sizes]');
+    if (!dialog || typeof dialog.showModal !== 'function') return;
+    document.querySelectorAll('[data-lp-size-chart]').forEach(function (link) {
+      link.addEventListener('click', function () { dialog.showModal(); });
+    });
+    dialog.querySelector('[data-sizes-close]').addEventListener('click', function () { dialog.close(); });
+    dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
   })();
 </script>
 
@@ -942,6 +1213,9 @@
       if (shown) return;
       shown = true;
       el.classList.add('is-visible');
+      // Libera o que espera a corrente romper (ex.: navegação das estampas).
+      root.classList.add('chain-broken');
+      document.dispatchEvent(new Event('lp:chain-broken'));
     }
 
     function animateTo(target) {

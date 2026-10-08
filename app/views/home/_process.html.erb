@@ -1,0 +1,28 @@
+<%# Como funciona: 3 cartões ligados por um trilho que vai "acendendo"
+    conforme a rolagem (--mw-progress e data-progress-lit-N vêm do JS,
+    bloco 4 de home/index). No desktop o trilho é horizontal, passando pelo
+    centro dos números; no celular vira vertical, à esquerda. %>
+<section class="mwtda-lp-section mwtda-lp-section--tint mwtda-lp-flow" id="como-funciona">
+  <div class="mwtda-lp-section__inner">
+    <span class="mwtda-lp-eyebrow" data-reveal-self><%= t('home.process.eyebrow') %></span>
+    <h2 class="mwtda-lp-section__title" data-reveal-self><%= t('home.process.title') %></h2>
+    <p class="mwtda-lp-section__lead" data-reveal-self><%= t('home.process.lead') %></p>
+
+    <div class="mwtda-lp-flow__track" data-process>
+      <span class="mwtda-lp-flow__rail" aria-hidden="true"><i></i></span>
+      <ol class="mwtda-lp-flow__steps" data-reveal>
+        <% icons = %w[fa-regular\ fa-comments fa-solid\ fa-plug fa-solid\ fa-chart-line] %>
+        <% t('home.process.steps').each_with_index do |step, i| %>
+          <li class="mwtda-lp-flow__step">
+            <span class="mwtda-lp-flow__dot"><%= i + 1 %></span>
+            <div class="mwtda-lp-flow__card">
+              <span class="mwtda-lp-flow__icon"><i class="<%= icons[i] %>"></i></span>
+              <h3><%= step[:title] %></h3>
+              <p><%= step[:text] %></p>
+            </div>
+          </li>
+        <% end %>
+      </ol>
+    </div>
+  </div>
+</section>

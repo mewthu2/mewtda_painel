@@ -1,0 +1,27 @@
+<%# Antes × Depois: cartões que giram em 3D (rotateY) mostrando a troca.
+    Viram sozinhos em cascata quando a seção aparece; depois o hover (ou
+    toque) vira de novo. JS: bloco 8 de home/index. %>
+<section class="mwtda-lp-section mwtda-lp-section--tint mwtda-lp-compare" id="comparativo" data-compare>
+  <div class="mwtda-lp-section__inner">
+    <span class="mwtda-lp-eyebrow" data-reveal-self><%= t('home.compare.eyebrow') %></span>
+    <h2 class="mwtda-lp-section__title" data-reveal-self><%= t('home.compare.title') %></h2>
+    <p class="mwtda-lp-section__lead" data-reveal-self><%= t('home.compare.lead') %></p>
+
+    <div class="mwtda-lp-compare__grid">
+      <% t('home.compare.rows').each_with_index do |row, i| %>
+        <button type="button" class="mwtda-lp-flip" data-flip aria-pressed="false" style="--i: <%= i %>">
+          <span class="mwtda-lp-flip__body">
+            <span class="mwtda-lp-flip__face mwtda-lp-flip__face--before">
+              <small><i class="fa-solid fa-xmark"></i> <%= t('home.compare.before_label') %></small>
+              <strong><%= row[:before] %></strong>
+            </span>
+            <span class="mwtda-lp-flip__face mwtda-lp-flip__face--after">
+              <small><i class="fa-solid fa-check"></i> <%= t('home.compare.after_label') %></small>
+              <strong><%= row[:after] %></strong>
+            </span>
+          </span>
+        </button>
+      <% end %>
+    </div>
+  </div>
+</section>
