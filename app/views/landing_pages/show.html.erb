@@ -19,10 +19,18 @@
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <%= link_to 'Abrir página', @landing_page.public_path, class: 'crm-btn', target: '_blank', rel: 'noopener' %>
         <button type="button" class="crm-btn" onclick="navigator.clipboard.writeText('<%= j public_url %>').then(() => { this.textContent = 'Link copiado' })">Copiar link</button>
+        <%= button_to 'Sincronizar produtos', sync_products_landing_page_path(@landing_page), class: 'crm-btn',
+                      form: { style: 'display:inline', onsubmit: "var b = this.querySelector('button'); b.disabled = true; b.textContent = 'Sincronizando…';" } %>
         <%= link_to 'Editar', edit_landing_page_path(@landing_page), class: 'crm-btn crm-btn--primary' %>
       </div>
     </div>
-    <div style="padding: 0 16px 16px;"><code><%= public_url %></code></div>
+    <div style="padding: 0 16px 16px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;">
+      <code><%= public_url %></code>
+      <small style="color:#6b7280;">
+        Produtos <%= @landing_page.storefront_synced_at ? "sincronizados com a Shopify em #{l(@landing_page.storefront_synced_at, format: '%d/%m às %H:%M')}" : 'ainda não sincronizados' %>
+        · atualiza sozinho todo dia às 5h
+      </small>
+    </div>
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0;">

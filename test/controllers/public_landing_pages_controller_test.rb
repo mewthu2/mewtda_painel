@@ -13,7 +13,8 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match 'Independência se veste.', response.body
     assert_match 'Produzido por HENRRI', response.body
-    assert_match 'href="https://www.instagram.com/henrriclothing/"', response.body
+    assert_match 'href="https://www.instagram.com/vista_1822/"', response.body
+    assert_no_match 'henrriclothing', response.body
     assert_match 'href="https://henrri.com.br/"', response.body
     assert_match 'data-chain', response.body
     assert_match 'O Brasil decidiu andar', response.body
@@ -122,11 +123,13 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
 
     fake = Struct.new(:products_list) do
       def products(_refs) = products_list
+      def product(ref) = products_list.find { |p| p['id'] == ref }
       def kit_prices(_variant_id, max: 4) = { 1 => 149.9.to_d, 2 => 284.81.to_d, 3 => 418.22.to_d, 4 => 557.63.to_d }.first(max).to_h
       def configured? = true
       def endpoint = 'https://henrri.myshopify.com/api/2026-07/graphql.json'
       def token = 'public-token'
     end.new([product])
+    @page.update!(product_handles: ['gid://shopify/Product/1'])
 
     Shopify::Storefront.stub :new, fake do
       get '/use1822/drop-01'
@@ -140,6 +143,95 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
     assert_match '−7%', response.body
     assert_match 'data-kit-prices', response.body
     assert_match 'data-lp-option="Cor"', response.body
+    assert_match 'em até 4x de <strong>R$ 37,48</strong> sem juros', response.body
+    assert_match 'data-lp-kit-installments="4"', response.body
+    assert_no_match 'role="tablist"', response.body # só uma aba: sem abas
+  end
+
+  test 'splits the 1822 collection shirt and the Ladrão shirts into tabs' do
+    product = lambda do |id, title, color|
+      {
+        'id' => "gid://shopify/Product/#{id}", 'title' => title, 'availableForSale' => true,
+        'featuredImage' => { 'url' => "https://cdn.example/#{id}.jpg" }, 'images' => { 'nodes' => [] },
+        'options' => [{ 'name' => 'Color', 'optionValues' => [{ 'name' => color }] },
+                      { 'name' => 'Size', 'optionValues' => [{ 'name' => 'P' }] }],
+        'variants' => { 'nodes' => [
+          { 'id' => "gid://shopify/ProductVariant/#{id}", 'availableForSale' => true,
+            'selectedOptions' => [{ 'name' => 'Color', 'value' => color }, { 'name' => 'Size', 'value' => 'P' }],
+            'price' => { 'amount' => '69.9' } }
+        ] }
+      }
+    end
+    ladrao = [product.call(1, 'Camiseta Ladrão Branco', 'Branco'), product.call(2, 'Camiseta Ladrão Preto', 'Preto')]
+    colecao = product.call(10793095364902, 'Camiseta 100% Algodão Preta - Coleção 1822', 'Preto')
+
+    fake = Struct.new(:list, :extra) do
+      def products(_refs) = list
+      def product(ref) = (list + [extra]).find { |p| p['id'] == ref }
+      def kit_prices(*, **) = {}
+      def configured? = true
+      def endpoint = 'https://henrri.myshopify.com/api/2026-07/graphql.json'
+      def token = 'public-token'
+    end.new(ladrao, colecao) # a da coleção não está nos handles: vem buscada pelo ID
+    @page.update!(product_handles: %w[gid://shopify/Product/1 gid://shopify/Product/2])
+
+    Shopify::Storefront.stub :new, fake do
+      get '/use1822/drop-01'
+    end
+
+    body = response.body
+    assert_match 'role="tablist"', body
+    assert_match %r{id="aba-colecao-1822"[^>]*aria-selected="true"[^>]*>1822</button>}, body
+    assert_match %r{id="aba-ladrao"[^>]*aria-selected="false"[^>]*>Ladrão</button>}, body
+    panel_1822 = body[/id="painel-colecao-1822".*?(?=id="painel-ladrao")/m]
+    panel_ladrao = body[/id="painel-ladrao".*/m]
+    assert_match 'Coleção 1822', panel_1822
+    assert_no_match 'Camiseta Ladrão', panel_1822
+    assert_match 'Camiseta Ladrão', panel_ladrao # as duas cores juntas num kit só
+    assert_no_match 'Coleção 1822</h3>', panel_ladrao
+    assert_match(/id="painel-ladrao"[^>]*hidden/, body)
+    assert_equal 2, body.scan('data-lp-kit ').size
+    assert_match 'em até 4x de <strong>R$ 17,48</strong> sem juros', body
+  end
+
+  test 'renders from the products stored on the page, without calling the Shopify' do
+    product = {
+      'id' => 'gid://shopify/Product/1', 'title' => 'Camiseta Guardada', 'availableForSale' => true,
+      'featuredImage' => { 'url' => 'https://cdn.example/1.jpg' }, 'images' => { 'nodes' => [] },
+      'options' => [{ 'name' => 'Size', 'optionValues' => [{ 'name' => 'P' }, { 'name' => 'M' }] }],
+      'variants' => { 'nodes' => [{ 'id' => 'gid://shopify/ProductVariant/1', 'availableForSale' => true,
+                                    'selectedOptions' => [{ 'name' => 'Size', 'value' => 'P' }], 'price' => { 'amount' => '69.9' } }] }
+    }
+    @page.update!(product_handles: ['gid://shopify/Product/1'])
+    @page.update_columns(storefront_cache: {
+      'products' => { 'gid://shopify/Product/1' => product },
+      'kit_prices' => { 'gid://shopify/ProductVariant/1' => { '1' => '69.9', '2' => '132.81', '3' => '195.02', '4' => '251.64' } }
+    })
+
+    offline = Object.new
+    def offline.configured? = true
+    def offline.endpoint = 'https://henrri.myshopify.com/api/2026-07/graphql.json'
+    def offline.token = 'public-token'
+    def offline.product(ref) = ref == 'gid://shopify/Product/10793095364902' ? nil : raise("buscou #{ref} na Shopify")
+    def offline.kit_prices(*, **) = raise('cotou na Shopify')
+
+    Shopify::Storefront.stub :new, offline do
+      get '/use1822/drop-01'
+    end
+
+    assert_response :success
+    assert_match 'Camiseta Guardada', response.body
+    assert_match 'R$ 251,64', response.body
+  end
+
+  test 'shows the store address and contacts in the footer' do
+    get '/use1822/drop-01'
+
+    assert_match 'Av. Getúlio Vargas, 54 - Loja 8, Funcionários', response.body
+    assert_match 'Belo Horizonte - MG', response.body
+    assert_match 'href="mailto:suporte@henrri.com.br"', response.body
+    assert_match 'href="tel:+5531998025792"', response.body
+    assert_match 'CNPJ: 53.856.173/0001-72', response.body
   end
 
   test 'counts a chain break once per browser and returns the total' do

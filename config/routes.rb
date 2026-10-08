@@ -79,7 +79,9 @@ Rails.application.routes.draw do
     resources :ad_costs, except: [:show]
     resource :goal, only: %i[edit update]
     resource :popup, only: %i[edit update]
-    resources :landing_pages, path: 'landing-pages'
+    resources :landing_pages, path: 'landing-pages' do
+      post :sync_products, on: :member
+    end
     get 'popup/cadastros', to: 'popups#submissions', as: :submissions_popup
 
     resources :email_templates, except: [:show]

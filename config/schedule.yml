@@ -2,3 +2,8 @@ daily_ad_cost_sync:
   cron: "0 6 * * * America/Sao_Paulo"
   class: "DailyAdCostSyncJob"
   queue: default
+
+landing_pages_products_sync:
+  cron: "0 5 * * * America/Sao_Paulo"
+  class: "LandingPagesProductsSyncJob"
+  queue: default

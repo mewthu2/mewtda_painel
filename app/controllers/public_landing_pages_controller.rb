@@ -10,7 +10,7 @@ class PublicLandingPagesController < ApplicationController
     LandingPage.update_counters(@landing_page.id, views_count: 1) unless @preview
 
     @client = @landing_page.client
-    @storefront = Shopify::Storefront.new(@client)
+    @storefront = LandingPages::CachedStorefront.new(@landing_page, Shopify::Storefront.new(@client))
     @products = @storefront.products(@landing_page.product_handles)
 
     render "landing_pages/templates/#{@landing_page.template}"

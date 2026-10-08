@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_06_180000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_08_120000) do
   create_schema "_heroku"
 
   # These are extensions that must be enabled in order to support this database
@@ -117,6 +117,122 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_06_180000) do
     t.integer "bling_order_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "busca_frete_clients", force: :cascade do |t|
+    t.string "shop_domain", null: false
+    t.text "access_token"
+    t.string "scopes"
+    t.string "shop_name"
+    t.string "shop_email"
+    t.boolean "dev_store", default: false, null: false
+    t.string "status", default: "pending_plan", null: false
+    t.string "plan_key"
+    t.integer "quota_limit", default: 0, null: false
+    t.integer "quotes_used", default: 0, null: false
+    t.datetime "cycle_started_at"
+    t.datetime "cycle_ends_at"
+    t.string "subscription_gid"
+    t.string "pending_plan_key"
+    t.datetime "alert_80_sent_at"
+    t.datetime "alert_100_sent_at"
+    t.datetime "installed_at"
+    t.datetime "uninstalled_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "refresh_token"
+    t.datetime "access_token_expires_at"
+    t.datetime "refresh_token_expires_at"
+    t.index ["shop_domain"], name: "index_busca_frete_clients_on_shop_domain", unique: true
+    t.index ["status"], name: "index_busca_frete_clients_on_status"
+  end
+
+  create_table "busca_frete_custom_plans", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.integer "quota_limit", null: false
+    t.decimal "price_usd", precision: 10, scale: 2, null: false
+    t.bigint "created_by_user_id"
+    t.string "status", default: "offered", null: false
+    t.text "confirmation_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_busca_frete_custom_plans_on_client_id"
+  end
+
+  create_table "busca_frete_provider_credentials", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "provider", null: false
+    t.boolean "enabled", default: false, null: false
+    t.string "environment", default: "production", null: false
+    t.text "credentials"
+    t.jsonb "known_services", default: [], null: false
+    t.datetime "last_test_at"
+    t.boolean "last_test_ok"
+    t.string "last_test_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id", "provider"], name: "idx_on_client_id_provider_d0292cf686", unique: true
+    t.index ["client_id"], name: "index_busca_frete_provider_credentials_on_client_id"
+  end
+
+  create_table "busca_frete_quote_attempt_providers", force: :cascade do |t|
+    t.bigint "quote_attempt_id", null: false
+    t.string "provider", null: false
+    t.boolean "ok", default: false, null: false
+    t.integer "http_status"
+    t.integer "duration_ms"
+    t.integer "services_count", default: 0, null: false
+    t.jsonb "raw_services", default: [], null: false
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["quote_attempt_id"], name: "index_busca_frete_quote_attempt_providers_on_quote_attempt_id"
+  end
+
+  create_table "busca_frete_quote_attempts", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "origin", null: false
+    t.string "destination_cep"
+    t.jsonb "items", default: [], null: false
+    t.decimal "invoice_value", precision: 12, scale: 2
+    t.string "outcome", null: false
+    t.boolean "counted", default: false, null: false
+    t.jsonb "options_returned", default: [], null: false
+    t.integer "options_count", default: 0, null: false
+    t.integer "duration_ms"
+    t.string "visitor_hash"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id", "created_at"], name: "index_busca_frete_quote_attempts_on_client_id_and_created_at"
+    t.index ["client_id", "outcome"], name: "index_busca_frete_quote_attempts_on_client_id_and_outcome"
+  end
+
+  create_table "busca_frete_settings", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "origin_cep"
+    t.integer "extra_days", default: 0, null: false
+    t.decimal "extra_price_fixed", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "extra_price_percent", precision: 6, scale: 2, default: "0.0", null: false
+    t.jsonb "hidden_services", default: [], null: false
+    t.jsonb "service_renames", default: {}, null: false
+    t.string "display_mode", default: "all", null: false
+    t.decimal "free_shipping_threshold", precision: 10, scale: 2
+    t.string "free_shipping_label", default: "Frete grátis", null: false
+    t.string "delivery_format", default: "days", null: false
+    t.boolean "include_cart_on_product", default: false, null: false
+    t.decimal "default_weight_kg", precision: 8, scale: 3, default: "0.3", null: false
+    t.decimal "default_length_cm", precision: 8, scale: 1, default: "16.0", null: false
+    t.decimal "default_width_cm", precision: 8, scale: 1, default: "11.0", null: false
+    t.decimal "default_height_cm", precision: 8, scale: 1, default: "2.0", null: false
+    t.string "drawer_title", default: "Calcular frete", null: false
+    t.string "drawer_button_text", default: "Calcular", null: false
+    t.string "drawer_primary_color", default: "#1A7FE0", null: false
+    t.string "drawer_text_color", default: "#FFFFFF", null: false
+    t.integer "drawer_border_radius", default: 8, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_busca_frete_settings_on_client_id", unique: true
   end
 
   create_table "campaign_actions", force: :cascade do |t|
@@ -315,6 +431,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_06_180000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "chain_breaks_count", default: 0, null: false
+    t.jsonb "storefront_cache", default: {}, null: false
+    t.datetime "storefront_synced_at"
     t.index ["client_id"], name: "index_landing_pages_on_client_id"
     t.index ["path_prefix", "slug"], name: "index_landing_pages_on_path_prefix_and_slug", unique: true
   end
@@ -488,70 +606,3 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_06_180000) do
     t.index ["shop_domain"], name: "index_shopify_events_on_shop_domain"
     t.index ["shopify_event_id"], name: "index_shopify_events_on_shopify_event_id"
   end
-
-  create_table "users", force: :cascade do |t|
-    t.string "name"
-    t.string "phone"
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
-    t.string "confirmation_token"
-    t.string "unlock_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string "unconfirmed_email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "profile_id"
-    t.bigint "client_id"
-    t.string "utm_code"
-    t.string "discount_code"
-    t.index ["client_id"], name: "index_users_on_client_id"
-    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-    t.index ["discount_code"], name: "index_users_on_discount_code"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["profile_id"], name: "index_users_on_profile_id"
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
-    t.index ["utm_code"], name: "index_users_on_utm_code", unique: true
-  end
-
-  add_foreign_key "abandoned_checkouts", "clients"
-  add_foreign_key "abandoned_checkouts", "customers"
-  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "ad_cost_snapshots", "clients"
-  add_foreign_key "ad_costs", "clients"
-  add_foreign_key "campaign_actions", "campaigns"
-  add_foreign_key "campaign_actions", "customers"
-  add_foreign_key "campaign_actions", "orders"
-  add_foreign_key "campaigns", "clients"
-  add_foreign_key "email_templates", "clients"
-  add_foreign_key "goals", "clients"
-  add_foreign_key "integration_users", "clients"
-  add_foreign_key "landing_page_leads", "landing_pages"
-  add_foreign_key "landing_pages", "clients"
-  add_foreign_key "locations", "clients"
-  add_foreign_key "order_items", "orders"
-  add_foreign_key "order_items", "products"
-  add_foreign_key "orders", "clients"
-  add_foreign_key "orders", "customers"
-  add_foreign_key "orders", "landing_pages", on_delete: :nullify
-  add_foreign_key "orders", "locations"
-  add_foreign_key "popup_submissions", "popups"
-  add_foreign_key "popups", "clients"
-  add_foreign_key "products", "clients"
-  add_foreign_key "refunds", "clients"
-  add_foreign_key "refunds", "orders"
-  add_foreign_key "shopify_events", "clients"
-  add_foreign_key "shopify_events", "integration_users"
-  add_foreign_key "users", "clients"
-  add_foreign_key "users", "profiles"
-end

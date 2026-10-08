@@ -4,6 +4,9 @@ module Shopify
   # botão de compra criar o carrinho direto na Shopify).
   class Storefront
     API_VERSION = '2026-07'.freeze
+
+    # A API falhou (HTTP, timeout, erro de GraphQL) — diferente de "produto não existe".
+    class Error < StandardError; end
     CACHE_TTL = 5.minutes
 
     PRODUCT_QUERY = <<~GRAPHQL.freeze
@@ -60,11 +63,19 @@ module Shopify
     def product(ref)
       return nil if ref.blank? || !configured?
 
-      variables = ref.start_with?('gid://') ? { id: ref } : { handle: ref }
       cache_key = ['storefront-product', @client.id, ref, token.to_s.last(6)]
       Rails.cache.fetch(cache_key, expires_in: CACHE_TTL, skip_nil: true) do
-        query(PRODUCT_QUERY, variables)&.dig('product')
+        fetch_product!(ref)
+      rescue Error
+        nil
       end
+    end
+
+    # Sem cache: o produto como está na Shopify agora, nil se não existir (ou
+    # não estiver publicado no canal do token). Levanta Error se a API falhar.
+    def fetch_product!(ref)
+      variables = ref.start_with?('gid://') ? { id: ref } : { handle: ref }
+      query!(PRODUCT_QUERY, variables)['product']
     end
 
     KIT_QUOTE_MUTATION = <<~GRAPHQL.freeze
@@ -86,12 +97,20 @@ module Shopify
 
       cache_key = ['storefront-kit-prices', @client.id, variant_id, max, token.to_s.last(6)]
       Rails.cache.fetch(cache_key, expires_in: KIT_QUOTE_TTL, skip_nil: true) do
-        prices = (1..max).to_h do |quantity|
-          data = query(KIT_QUOTE_MUTATION, lines: [{ merchandiseId: variant_id, quantity: quantity }])
-          [quantity, data&.dig('cartCreate', 'cart', 'cost', 'totalAmount', 'amount')&.to_d]
-        end
-        prices.values.all? ? prices : nil
+        fetch_kit_prices!(variant_id, max: max)
+      rescue Error
+        nil
       end || {}
+    end
+
+    # Sem cache. nil se a loja não cotar a variante (ex.: ela não existe mais);
+    # levanta Error se a API falhar.
+    def fetch_kit_prices!(variant_id, max: 4)
+      prices = (1..max).to_h do |quantity|
+        data = query!(KIT_QUOTE_MUTATION, lines: [{ merchandiseId: variant_id, quantity: quantity }])
+        [quantity, data.dig('cartCreate', 'cart', 'cost', 'totalAmount', 'amount')&.to_d]
+      end
+      prices.values.all? ? prices : nil
     end
 
     def products(handles)
@@ -100,7 +119,7 @@ module Shopify
 
     private
 
-    def query(graphql, variables = {})
+    def query!(graphql, variables = {})
       response = HTTParty.post(
         endpoint,
         headers: {
@@ -114,13 +133,15 @@ module Shopify
       body = response.parsed_response
       unless response.success? && body.is_a?(Hash) && body['errors'].blank?
         Rails.logger.error("[Shopify::Storefront] client #{@client.id} HTTP #{response.code}: #{response.body.to_s.first(300)}")
-        return nil
+        raise Error, "HTTP #{response.code}"
       end
 
-      body['data']
+      body['data'] || raise(Error, 'resposta sem data')
+    rescue Error
+      raise
     rescue StandardError => e
       Rails.logger.error("[Shopify::Storefront] client #{@client.id}: #{e.class} #{e.message}")
-      nil
+      raise Error, e.message
     end
   end
 end

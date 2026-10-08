@@ -3,7 +3,7 @@ class LandingPagesController < ApplicationController
 
   before_action :set_client
   before_action :require_client!
-  before_action :set_landing_page, only: %i[show edit update destroy]
+  before_action :set_landing_page, only: %i[show edit update destroy sync_products]
 
   def index
     @landing_pages = current_client.landing_pages.order(created_at: :desc)
@@ -39,6 +39,16 @@ class LandingPagesController < ApplicationController
       redirect_to landing_page_path(@landing_page), notice: 'Landing page atualizada com sucesso.'
     else
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  # Botão "Sincronizar produtos": atualiza agora os produtos guardados da página.
+  def sync_products
+    result = LandingPages::SyncProducts.new(@landing_page).call
+    if result.ok
+      redirect_to landing_page_path(@landing_page), notice: "Produtos sincronizados com a Shopify (#{result.products_count})."
+    else
+      redirect_to landing_page_path(@landing_page), alert: result.error
     end
   end
 

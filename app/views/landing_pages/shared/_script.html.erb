@@ -151,6 +151,7 @@
     var summaryEl = kit.querySelector('[data-lp-kit-summary]');
     var totalEl = kit.querySelector('[data-lp-kit-total]');
     var fullEl = kit.querySelector('[data-lp-kit-full]');
+    var installmentsEl = kit.querySelector('[data-lp-kit-installments]');
     var kitPrices = JSON.parse(kit.dataset.kitPrices || '{}');
     var submit = kit.querySelector('[data-lp-submit]');
     var message = kit.querySelector('[data-lp-message]');
@@ -244,6 +245,11 @@
         totalEl.classList.remove('bump'); void totalEl.offsetWidth; totalEl.classList.add('bump');
       }
       totalEl.textContent = formatted;
+      if (installmentsEl) {
+        var n = parseInt(installmentsEl.dataset.lpKitInstallments, 10);
+        installmentsEl.innerHTML = isFinite(total) && n > 1
+          ? 'em até ' + n + 'x de <strong>' + money.format(total / n) + '</strong> sem juros' : '';
+      }
       if (submit && !submit.classList.contains('is-loading') && submit.dataset.soldOut !== '1') {
         submit.textContent = qty === 1 ? 'Comprar agora' : 'Comprar kit com ' + qty;
       }

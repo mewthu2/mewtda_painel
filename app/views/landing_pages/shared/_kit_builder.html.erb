@@ -2,7 +2,8 @@
   Monte seu kit: a pessoa escolhe quantas peças (1..max) e, pra cada uma, as
   opções do produto (ex.: cor e tamanho). Vira um checkout só, com as linhas
   agrupadas por variante. Locals: product (hash da Storefront API), max (4),
-  kit_prices ({ qtd => total com desconto da loja }, opcional), closed_text.
+  kit_prices ({ qtd => total com desconto da loja }, opcional), closed_text,
+  installments (nº de parcelas sem juros pra mostrar sob o total, opcional).
   O estilo fica no template (classes lp-kit__*).
 %>
 <% options = lp_product_options(product) %>
@@ -56,6 +57,9 @@
     <span data-lp-kit-summary></span>
     <span class="lp-kit__totals"><s data-lp-kit-full></s><strong data-lp-kit-total></strong></span>
   </div>
+  <% if local_assigns[:installments] %>
+    <p class="lp-kit__installments" data-lp-kit-installments="<%= installments %>"></p>
+  <% end %>
 
   <% if @landing_page.sales_open? %>
     <button type="button" class="lp-kit__submit" data-lp-submit <%= 'disabled' unless product['availableForSale'] %>>

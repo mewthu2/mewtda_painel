@@ -10,7 +10,17 @@
 <% content_for :title, '1822 · Independência se veste.' %>
 <% deadline = @landing_page.ends_at && l(@landing_page.ends_at.in_time_zone, format: '%d/%m') %>
 <% presale_text = @landing_page.sales_open? ? (deadline ? "Pré-venda aberta até #{deadline}." : 'Pré-venda aberta.') : 'Pré-venda encerrada.' %>
-<% first_product = @products.first %>
+<%# Abas do drop: "1822" (camiseta da coleção, buscada pelo ID mesmo que não
+    esteja nos handles da página) e "Ladrão" (os demais produtos da página). %>
+<% product_1822_ref = 'gid://shopify/Product/10793095364902' %>
+<% product_1822 = @products.find { |p| p['id'] == product_1822_ref } || @storefront.product(product_1822_ref) %>
+<% drop_tabs = [
+     { key: 'colecao-1822', label: '1822', products: [product_1822].compact },
+     { key: 'ladrao', label: 'Ladrão', products: @products.reject { |p| p['id'] == product_1822_ref } }
+   ].select { |tab| tab[:products].any? } %>
+<% all_products = drop_tabs.flat_map { |tab| tab[:products] } %>
+<% first_product = all_products.first %>
+<% installments = 4 %>
 <% content_for :head do %>
   <meta name="description" content="1822 · Independência se veste. Drop 01: duas camisetas, uma estampa. <%= presale_text %>">
   <meta property="og:title" content="1822 · Independência se veste.">
@@ -95,6 +105,17 @@
     .drop__presale { display: inline-block; margin-top: 26px; font: 700 14px/1 'Archivo', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--preto); background: var(--amarelo); padding: 10px 14px; border-radius: 3px; }
     .drop__presale--closed { background: var(--papel); }
     .products { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; }
+    .drop__grid[hidden] { display: none; }
+
+    /* Abas do drop (1822 / Ladrão) */
+    .drop__tabs { display: flex; gap: 4px; margin-bottom: clamp(32px, 5vw, 56px); border-bottom: 1px solid #262626; }
+    .drop__tab { position: relative; padding: 10px 18px 14px; border: 0; background: none; color: #8F8B83; cursor: pointer;
+                 font: 400 clamp(28px, 3.4vw, 40px)/1 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: .02em; transition: color .2s; }
+    .drop__tab::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 4px; background: var(--amarelo);
+                        transform: scaleX(0); transform-origin: left; transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+    .drop__tab:hover, .drop__tab[aria-selected="true"] { color: var(--papel); }
+    .drop__tab[aria-selected="true"]::after { transform: none; }
+    .drop__tab:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 2px; }
 
     .product__media { background: #E7E3DA; border-radius: 6px; overflow: hidden; aspect-ratio: 4 / 5; }
     .product__media img { width: 100%; height: 100%; object-fit: cover; }
@@ -129,6 +150,9 @@
     .product__head .product__name { margin: 0; font-size: 22px; }
     .product__head .product__price { margin: 0; }
     .product__price small { font: 400 14px 'Archivo', sans-serif; color: #A9A59D; }
+    .product__pricing { display: grid; justify-items: end; gap: 8px; }
+    .product__installments { margin: 0; font-size: 14px; color: #BDB8AE; }
+    .product__installments strong { color: var(--papel); font-weight: 600; }
 
     /* Monte seu kit */
     .lp-kit { background: #181818; border: 1px solid #2A2A2A; border-radius: 8px; padding: 22px; }
@@ -162,6 +186,8 @@
     .lp-kit__summary strong { font: 700 28px/1 'Archivo', sans-serif; color: var(--amarelo); }
     .lp-kit__totals { display: inline-flex; align-items: baseline; gap: 10px; }
     .lp-kit__totals s { font: 400 15px/1 'Archivo', sans-serif; color: #8F8B83; }
+    .lp-kit__installments { margin: -4px 0 14px; text-align: right; font-size: 14px; color: #BDB8AE; }
+    .lp-kit__installments strong { color: var(--papel); font-weight: 600; }
     .lp-kit__off { position: absolute; top: -9px; right: -4px; padding: 3px 6px; border-radius: 3px; background: var(--verde); color: var(--papel);
                    font: 700 11px/1 'Archivo', sans-serif; letter-spacing: .02em; }
     .lp-kit__submit { width: 100%; min-height: 60px; border: 0; border-radius: 4px; background: var(--amarelo); color: var(--preto); cursor: pointer;
@@ -171,7 +197,7 @@
     .lp-kit__submit.is-loading { background: var(--amarelo); color: var(--preto); opacity: .7; cursor: progress; }
     .lp-kit__message { min-height: 1.4em; margin: 10px 0 0; font-size: 15px; color: var(--amarelo); }
     .lp-kit__closed { margin: 6px 0 0; padding: 16px; border: 1.5px solid #3A3A3A; border-radius: 4px; font: 600 16px/1.4 'Archivo', sans-serif; color: #D9D5CC; }
-    @media (max-width: 480px) { .lp-kit__summary { flex-direction: column; align-items: flex-start; gap: 8px; } }
+    @media (max-width: 480px) { .lp-kit__summary { flex-direction: column; align-items: flex-start; gap: 8px; } .lp-kit__installments { text-align: left; } }
     @media (max-width: 400px) { .lp-kit { padding: 16px; } .lp-kit__option-name { min-width: 0; width: 100%; } .lp-kit__qty-btn { padding: 12px 2px; } .lp-kit__qty-btn em { font-size: 11.5px; letter-spacing: -.01em; } }
 
     /* Papel */
@@ -226,6 +252,9 @@
     .footer__link { display: inline-flex; align-items: center; gap: 8px; color: var(--papel); text-decoration: none; font: 600 15px/1 'Archivo', sans-serif;
                      padding: 10px 14px; border: 1.5px solid #3A3A3A; border-radius: 4px; transition: border-color .2s, color .2s; }
     .footer__link:hover { border-color: var(--amarelo); color: var(--amarelo); }
+    .footer__address { font-style: normal; display: grid; gap: 6px; line-height: 1.5; }
+    .footer__address a { color: #D9D5CC; text-decoration: none; }
+    .footer__address a:hover { color: var(--amarelo); }
 
     /* Barra fixa de compra no celular */
     .stickybar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; background: var(--preto); border-top: 1px solid #262626; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
@@ -276,7 +305,7 @@
     .chain__title em { font-style: normal; color: var(--amarelo); }
     .chain__hint { display: none; }
     .chain__flash { display: none; }
-    .motion .chain { height: 280vh; }
+    .motion .chain { height: 210vh; }
     .motion .chain__stage { position: sticky; top: 0; height: 100vh; height: 100svh; padding: 0; }
     .motion .chain__svg { display: block; position: absolute; top: 50%; left: 50%; width: max(100vw, 880px); height: auto; transform: translate(-50%, -50%); overflow: visible; }
     .motion .chain__copy { opacity: 0; transform: scale(.9); will-change: opacity, transform; }
@@ -434,7 +463,7 @@
 
 <header class="wrap top">
   <%= logo.call('branco') %>
-  <% if @landing_page.sales_open? && @products.any? %>
+  <% if @landing_page.sales_open? && all_products.any? %>
     <a class="top__cta" href="#comprar">Comprar</a>
   <% end %>
 </header>
@@ -450,7 +479,7 @@
     <div class="hero__logo-wrap"><%= logo.call('cores') %></div>
     <h1 class="display hero__title hero__intro" style="--d:1">Independência se veste.</h1>
     <p class="hero__sub hero__intro" style="--d:2">Roupa com posição, feita com padrão de marca premium. <strong>Feita pra durar mais que a eleição.</strong></p>
-    <% if @landing_page.sales_open? && @products.any? %>
+    <% if @landing_page.sales_open? && all_products.any? %>
       <div class="hero__intro" style="--d:3"><a class="btn btn--amarelo" href="#comprar">Quero a minha</a></div>
     <% end %>
   </section>
@@ -505,18 +534,35 @@
   </section>
 
   <section class="wrap drop" id="comprar">
-    <div class="drop__grid">
+    <% tabbed = drop_tabs.size > 1 %>
+    <% if tabbed %>
+      <div class="drop__tabs rv" role="tablist" aria-label="Escolha a camiseta" data-reveal data-tabs>
+        <% drop_tabs.each_with_index do |tab, i| %>
+          <button type="button" class="drop__tab" role="tab" id="aba-<%= tab[:key] %>" aria-controls="painel-<%= tab[:key] %>"
+                  aria-selected="<%= i.zero? %>" tabindex="<%= i.zero? ? 0 : -1 %>"><%= tab[:label] %></button>
+        <% end %>
+      </div>
+    <% end %>
+    <% (drop_tabs.presence || [{ key: 'ladrao', products: [] }]).each_with_index do |tab, i| %>
+    <div class="drop__grid" <% if tabbed %>role="tabpanel" id="painel-<%= tab[:key] %>" aria-labelledby="aba-<%= tab[:key] %>" <%= 'hidden' unless i.zero? %><% end %>>
       <div class="drop__intro">
-        <p class="eyebrow eyebrow--amarelo rv" data-reveal>Drop 01</p>
-        <h2 class="display drop__title split" data-reveal aria-label="Ladrão"><%= split_chars.call('Ladrão') %></h2>
-        <p class="rv" data-reveal style="--d:2">Duas camisetas, uma estampa. Arte geométrica na frente e bandeira do Brasil na manga.</p>
-        <p class="drop__line rv" data-reveal style="--d:3">Branca ou preta. Você escolhe o lado do armário.</p>
+        <% if tab[:key] == 'colecao-1822' %>
+          <p class="eyebrow eyebrow--amarelo rv" data-reveal>Coleção 1822</p>
+          <h2 class="display drop__title split" data-reveal aria-label="1822"><%= split_chars.call('1822') %></h2>
+          <p class="rv" data-reveal style="--d:2">Camiseta preta, 100% algodão. Malha 30.1 penteada, pré-lavada e com costura dupla nos acabamentos.</p>
+          <p class="drop__line rv" data-reveal style="--d:3">Feita pra durar e pra usar no dia a dia.</p>
+        <% else %>
+          <p class="eyebrow eyebrow--amarelo rv" data-reveal>Drop 01</p>
+          <h2 class="display drop__title split" data-reveal aria-label="Ladrão"><%= split_chars.call('Ladrão') %></h2>
+          <p class="rv" data-reveal style="--d:2">Duas camisetas, uma estampa. Arte geométrica na frente e bandeira do Brasil na manga.</p>
+          <p class="drop__line rv" data-reveal style="--d:3">Branca ou preta. Você escolhe o lado do armário.</p>
+        <% end %>
         <span class="drop__presale rv <%= 'drop__presale--closed' unless @landing_page.sales_open? %>" data-reveal style="--d:4"><%= presale_text %></span>
       </div>
 
       <div class="products">
-        <% if @products.any? %>
-          <% kit_products = (merged = lp_merge_products(@products)) ? [merged] : @products %>
+        <% if tab[:products].any? %>
+          <% kit_products = (merged = lp_merge_products(tab[:products])) ? [merged] : tab[:products] %>
           <% kit_products.each do |product| %>
             <% compare_at = lp_compare_at_price(product) %>
             <% min_price = lp_min_price(product) %>
@@ -534,13 +580,18 @@
               </div>
               <div class="product__head rv" data-reveal>
                 <h3 class="product__name"><%= product['title'] %></h3>
-                <p class="product__price">
-                  <%= lp_money(min_price) if min_price %><small>cada</small>
-                  <% if compare_at && min_price && compare_at > min_price %><s><%= lp_money(compare_at) %></s><% end %>
-                </p>
+                <div class="product__pricing">
+                  <p class="product__price">
+                    <%= lp_money(min_price) if min_price %><small>cada</small>
+                    <% if compare_at && min_price && compare_at > min_price %><s><%= lp_money(compare_at) %></s><% end %>
+                  </p>
+                  <% if min_price %>
+                    <p class="product__installments">em até <%= installments %>x de <strong><%= lp_money(min_price / installments) %></strong> sem juros</p>
+                  <% end %>
+                </div>
               </div>
               <div class="rv" data-reveal style="--d:1">
-              <%= render 'landing_pages/shared/kit_builder', product: product, max: 4,
+              <%= render 'landing_pages/shared/kit_builder', product: product, max: 4, installments: installments,
                          kit_prices: @storefront.kit_prices(lp_first_available_variant_id(product), max: 4),
                          closed_text: 'Pré-venda encerrada. Deixa teu contato aí embaixo e fica sabendo do próximo drop.' %>
               </div>
@@ -561,6 +612,7 @@
         <% end %>
       </div>
     </div>
+    <% end %>
   </section>
 
   <div class="paper">
@@ -639,12 +691,17 @@
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
         Visite nosso site
       </a>
-      <a class="footer__link" href="https://www.instagram.com/henrriclothing/" target="_blank" rel="noopener">
+      <a class="footer__link" href="https://www.instagram.com/vista_1822/" target="_blank" rel="noopener">
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-        @henrriclothing
+        @vista_1822
       </a>
     </div>
     <p>1822 · Independência se veste.<br>Envio para todo o Brasil.</p>
+    <address class="footer__address">
+      <p>Av. Getúlio Vargas, 54 - Loja 8, Funcionários<br>Belo Horizonte - MG</p>
+      <p><a href="mailto:suporte@henrri.com.br">suporte@henrri.com.br</a> · <a href="tel:+5531998025792">(31) 99802-5792</a></p>
+      <p>CNPJ: 53.856.173/0001-72</p>
+    </address>
   </div>
 </footer>
 <a class="credit" href="<%= Popup::WIDGET_HOST %>" target="_blank" rel="noopener">
@@ -691,7 +748,7 @@
     var easeOut = function (x) { return 1 - Math.pow(1 - x, 3); };
     var maxChainP = 0;
 
-    // p: 0 → 0.42 estica e treme; 0.42 → 0.5 rompe; depois as metades caem e a frase aparece.
+    // p: 0 → 0.24 estica e treme; 0.24 → 0.3 rompe; depois as metades caem e a frase aparece.
     function updateChain(vh) {
       var r = chain.getBoundingClientRect();
       var span = r.height - vh;
@@ -699,9 +756,9 @@
       var p = clamp(-r.top / span);
       // Depois de romper, não se refaz: rolar de volta mantém a corrente rompida.
       if (chainParts.broken) { maxChainP = Math.max(maxChainP, p); p = maxChainP; }
-      var t = clamp(p / 0.42);
-      var b = clamp((p - 0.42) / 0.08);
-      var f = clamp((p - 0.46) / 0.38);
+      var t = clamp(p / 0.24);
+      var b = clamp((p - 0.24) / 0.06);
+      var f = clamp((p - 0.27) / 0.4);
       var straining = t > 0.25 && b === 0 && r.top <= 0;
       var shake = straining ? Math.sin(performance.now() / 16) * t * t * 3.5 : 0;
       var pull = t * 9;
@@ -713,19 +770,19 @@
         'translate(' + (pull + fx - shake).toFixed(2) + ' ' + (fy - shake * 0.4).toFixed(2) + ') rotate(' + rot.toFixed(2) + ' 600 150)');
       chain.classList.toggle('is-strained', t > 0.55);
 
-      var burst = easeOut(clamp((p - 0.42) / 0.3));
+      var burst = easeOut(clamp((p - 0.24) / 0.3));
       chainParts.frags.forEach(function (frag) {
         var x = 600 + frag.dx * burst * 260;
         var y = 150 + frag.dy * burst * 170 + burst * burst * 140;
         frag.el.setAttribute('transform', 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + (frag.rot * burst).toFixed(1) + ')');
-        frag.el.style.opacity = b > 0 ? (1 - clamp((p - 0.6) / 0.25)).toFixed(3) : 0;
+        frag.el.style.opacity = b > 0 ? (1 - clamp((p - 0.42) / 0.25)).toFixed(3) : 0;
       });
 
       chainParts.flash.style.opacity = b > 0 && b < 1 ? (Math.sin(b * Math.PI) * 0.9).toFixed(3) : 0;
-      var c = clamp((p - 0.5) / 0.22);
+      var c = clamp((p - 0.3) / 0.22);
       chainParts.copy.style.opacity = c.toFixed(3);
       chainParts.copy.style.transform = 'scale(' + (0.9 + 0.1 * easeOut(c)).toFixed(4) + ')';
-      chainParts.hint.style.opacity = (1 - clamp(p / 0.12)).toFixed(3);
+      chainParts.hint.style.opacity = (1 - clamp(p / 0.08)).toFixed(3);
 
       if (!chainParts.broken && b > 0.5) {
         chainParts.broken = true;
@@ -782,6 +839,33 @@
         requestAnimationFrame(loop);
       })();
     }
+  })();
+</script>
+
+<script>
+  // Abas do drop: clique ou setas trocam o painel visível.
+  (function () {
+    var list = document.querySelector('[data-tabs]');
+    if (!list) return;
+    var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+    function select(tab, focus) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+      if (focus) tab.focus();
+    }
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(tab); });
+      tab.addEventListener('keydown', function (e) {
+        var step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+        if (!step) return;
+        e.preventDefault();
+        select(tabs[(i + step + tabs.length) % tabs.length], true);
+      });
+    });
   })();
 </script>
 
@@ -932,7 +1016,7 @@
 
 <% if @landing_page.sales_open? && first_product %>
   <div class="stickybar" data-stickybar>
-    <span class="stickybar__price">Drop 01 · a partir de<strong><%= lp_money(lp_min_price(first_product)) %></strong></span>
+    <span class="stickybar__price">Drop 01 · a partir de<strong><%= lp_money(all_products.filter_map { |p| lp_min_price(p) }.min) %></strong></span>
     <a class="btn btn--amarelo" href="#comprar">Comprar</a>
   </div>
   <script>

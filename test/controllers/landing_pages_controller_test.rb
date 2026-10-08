@@ -35,6 +35,37 @@ class LandingPagesControllerTest < ActionDispatch::IntegrationTest
     assert_match 'Já era cliente', response.body
   end
 
+  test 'sync button refreshes the stored products and shows when it ran' do
+    page = @client.landing_pages.create!(name: 'Drop', slug: 'drop-01', template: 'drop_01_1822')
+    result = LandingPages::SyncProducts::Result.new(ok: true, products_count: 3)
+    synced = []
+    fake_new = lambda do |landing_page|
+      Object.new.tap { |o| o.define_singleton_method(:call) { synced << landing_page.id; landing_page.update_columns(storefront_synced_at: Time.zone.local(2026, 10, 8, 9, 30)); result } }
+    end
+
+    LandingPages::SyncProducts.stub :new, fake_new do
+      post sync_products_landing_page_path(page)
+    end
+
+    assert_equal [page.id], synced
+    assert_redirected_to landing_page_path(page)
+    follow_redirect!
+    assert_match 'Produtos sincronizados com a Shopify (3).', response.body
+    assert_match 'sincronizados com a Shopify em 08/10 às 09:30', response.body
+  end
+
+  test 'sync button shows the error when the Shopify fails' do
+    page = @client.landing_pages.create!(name: 'Drop', slug: 'drop-01', template: 'drop_01_1822')
+    result = LandingPages::SyncProducts::Result.new(ok: false, error: 'A Shopify não respondeu (HTTP 503).')
+
+    LandingPages::SyncProducts.stub :new, ->(_) { Struct.new(:r) { def call = r }.new(result) } do
+      post sync_products_landing_page_path(page)
+    end
+
+    follow_redirect!
+    assert_match 'A Shopify não respondeu (HTTP 503).', response.body
+  end
+
   test 'cannot see another client landing page' do
     other = Client.create!(name: 'Outra', email: 'o@example.com').landing_pages
                   .create!(name: 'X', slug: 'x', template: 'drop_01_1822')
