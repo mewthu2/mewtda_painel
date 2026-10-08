@@ -71,6 +71,19 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
     assert_no_match '<div class="lp-cart" data-lp-cart', response.body # vendas encerradas: sem carrinho
   end
 
+  test 'plays the soundtrack from the sound buttons, even with sales closed' do
+    @page.update!(ends_at: 1.hour.ago)
+
+    get '/use1822/drop-01'
+
+    body = response.body
+    assert_equal 2, body.scan(/<button type="button" class="(top__sound|sound-fab)" data-lp-sound/).size
+    assert_match %r{new Audio\('/assets/drop_01_1822/trilha-\h+\.mp3'\)}, body
+    # sem tela de entrada: tenta tocar ao abrir e, se o navegador bloquear, no 1º gesto
+    assert_no_match 'data-intro', body
+    assert_match "var GESTURES = ['pointerdown', 'mousedown', 'pointerup', 'touchend', 'click', 'keydown'];", body
+  end
+
   test 'adds to a cart drawer and only goes to checkout from it' do
     product = {
       'id' => 'gid://shopify/Product/1', 'title' => 'Camiseta Ladrão', 'availableForSale' => true,
