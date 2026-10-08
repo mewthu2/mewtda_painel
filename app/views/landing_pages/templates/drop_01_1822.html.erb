@@ -187,12 +187,12 @@
     .printnav.is-hello { animation: lp-pulse 1.2s ease-out 2; }
 
     /* Celular: o trilho vira uma doca no canto inferior direito, com cursor amarelo
-       deslizando até a estampa ativa e uma etiqueta de papel com o nome dela.
+       deslizando até a estampa ativa e o nome de cada uma embaixo da arte.
        Fica na tela também durante a compra (é ali que mais se troca de estampa). */
     .printnav__tag, .printnav__cursor { display: none; }
     @media (max-width: 1023px) {
       .printnav { left: auto; right: 12px; top: auto; bottom: calc(12px + env(safe-area-inset-bottom)); grid-auto-flow: column; gap: 8px; padding: 6px; border-radius: 12px;
-                  transform: translateY(calc(100% + 160px)); transition: transform .5s cubic-bezier(.2,.9,.2,1), bottom .3s ease; } /* escondida: etiqueta inclusa */
+                  transform: translateY(calc(100% + 120px)); transition: transform .5s cubic-bezier(.2,.9,.2,1), bottom .3s ease; }
       .printnav.is-visible { transform: none; }
       /* Com barra de compra na página, a doca fica SEMPRE acima dela, parada: antes ela
          descia 68px quando a barra sumia (ao ir pro drop) e o 2º toque caía no lugar errado. */
@@ -202,20 +202,21 @@
                           background: linear-gradient(90deg, var(--verde) 0 33.3%, var(--amarelo) 33.3% 66.6%, var(--azul) 66.6%);
                           transform: scaleX(0); transform-origin: left; transition: transform .6s .25s cubic-bezier(.2,.9,.2,1); }
       .printnav.is-visible::before { transform: scaleX(1); }
-      .printnav__title, .printnav__label { display: none; }
-      .printnav__item { width: 44px; z-index: 1; border-color: transparent; }
+      /* Cada opção mostra a arte e o NOME embaixo ("1822", "LADRÃO"): antes a etiqueta
+         "Estampa · X" em cima parecia uma 3ª opção e o toque nela "não mudava nada".
+         touch-action tira o atraso de duplo toque; o toque é tratado no pointerup (JS). */
+      .printnav__title, .printnav__tag { display: none; }
+      .printnav__item { width: 56px; height: 70px; aspect-ratio: auto; z-index: 1; border-color: transparent;
+                        touch-action: manipulation; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+      .printnav__item .print { inset: 5px 5px 21px; }
       .printnav__item:hover { transform: none; border-color: transparent; }
       .printnav__item[aria-current="true"] { border-color: transparent; }
-      .printnav__cursor { display: block; position: absolute; left: 6px; top: 6px; width: 44px; height: 44px; border-radius: 6px; border: 2px solid var(--amarelo);
-                          box-shadow: 0 0 0 3px rgba(244, 198, 24, .18), 0 6px 16px rgba(244, 198, 24, .25); pointer-events: none;
-                          transform: translateX(calc(var(--active, 0) * 52px)); transition: transform .45s cubic-bezier(.3,1.4,.5,1); }
-      .printnav__tag { display: block; position: absolute; right: 0; bottom: calc(100% + 8px); padding: 7px 10px 6px; border: 0; border-radius: 4px; white-space: nowrap; cursor: pointer;
-                       background: var(--papel); color: var(--preto); box-shadow: 0 8px 20px rgba(0, 0, 0, .4); transform-origin: 50% 100%;
-                       font: 400 15px/1 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: .03em; }
-      .printnav__tag small { margin-right: 6px; font: 700 10px/1 'Archivo', sans-serif; letter-spacing: .16em; color: var(--cinza); vertical-align: 2px; }
-      .printnav__tag::after { content: ""; position: absolute; right: 22px; top: 100%; border: 6px solid transparent; border-top-color: var(--papel); }
-      .printnav__tag.is-flipping { animation: lp-tag-flip .5s cubic-bezier(.3,1.3,.5,1); }
-      @keyframes lp-tag-flip { 0% { transform: perspective(300px) rotateX(0); } 45% { transform: perspective(300px) rotateX(90deg); } 100% { transform: perspective(300px) rotateX(0); } }
+      .printnav__label, .printnav__item:hover .printnav__label, .printnav__item:focus-visible .printnav__label {
+        display: block; position: absolute; left: 0; right: 0; top: auto; bottom: 6px; padding: 0; transform: none; opacity: 1; pointer-events: none;
+        background: none; color: var(--preto); font: 400 12px/1 'Anton', Impact, sans-serif; letter-spacing: .03em; text-align: center; }
+      .printnav__cursor { display: block; position: absolute; left: 6px; top: 6px; width: 56px; height: 70px; border-radius: 6px; border: 2.5px solid var(--amarelo);
+                          box-shadow: 0 0 0 3px rgba(244, 198, 24, .18), 0 6px 16px rgba(244, 198, 24, .25); pointer-events: none; z-index: 2;
+                          transform: translateX(calc(var(--active, 0) * 64px)); transition: transform .45s cubic-bezier(.3,1.4,.5,1); }
     }
     @media (prefers-reduced-motion: reduce) {
       .printnav, .printnav__item, .printnav__label, .printnav__cursor, .printnav::before { transition: none; }
@@ -1257,13 +1258,27 @@
     });
     var navName = nav && nav.querySelector('[data-printnav-name]');
     var drop = document.getElementById('comprar');
+    // No toque (celular) a troca acontece no pointerup, sem esperar o "click" que
+    // alguns navegadores de celular seguram ou descartam (ex.: com a página rolando).
+    // Se o dedo arrastar, vem pointercancel e nada muda. O click que vem depois do
+    // toque é ignorado; mouse e teclado seguem pelo click.
+    var lastTouchJump = 0;
+    function jumpTo(j) {
+      j.classList.remove('is-stamped'); void j.offsetWidth; j.classList.add('is-stamped');
+      if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) {} }
+      var tab = document.getElementById(j.getAttribute('data-print-jump'));
+      select(tab);
+      if (stacked()) showPanel(tab); else drop.scrollIntoView();
+    }
     jumps.forEach(function (j) {
+      j.addEventListener('pointerup', function (e) {
+        if (e.pointerType === 'mouse') return;
+        lastTouchJump = Date.now();
+        jumpTo(j);
+      });
       j.addEventListener('click', function () {
-        j.classList.remove('is-stamped'); void j.offsetWidth; j.classList.add('is-stamped');
-        if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) {} }
-        var tab = document.getElementById(j.getAttribute('data-print-jump'));
-        select(tab);
-        if (stacked()) showPanel(tab); else drop.scrollIntoView();
+        if (Date.now() - lastTouchJump < 700) return;
+        jumpTo(j);
       });
       j.addEventListener('animationend', function (e) { if (e.target === j) j.classList.remove('is-stamped'); });
     });
