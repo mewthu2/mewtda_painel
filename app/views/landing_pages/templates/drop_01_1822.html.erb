@@ -192,9 +192,11 @@
     .printnav__tag, .printnav__cursor { display: none; }
     @media (max-width: 1023px) {
       .printnav { left: auto; right: 12px; top: auto; bottom: calc(12px + env(safe-area-inset-bottom)); grid-auto-flow: column; gap: 8px; padding: 6px; border-radius: 12px;
-                  transform: translateY(calc(100% + 80px)); transition: transform .5s cubic-bezier(.2,.9,.2,1), bottom .3s ease; }
+                  transform: translateY(calc(100% + 160px)); transition: transform .5s cubic-bezier(.2,.9,.2,1), bottom .3s ease; } /* escondida: etiqueta inclusa */
       .printnav.is-visible { transform: none; }
-      .stickybar-on .printnav { bottom: calc(80px + env(safe-area-inset-bottom)); }
+      /* Com barra de compra na página, a doca fica SEMPRE acima dela, parada: antes ela
+         descia 68px quando a barra sumia (ao ir pro drop) e o 2º toque caía no lugar errado. */
+      body:has(.stickybar) .printnav { bottom: calc(80px + env(safe-area-inset-bottom)); transition: transform .5s cubic-bezier(.2,.9,.2,1); }
       /* faixa tricolor desenhando na borda de cima quando a doca entra */
       .printnav::before { content: ""; position: absolute; left: 10px; right: 10px; top: -1px; height: 3px; border-radius: 3px;
                           background: linear-gradient(90deg, var(--verde) 0 33.3%, var(--amarelo) 33.3% 66.6%, var(--azul) 66.6%);
@@ -207,7 +209,7 @@
       .printnav__cursor { display: block; position: absolute; left: 6px; top: 6px; width: 44px; height: 44px; border-radius: 6px; border: 2px solid var(--amarelo);
                           box-shadow: 0 0 0 3px rgba(244, 198, 24, .18), 0 6px 16px rgba(244, 198, 24, .25); pointer-events: none;
                           transform: translateX(calc(var(--active, 0) * 52px)); transition: transform .45s cubic-bezier(.3,1.4,.5,1); }
-      .printnav__tag { display: block; position: absolute; right: 0; bottom: calc(100% + 8px); padding: 7px 10px 6px; border-radius: 4px; white-space: nowrap;
+      .printnav__tag { display: block; position: absolute; right: 0; bottom: calc(100% + 8px); padding: 7px 10px 6px; border: 0; border-radius: 4px; white-space: nowrap; cursor: pointer;
                        background: var(--papel); color: var(--preto); box-shadow: 0 8px 20px rgba(0, 0, 0, .4); transform-origin: 50% 100%;
                        font: 400 15px/1 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: .03em; }
       .printnav__tag small { margin-right: 6px; font: 700 10px/1 'Archivo', sans-serif; letter-spacing: .16em; color: var(--cinza); vertical-align: 2px; }
@@ -533,6 +535,7 @@
 
     /* Rodapé — único lugar do endosso HENRRI */
     .footer { border-top: 1px solid #262626; padding-top: 48px; padding-bottom: 40px; display: grid; gap: 20px; justify-items: start; }
+    @media (max-width: 1023px) { .footer { padding-bottom: calc(190px + env(safe-area-inset-bottom)); } }
     .footer__mark { display: grid; justify-items: center; gap: 10px; }
     .footer__mark .logo { font-size: 64px; }
     .footer__endorse { font: 600 11px/1 'Archivo', sans-serif; letter-spacing: .32em; text-transform: uppercase; color: var(--papel); }
@@ -648,9 +651,9 @@
     @media (min-width: 1024px) { .breakbadge { left: 24px; bottom: 24px; } }
     @media (prefers-reduced-motion: reduce) { .breakbadge, .breakbadge__panel { transition: none; } .breakbadge__toggle.is-pulsing { animation: none; } }
 
-    /* Crédito Mewtda */
-    .credit { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 18px var(--gutter) calc(96px + env(safe-area-inset-bottom));
-              border-top: 1px solid #1F1F1F; color: #8F8B83; font: 400 12px/1 'Archivo', sans-serif; letter-spacing: .06em; text-decoration: none; }
+    /* Crédito Mewtda: dentro do rodapé, logo abaixo do "Produzido por HENRRI"
+       (no fim da página ele ficava atrás da doca de estampas, do selo e da barra de compra) */
+    .credit { display: inline-flex; align-items: center; margin-top: 6px; color: #8F8B83; font: 400 12px/1 'Archivo', sans-serif; letter-spacing: .06em; text-decoration: none; }
     .credit img { height: 28px; width: auto; margin-bottom: 7px; opacity: .9; transition: opacity .2s; }
     .credit:hover img { opacity: 1; }
     .credit__inner { position: relative; display: inline-flex; align-items: center; gap: 10px; padding-bottom: 6px; }
@@ -660,7 +663,6 @@
     .motion .credit__inner::after { animation: credit-rainbow 4s linear infinite; }
     .credit:hover .credit__inner::after { height: 3px; filter: drop-shadow(0 0 6px rgba(255, 255, 255, .25)); }
     @keyframes credit-rainbow { to { background-position: 200% 0; } }
-    @media (min-width: 1024px) { .credit { padding-bottom: 24px; } }
 
 
     /* ===== Contagem pro 2º turno (abaixo da lista) ===== */
@@ -975,7 +977,7 @@
     <nav class="printnav" aria-labelledby="printnav-titulo" data-printnav>
       <span class="printnav__title" id="printnav-titulo">Estampas</span>
       <%# só no celular: etiqueta com o nome da estampa ativa e o cursor amarelo %>
-      <span class="printnav__tag" aria-hidden="true"><small>Estampa</small><span data-printnav-name><%= drop_tabs.first[:label] %></span></span>
+      <button type="button" class="printnav__tag" data-printnav-go aria-label="Ver a estampa escolhida"><small>Estampa</small><span data-printnav-name><%= drop_tabs.first[:label] %></span></button>
       <span class="printnav__cursor" aria-hidden="true"></span>
       <% drop_tabs.each_with_index do |tab, i| %>
         <button type="button" class="printnav__item" data-print-jump="aba-<%= tab[:key] %>" aria-current="<%= i.zero? %>" data-print-name="<%= tab[:label] %>" aria-label="<%= tab[:label] %>" style="--shirt: <%= tab[:shirt] %>">
@@ -1056,6 +1058,9 @@
   <div class="footer__mark" data-reveal>
     <%= logo.call('branco') %>
     <span class="footer__endorse">Produzido por HENRRI</span>
+    <a class="credit" href="<%= Popup::WIDGET_HOST %>" target="_blank" rel="noopener">
+      <span class="credit__inner">Desenvolvido por <%= image_tag 'landing/mewtda-logo-sm.png', alt: 'Mewtda', width: 87, height: 28, loading: 'lazy' %></span>
+    </a>
   </div>
   <div class="footer__info">
     <div class="footer__links">
@@ -1076,9 +1081,6 @@
     </address>
   </div>
 </footer>
-<a class="credit" href="<%= Popup::WIDGET_HOST %>" target="_blank" rel="noopener">
-  <span class="credit__inner">Desenvolvido por <%= image_tag 'landing/mewtda-logo-sm.png', alt: 'Mewtda', width: 87, height: 28, loading: 'lazy' %></span>
-</a>
 
 <script>
   // Animações da página: revelar ao entrar na tela, efeitos ligados à rolagem
@@ -1248,6 +1250,11 @@
     var nav = document.querySelector('[data-printnav]');
     var jumps = nav ? Array.prototype.slice.call(nav.querySelectorAll('[data-print-jump]')) : [];
     var navTag = nav && nav.querySelector('.printnav__tag');
+    // etiqueta "Estampa · X" (celular): leva pra camiseta da estampa escolhida
+    if (navTag) navTag.addEventListener('click', function () {
+      var active = document.querySelector('[data-tabs] [aria-selected="true"]');
+      if (active && stacked()) showPanel(active); else drop.scrollIntoView();
+    });
     var navName = nav && nav.querySelector('[data-printnav-name]');
     var drop = document.getElementById('comprar');
     jumps.forEach(function (j) {

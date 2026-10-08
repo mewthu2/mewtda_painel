@@ -348,6 +348,9 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
     assert_match 'Desenvolvido por', response.body
     assert_match(/mewtda-logo-sm.*\.png/, response.body)
     assert_match 'href="https://www.mewtda.com.br"', response.body
+    # junto da assinatura da HENRRI, no rodapé (no fim da página os botões fixos tampavam)
+    assert_match %r{Produzido por HENRRI</span>\s*<a class="credit"}, response.body
+    assert_match %r{<a class="credit".*?</a>\s*</div>\s*<div class="footer__info">}m, response.body
   end
 
   test 'shows the countdown to the runoff below the mailing list' do
