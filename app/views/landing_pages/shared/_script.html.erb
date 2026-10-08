@@ -29,6 +29,7 @@
     document.querySelectorAll('[data-lp-message]').forEach(function (message) {
       message.textContent = config.endedText;
     });
+    if (cart) cart.closeSales();
   }
 
   // ---- UTMs: primeira visita da sessão com UTM vence; sobrevive a navegação.
@@ -39,29 +40,37 @@
   UTM_KEYS.forEach(function (key) { if (query.get(key)) utms[key] = query.get(key); });
   try { sessionStorage.setItem('lp_utms', JSON.stringify(utms)); } catch (e) {}
 
-  // ---- Checkout: cartCreate na Storefront API -> checkoutUrl.
+  // ---- Storefront API (GraphQL) e atributos do carrinho (landing page + UTMs).
+  function storefront(query, variables) {
+    return fetch(config.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': config.token },
+      body: JSON.stringify({ query: query, variables: variables })
+    }).then(function (response) { return response.json(); }).then(function (json) {
+      if (!json || !json.data) throw new Error('storefront');
+      return json.data;
+    });
+  }
+  function cartAttributes() {
+    var attributes = [{ key: config.attributionKey, value: config.landingPageId }];
+    Object.keys(utms).forEach(function (key) { attributes.push({ key: '_' + key, value: String(utms[key]) }); });
+    return attributes;
+  }
+
+  // ---- Checkout direto: cartCreate -> checkoutUrl (páginas sem carrinho).
   function checkout(lines, submit, say) {
     if (campaignEnded()) { closeSales(); return; }
     if (!config.endpoint) { say('Checkout ainda não configurado.'); return; }
-
-    var attributes = [{ key: config.attributionKey, value: config.landingPageId }];
-    Object.keys(utms).forEach(function (key) { attributes.push({ key: '_' + key, value: String(utms[key]) }); });
 
     submit.disabled = true;
     submit.classList.add('is-loading');
     say('');
 
-    fetch(config.endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': config.token },
-      body: JSON.stringify({
-        query: 'mutation BuyNow($lines: [CartLineInput!]!, $attributes: [AttributeInput!]) {' +
+    storefront('mutation BuyNow($lines: [CartLineInput!]!, $attributes: [AttributeInput!]) {' +
                ' cartCreate(input: { lines: $lines, attributes: $attributes }) {' +
                ' cart { checkoutUrl } userErrors { field message } } }',
-        variables: { lines: lines, attributes: attributes }
-      })
-    }).then(function (response) { return response.json(); }).then(function (json) {
-      var payload = json && json.data && json.data.cartCreate;
+               { lines: lines, attributes: cartAttributes() }).then(function (data) {
+      var payload = data.cartCreate;
       var url = payload && payload.cart && payload.cart.checkoutUrl;
       if (url) { window.location.href = url; return; }
       throw new Error('checkout');
@@ -73,6 +82,267 @@
   }
 
   var money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  // ---- Carrinho (shared/_cart): carrinho de verdade na Shopify, guardado no
+  // navegador por landing page. Preços e descontos vêm do próprio carrinho.
+  var cart = (function () {
+    var root = document.querySelector('[data-lp-cart]');
+    if (!root) return null;
+
+    var CART_FIELDS = 'id checkoutUrl totalQuantity cost { totalAmount { amount } }' +
+      ' lines(first: 50) { nodes { id quantity cost { subtotalAmount { amount } totalAmount { amount } }' +
+      ' merchandise { ... on ProductVariant { id title image { url } selectedOptions { name value }' +
+      ' product { title featuredImage { url } } } } } }';
+    var STORE_KEY = 'lp_cart_' + config.landingPageId;
+    var panel = root.querySelector('.lp-cart__panel');
+    var linesEl = root.querySelector('[data-lp-cart-lines]');
+    var lineTemplate = document.querySelector('[data-lp-cart-line]');
+    var emptyEl = root.querySelector('[data-lp-cart-empty]');
+    var footEl = root.querySelector('[data-lp-cart-foot]');
+    var checkoutBtn = root.querySelector('[data-lp-cart-checkout]');
+    var messageEl = root.querySelector('[data-lp-cart-message]');
+    var fabs = document.querySelectorAll('[data-lp-cart-open]');
+    var installments = parseInt(root.dataset.installments, 10);
+    var state = null;
+    var busy = false;
+    var lastFocus = null;
+
+    function cartId() { try { return localStorage.getItem(STORE_KEY); } catch (e) { return null; } }
+    function remember(id) { try { id ? localStorage.setItem(STORE_KEY, id) : localStorage.removeItem(STORE_KEY); } catch (e) {} }
+    function say(text) { messageEl.textContent = text || ''; }
+    function amount(node) { return node ? parseFloat(node.amount) : 0; }
+
+    function open() {
+      lastFocus = document.activeElement;
+      root.hidden = false;
+      void root.offsetWidth; // deixa o display aplicar antes da transição
+      root.classList.add('is-open');
+      document.documentElement.classList.add('lp-cart-locked');
+      panel.focus();
+    }
+    function close() {
+      root.classList.remove('is-open');
+      document.documentElement.classList.remove('lp-cart-locked');
+      setTimeout(function () { if (!root.classList.contains('is-open')) root.hidden = true; }, 350);
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    function render() {
+      var lines = state ? state.lines.nodes.filter(function (l) { return l.merchandise && l.merchandise.id; }) : [];
+      var count = lines.reduce(function (n, l) { return n + l.quantity; }, 0);
+
+      fabs.forEach(function (fab) {
+        // o botão flutuante só aparece com item no carrinho; o do cabeçalho fica sempre
+        if (fab.dataset.lpCartOpen !== 'always') fab.hidden = count === 0;
+        var badge = fab.querySelector('[data-lp-cart-count]');
+        if (badge && badge.textContent !== String(count || '')) {
+          badge.textContent = count || '';
+          fab.classList.remove('is-bumped'); void fab.offsetWidth; fab.classList.add('is-bumped');
+        }
+      });
+      root.querySelector('[data-lp-cart-heading-count]').textContent = count ? '(' + count + ')' : '';
+
+      linesEl.innerHTML = '';
+      lines.forEach(function (line) {
+        var node = lineTemplate.content.firstElementChild.cloneNode(true);
+        var variant = line.merchandise;
+        var full = amount(line.cost.subtotalAmount);
+        var total = amount(line.cost.totalAmount);
+        var img = node.querySelector('[data-line-img]');
+        var src = (variant.image && variant.image.url) || (variant.product.featuredImage && variant.product.featuredImage.url);
+        if (src) img.src = src + (src.indexOf('?') < 0 ? '?' : '&') + 'width=200'; else img.remove();
+        node.querySelector('[data-line-title]').textContent = variant.product.title;
+        node.querySelector('[data-line-options]').textContent = variant.selectedOptions
+          .filter(function (o) { return o.value !== 'Default Title'; })
+          .map(function (o) { return o.value; }).join(' · ');
+        node.querySelector('[data-line-qty]').textContent = line.quantity;
+        node.querySelector('[data-line-total]').textContent = money.format(total);
+        node.querySelector('[data-line-full]').textContent = total < full - 0.005 ? money.format(full) : '';
+        node.dataset.lineId = line.id;
+        node.dataset.qty = line.quantity;
+        linesEl.appendChild(node);
+      });
+
+      var full = lines.reduce(function (sum, l) { return sum + amount(l.cost.subtotalAmount); }, 0);
+      var total = state ? amount(state.cost.totalAmount) : 0;
+      var discount = full - total;
+      emptyEl.hidden = count > 0;
+      footEl.hidden = count === 0;
+      root.querySelector('[data-lp-cart-subtotal]').textContent = money.format(full);
+      root.querySelector('[data-lp-cart-discount-row]').hidden = discount < 0.005;
+      root.querySelector('[data-lp-cart-discount]').textContent = '−' + money.format(discount);
+      root.querySelector('[data-lp-cart-total]').textContent = money.format(total);
+      root.querySelector('[data-lp-cart-installments]').innerHTML = installments > 1 && total > 0
+        ? 'em até ' + installments + 'x de <strong>' + money.format(total / installments) + '</strong> sem juros' : '';
+      root.classList.toggle('is-busy', busy);
+    }
+
+    // Roda uma mutação de carrinho; a resposta (carrinho atualizado) vira o estado.
+    function mutate(query, variables, field) {
+      busy = true; render(); say('');
+      return storefront(query, variables).then(function (data) {
+        var payload = data[field];
+        var errors = (payload && payload.userErrors) || [];
+        if (errors.length) throw new Error(errors[0].message);
+        if (!payload || !payload.cart) throw new Error('cart');
+        state = payload.cart;
+        remember(state.id);
+      }).finally(function () { busy = false; render(); });
+    }
+
+    function load() {
+      var id = cartId();
+      if (!id || !config.endpoint) { render(); return Promise.resolve(); }
+      return storefront('query Cart($id: ID!) { cart(id: $id) { ' + CART_FIELDS + ' } }', { id: id })
+        .then(function (data) {
+          // carrinho que virou pedido (ou expirou) volta null: começa outro
+          state = data.cart;
+          if (!state) remember(null);
+          render();
+        }).catch(function () { render(); });
+    }
+
+    function create(lines) {
+      return mutate('mutation Create($lines: [CartLineInput!]!, $attributes: [AttributeInput!]) {' +
+                    ' cartCreate(input: { lines: $lines, attributes: $attributes }) {' +
+                    ' cart { ' + CART_FIELDS + ' } userErrors { message } } }',
+                    { lines: lines, attributes: cartAttributes() }, 'cartCreate');
+    }
+
+    function add(lines) {
+      var id = cartId();
+      if (!id) return create(lines);
+      return mutate('mutation Add($id: ID!, $lines: [CartLineInput!]!) { cartLinesAdd(cartId: $id, lines: $lines) {' +
+                    ' cart { ' + CART_FIELDS + ' } userErrors { message } } }', { id: id, lines: lines }, 'cartLinesAdd')
+        .catch(function (error) {
+          // Falhou: se o carrinho guardado sumiu (virou pedido ou expirou), começa
+          // outro; se ele existe, o erro é da loja (ex.: estoque) e vai pra tela.
+          return storefront('query Exists($id: ID!) { cart(id: $id) { id } }', { id: id }).then(function (data) {
+            if (data.cart) throw error;
+            remember(null);
+            return create(lines);
+          });
+        });
+    }
+
+    function setQuantity(lineId, quantity) {
+      var request = quantity > 0
+        ? mutate('mutation Update($id: ID!, $lines: [CartLineUpdateInput!]!) { cartLinesUpdate(cartId: $id, lines: $lines) {' +
+                 ' cart { ' + CART_FIELDS + ' } userErrors { message } } }',
+                 { id: state.id, lines: [{ id: lineId, quantity: quantity }] }, 'cartLinesUpdate')
+        : mutate('mutation Remove($id: ID!, $ids: [ID!]!) { cartLinesRemove(cartId: $id, lineIds: $ids) {' +
+                 ' cart { ' + CART_FIELDS + ' } userErrors { message } } }',
+                 { id: state.id, ids: [lineId] }, 'cartLinesRemove');
+      request.catch(function (error) {
+        say(error.message && error.message !== 'cart' && error.message !== 'storefront'
+          ? error.message : 'Não deu pra atualizar o carrinho. Tenta de novo.');
+      });
+    }
+
+    // Miniatura "voa" até o botão do carrinho visível (só com animação liberada).
+    // Com o carrinho vazio o flutuante ainda está escondido: mostra antes de medir.
+    function fly(fromImg, origin) {
+      fabs.forEach(function (f) { if (f.hidden) f.hidden = false; });
+      var onScreen = function (f) {
+        var r = f.getBoundingClientRect();
+        return r.width && r.bottom > 0 && r.top < window.innerHeight;
+      };
+      // botão do cabeçalho se ele estiver na tela; senão o flutuante
+      var fab = (anchor && onScreen(anchor) && anchor) ||
+                Array.prototype.find.call(fabs, function (f) { return f !== anchor && onScreen(f); });
+      if (!fromImg || !fab || !fromImg.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return Promise.resolve();
+      var a = fromImg.getBoundingClientRect();
+      var b = fab.getBoundingClientRect();
+      if (!b.width) return Promise.resolve();
+      // miniatura fora da tela (kit alto): sai do meio do botão que foi clicado
+      if (!a.width || a.top < 0 || a.bottom > window.innerHeight) {
+        var o = origin.getBoundingClientRect();
+        a = { left: o.left + o.width / 2 - 36, top: o.top + o.height / 2 - 45, width: 72, height: 90 };
+      }
+      var ghost = fromImg.cloneNode();
+      ghost.className = 'lp-cart-ghost';
+      ghost.style.cssText = 'left:' + a.left + 'px;top:' + a.top + 'px;width:' + a.width + 'px;height:' + a.height + 'px';
+      document.body.appendChild(ghost);
+      var dx = b.left + b.width / 2 - (a.left + a.width / 2);
+      var dy = b.top + b.height / 2 - (a.top + a.height / 2);
+      // curva: sobe primeiro e entra de lado no carrinho (sem sair da tela)
+      return ghost.animate([
+        { transform: 'translate(0, 0) scale(1) rotate(0)', opacity: 1 },
+        { transform: 'translate(' + (dx * 0.2) + 'px, ' + (dy * 0.6) + 'px) scale(1.15) rotate(-10deg)', opacity: 1, offset: 0.45 },
+        { transform: 'translate(' + dx + 'px, ' + dy + 'px) scale(.15) rotate(12deg)', opacity: .7 }
+      ], { duration: 750, easing: 'cubic-bezier(.5, 0, .3, 1)' }).finished
+        .catch(function () {}).then(function () { ghost.remove(); });
+    }
+
+    fabs.forEach(function (fab) { fab.addEventListener('click', open); });
+    root.addEventListener('click', function (event) {
+      if (event.target.closest('[data-lp-cart-close]')) { close(); return; }
+      var lineEl = event.target.closest('.lp-cart__line');
+      if (!lineEl || busy) return;
+      var step = event.target.closest('[data-line-step]');
+      if (step) setQuantity(lineEl.dataset.lineId, parseInt(lineEl.dataset.qty, 10) + parseInt(step.dataset.lineStep, 10));
+      if (event.target.closest('[data-line-remove]')) {
+        lineEl.classList.add('is-leaving');
+        setQuantity(lineEl.dataset.lineId, 0);
+      }
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && root.classList.contains('is-open')) close();
+    });
+    checkoutBtn.addEventListener('click', function () {
+      if (campaignEnded()) { closeSales(); return; }
+      if (!state || !state.checkoutUrl) return;
+      checkoutBtn.disabled = true;
+      checkoutBtn.classList.add('is-loading');
+      window.location.href = state.checkoutUrl;
+    });
+    window.addEventListener('pageshow', function (event) {
+      checkoutBtn.disabled = false;
+      checkoutBtn.classList.remove('is-loading');
+      if (event.persisted) load(); // voltou do checkout: o carrinho pode ter virado pedido
+    });
+
+    // Com o botão do cabeçalho na tela, o flutuante sai de cena (não ficam dois).
+    var anchor = document.querySelector('[data-lp-cart-open="always"]');
+    if (anchor && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        document.documentElement.classList.toggle('lp-cart-anchored', entries[0].isIntersecting);
+      }).observe(anchor);
+    }
+
+    load();
+
+    return {
+      // lines: [{ merchandiseId, quantity }]. Adiciona, faz a miniatura voar e abre o drawer.
+      add: function (lines, submit, saySubmit, fromImg) {
+        if (campaignEnded()) { closeSales(); return; }
+        if (!config.endpoint) { saySubmit('Carrinho ainda não configurado.'); return; }
+        submit.disabled = true;
+        submit.classList.add('is-loading');
+        saySubmit('');
+        var flight = fly(fromImg, submit);
+        add(lines).then(function () {
+          return flight.then(function () {
+            var label = submit.textContent;
+            submit.classList.add('is-added');
+            submit.textContent = 'Adicionado ✓';
+            setTimeout(function () {
+              submit.classList.remove('is-added');
+              if (submit.dataset.soldOut !== '1') submit.textContent = label;
+            }, 1600);
+            open();
+          });
+        }).catch(function (error) {
+          saySubmit(error.message && !/^(cart|storefront)$/.test(error.message) && !/fetch/i.test(error.message)
+            ? error.message : 'Não deu pra adicionar ao carrinho. Tenta de novo.');
+        }).finally(function () {
+          submit.disabled = submit.dataset.soldOut === '1';
+          submit.classList.remove('is-loading');
+        });
+      },
+      closeSales: function () { checkoutBtn.disabled = true; checkoutBtn.textContent = 'Vendas encerradas'; }
+    };
+  })();
 
   // ---- Compra direta
   document.querySelectorAll('[data-lp-buy]').forEach(function (box) {
@@ -251,7 +521,8 @@
           ? 'em até ' + n + 'x de <strong>' + money.format(total / n) + '</strong> sem juros' : '';
       }
       if (submit && !submit.classList.contains('is-loading') && submit.dataset.soldOut !== '1') {
-        submit.textContent = qty === 1 ? 'Comprar agora' : 'Comprar kit com ' + qty;
+        if (cart) submit.textContent = qty === 1 ? 'Adicionar ao carrinho' : 'Adicionar kit com ' + qty;
+        else submit.textContent = qty === 1 ? 'Comprar agora' : 'Comprar kit com ' + qty;
       }
     }
 
@@ -299,7 +570,13 @@
           if (!v || !v.available) { say('A camiseta ' + (i + 1) + ' esgotou nessa combinação. Troca a opção.'); return; }
           lines[v.id] = (lines[v.id] || 0) + 1;
         }
-        checkout(Object.keys(lines).map(function (id) { return { merchandiseId: id, quantity: lines[id] }; }), submit, say);
+        var cartLines = Object.keys(lines).map(function (id) { return { merchandiseId: id, quantity: lines[id] }; });
+        if (cart) {
+          var thumbs = slotsEl.querySelectorAll('[data-lp-slot-img]');
+          cart.add(cartLines, submit, say, thumbs[thumbs.length - 1]);
+        } else {
+          checkout(cartLines, submit, say);
+        }
       });
     }
 

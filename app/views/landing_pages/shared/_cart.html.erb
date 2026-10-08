@@ -1,0 +1,67 @@
+<%#
+  Carrinho em drawer: com esta partial na página, o montador de kit adiciona
+  ao carrinho (Storefront API: cartCreate/cartLinesAdd...) em vez de ir direto
+  pro checkout; o "Finalizar compra" leva pro checkoutUrl do carrinho. Preços,
+  descontos de kit e total vêm da própria Shopify. O JS fica em shared/_script
+  (bloco "Carrinho"); o estilo fica no template (classes lp-cart__*).
+  Locals: installments (nº de parcelas sem juros sob o total, opcional),
+  empty_text, continue_href (âncora da área de compra, ex.: "#comprar").
+%>
+<button type="button" class="lp-cart-fab" data-lp-cart-open aria-label="Abrir carrinho" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7Z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg>
+  <b data-lp-cart-count>0</b>
+</button>
+
+<div class="lp-cart" data-lp-cart data-installments="<%= local_assigns[:installments] %>" hidden>
+  <div class="lp-cart__overlay" data-lp-cart-close></div>
+  <aside class="lp-cart__panel" role="dialog" aria-modal="true" aria-labelledby="lp-cart-title" tabindex="-1">
+    <div class="lp-cart__flag" aria-hidden="true"><span></span><span></span><span></span></div>
+    <header class="lp-cart__head">
+      <h2 class="lp-cart__title" id="lp-cart-title">Seu carrinho <small data-lp-cart-heading-count></small></h2>
+      <button type="button" class="lp-cart__close" data-lp-cart-close aria-label="Fechar carrinho">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+    </header>
+
+    <div class="lp-cart__body" data-lp-cart-body>
+      <ul class="lp-cart__lines" data-lp-cart-lines></ul>
+      <div class="lp-cart__empty" data-lp-cart-empty hidden>
+        <p><%= local_assigns.fetch(:empty_text, 'Seu carrinho está vazio.') %></p>
+        <a class="lp-cart__continue" href="<%= local_assigns.fetch(:continue_href, '#') %>" data-lp-cart-close>Escolher camisetas</a>
+      </div>
+    </div>
+
+    <footer class="lp-cart__foot" data-lp-cart-foot hidden>
+      <dl class="lp-cart__sums">
+        <div><dt>Subtotal</dt><dd data-lp-cart-subtotal></dd></div>
+        <div class="lp-cart__discount" data-lp-cart-discount-row hidden><dt>Desconto de kit</dt><dd data-lp-cart-discount></dd></div>
+        <div class="lp-cart__total"><dt>Total</dt><dd data-lp-cart-total></dd></div>
+      </dl>
+      <p class="lp-cart__installments" data-lp-cart-installments></p>
+      <p class="lp-cart__note">Frete e prazo calculados no checkout.</p>
+      <button type="button" class="lp-cart__checkout" data-lp-cart-checkout>Finalizar compra</button>
+      <a class="lp-cart__continue" href="<%= local_assigns.fetch(:continue_href, '#') %>" data-lp-cart-close>Continuar comprando</a>
+      <p class="lp-cart__message" data-lp-cart-message role="status" aria-live="polite"></p>
+    </footer>
+  </aside>
+</div>
+
+<template data-lp-cart-line>
+  <li class="lp-cart__line">
+    <div class="lp-cart__thumb"><img data-line-img alt="" loading="lazy"></div>
+    <div class="lp-cart__info">
+      <strong data-line-title></strong>
+      <span data-line-options></span>
+      <div class="lp-cart__stepper">
+        <button type="button" data-line-step="-1" aria-label="Diminuir quantidade">−</button>
+        <output data-line-qty></output>
+        <button type="button" data-line-step="1" aria-label="Aumentar quantidade">+</button>
+      </div>
+    </div>
+    <div class="lp-cart__price">
+      <s data-line-full></s>
+      <strong data-line-total></strong>
+      <button type="button" class="lp-cart__remove" data-line-remove>Remover</button>
+    </div>
+  </li>
+</template>

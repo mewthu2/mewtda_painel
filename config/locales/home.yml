@@ -195,7 +195,7 @@ en:
       case_link: "See the live store"
       desktop_alt: "%{store} store on desktop"
       mobile_alt: "%{store} store on mobile"
-      cases_label: "Stores we built"
+      cases_label: "Mewtda clients"
       design:
         title: "Custom design"
         text: "A layout built for your brand and your product, not a generic template."
@@ -554,7 +554,7 @@ es:
       case_link: "Ver la tienda en línea"
       desktop_alt: "Tienda %{store} en computador"
       mobile_alt: "Tienda %{store} en celular"
-      cases_label: "Tiendas que creamos"
+      cases_label: "Clientes Mewtda"
       design:
         title: "Diseño a medida"
         text: "Un diseño pensado para tu marca y tu producto, no una plantilla genérica."
@@ -913,7 +913,7 @@ pt-BR:
       case_link: "Ver a loja no ar"
       desktop_alt: "Loja %{store} no computador"
       mobile_alt: "Loja %{store} no celular"
-      cases_label: "Lojas que criamos"
+      cases_label: "Clientes Mewtda"
       design:
         title: "Design sob medida"
         text: "Layout pensado pra sua marca e pro seu produto, não um template genérico."

@@ -68,6 +68,41 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_match 'Pré-venda encerrada', response.body
+    assert_no_match '<div class="lp-cart" data-lp-cart', response.body # vendas encerradas: sem carrinho
+  end
+
+  test 'adds to a cart drawer and only goes to checkout from it' do
+    product = {
+      'id' => 'gid://shopify/Product/1', 'title' => 'Camiseta Ladrão', 'availableForSale' => true,
+      'featuredImage' => { 'url' => 'https://cdn.example/1.jpg' }, 'images' => { 'nodes' => [] },
+      'options' => [{ 'name' => 'Tamanho', 'optionValues' => [{ 'name' => 'P' }] }],
+      'variants' => { 'nodes' => [{ 'id' => 'gid://shopify/ProductVariant/1', 'availableForSale' => true,
+                                    'selectedOptions' => [{ 'name' => 'Tamanho', 'value' => 'P' }], 'price' => { 'amount' => '69.9' } }] }
+    }
+    fake = Struct.new(:products_list) do
+      def products(_refs) = products_list
+      def product(ref) = products_list.find { |p| p['id'] == ref }
+      def kit_prices(_variant_id, max: 4) = {}
+      def configured? = true
+      def endpoint = 'https://henrri.myshopify.com/api/2026-07/graphql.json'
+      def token = 'public-token'
+    end.new([product])
+    @page.update!(product_handles: ['gid://shopify/Product/1'])
+
+    Shopify::Storefront.stub :new, fake do
+      get '/use1822/drop-01'
+    end
+
+    body = response.body
+    assert_match 'data-lp-cart data-installments="4"', body
+    assert_match 'data-lp-cart-open="always"', body # botão no cabeçalho
+    assert_match 'class="lp-cart-fab" data-lp-cart-open', body # botão flutuante
+    assert_match 'data-lp-cart-checkout>Finalizar compra</button>', body
+    assert_match 'href="#comprar" data-lp-cart-close>Continuar comprando</a>', body
+    assert_match 'Seu carrinho tá vazio. Bora escolher?', body
+    # o JS do kit adiciona ao carrinho quando o drawer existe
+    assert_match "'Adicionar ao carrinho'", body
+    assert_match 'cartLinesAdd(cartId: $id, lines: $lines)', body
   end
 
   test 'sends the campaign end to the page so an open tab stops selling when it passes' do
@@ -189,6 +224,10 @@ class PublicLandingPagesControllerTest < ActionDispatch::IntegrationTest
     assert_match %r{data-print-jump="aba-colecao-1822" aria-current="true"}, body
     assert_match %r{data-print-jump="aba-ladrao" aria-current="false"}, body
     assert_match '<span class="printnav__title" id="printnav-titulo">Estampas</span>', body
+    # arte de cada estampa (DTF da camiseta branca) na aba e no atalho, em fundo branco
+    assert_equal 2, body.scan(%r{src="/assets/lp/drop_01_1822/colecao-1822-\h+\.svg"}).size
+    assert_equal 2, body.scan(%r{src="/assets/lp/drop_01_1822/ladrao-\h+\.svg"}).size
+    assert_equal 4, body.scan('style="--shirt: #FFFFFF"').size
     # tabela de medidas: um link por kit acima do botão, um modal só
     assert_equal 2, body.scan('data-lp-size-chart ').size
     assert_equal 1, body.scan('<dialog class="sizes"').size
