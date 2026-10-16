@@ -1,0 +1,446 @@
+<% title "Mewtda — #{t('home.sites_page.meta_title')}" %>
+
+<%#
+  =====================================================================
+  MEWTDA — Página do produto "Sua Loja" (criação de sites Shopify)
+  ---------------------------------------------------------------------
+  Estrutura narrativa no espírito da home da anatta.io (hero tipográfico,
+  números, processo numerado, benefícios), com a seção de projetos no
+  estilo "Our Projects" da praella.com: a seção fica presa na tela e a
+  rolagem vertical arrasta um carrossel horizontal de cases.
+  CSS  → app/assets/stylesheets/pages/landing_sites.scss (mwtda-sl-*)
+  JS   → partial compartilhado home/_lp_scripts + bloco próprio no fim
+         (pin do carrossel de projetos).
+  =====================================================================
+%>
+
+<% content_for :head do %>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<% end %>
+
+<%
+  sp = 'home.sites_page'
+  whatsapp = ->(message) { "https://wa.me/5516991997608?text=#{CGI.escape(message)}" }
+  channels = [
+    { id: 'inicio',      label: t('home.nav.inicio') },
+    { id: 'projetos',    label: t("#{sp}.nav.projetos"),    key: 1 },
+    { id: 'processo',    label: t("#{sp}.nav.processo"),    key: 2 },
+    { id: 'beneficios',  label: t("#{sp}.nav.beneficios"),  key: 3 },
+    { id: 'ecossistema', label: t("#{sp}.nav.ecossistema"), key: 4 },
+    { id: 'contato',     label: t('home.nav.contato') }
+  ]
+  extras = { 'inicio' => 'fa-solid fa-arrow-up', 'contato' => 'fa-regular fa-comment' }
+%>
+
+<%= render 'home/remote', channels: channels, extras: extras, home_link: true %>
+
+<div class="mwtda-lp mwtda-sl">
+
+  <%= render 'home/header' %>
+
+  <%# ============================ HERO ============================ %>
+  <section class="mwtda-sl-hero" id="inicio">
+    <div class="mwtda-sl-hero__inner">
+      <span class="mwtda-lp-plogo mwtda-sl-plogo" style="--plogo: #ff8a33">
+        <span class="mwtda-lp-plogo__word">mewtda</span>
+        <span class="mwtda-lp-plogo__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="mwtda-lp-plogo__name">Sua Loja</span>
+      </span>
+      <span class="mwtda-sl-eyebrow"><%= t("#{sp}.hero.eyebrow") %></span>
+      <h1 class="mwtda-sl-hero__headline">
+        <%= t("#{sp}.hero.headline_a") %>
+        <em><%= t("#{sp}.hero.headline_b") %></em>
+      </h1>
+      <p class="mwtda-sl-hero__sub"><%= t("#{sp}.hero.sub") %></p>
+      <div class="mwtda-lp-hero__ctas">
+        <a href="<%= whatsapp.(t("#{sp}.hero.whatsapp_message")) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg">
+          <i class="fa-brands fa-whatsapp"></i> <%= t("#{sp}.hero.cta_whatsapp") %>
+        </a>
+        <a href="#projetos" class="mwtda-lp-btn mwtda-lp-btn--lg mwtda-sl-btn--ghost"><%= t("#{sp}.hero.cta_projects") %> <i class="fa-solid fa-arrow-down"></i></a>
+      </div>
+
+      <dl class="mwtda-sl-stats" data-reveal>
+        <% { lojas: '17+', semanas: '4–8', shopify: '100%' }.each do |key, value| %>
+          <div class="mwtda-sl-stats__item">
+            <dt><%= value %></dt>
+            <dd><%= t("#{sp}.stats.#{key}") %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </div>
+
+    <%# faixa de logos de clientes correndo no rodapé do hero %>
+    <% client_logos = client_logo_assets %>
+    <% if client_logos.any? %>
+      <div class="mwtda-sl-logos" aria-hidden="true">
+        <div class="mwtda-sl-logos__track">
+          <% (client_logos + client_logos).each do |logo| %>
+            <%= image_tag logo, class: 'mwtda-sl-logos__logo', alt: '', loading: 'lazy' %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </section>
+
+  <%# ================= PROJETOS (carrossel no scroll) ================= %>
+  <section class="mwtda-sl-projects" id="projetos" data-sl-projects>
+    <div class="mwtda-sl-projects__pin" data-sl-pin>
+      <div class="mwtda-sl-projects__track" data-sl-track>
+
+        <div class="mwtda-sl-projects__intro">
+          <span class="mwtda-sl-eyebrow"><%= t("#{sp}.projects.eyebrow") %></span>
+          <h2><%= t("#{sp}.projects.title") %></h2>
+          <p class="mwtda-sl-projects__hint"><i class="fa-solid fa-arrow-right-long"></i> <%= t("#{sp}.projects.hint") %></p>
+        </div>
+
+        <% site_cases.each do |c| %>
+          <article class="mwtda-sl-project">
+            <div class="mwtda-sl-project__media">
+              <div class="mwtda-lp-browser mwtda-sl-project__browser">
+                <div class="mwtda-lp-browser__bar">
+                  <span></span><span></span><span></span>
+                  <em><i class="fa-solid fa-lock"></i> <%= c[:host] %></em>
+                </div>
+                <%= image_tag c[:desktop], alt: t('home.sites.desktop_alt', store: c[:name]), class: 'mwtda-lp-browser__shot', loading: 'lazy' %>
+              </div>
+              <div class="mwtda-sl-project__phone" aria-hidden="true">
+                <%= image_tag c[:mobile], alt: '', loading: 'lazy' %>
+              </div>
+            </div>
+            <div class="mwtda-sl-project__caption">
+              <div>
+                <strong><%= c[:name] %></strong>
+                <small><%= t("#{sp}.projects.taglines.#{c[:key]}") %></small>
+              </div>
+              <a href="<%= c[:url] %>" target="_blank" rel="noopener" class="mwtda-sl-project__visit">
+                <%= t("#{sp}.projects.visit") %> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+          </article>
+        <% end %>
+
+        <aside class="mwtda-sl-project mwtda-sl-project--cta">
+          <span class="mwtda-sl-eyebrow"><%= t("#{sp}.projects.cta_eyebrow") %></span>
+          <strong><%= t("#{sp}.projects.cta_title") %></strong>
+          <p><%= t("#{sp}.projects.cta_text") %></p>
+          <a href="<%= whatsapp.(t("#{sp}.hero.whatsapp_message")) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--primary">
+            <i class="fa-brands fa-whatsapp"></i> <%= t("#{sp}.hero.cta_whatsapp") %>
+          </a>
+        </aside>
+
+      </div>
+      <span class="mwtda-sl-projects__progress" aria-hidden="true"><i></i></span>
+    </div>
+  </section>
+
+  <%# ===================== A VIRADA (the shift) ===================== %>
+  <section class="mwtda-sl-shift">
+    <div class="mwtda-sl-shift__inner">
+      <span class="mwtda-sl-eyebrow" data-reveal-self><%= t("#{sp}.shift.eyebrow") %></span>
+      <h2 class="mwtda-sl-shift__title" data-reveal-self>
+        <%= t("#{sp}.shift.title_a") %>
+        <em><%= t("#{sp}.shift.title_b") %></em>
+      </h2>
+      <div class="mwtda-sl-shift__copy" data-reveal>
+        <p><%= t("#{sp}.shift.p1") %></p>
+        <p><%= t("#{sp}.shift.p2") %></p>
+        <p><%= t("#{sp}.shift.p3") %></p>
+      </div>
+      <a class="mwtda-sl-arrowlink" href="#processo" data-reveal-self><%= t("#{sp}.shift.link") %> <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <%# ================ ECOSSISTEMA POR BAIXO + NÚMEROS ================ %>
+  <section class="mwtda-sl-org">
+    <div class="mwtda-sl-org__inner">
+      <span class="mwtda-sl-eyebrow" data-reveal-self><%= t("#{sp}.org.eyebrow") %></span>
+      <h2 class="mwtda-sl-org__title" data-reveal-self><%= t("#{sp}.org.title") %></h2>
+      <p class="mwtda-sl-org__text" data-reveal-self><%= t("#{sp}.org.text") %></p>
+      <dl class="mwtda-sl-stats mwtda-sl-org__stats" data-reveal>
+        <% { marcas: '17+', produtos: '4', automacoes: '24/7', equipe: '1' }.each do |key, value| %>
+          <div class="mwtda-sl-stats__item">
+            <dt><%= value %></dt>
+            <dd><%= t("#{sp}.org.stats.#{key}") %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </div>
+  </section>
+
+  <%# ========================== DE → PARA ========================== %>
+  <section class="mwtda-sl-fromto">
+    <div class="mwtda-sl-fromto__inner">
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{sp}.fromto.eyebrow") %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{sp}.fromto.title") %></h2>
+      <p class="mwtda-sl-fromto__sub" data-reveal-self><%= t("#{sp}.fromto.sub") %></p>
+      <p class="mwtda-lp-section__lead" data-reveal-self><%= t("#{sp}.fromto.text") %></p>
+      <div class="mwtda-sl-fromto__grid" data-reveal>
+        <% %w[prazo base dados].each do |key| %>
+          <div class="mwtda-sl-fromto__card">
+            <span class="mwtda-sl-fromto__from"><small><%= t("#{sp}.fromto.from") %></small><%= t("#{sp}.fromto.items.#{key}.from") %></span>
+            <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+            <strong class="mwtda-sl-fromto__to"><small><%= t("#{sp}.fromto.to") %></small><%= t("#{sp}.fromto.items.#{key}.to") %></strong>
+            <em><%= t("#{sp}.fromto.items.#{key}.label") %></em>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ========================== PROCESSO ========================== %>
+  <section class="mwtda-sl-process" id="processo">
+    <div class="mwtda-sl-process__inner">
+      <header class="mwtda-sl-process__head">
+        <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{sp}.process.eyebrow") %></span>
+        <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{sp}.process.title") %></h2>
+      </header>
+      <ol class="mwtda-sl-process__steps" data-reveal>
+        <% %w[briefing design build conexoes lancamento].each_with_index do |key, i| %>
+          <li class="mwtda-sl-process__step">
+            <span class="mwtda-sl-process__number"><%= format('%02d', i + 1) %></span>
+            <div>
+              <strong><%= t("#{sp}.process.steps.#{key}.title") %></strong>
+              <p><%= t("#{sp}.process.steps.#{key}.text") %></p>
+            </div>
+          </li>
+        <% end %>
+      </ol>
+      <p class="mwtda-sl-process__couplet" data-reveal-self>
+        <span><%= t("#{sp}.process_couplet.a") %></span>
+        <em><%= t("#{sp}.process_couplet.b") %></em>
+      </p>
+    </div>
+  </section>
+
+  <%# ========================= BENEFÍCIOS ========================= %>
+  <section class="mwtda-sl-benefits" id="beneficios">
+    <div class="mwtda-sl-benefits__inner">
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{sp}.benefits.eyebrow") %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{sp}.benefits.title") %></h2>
+      <div class="mwtda-sl-benefits__grid" data-reveal>
+        <% %w[converter rapida controle ecossistema].each do |key| %>
+          <div class="mwtda-sl-benefits__card">
+            <strong><%= t("#{sp}.benefits.items.#{key}.title") %></strong>
+            <p><%= t("#{sp}.benefits.items.#{key}.text") %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ============== ONDE A GENTE ASSINA (quem responde) ============== %>
+  <section class="mwtda-sl-owners">
+    <div class="mwtda-sl-owners__inner">
+      <span class="mwtda-sl-eyebrow" data-reveal-self><%= t("#{sp}.owners.eyebrow") %></span>
+      <h2 class="mwtda-sl-owners__title" data-reveal-self><%= t("#{sp}.owners.title") %></h2>
+      <p class="mwtda-sl-owners__lead" data-reveal-self><%= t("#{sp}.owners.lead") %></p>
+      <ol class="mwtda-sl-owners__items" data-reveal>
+        <% %w[design performance catalogo integracoes qa].each_with_index do |key, i| %>
+          <li>
+            <span class="mwtda-sl-owners__number"><%= format('%02d', i + 1) %></span>
+            <strong><%= t("#{sp}.owners.items.#{key}.title") %></strong>
+            <p><%= t("#{sp}.owners.items.#{key}.text") %></p>
+          </li>
+        <% end %>
+      </ol>
+      <ul class="mwtda-sl-owners__bullets" data-reveal>
+        <% t("#{sp}.owners.bullets").each do |bullet| %>
+          <li><i class="fa-solid fa-check"></i> <%= bullet %></li>
+        <% end %>
+      </ul>
+    </div>
+  </section>
+
+  <%# ===================== DA OPERAÇÃO (vinheta) ===================== %>
+  <section class="mwtda-sl-field">
+    <div class="mwtda-sl-field__inner" data-reveal-self>
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark"><%= t("#{sp}.field.eyebrow") %></span>
+      <blockquote>
+        <p><%= t("#{sp}.field.text") %></p>
+        <strong><%= t("#{sp}.field.punch") %></strong>
+      </blockquote>
+    </div>
+  </section>
+
+  <%# ===================== O QUE ENTRA NA LOJA ===================== %>
+  <section class="mwtda-sl-build" id="o-que-entra">
+    <div class="mwtda-sl-build__inner">
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{sp}.build.eyebrow") %></span>
+      <h2 class="mwtda-lp-section__title mwtda-sl-build__title" data-reveal-self>
+        <%= t("#{sp}.build.title_a") %>
+        <em><%= t("#{sp}.build.title_b") %></em>
+      </h2>
+      <p class="mwtda-lp-section__lead" data-reveal-self><%= t("#{sp}.build.lead") %></p>
+      <div class="mwtda-sl-build__grid" data-reveal>
+        <% %w[design operacao conexoes crescimento].each do |key| %>
+          <div class="mwtda-sl-build__group">
+            <strong class="mwtda-sl-build__group-title"><%= t("#{sp}.build.groups.#{key}.title") %></strong>
+            <small><%= t("#{sp}.build.groups.#{key}.pitch") %></small>
+            <div class="mwtda-sl-build__featured">
+              <b><%= t("#{sp}.build.groups.#{key}.featured") %></b>
+              <p><%= t("#{sp}.build.groups.#{key}.featured_text") %></p>
+            </div>
+            <ul>
+              <% t("#{sp}.build.groups.#{key}.items").each do |item| %>
+                <li><i class="fa-solid fa-check"></i> <%= item %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ======================= POR ONDE COMEÇAR ======================= %>
+  <section class="mwtda-sl-start">
+    <div class="mwtda-sl-start__card" data-reveal-self>
+      <div class="mwtda-sl-start__copy">
+        <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark"><%= t("#{sp}.start.eyebrow") %></span>
+        <h2><%= t("#{sp}.start.title") %></h2>
+        <p><%= t("#{sp}.start.text") %></p>
+        <div class="mwtda-lp-hero__ctas mwtda-sl-start__ctas">
+          <a href="<%= whatsapp.(t("#{sp}.start.whatsapp_message")) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--primary">
+            <i class="fa-brands fa-whatsapp"></i> <%= t("#{sp}.start.cta") %>
+          </a>
+          <a href="#projetos" class="mwtda-lp-btn mwtda-lp-btn--outline"><%= t("#{sp}.start.alt") %></a>
+        </div>
+      </div>
+      <% showcase_case = site_cases.first %>
+      <a class="mwtda-sl-start__case" href="<%= showcase_case[:url] %>" target="_blank" rel="noopener">
+        <%= image_tag showcase_case[:desktop], alt: '', loading: 'lazy' %>
+        <span class="mwtda-sl-start__case-copy">
+          <small><%= t("#{sp}.start.case_label") %></small>
+          <strong><%= showcase_case[:name] %></strong>
+          <em><%= t("#{sp}.start.case_link") %> <i class="fa-solid fa-arrow-up-right-from-square"></i></em>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <%# ======================= QUEM TOCA O PROJETO ======================= %>
+  <section class="mwtda-sl-team">
+    <div class="mwtda-sl-team__inner">
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{sp}.team.eyebrow") %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{sp}.team.title") %></h2>
+      <p class="mwtda-lp-section__lead" data-reveal-self><%= t("#{sp}.team.text") %></p>
+      <%#
+        Depoimentos (estrutura pronta, no espírito da referência): preencher
+        APENAS com citações reais de clientes, com autorização. Exemplo:
+
+        <div class="mwtda-sl-team__quotes" data-reveal>
+          <blockquote class="mwtda-sl-team__quote">
+            <p>“Citação real do cliente aqui.”</p>
+            <footer><strong>Nome</strong><span>Cargo, Marca</span></footer>
+          </blockquote>
+        </div>
+      %>
+    </div>
+  </section>
+
+  <%# =========================== PARCEIROS =========================== %>
+  <section class="mwtda-sl-partners">
+    <div class="mwtda-sl-partners__inner">
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{sp}.partners.eyebrow") %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{sp}.partners.title") %></h2>
+      <p class="mwtda-lp-section__lead" data-reveal-self><%= t("#{sp}.partners.text") %></p>
+      <div class="mwtda-sl-partners__logos" data-reveal>
+        <%= image_tag 'admin/shopifypartnerbadge_250.png', alt: t('home.footer.shopify_partner_alt'), class: 'mwtda-sl-partners__badge', loading: 'lazy' %>
+        <% { 'logos/shopify.svg' => 'Shopify', 'logos/meta.svg' => 'Meta Ads', 'logos/googleads.svg' => 'Google Ads', 'logos/whatsapp.svg' => 'WhatsApp' }.each do |path, name| %>
+          <span class="mwtda-sl-partners__logo"><%= image_tag path, alt: name, loading: 'lazy' %><em><%= name %></em></span>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ========================= ECOSSISTEMA ======================== %>
+  <section class="mwtda-sl-eco" id="ecossistema">
+    <div class="mwtda-sl-eco__inner">
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{sp}.eco.eyebrow") %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{sp}.eco.title") %></h2>
+      <p class="mwtda-lp-section__lead" data-reveal-self><%= t("#{sp}.eco.lead") %></p>
+      <div class="mwtda-sl-eco__grid" data-reveal>
+        <% %w[crm trocas app].each do |key| %>
+          <% product = landing_product(key) %>
+          <a class="mwtda-sl-eco__card" href="<%= root_path %>##{product[:anchor]}" data-turbo="false">
+            <%= render 'home/product_logo', product: product %>
+            <p><%= t("home.products.#{product[:key]}.tagline") %></p>
+            <em><%= t("#{sp}.eco.open") %> <i class="fa-solid fa-arrow-right"></i></em>
+          </a>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ========================== CTA FINAL ========================= %>
+  <section class="mwtda-lp-section mwtda-lp-cta mwtda-sl-cta" id="contato">
+    <div class="mwtda-lp-section__inner mwtda-lp-cta__inner" data-reveal-self>
+      <h2><%= t("#{sp}.cta.title") %></h2>
+      <p><%= t("#{sp}.cta.text") %></p>
+      <div class="mwtda-lp-hero__ctas">
+        <a href="<%= whatsapp.(t("#{sp}.cta.whatsapp_message")) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg">
+          <i class="fa-brands fa-whatsapp"></i> <%= t("#{sp}.cta.button") %>
+        </a>
+        <%= link_to t('home.footer.entrar'), new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg' %>
+      </div>
+    </div>
+  </section>
+
+  <%= render 'home/footer' %>
+
+</div>
+
+<%= render 'home/lp_scripts' %>
+
+<script>
+  // =================================================================
+  // Projetos — carrossel no scroll (estilo praella.com/#our-projects)
+  // -----------------------------------------------------------------
+  // Desktop: a seção ganha altura extra igual ao "excesso" horizontal do
+  // track; o miolo fica sticky e o progresso da rolagem vira translateX,
+  // num mapeamento 1:1 (rolar N px desce N px de carrossel). Mobile e
+  // "reduzir movimento": sem pin — o track rola na horizontal no dedo.
+  // =================================================================
+  document.addEventListener('DOMContentLoaded', function () {
+    var root = document.querySelector('.mwtda-lp')
+    var section = document.querySelector('[data-sl-projects]')
+    if (!root || !section) return
+
+    var pin = section.querySelector('[data-sl-pin]')
+    var track = section.querySelector('[data-sl-track]')
+    var desktop = window.matchMedia('(min-width: 981px)')
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    function pinned () { return desktop.matches && !reduced }
+    function span () { return Math.max(0, track.scrollWidth - pin.clientWidth) }
+
+    function layout () {
+      if (!pinned()) {
+        section.classList.add('is-free')
+        section.style.height = ''
+        track.style.transform = ''
+        return
+      }
+      section.classList.remove('is-free')
+      section.style.height = (window.innerHeight + span()) + 'px'
+    }
+
+    var ticking = false
+    function onScroll () {
+      if (!pinned() || ticking) return
+      ticking = true
+      requestAnimationFrame(function () {
+        var rect = section.getBoundingClientRect()
+        var total = rect.height - window.innerHeight
+        var p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0
+        track.style.transform = 'translate3d(' + (-p * span()).toFixed(1) + 'px, 0, 0)'
+        section.style.setProperty('--sl-p', p.toFixed(4))
+        ticking = false
+      })
+    }
+
+    layout()
+    onScroll()
+    root.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', function () { layout(); onScroll() }, { passive: true })
+  })
+</script>

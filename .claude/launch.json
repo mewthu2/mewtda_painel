@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "mewtda-rails",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "set PATH=C:\\Ruby32-x64\\bin;%PATH% && bundle exec rails server -p 3000 -b 127.0.0.1"],
+      "port": 3000
+    }
+  ]
+}

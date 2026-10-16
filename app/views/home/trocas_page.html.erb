@@ -1,0 +1,163 @@
+<% title "Mewtda — #{t('home.qt_page.meta_title')}" %>
+
+<%#
+  =====================================================================
+  MEWTDA — Página do produto "Quero Trocar"
+  ---------------------------------------------------------------------
+  Família visual das páginas de produto: hero tipográfico claro, passos
+  de "como funciona", o painel de solicitações no celular (reusa
+  home/_exchange_phone + as notificações da seção 02 da home),
+  benefícios, FAQ em acordeão e CTA.
+  CSS → app/assets/stylesheets/pages/landing_products.scss
+        (mwtda-pp-* compartilhado com /meu-crm + mwtda-qt-*)
+  =====================================================================
+%>
+
+<% content_for :head do %>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<% end %>
+
+<%
+  qp = 'home.qt_page'
+  whatsapp = ->(message) { "https://wa.me/5516991997608?text=#{CGI.escape(message)}" }
+  channels = [
+    { id: 'inicio',     label: t('home.nav.inicio') },
+    { id: 'como',       label: t("#{qp}.nav.como"),       key: 1 },
+    { id: 'painel',     label: t("#{qp}.nav.painel"),     key: 2 },
+    { id: 'beneficios', label: t("#{qp}.nav.beneficios"), key: 3 },
+    { id: 'faq',        label: t("#{qp}.nav.faq"),        key: 4 },
+    { id: 'contato',    label: t('home.nav.contato') }
+  ]
+  extras = { 'inicio' => 'fa-solid fa-arrow-up', 'contato' => 'fa-regular fa-comment' }
+%>
+
+<%= render 'home/remote', channels: channels, extras: extras, home_link: true %>
+
+<div class="mwtda-lp mwtda-qt">
+
+  <%= render 'home/header' %>
+
+  <%# ============================ HERO ============================ %>
+  <section class="mwtda-pp-hero" id="inicio">
+    <div class="mwtda-pp-hero__inner">
+      <%= image_tag 'landing/quero-trocar-logo.png', alt: 'Quero Trocar', class: 'mwtda-pp-hero__plogo' %>
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark"><%= t("#{qp}.hero.eyebrow") %></span>
+      <h1 class="mwtda-pp-hero__headline">
+        <%= t("#{qp}.hero.headline_a") %>
+        <em class="mwtda-qt-accent"><%= t("#{qp}.hero.headline_b") %></em>
+      </h1>
+      <p class="mwtda-pp-hero__sub"><%= t("#{qp}.hero.sub") %></p>
+      <div class="mwtda-lp-hero__ctas">
+        <a href="<%= whatsapp.(t("#{qp}.hero.whatsapp_message")) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg">
+          <i class="fa-brands fa-whatsapp"></i> <%= t("#{qp}.hero.cta") %>
+        </a>
+        <a href="#como" class="mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg"><%= t("#{qp}.hero.cta_secondary") %></a>
+      </div>
+    </div>
+  </section>
+
+  <%# ====================== COMO FUNCIONA ====================== %>
+  <section class="mwtda-pp-section mwtda-pp-section--tint" id="como">
+    <div class="mwtda-pp-section__inner">
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{qp}.steps.eyebrow") %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{qp}.steps.title") %></h2>
+      <p class="mwtda-lp-section__lead" data-reveal-self><%= t("#{qp}.steps.lead") %></p>
+      <ol class="mwtda-qt-steps" data-reveal>
+        <% %w[pedido regras vale acompanha].each_with_index do |key, i| %>
+          <li class="mwtda-qt-steps__item">
+            <span class="mwtda-qt-steps__number"><%= i + 1 %></span>
+            <strong><%= t("#{qp}.steps.items.#{key}.title") %></strong>
+            <p><%= t("#{qp}.steps.items.#{key}.text") %></p>
+          </li>
+        <% end %>
+      </ol>
+    </div>
+  </section>
+
+  <%# ================= PAINEL (celular + notificações) ================= %>
+  <section class="mwtda-qt-panel" id="painel">
+    <div class="mwtda-qt-panel__inner">
+      <div class="mwtda-qt-panel__copy">
+        <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{qp}.painel.eyebrow") %></span>
+        <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{qp}.painel.title") %></h2>
+        <p class="mwtda-lp-section__lead mwtda-qt-panel__lead" data-reveal-self><%= t("#{qp}.painel.lead") %></p>
+        <div class="mwtda-lp-part__actions" data-reveal-self>
+          <a href="<%= whatsapp.(t("#{qp}.hero.whatsapp_message")) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--dark mwtda-lp-btn--lg">
+            <i class="fa-brands fa-whatsapp"></i> <%= t("#{qp}.hero.cta") %>
+          </a>
+        </div>
+      </div>
+
+      <div class="mwtda-qt-panel__visual" data-reveal-self>
+        <div class="mwtda-lp-part__glow"></div>
+        <%= render 'home/exchange_phone' %>
+        <div class="mwtda-lp-shop__notifications" aria-hidden="true">
+          <% [%w[new fa-solid fa-arrow-right-arrow-left], %w[approved fa-solid fa-ticket]].each_with_index do |(key, *icon), i| %>
+            <div class="mwtda-lp-shop__notification mwtda-lp-exchange__notification--<%= key %>" style="--i: <%= i %>">
+              <span class="mwtda-lp-shop__notification-icon"><i class="<%= icon.join(' ') %>"></i></span>
+              <div>
+                <strong><%= t("home.trocas_part.notifications.#{key}_title") %></strong>
+                <span><%= t("home.trocas_part.notifications.#{key}_text") %></span>
+              </div>
+              <small><%= t('home.apps.notifications.now') %></small>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%# ========================= BENEFÍCIOS ========================= %>
+  <section class="mwtda-pp-section" id="beneficios">
+    <div class="mwtda-pp-section__inner">
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{qp}.benefits.eyebrow") %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{qp}.benefits.title") %></h2>
+      <div class="mwtda-pp-cards mwtda-pp-cards--2" data-reveal>
+        <% { equipe: 'fa-solid fa-inbox', cliente: 'fa-regular fa-face-smile', caixa: 'fa-solid fa-sack-dollar', shopify: 'fa-brands fa-shopify' }.each do |key, icon| %>
+          <div class="mwtda-pp-card">
+            <span class="mwtda-pp-card__icon mwtda-qt-icon"><i class="<%= icon %>"></i></span>
+            <strong><%= t("#{qp}.benefits.items.#{key}.title") %></strong>
+            <p><%= t("#{qp}.benefits.items.#{key}.text") %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ============================ FAQ ============================ %>
+  <section class="mwtda-lp-section mwtda-lp-faq" id="faq">
+    <div class="mwtda-lp-section__inner mwtda-lp-faq__inner">
+      <div class="mwtda-lp-faq__head">
+        <span class="mwtda-lp-eyebrow" data-reveal-self><%= t("#{qp}.faq.eyebrow") %></span>
+        <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{qp}.faq.title") %></h2>
+      </div>
+      <div class="mwtda-lp-faq__list" data-reveal>
+        <% t("#{qp}.faq.items").each do |item| %>
+          <details class="mwtda-lp-faq__item">
+            <summary><%= item[:q] %> <i class="fa-solid fa-plus" aria-hidden="true"></i></summary>
+            <p><%= item[:a] %></p>
+          </details>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ========================== CTA FINAL ========================= %>
+  <section class="mwtda-lp-section mwtda-lp-cta" id="contato">
+    <div class="mwtda-lp-section__inner mwtda-lp-cta__inner" data-reveal-self>
+      <h2><%= t("#{qp}.cta.title") %></h2>
+      <p><%= t("#{qp}.cta.text") %></p>
+      <div class="mwtda-lp-hero__ctas">
+        <a href="<%= whatsapp.(t("#{qp}.cta.whatsapp_message")) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg">
+          <i class="fa-brands fa-whatsapp"></i> <%= t("#{qp}.cta.button") %>
+        </a>
+        <%= link_to t('home.footer.entrar'), new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg' %>
+      </div>
+    </div>
+  </section>
+
+  <%= render 'home/footer' %>
+
+</div>
+
+<%= render 'home/lp_scripts' %>

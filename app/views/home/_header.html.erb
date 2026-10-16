@@ -1,0 +1,39 @@
+<%#
+  Cabeçalho das páginas públicas (home e páginas de produto): logo → home,
+  "Soluções" com dropdown dos 4 produtos (produto com página dedicada
+  aponta pra ela; os demais caem no anchor da seção na home — ver
+  product_page_path no HomeHelper), Contato (anchor #contato, presente
+  nas duas páginas) e Entrar.
+  Fica sticky no topo DENTRO do scroller .mwtda-lp (position: sticky), por
+  isso é renderizado como filho direto dele. O dropdown abre no hover
+  (desktop) e no clique/toque (JS no fim de home/_lp_scripts.html.erb).
+%>
+<header class="mwtda-lp-header" data-lp-header>
+  <div class="mwtda-lp-header__inner">
+    <a href="<%= root_path %>" class="mwtda-lp-header__logo" data-turbo="false" aria-label="Mewtda — <%= t('home.nav.inicio') %>">
+      <%= image_tag 'admin/logonovo.png', alt: 'Mewtda' %>
+    </a>
+
+    <nav class="mwtda-lp-header__nav" aria-label="<%= t('home.nav.produtos') %>">
+      <div class="mwtda-lp-header__menu" data-header-menu>
+        <button type="button" class="mwtda-lp-header__link mwtda-lp-header__toggle" aria-expanded="false" aria-haspopup="true">
+          <%= t('home.nav.produtos') %> <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <div class="mwtda-lp-header__dropdown">
+          <% landing_products.each do |product| %>
+            <% page = product_page_path(product[:key]) %>
+            <a href="<%= page || "#{root_path}##{product[:anchor]}" %>" class="mwtda-lp-header__option" data-turbo="false">
+              <%= render 'home/product_logo', product: product %>
+              <small><%= t("home.products.#{product[:key]}.tagline") %></small>
+            </a>
+          <% end %>
+        </div>
+      </div>
+
+      <a class="mwtda-lp-header__link" href="#contato"><%= t('home.nav.contato') %></a>
+
+      <%= link_to t('home.nav.entrar'), new_user_session_path,
+            class: 'mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-header__login', data: { turbo: false } %>
+    </nav>
+  </div>
+</header>

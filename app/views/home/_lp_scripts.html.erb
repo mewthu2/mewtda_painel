@@ -1,0 +1,989 @@
+<%#
+  Scripts compartilhados da landing (home e paginas de produto):
+  efeitos de rolagem + controle remoto, logo Three.js e trilha sonora.
+  Todos os blocos checam a existencia dos elementos antes de agir, entao
+  qualquer pagina .mwtda-lp pode renderizar este partial inteiro.
+%>
+<script>
+  // ===================================================================
+  // MEWTDA — efeitos de rolagem (JS puro, sem dependências)
+  // -------------------------------------------------------------------
+  // 2) escreve --mw-scroll-y na raiz .mwtda-lp pro parallax sutil do hero;
+  // 3) alterna .is-visible em [data-reveal] / [data-reveal-self] via
+  //    IntersectionObserver (fade + slide + blur escalonado);
+  // 4) calcula o progresso de scroll da seção "Como funciona" e escreve
+  //    --mw-progress (0 a 1) pra linha de progresso entre os 3 passos.
+  // Pode virar app/javascript/landing/scroll_effects.js sem alterar
+  // nada e ser importado no seu application.js / importmap.
+  // ===================================================================
+  document.addEventListener('DOMContentLoaded', function () {
+    var root = document.querySelector('.mwtda-lp')
+    var processGrid = document.querySelector('[data-process]')
+    if (!root) return
+
+    // --- 0: "portal" pra fora do layout do app -------------------------
+    // Se essa view for renderizada dentro do layout padrão (com sidebar,
+    // header fixo, etc.), qualquer ancestral entre <body> e .mwtda-lp que
+    // tenha transform / filter / perspective / will-change / contain cria
+    // um novo "containing block" — e nesse caso position:fixed passa a
+    // ficar preso dentro daquele ancestral em vez de cobrir a viewport
+    // inteira (era isso que deixava a página "de lado", encaixada ao lado
+    // da sidebar). Mover o próprio elemento para ser filho direto do
+    // <body> resolve isso na raiz, sem precisar tocar no layout do app.
+    if (root.parentElement !== document.body) {
+      document.body.appendChild(root)
+    }
+    // controle remoto e efeito de canal: mesmo motivo (position:fixed)
+    document.querySelectorAll('[data-remote], [data-remote-zap]').forEach(function (el) {
+      if (el.parentElement !== document.body) document.body.appendChild(el)
+    })
+
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // --- quem realmente rola ------------------------------------------
+    // `root` é position:fixed + overflow-y:auto (ver bloco acima) — é
+    // ELE que dispara o evento `scroll`, a `window` NUNCA rola nesse
+    // esquema. Todo o resto do script (parallax, progresso, controle
+    // remoto) precisa escutar `root`, não `window`.
+    var scroller = root
+
+    // --- 2: var de parallax do hero, com throttle via rAF
+    var ticking = false
+    function onScroll() {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(function () {
+        var y = root.scrollTop
+
+        if (!prefersReducedMotion) {
+          root.style.setProperty('--mw-scroll-y', (Math.min(y, 800) * -1) + 'px')
+        }
+
+        // --- 4: progresso do bloco "Como funciona" --------------------
+        if (processGrid) {
+          var rect = processGrid.getBoundingClientRect()
+          var vh = window.innerHeight
+          var start = vh * 0.85
+          var end = vh * 0.35
+          var total = rect.top - end
+          var range = start - end
+          var raw = 1 - total / range
+          var progress = Math.min(1, Math.max(0, raw))
+
+          processGrid.style.setProperty('--mw-progress', progress.toFixed(3))
+          processGrid.toggleAttribute('data-progress-lit-1', progress > 0.05)
+          processGrid.toggleAttribute('data-progress-lit-2', progress > 0.55)
+          processGrid.toggleAttribute('data-progress-lit-3', progress > 0.95)
+        }
+
+        ticking = false
+      })
+    }
+
+    scroller.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    onScroll()
+
+    // --- 3: reveal-on-scroll ------------------------------------------
+    var revealTargets = document.querySelectorAll('[data-reveal], [data-reveal-self]')
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    )
+
+    revealTargets.forEach(function (el) {
+      observer.observe(el)
+    })
+
+    // --- 5: vitrine "Sua loja" — abas de segmento trocam a loja do celular
+    // e o texto ao lado. Gira sozinha enquanto ninguém clica; o primeiro
+    // clique assume o controle e para a rotação automática.
+    var shop = document.querySelector('[data-shop-showcase]')
+    if (shop) {
+      var tabs = shop.querySelectorAll('[data-shop-tab]')
+      var panels = shop.querySelectorAll('[data-shop-panel]')
+      var keys = Array.prototype.map.call(tabs, function (tab) { return tab.getAttribute('data-shop-tab') })
+      var current = 0
+      var rotation = null
+
+      function showSegment(index) {
+        current = index
+        var key = keys[index]
+        tabs.forEach(function (tab) {
+          tab.setAttribute('aria-selected', tab.getAttribute('data-shop-tab') === key ? 'true' : 'false')
+        })
+        panels.forEach(function (panel) {
+          panel.setAttribute('data-active', panel.getAttribute('data-shop-panel') === key ? 'true' : 'false')
+        })
+      }
+
+      tabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function () {
+          if (rotation) clearInterval(rotation)
+          rotation = null
+          showSegment(i)
+        })
+      })
+
+      if (!prefersReducedMotion) {
+        rotation = setInterval(function () {
+          showSegment((current + 1) % keys.length)
+        }, 4500)
+      }
+    }
+
+    // --- 6: controle remoto (menu fixo no canto) ------------------------
+    // Teclas = canais (seções). Clique rola suave até a seção, CH ▲/▼
+    // anda pela lista, o visor acompanha a seção que está no meio da tela
+    // e o LED de infravermelho "pisca" a cada comando. Em tela estreita o
+    // controle fica recolhido e abre/fecha pelo mini controle.
+    var remote = document.querySelector('[data-remote]')
+    if (remote) {
+      var channels = JSON.parse(remote.getAttribute('data-remote-channels'))
+      var toggle = remote.querySelector('[data-remote-toggle]')
+      var chEl = remote.querySelector('[data-remote-ch]')
+      var labelEl = remote.querySelector('[data-remote-label]')
+      var screenEl = remote.querySelector('.mwtda-lp-remote__screen')
+      var ir = remote.querySelector('[data-remote-ir]')
+      var channelLinks = remote.querySelectorAll('[data-remote-channel]')
+      var currentChannel = -1
+      var lockedChannel = null
+      var lockTimer = null
+
+      // encolhe o texto até caber na largura (nomes mais longos em
+      // EN/ES, ex: "Soluciones"), sem quebrar o layout do controle
+      function fitText(el) {
+        el.style.fontSize = ''
+        if (el.scrollWidth <= el.clientWidth) return
+        var size = parseFloat(getComputedStyle(el).fontSize)
+        el.style.fontSize = (size * el.clientWidth / el.scrollWidth * 0.97) + 'px'
+      }
+
+      remote.querySelectorAll('.mwtda-lp-remote__key small').forEach(fitText)
+
+      function showChannel(index) {
+        if (index === currentChannel) return
+        currentChannel = index
+        chEl.textContent = channels[index].ch
+        labelEl.textContent = channels[index].label
+        fitText(labelEl)
+        channelLinks.forEach(function (link) {
+          var active = link.getAttribute('data-remote-channel') === channels[index].id
+          if (active) link.setAttribute('aria-current', 'true')
+          else link.removeAttribute('aria-current')
+        })
+        screenEl.classList.remove('is-changing')
+        void screenEl.offsetWidth // reinicia a animação do visor
+        screenEl.classList.add('is-changing')
+      }
+
+      function blink() {
+        ir.classList.remove('is-sending')
+        void ir.offsetWidth
+        ir.classList.add('is-sending')
+      }
+
+      function setOpen(open) {
+        remote.classList.toggle('is-open', open)
+        // no mobile o controle aberto é maior: recalcula o encaixe do visor
+        if (open) {
+          fitText(labelEl)
+          remote.querySelectorAll('.mwtda-lp-remote__key small').forEach(fitText)
+        }
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
+      }
+
+      // troca de canal na tela: reinicia as animações do overlay a cada
+      // clique (remove a classe, força reflow, põe de volta)
+      var zap = document.querySelector('[data-remote-zap]')
+      var zapCh = zap && zap.querySelector('[data-zap-ch]')
+      var zapLabel = zap && zap.querySelector('[data-zap-label]')
+      var zapTimer = null
+
+      // ruído do chiado: bitmap pequeno gerado uma vez aqui (barato de
+      // compor) em vez de filtro SVG rasterizado na hora do clique
+      if (zap && !prefersReducedMotion) {
+        try {
+          var noise = document.createElement('canvas')
+          noise.width = noise.height = 160
+          var nctx = noise.getContext('2d')
+          var img = nctx.createImageData(160, 160)
+          for (var p = 0; p < img.data.length; p += 4) {
+            img.data[p + 3] = Math.random() * 150 // preto com alfa aleatório
+          }
+          nctx.putImageData(img, 0, 0)
+          zap.style.setProperty('--mw-zap-noise', 'url(' + noise.toDataURL() + ')')
+        } catch (e) {}
+      }
+
+      function zapTo(index) {
+        if (!zap) return
+        zapCh.textContent = channels[index].ch
+        zapLabel.textContent = channels[index].label
+        zap.classList.remove('is-zapping')
+        void zap.offsetWidth
+        zap.classList.add('is-zapping')
+        clearTimeout(zapTimer)
+        zapTimer = setTimeout(function () { zap.classList.remove('is-zapping') }, 1900)
+      }
+
+      function goTo(index) {
+        var target = document.getElementById(channels[index].id)
+        if (!target) return
+        blink()
+        zapTo(index)
+        showChannel(index)
+        lockedChannel = index
+        clearTimeout(lockTimer)
+        lockTimer = setTimeout(function () { lockedChannel = null }, 1200)
+        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' })
+        setOpen(false)
+      }
+
+      channelLinks.forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault()
+          var id = link.getAttribute('data-remote-channel')
+          goTo(channels.findIndex(function (c) { return c.id === id }))
+        })
+      })
+
+      remote.querySelectorAll('[data-remote-step]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var step = parseInt(btn.getAttribute('data-remote-step'), 10)
+          goTo(Math.min(channels.length - 1, Math.max(0, currentChannel + step)))
+        })
+      })
+
+      toggle.addEventListener('click', function () {
+        setOpen(!remote.classList.contains('is-open'))
+      })
+
+      // no mobile, tocar fora do controle aberto fecha ele
+      document.addEventListener('click', function (e) {
+        if (remote.classList.contains('is-open') && !remote.contains(e.target)) setOpen(false)
+      })
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && remote.classList.contains('is-open')) {
+          setOpen(false)
+          toggle.focus()
+        }
+      })
+
+      // visor acompanha a seção que cruza o meio da tela
+      var sectionObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting || lockedChannel !== null) return
+          var index = channels.findIndex(function (c) { return c.id === entry.target.id })
+          if (index >= 0) showChannel(index)
+        })
+      }, { rootMargin: '-45% 0px -50% 0px' })
+
+      channels.forEach(function (c) {
+        var section = document.getElementById(c.id)
+        if (section) sectionObserver.observe(section)
+      })
+
+      // rolagem terminou: o visor volta a acompanhar a página
+      root.addEventListener('scrollend', function () { lockedChannel = null })
+    }
+
+    // --- 7: profundidade 3D --------------------------------------------
+    // [data-tilt]: o cartão inclina seguindo o ponteiro (--rx/--ry) e o
+    // brilho acompanha (--gx/--gy). Hero: os chips de vantagem andam em
+    // camadas (--mx/--my, cada chip multiplica pela própria profundidade).
+    // Cubo das vantagens: gira conforme a seção atravessa a tela
+    // (--cube-turn). Só com mouse de verdade e sem "reduzir movimento".
+    var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+
+    if (finePointer && !prefersReducedMotion) {
+      document.querySelectorAll('[data-tilt]').forEach(function (card) {
+        card.addEventListener('pointermove', function (e) {
+          var r = card.getBoundingClientRect()
+          var x = (e.clientX - r.left) / r.width
+          var y = (e.clientY - r.top) / r.height
+          card.style.setProperty('--rx', ((0.5 - y) * 14).toFixed(2) + 'deg')
+          card.style.setProperty('--ry', ((x - 0.5) * 18).toFixed(2) + 'deg')
+          card.style.setProperty('--gx', (x * 100).toFixed(1) + '%')
+          card.style.setProperty('--gy', (y * 100).toFixed(1) + '%')
+          card.classList.add('is-tilting')
+        })
+        card.addEventListener('pointerleave', function () {
+          card.classList.remove('is-tilting')
+          card.style.setProperty('--rx', '0deg')
+          card.style.setProperty('--ry', '0deg')
+        })
+      })
+
+      var hero3d = document.querySelector('[data-hero3d]')
+      if (hero3d) {
+        hero3d.addEventListener('pointermove', function (e) {
+          var r = hero3d.getBoundingClientRect()
+          hero3d.style.setProperty('--mx', ((e.clientX - r.left) / r.width - 0.5).toFixed(3))
+          hero3d.style.setProperty('--my', ((e.clientY - r.top) / r.height - 0.5).toFixed(3))
+        })
+      }
+    }
+
+    var adv = document.querySelector('[data-adv]')
+    if (adv && !prefersReducedMotion) {
+      var cubeTicking = false
+      var turnCube = function () {
+        if (cubeTicking) return
+        cubeTicking = true
+        requestAnimationFrame(function () {
+          var r = adv.getBoundingClientRect()
+          var p = 1 - (r.top + r.height) / (window.innerHeight + r.height)
+          adv.style.setProperty('--cube-turn', (Math.min(1, Math.max(0, p)) * 360).toFixed(1) + 'deg')
+          cubeTicking = false
+        })
+      }
+      scroller.addEventListener('scroll', turnCube, { passive: true })
+      turnCube()
+    }
+
+    // --- 9: Sua Loja — abas trocam o case (prints do navegador e do
+    // celular, endereço e cartão com o link). Gira sozinho até o 1º clique;
+    // a troca faz o navegador dar um meio-giro 3D.
+    var cases = document.querySelector('[data-cases]')
+    if (cases) {
+      var caseTabs = cases.querySelectorAll('[data-case-tab]')
+      var casePanels = cases.querySelectorAll('[data-case-panel]')
+      var stage = cases.querySelector('[data-cases-stage]')
+      var caseIndex = 0
+      var caseRotation = null
+
+      var showCase = function (index) {
+        caseIndex = index
+        var key = caseTabs[index].getAttribute('data-case-tab')
+        caseTabs.forEach(function (tab) {
+          tab.setAttribute('aria-selected', tab === caseTabs[index] ? 'true' : 'false')
+        })
+        casePanels.forEach(function (panel) {
+          panel.setAttribute('data-active', panel.getAttribute('data-case-panel') === key ? 'true' : 'false')
+        })
+        if (!prefersReducedMotion) {
+          stage.classList.remove('is-swapping')
+          void stage.offsetWidth
+          stage.classList.add('is-swapping')
+        }
+      }
+
+      caseTabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function () {
+          if (caseRotation) clearInterval(caseRotation)
+          caseRotation = null
+          showCase(i)
+        })
+      })
+
+      if (!prefersReducedMotion) {
+        caseRotation = setInterval(function () {
+          showCase((caseIndex + 1) % caseTabs.length)
+        }, 5000)
+      }
+    }
+
+    // --- 8: Antes × Depois — cartões que viram -----------------------
+    // Entram mostrando o "antes" e viram sozinhos em cascata quando a
+    // seção aparece; depois cada clique/toque alterna o lado.
+    var compare = document.querySelector('[data-compare]')
+    if (compare) {
+      var flips = compare.querySelectorAll('[data-flip]')
+      var setFlip = function (card, on) {
+        card.classList.toggle('is-flipped', on)
+        card.setAttribute('aria-pressed', on ? 'true' : 'false')
+      }
+
+      flips.forEach(function (card) {
+        card.addEventListener('click', function () {
+          setFlip(card, !card.classList.contains('is-flipped'))
+        })
+      })
+
+      // cada cartão vira quando ELE aparece (no celular estão empilhados);
+      // os que entram juntos (desktop, lado a lado) viram em cascata
+      var flipObserver = new IntersectionObserver(function (entries) {
+        entries.filter(function (e) { return e.isIntersecting }).forEach(function (entry, i) {
+          flipObserver.unobserve(entry.target)
+          setTimeout(function () { setFlip(entry.target, true) }, prefersReducedMotion ? 0 : 600 + i * 350)
+        })
+      }, { threshold: 0.6 })
+      flips.forEach(function (card) { flipObserver.observe(card) })
+    }
+
+    // --- 10: Soluções — painel interativo ("scrollytelling") ----------
+    // Desktop: a seção tem altura extra e o miolo fica sticky — rolar
+    // percorre os 4 passos e troca o painel do "navegador"; clicar num
+    // passo rola até o trecho correspondente. Mobile (sem sticky): o
+    // clique troca direto e o painel gira sozinho até o primeiro toque.
+    // A cada troca o painel re-anima (contadores, funil, gráfico, linhas)
+    // via classe .is-live + os [data-count].
+    var showcase = document.querySelector('[data-showcase]')
+    if (showcase) {
+      var showTabs = showcase.querySelectorAll('[data-show-step]')
+      var showPanels = showcase.querySelectorAll('[data-show-panel]')
+      var showDesktop = window.matchMedia('(min-width: 981px)')
+      var showKeys = Array.prototype.map.call(showTabs, function (tab) { return tab.getAttribute('data-show-step') })
+      var showActive = -1
+      var showAuto = null
+      var showSeen = false
+      var showLockUntil = 0
+      var showLockIndex = -1
+
+      var countUp = function (el) {
+        var target = parseFloat(el.getAttribute('data-count'))
+        var dec = parseInt(el.getAttribute('data-dec') || '0', 10)
+        var prefix = el.getAttribute('data-prefix') || ''
+        var suffix = el.getAttribute('data-suffix') || ''
+        var lang = document.documentElement.lang || 'pt-BR'
+        var format = function (v) {
+          return prefix + v.toLocaleString(lang, { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suffix
+        }
+        if (prefersReducedMotion) { el.textContent = format(target); return }
+        var t0 = performance.now()
+        var frame = function (now) {
+          var p = Math.min(1, (now - t0) / 900)
+          el.textContent = format(target * (1 - Math.pow(1 - p, 3)))
+          if (p < 1) requestAnimationFrame(frame)
+        }
+        requestAnimationFrame(frame)
+      }
+
+      var showStep = function (index) {
+        if (index === showActive) return
+        showActive = index
+        var key = showKeys[index]
+        showTabs.forEach(function (tab) {
+          tab.setAttribute('aria-selected', tab.getAttribute('data-show-step') === key ? 'true' : 'false')
+        })
+        showPanels.forEach(function (panel) {
+          var active = panel.getAttribute('data-show-panel') === key
+          panel.setAttribute('data-active', active ? 'true' : 'false')
+          if (active && showSeen) {
+            panel.classList.remove('is-live')
+            void panel.offsetWidth // reinicia as animações internas
+            panel.classList.add('is-live')
+            panel.querySelectorAll('[data-count]').forEach(countUp)
+          }
+        })
+      }
+
+      // área útil do scrollytelling = o que a seção "anda" além da viewport
+      var showSpan = function () {
+        return showcase.getBoundingClientRect().height - window.innerHeight
+      }
+
+      var onShowScroll = function () {
+        if (!showDesktop.matches) return
+        var span = showSpan()
+        if (span <= 0) return
+        var p = Math.min(1, Math.max(0, -showcase.getBoundingClientRect().top / span))
+        var index = Math.min(showKeys.length - 1, Math.floor(p * showKeys.length))
+        if (Date.now() < showLockUntil) index = showLockIndex
+        showStep(index)
+      }
+
+      showTabs.forEach(function (tab, i) {
+        tab.addEventListener('click', function () {
+          if (showAuto) clearInterval(showAuto)
+          showAuto = null
+          var span = showSpan()
+          if (showDesktop.matches && span > 0) {
+            // trava o passo clicado enquanto a rolagem suave passa pelos outros
+            showLockIndex = i
+            showLockUntil = Date.now() + 900
+            showStep(i)
+            scroller.scrollTo({
+              top: scroller.scrollTop + showcase.getBoundingClientRect().top + ((i + 0.5) / showKeys.length) * span,
+              behavior: prefersReducedMotion ? 'auto' : 'smooth'
+            })
+          } else {
+            showStep(i)
+          }
+        })
+      })
+
+      scroller.addEventListener('scroll', onShowScroll, { passive: true })
+
+      // as animações do 1º painel só disparam quando o painel aparece —
+      // observa o stage (o "navegador", que cabe na tela), não a seção:
+      // com a altura extra do scrollytelling ela nunca atinge o threshold
+      var showSeenObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting || showSeen) return
+          showSeen = true
+          var index = showActive < 0 ? 0 : showActive
+          showActive = -1
+          showStep(index)
+          showSeenObserver.disconnect()
+        })
+      }, { threshold: 0.3 })
+      showSeenObserver.observe(showcase.querySelector('[data-show-stage]') || showcase)
+
+      // mobile: gira sozinho até alguém clicar
+      if (!showDesktop.matches && !prefersReducedMotion) {
+        showAuto = setInterval(function () {
+          showStep((Math.max(0, showActive) + 1) % showKeys.length)
+        }, 5000)
+      }
+    }
+  })
+</script>
+
+<script type="module">
+  // ===================================================================
+  // MEWTDA — logo animado em Three.js (barras tipo equalizador "ondulando")
+  // -------------------------------------------------------------------
+  // Recria o wordmark "mewtda" (textura de canvas 2D com o mesmo gradiente
+  // azul da marca) + as 6 barras coloridas do logo, só que em WebGL, com
+  // cada barra oscilando em altura (senoide com fase própria) pra dar o
+  // efeito de onda de áudio mexendo. Câmera ortográfica pra não ter
+  // distorção de perspectiva — a intenção é parecer um logo "vivo", não
+  // uma cena 3D.
+  // ===================================================================
+  document.addEventListener('DOMContentLoaded', async function () {
+    var container = document.querySelector('[data-mwtda-wave-logo]')
+    var canvas = container && container.querySelector('.mwtda-lp-hero__logo3d-canvas')
+    if (!container || !canvas) return
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // Espera a fonte da marca carregar ANTES de montar a cena: o texto vira
+    // textura uma única vez, com a métrica final — evita ter que trocar a
+    // textura (e a geometria já ter sido montada com outro tamanho) depois.
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready } catch (e) {}
+    }
+
+    var THREE
+    try {
+      THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js')
+    } catch (e) {
+      return // sem THREE, fica só o fallback estático (background-image do CSS)
+    }
+
+    var renderer
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true })
+    } catch (e) {
+      return // sem WebGL, idem — fallback estático cobre
+    }
+    renderer.setClearColor(0x000000, 0)
+
+    // WebGL deu certo: tira o fallback estático (background-image do CSS)
+    // pra não ficar sobreposto/"fantasma" atrás do canvas transparente.
+    container.style.backgroundImage = 'none'
+
+    var scene = new THREE.Scene()
+    var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10)
+    camera.position.z = 5
+
+    // --- wordmark "mewtda" via textura de canvas 2D --------------------
+    // Mede o texto de verdade (measureText) em vez de chutar um aspect
+    // ratio fixo pro canvas — assim a largura do plano bate exatamente
+    // com os glifos desenhados, sem sobra transparente que bagunça o
+    // posicionamento das barras ao lado.
+    var WORDMARK_FONT_PX = 220
+    var WORDMARK_FONT = "800 " + WORDMARK_FONT_PX + "px 'Space Grotesk', ui-sans-serif, system-ui, sans-serif"
+    var WORDMARK_PAD = WORDMARK_FONT_PX * 0.12
+
+    function makeWordmarkTexture () {
+      var probe = document.createElement('canvas').getContext('2d')
+      probe.font = WORDMARK_FONT
+      var metrics = probe.measureText('mewtda')
+      var textWidth = metrics.width
+      var ascent = metrics.actualBoundingBoxAscent || WORDMARK_FONT_PX * 0.72
+      var descent = metrics.actualBoundingBoxDescent || WORDMARK_FONT_PX * 0.22
+
+      var c = document.createElement('canvas')
+      c.width = Math.ceil(textWidth + WORDMARK_PAD * 2)
+      c.height = Math.ceil(ascent + descent + WORDMARK_PAD * 2)
+      var ctx = c.getContext('2d')
+      ctx.font = WORDMARK_FONT
+      ctx.textBaseline = 'alphabetic'
+      ctx.textAlign = 'left'
+      var grad = ctx.createLinearGradient(0, 0, c.width, 0)
+      grad.addColorStop(0, '#22b6ff')
+      grad.addColorStop(1, '#1d4ed8')
+      ctx.fillStyle = grad
+      ctx.fillText('mewtda', WORDMARK_PAD, WORDMARK_PAD + ascent)
+      var texture = new THREE.CanvasTexture(c)
+      texture.colorSpace = THREE.SRGBColorSpace
+      texture.needsUpdate = true
+      return { texture: texture, aspect: c.width / c.height }
+    }
+
+    // --- barras (equalizador) ------------------------------------------
+    var bars = [
+      { color: 0x7c3aed, base: 0.50, speed: 1.6, phase: 0.0 },
+      { color: 0xd946ef, base: 0.30, speed: 2.1, phase: 1.1 },
+      { color: 0xfb7115, base: 0.88, speed: 1.3, phase: 2.4 },
+      { color: 0xf5b301, base: 0.42, speed: 2.4, phase: 0.6 },
+      { color: 0x22c55e, base: 0.66, speed: 1.8, phase: 3.3 },
+      { color: 0x14e0a4, base: 0.34, speed: 2.0, phase: 4.2 }
+    ]
+    var barWidth = 0.085
+    var barGap = 0.045
+    var barsTotalWidth = bars.length * barWidth + (bars.length - 1) * barGap
+    var maxBase = Math.max.apply(null, bars.map(function (b) { return b.base }))
+
+    // --- layout: wordmark + gap + barras, tudo centralizado no eixo X --
+    var wordmark = makeWordmarkTexture()
+    var wordmarkHeight = 0.62
+    var wordmarkWidth = wordmarkHeight * wordmark.aspect
+    var groupGap = 0.22
+    var totalWidth = wordmarkWidth + groupGap + barsTotalWidth
+    var layoutStartX = -totalWidth / 2
+
+    var wordmarkMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(wordmarkWidth, wordmarkHeight),
+      new THREE.MeshBasicMaterial({ map: wordmark.texture, transparent: true })
+    )
+    wordmarkMesh.position.x = layoutStartX + wordmarkWidth / 2
+    scene.add(wordmarkMesh)
+
+    var barsStartX = layoutStartX + wordmarkWidth + groupGap + barWidth / 2
+
+    bars.forEach(function (bar, i) {
+      var geometry = new THREE.BoxGeometry(barWidth, 1, 0.06)
+      var material = new THREE.MeshBasicMaterial({ color: bar.color })
+      var mesh = new THREE.Mesh(geometry, material)
+      mesh.position.x = barsStartX + i * (barWidth + barGap)
+      bar.mesh = mesh
+      scene.add(mesh)
+    })
+
+    function layout () {
+      var width = container.clientWidth || 1
+      var height = container.clientHeight || 1
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+      renderer.setSize(width, height, false)
+
+      // ortográfica: mundo visível vai de -viewHalf a +viewHalf no eixo
+      // menor, escalado pelo aspect ratio do container.
+      var aspect = width / height
+      var viewHalf = 0.85
+      if (aspect >= 1) {
+        camera.left = -viewHalf * aspect
+        camera.right = viewHalf * aspect
+        camera.top = viewHalf
+        camera.bottom = -viewHalf
+      } else {
+        camera.left = -viewHalf
+        camera.right = viewHalf
+        camera.top = viewHalf / aspect
+        camera.bottom = -viewHalf / aspect
+      }
+      camera.updateProjectionMatrix()
+    }
+
+    function renderBars (t) {
+      // com a trilha tocando (bloco 11), cada barra segue a energia da sua
+      // faixa de frequência — o logo vira um equalizador de verdade; sem
+      // música, volta pra senoide decorativa de sempre
+      var snd = window.mwtdaSound
+      var levels = (snd && snd.playing) ? snd.bands() : null
+      bars.forEach(function (bar, i) {
+        var h
+        if (levels) {
+          h = Math.max(0.07, bar.base * (0.3 + levels[i] * 1.35))
+        } else {
+          var wave = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * bar.speed + bar.phase))
+          h = Math.max(0.06, bar.base * wave)
+        }
+        bar.mesh.scale.y = h
+        bar.mesh.position.y = h / 2 - maxBase / 2
+      })
+    }
+
+    layout()
+    renderBars(0)
+    renderer.render(scene, camera)
+
+    window.addEventListener('resize', layout, { passive: true })
+
+    if (reduceMotion) return // fica parado num frame só, sem loop de animação
+
+    function tick (now) {
+      renderBars((now || 0) / 1000)
+      renderer.render(scene, camera)
+      requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  })
+</script>
+
+<script>
+  // ===================================================================
+  // MEWTDA — bloco 11: trilha sonora (Web Audio, zero dependências)
+  // -------------------------------------------------------------------
+  // O logo é um equalizador — este bloco dá a música. Uma batida lo-fi
+  // (92 BPM: bumbo, caixa, chimbal, baixo e um pad de acordes) é
+  // SINTETIZADA no navegador com Web Audio API: nenhum mp3, nenhum
+  // download, nenhum problema de direitos. Um AnalyserNode mede o som em
+  // tempo real e alimenta:
+  //   • as 6 barras do logo em Three.js (window.mwtdaSound.bands());
+  //   • a var CSS --mw-beat (energia do grave, 0 a 1) no <html>, que o
+  //     CSS usa pra "pulsar" detalhes da página no ritmo;
+  //   • a classe mwtda-sound-on no <html> (barrinhas da marca dançando).
+  // Só começa com clique (autoplay é bloqueado mesmo): no botão do hero
+  // ou na tecla ♪ do controle remoto — qualquer um toca/muta.
+  // ===================================================================
+  document.addEventListener('DOMContentLoaded', function () {
+    var Ctx = window.AudioContext || window.webkitAudioContext
+    var buttons = document.querySelectorAll('[data-sound-toggle]')
+    if (!Ctx || !buttons.length) return
+
+    var BPM = 92
+    var STEP = 60 / BPM / 4            // dura de uma semicolcheia
+    var STEPS = 4 * 16                 // loop de 4 compassos
+    var ctx = null, master = null, analyser = null
+    var playing = false
+    var step = 0, nextTime = 0, timer = null, rafOn = false
+    var freqData = null
+    var smooth = new Float32Array(6)   // 6 faixas pro logo, já suavizadas
+
+    // Am9 → Fmaj7 → Cmaj7 → G6 (progressão lo-fi), nota MIDI → Hz
+    var hz = function (n) { return 440 * Math.pow(2, (n - 69) / 12) }
+    var CHORDS = [[57, 64, 67, 71], [53, 60, 64, 69], [55, 60, 64, 71], [50, 59, 64, 67]]
+    var BASS = [33, 29, 36, 31]
+
+    function init () {
+      ctx = new Ctx()
+      master = ctx.createGain()
+      master.gain.value = 0
+      var comp = ctx.createDynamicsCompressor()
+      analyser = ctx.createAnalyser()
+      analyser.fftSize = 256
+      analyser.smoothingTimeConstant = 0.55
+      master.connect(comp)
+      comp.connect(analyser)
+      analyser.connect(ctx.destination)
+      freqData = new Uint8Array(analyser.frequencyBinCount)
+      document.documentElement.style.setProperty('--mw-beat-dur', (60 / BPM).toFixed(3) + 's')
+    }
+
+    // envelope ataque/decay padrão
+    function env (gain, t, attack, peak, decay) {
+      gain.gain.setValueAtTime(0.0001, t)
+      gain.gain.linearRampToValueAtTime(peak, t + attack)
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + attack + decay)
+    }
+
+    function noiseBuffer (seconds) {
+      var buf = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * seconds), ctx.sampleRate)
+      var data = buf.getChannelData(0)
+      for (var i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2)
+      return buf
+    }
+
+    function kick (t) {
+      var o = ctx.createOscillator()
+      var g = ctx.createGain()
+      o.type = 'sine'
+      o.frequency.setValueAtTime(140, t)
+      o.frequency.exponentialRampToValueAtTime(42, t + 0.11)
+      env(g, t, 0.002, 0.85, 0.24)
+      o.connect(g).connect(master)
+      o.start(t); o.stop(t + 0.3)
+    }
+
+    function snare (t) {
+      var src = ctx.createBufferSource()
+      src.buffer = noiseBuffer(0.18)
+      var bp = ctx.createBiquadFilter()
+      bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = 0.8
+      var g = ctx.createGain(); g.gain.value = 0.5
+      src.connect(bp).connect(g).connect(master)
+      src.start(t)
+      var o = ctx.createOscillator()
+      var og = ctx.createGain()
+      o.type = 'triangle'; o.frequency.value = 190
+      env(og, t, 0.001, 0.22, 0.09)
+      o.connect(og).connect(master)
+      o.start(t); o.stop(t + 0.12)
+    }
+
+    function hat (t, open, vel) {
+      var src = ctx.createBufferSource()
+      src.buffer = noiseBuffer(open ? 0.28 : 0.05)
+      var hp = ctx.createBiquadFilter()
+      hp.type = 'highpass'; hp.frequency.value = 7200
+      var g = ctx.createGain(); g.gain.value = 0.16 * vel
+      src.connect(hp).connect(g).connect(master)
+      src.start(t)
+    }
+
+    function bass (t, note, dur) {
+      var o = ctx.createOscillator()
+      var lp = ctx.createBiquadFilter()
+      var g = ctx.createGain()
+      o.type = 'sawtooth'
+      o.frequency.value = hz(note)
+      lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.7
+      env(g, t, 0.01, 0.3, dur)
+      o.connect(lp).connect(g).connect(master)
+      o.start(t); o.stop(t + dur + 0.1)
+    }
+
+    function keys (t, notes) {
+      notes.forEach(function (note) {
+        var o = ctx.createOscillator()
+        var lp = ctx.createBiquadFilter()
+        var g = ctx.createGain()
+        o.type = 'triangle'
+        o.frequency.value = hz(note) * (1 + (Math.random() - 0.5) * 0.002) // leve "fita"
+        lp.type = 'lowpass'; lp.frequency.value = 1500
+        env(g, t, 0.035, 0.055, 1.3)
+        o.connect(lp).connect(g).connect(master)
+        o.start(t); o.stop(t + 1.5)
+      })
+    }
+
+    function playStepAt (s, t) {
+      var bar = Math.floor(s / 16)
+      var i = s % 16
+      var swing = (i % 4 === 2) ? STEP * 0.08 : 0
+      if (i === 0 || i === 7 || i === 10 || (bar === 3 && i === 13)) kick(t)
+      if (i === 4 || i === 12) snare(t)
+      if (i % 2 === 0) hat(t + swing, false, i % 4 === 0 ? 1 : 0.55)
+      if (i === 14 && bar % 2 === 1) hat(t, true, 0.5)
+      if (i === 0) { bass(t, BASS[bar], STEP * 9); keys(t, CHORDS[bar]) }
+      if (i === 7) bass(t, BASS[bar], STEP * 2)
+      if (i === 10) bass(t, BASS[bar] + 12, STEP * 2)
+      if (i === 8 && bar % 2 === 1) keys(t, [CHORDS[bar][3] + 12])
+    }
+
+    // agendador com "lookahead": agenda tudo que cai nos próximos 120ms
+    function schedule () {
+      while (nextTime < ctx.currentTime + 0.12) {
+        playStepAt(step % STEPS, nextTime)
+        nextTime += STEP
+        step++
+      }
+    }
+
+    // mede o espectro a cada frame: 6 faixas pro logo + energia do grave
+    // na var --mw-beat (é ela que faz a página "pulsar" no ritmo)
+    var BANDS = [[1, 3], [4, 8], [9, 16], [17, 30], [31, 60], [61, 110]]
+    function frame () {
+      if (!rafOn) return
+      analyser.getByteFrequencyData(freqData)
+      for (var k = 0; k < 6; k++) {
+        var from = BANDS[k][0], to = BANDS[k][1], sum = 0
+        for (var b = from; b <= to; b++) sum += freqData[b]
+        var v = (sum / (to - from + 1)) / 255
+        smooth[k] += (v - smooth[k]) * (v > smooth[k] ? 0.5 : 0.14)
+      }
+      var bassEnergy = Math.pow((smooth[0] + smooth[1]) / 2, 1.5)
+      document.documentElement.style.setProperty('--mw-beat', Math.min(1, bassEnergy * 1.4).toFixed(3))
+      requestAnimationFrame(frame)
+    }
+
+    function setButtons () {
+      buttons.forEach(function (btn) { btn.setAttribute('aria-pressed', playing ? 'true' : 'false') })
+      document.documentElement.classList.toggle('mwtda-sound-on', playing)
+    }
+
+    // reusa o letreiro de "troca de canal" do controle remoto pra avisar
+    // que a trilha ligou/desligou — ♪ no lugar do número do canal
+    var zap = document.querySelector('[data-remote-zap]')
+    var zapTimer = null
+    function announce () {
+      if (!zap) return
+      var source = document.querySelector('[data-sound-toggle][data-osd-on]')
+      if (!source) return
+      zap.querySelector('[data-zap-ch]').textContent = '♪'
+      zap.querySelector('[data-zap-label]').textContent = source.getAttribute(playing ? 'data-osd-on' : 'data-osd-off')
+      zap.classList.remove('is-zapping')
+      void zap.offsetWidth
+      zap.classList.add('is-zapping')
+      clearTimeout(zapTimer)
+      zapTimer = setTimeout(function () { zap.classList.remove('is-zapping') }, 1900)
+    }
+
+    function toggle () {
+      if (!ctx) init()
+      if (ctx.state === 'suspended') ctx.resume()
+      playing = !playing
+      var t = ctx.currentTime
+      master.gain.cancelScheduledValues(t)
+      master.gain.setValueAtTime(master.gain.value, t)
+      if (playing) {
+        master.gain.linearRampToValueAtTime(0.55, t + 0.4)
+        if (!timer) {
+          nextTime = ctx.currentTime + 0.06
+          step = 0
+          timer = setInterval(schedule, 25)
+        }
+        if (!rafOn) { rafOn = true; requestAnimationFrame(frame) }
+      } else {
+        master.gain.linearRampToValueAtTime(0.0001, t + 0.3)
+        setTimeout(function () {
+          if (playing) return
+          clearInterval(timer); timer = null
+          rafOn = false
+          document.documentElement.style.setProperty('--mw-beat', '0')
+        }, 450)
+      }
+      setButtons()
+      announce()
+    }
+
+    buttons.forEach(function (btn) { btn.addEventListener('click', toggle) })
+
+    // o que o resto da página consome (logo em Three.js, bloco do hero)
+    window.mwtdaSound = {
+      get playing () { return playing },
+      bands: function () { return smooth },
+      toggle: toggle
+    }
+  })
+</script>
+
+<script>
+  // ===================================================================
+  // MEWTDA - cabecalho: dropdown "Solucoes" (clique/toque; hover e CSS)
+  // ===================================================================
+  document.addEventListener('DOMContentLoaded', function () {
+    var menu = document.querySelector('[data-header-menu]')
+    if (!menu) return
+    var toggle = menu.querySelector('.mwtda-lp-header__toggle')
+
+    function setOpen (open) {
+      menu.classList.toggle('is-open', open)
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
+    }
+
+    toggle.addEventListener('click', function (e) {
+      e.preventDefault()
+      setOpen(!menu.classList.contains('is-open'))
+    })
+
+    document.addEventListener('click', function (e) {
+      if (menu.classList.contains('is-open') && !menu.contains(e.target)) setOpen(false)
+    })
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+        setOpen(false)
+        toggle.focus()
+      }
+    })
+
+    // clicar numa opcao fecha (vale pros anchors de mesma pagina)
+    menu.querySelectorAll('.mwtda-lp-header__option').forEach(function (opt) {
+      opt.addEventListener('click', function () { setOpen(false) })
+    })
+  })
+</script>

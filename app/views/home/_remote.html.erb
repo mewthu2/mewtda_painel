@@ -6,8 +6,10 @@
   abre ao tocar. O JS fica no fim de home/index.html.erb (bloco 6).
 %>
 <%
-  # ordem = ordem das seções na página (é o que o CH ▲/▼ percorre)
-  channels = [
+  # ordem = ordem das seções na página (é o que o CH ▲/▼ percorre).
+  # Páginas de produto passam a própria lista via render 'home/remote',
+  # channels: [...], extras: {...}, home_link: true (tecla que volta pra home).
+  channels = local_assigns[:channels] || [
     { id: 'inicio',   label: t('home.nav.inicio') },
     { id: 'produtos', label: t('home.nav.produtos') },
     { id: 'clientes', label: t('home.nav.clientes') },
@@ -21,7 +23,8 @@
     { id: 'faq',      label: t('home.nav.faq') },
     { id: 'contato',  label: t('home.nav.contato') }
   ]
-  extras = { 'inicio' => 'fa-solid fa-house', 'clientes' => 'fa-solid fa-users', 'contato' => 'fa-regular fa-comment' }
+  extras = local_assigns[:extras] || { 'inicio' => 'fa-solid fa-house', 'clientes' => 'fa-solid fa-users', 'contato' => 'fa-regular fa-comment' }
+  home_link = local_assigns[:home_link]
 
   # o que o visor mostra em cima do nome: teclas numéricas = mesmo número
   # (tecla 3 → CH 03), início = CH 00, o resto (sem tecla) = MENU
@@ -69,12 +72,28 @@
     </div>
 
     <div class="mwtda-lp-remote__extras">
+      <% if home_link %>
+        <%# volta pra home de verdade (link, não canal): o JS do controle só
+            intercepta [data-remote-channel], então navega normal %>
+        <%= link_to root_path, class: 'mwtda-lp-remote__mini', data: { tip: t('home.nav.inicio'), turbo: false }, 'aria-label': t('home.nav.inicio') do %>
+          <i class="fa-solid fa-house"></i>
+        <% end %>
+      <% end %>
       <% extras.each do |id, icon| %>
         <% label = channels.find { |c| c[:id] == id }[:label] %>
         <a href="#<%= id %>" class="mwtda-lp-remote__mini" data-remote-channel="<%= id %>" data-tip="<%= label %>" aria-label="<%= label %>">
           <i class="<%= icon %>"></i>
         </a>
       <% end %>
+      <%# tecla da trilha sonora: toca/muta a batida (JS bloco 11). As duas
+          notas se alternam via CSS conforme html.mwtda-sound-on. %>
+      <button type="button" class="mwtda-lp-remote__mini mwtda-lp-remote__mini--sound" data-sound-toggle aria-pressed="false"
+              data-tip="<%= t('home.sound.remote_tip') %>" aria-label="<%= t('home.sound.remote_tip') %>"
+              data-osd-on="<%= t('home.sound.osd_on') %>" data-osd-off="<%= t('home.sound.osd_off') %>">
+        <i class="fa-solid fa-music" aria-hidden="true"></i>
+        <i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>
+        <span class="mwtda-lp-remote__mini-led" aria-hidden="true"></span>
+      </button>
     </div>
 
     <%= render 'home/language_switcher', wrapper_class: 'mwtda-lp-remote__lang' %>

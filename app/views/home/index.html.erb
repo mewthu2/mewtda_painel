@@ -30,6 +30,7 @@
 <div class="mwtda-lp">
 
   <%= render 'home/announce' %>
+  <%= render 'home/header' %>
 
   <section class="mwtda-lp-hero" id="inicio" data-hero3d>
     <%# chips de vantagem flutuando em profundidades diferentes: seguem o
@@ -59,6 +60,16 @@
         </a>
         <a href="#produtos" class="mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg"><%= t('home.hero.cta_ver_solucoes') %></a>
       </div>
+      <%# trilha sonora: o logo é um equalizador — este botão dá o play numa
+          batida gerada no navegador (Web Audio, bloco 11 do JS) e as barras
+          do logo passam a seguir a música de verdade. Mute aqui ou no
+          controle remoto. %>
+      <button type="button" class="mwtda-lp-soundpill mwtda-lp-hero__sound" data-sound-toggle aria-pressed="false"
+              data-osd-on="<%= t('home.sound.osd_on') %>" data-osd-off="<%= t('home.sound.osd_off') %>">
+        <span class="mwtda-lp-soundpill__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="mwtda-lp-soundpill__label mwtda-lp-soundpill__label--play"><%= t('home.sound.play') %></span>
+        <span class="mwtda-lp-soundpill__label mwtda-lp-soundpill__label--mute"><%= t('home.sound.mute') %></span>
+      </button>
     </div>
   </section>
 
@@ -69,19 +80,7 @@
       <h2 class="mwtda-lp-section__title" data-reveal-self><%= t('home.products.title') %></h2>
       <p class="mwtda-lp-section__lead" data-reveal-self><%= t('home.products.lead') %></p>
 
-      <div class="mwtda-lp-products__grid" data-reveal>
-        <% landing_products.each do |product| %>
-          <a href="#<%= product[:anchor] %>" class="mwtda-lp-products__card" data-tilt style="--plogo: <%= product[:color] %>">
-            <%# logo em imagem (Quero Trocar) já traz o ícone — não repete %>
-            <% unless product[:logo] %>
-              <span class="mwtda-lp-products__icon"><i class="<%= product[:icon] %>"></i></span>
-            <% end %>
-            <%= render 'home/product_logo', product: product %>
-            <p><%= t("home.products.#{product[:key]}.tagline") %></p>
-            <em><%= t('home.products.more') %> <i class="fa-solid fa-arrow-right"></i></em>
-          </a>
-        <% end %>
-      </div>
+      <%= render 'home/showcase' %>
     </div>
   </section>
 
@@ -146,6 +145,11 @@
           <a href="https://wa.me/5516991997608?text=<%= CGI.escape(t('home.crm_part.whatsapp_message')) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--dark mwtda-lp-btn--lg">
             <i class="fa-brands fa-whatsapp"></i> <%= t('home.crm_part.cta_button') %>
           </a>
+          <% if (page = product_page_path('crm')) %>
+            <%= link_to page, class: 'mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg', data: { turbo: false } do %>
+              <%= t('home.products.page_link') %> <i class="fa-solid fa-arrow-right"></i>
+            <% end %>
+          <% end %>
         </div>
       </div>
 
@@ -196,6 +200,11 @@
           <a href="https://wa.me/5516991997608?text=<%= CGI.escape(t('home.trocas_part.whatsapp_message')) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--dark mwtda-lp-btn--lg">
             <i class="fa-brands fa-whatsapp"></i> <%= t('home.trocas_part.cta_button') %>
           </a>
+          <% if (page = product_page_path('trocas')) %>
+            <%= link_to page, class: 'mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg', data: { turbo: false } do %>
+              <%= t('home.products.page_link') %> <i class="fa-solid fa-arrow-right"></i>
+            <% end %>
+          <% end %>
         </div>
       </div>
 
@@ -205,77 +214,7 @@
             lojista usa no dia a dia). Usa o print real em
             app/assets/images/landing/quero-trocar-mobile.png; sem o arquivo,
             cai numa versão em HTML da mesma tela. %>
-        <% panel = 'home.trocas_part.panel' %>
-        <div class="mwtda-lp-shop__phone mwtda-lp-exchange" aria-hidden="true">
-          <div class="mwtda-lp-shop__notch"></div>
-          <% if landing_image?('landing/quero-trocar-mobile.png') %>
-          <div class="mwtda-lp-shop__screen mwtda-lp-exchange__screen mwtda-lp-exchange__screen--print">
-            <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
-            <%= image_tag 'landing/quero-trocar-mobile.png', alt: '', loading: 'lazy' %>
-          </div>
-          <% else %>
-          <div class="mwtda-lp-shop__screen mwtda-lp-exchange__screen">
-            <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
-            <div class="mwtda-lp-exchange__body">
-              <div class="mwtda-lp-exchange__topbar">
-                <%= image_tag 'landing/quero-trocar-icon.png', alt: '', class: 'mwtda-lp-exchange__icon' %>
-                <span class="mwtda-lp-exchange__store"><i class="fa-solid fa-store"></i> Ateliê <i class="fa-solid fa-chevron-down"></i></span>
-                <span class="mwtda-lp-exchange__avatar">A</span>
-              </div>
-
-              <div class="mwtda-lp-exchange__heading">
-                <div>
-                  <strong><%= t("#{panel}.title") %></strong>
-                  <small><%= t("#{panel}.subtitle") %></small>
-                </div>
-                <span class="mwtda-lp-exchange__public"><i class="fa-solid fa-arrow-up-right-from-square"></i> <%= t("#{panel}.public_page") %></span>
-              </div>
-
-              <div class="mwtda-lp-exchange__stats">
-                <% [
-                     ['all',      128, 'fa-solid fa-inbox'],
-                     ['pending',    6, 'fa-solid fa-hourglass-half'],
-                     ['approved',   9, 'fa-regular fa-thumbs-up'],
-                     ['received',   4, 'fa-solid fa-clipboard-check'],
-                     ['done',     104, 'fa-regular fa-circle-check'],
-                     ['rejected',   5, 'fa-solid fa-ban']
-                   ].each do |key, count, icon| %>
-                  <div class="mwtda-lp-exchange__stat mwtda-lp-exchange__stat--<%= key %>">
-                    <span><i class="<%= icon %>"></i></span>
-                    <div><b><%= count %></b><small><%= t("#{panel}.stats.#{key}") %></small></div>
-                  </div>
-                <% end %>
-              </div>
-
-              <div class="mwtda-lp-exchange__list">
-                <span class="mwtda-lp-exchange__search"><i class="fa-solid fa-magnifying-glass"></i> <%= t("#{panel}.search") %></span>
-                <% [
-                     ['#1042', 'Mariana Costa', 'exchange', 'pending'],
-                     ['#1039', 'Rafael Lima',   'exchange', 'approved'],
-                     ['#1035', 'Juliana Alves', 'refund',   'done'],
-                     ['#1031', 'Bruno Souza',   'exchange', 'done'],
-                     ['#1027', 'Camila Rocha',  'exchange', 'done']
-                   ].each do |order, name, kind, status| %>
-                  <div class="mwtda-lp-exchange__row">
-                    <span class="mwtda-lp-exchange__initials"><%= name.split.map(&:first).join %></span>
-                    <div>
-                      <b><%= name %></b>
-                      <small><%= order %> · <%= t("#{panel}.kinds.#{kind}") %></small>
-                    </div>
-                    <em class="mwtda-lp-exchange__badge mwtda-lp-exchange__badge--<%= status %>"><%= t("#{panel}.badges.#{status}") %></em>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-
-            <nav class="mwtda-lp-exchange__tabbar">
-              <span class="is-active"><i class="fa-solid fa-inbox"></i><%= t("#{panel}.nav.requests") %></span>
-              <span><i class="fa-solid fa-sliders"></i><%= t("#{panel}.nav.settings") %></span>
-              <span><i class="fa-regular fa-circle-question"></i><%= t("#{panel}.nav.help") %></span>
-            </nav>
-          </div>
-          <% end %>
-        </div>
+        <%= render 'home/exchange_phone' %>
 
         <div class="mwtda-lp-shop__notifications" aria-hidden="true">
           <% [%w[new fa-solid fa-arrow-right-arrow-left], %w[approved fa-solid fa-ticket]].each_with_index do |(key, *icon), i| %>
@@ -329,6 +268,13 @@
           <a href="https://wa.me/5516991997608?text=<%= CGI.escape(t('home.sites.whatsapp_message')) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--dark mwtda-lp-btn--lg">
             <i class="fa-brands fa-whatsapp"></i> <%= t('home.sites.cta_button') %>
           </a>
+          <%# página completa do produto (data-turbo false: a página nova
+              re-registra os scripts da landing no DOMContentLoaded) %>
+          <% if (page = product_page_path('new')) %>
+            <%= link_to page, class: 'mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg', data: { turbo: false } do %>
+              <%= t('home.products.page_link') %> <i class="fa-solid fa-arrow-right"></i>
+            <% end %>
+          <% end %>
         </div>
       </div>
 
@@ -378,15 +324,9 @@
 
   <%
     # ============================ 04 — APPS ============================
-    # Fotos da vitrine fake dentro do celular (Unsplash). Pra usar prints
-    # reais de lojas de clientes, é só trocar as URLs aqui.
-    unsplash = ->(id, w = 360) { "https://images.unsplash.com/photo-#{id}?w=#{w}&q=70&auto=format&fit=crop" }
-    app_segments = {
-      moda:        { store: 'ATELIÊ',   accent: '#e4572e', banner: '1483985988355-763728e1935b', products: %w[1591047139829-d91aecb6caea 1503342217505-b0a15ec3261c 1542291026-7eec264c27ff 1560343090-f0409e92791a] },
-      beleza:      { store: 'glow.co',  accent: '#c2587e', banner: '1596462502278-27bfdc403348', products: %w[1608571423902-eed4a5ad8108 1620916566398-39f1143ab7be 1571781926291-c477ebfd024b 1556228578-8c89e6adf883] },
-      eletronicos: { store: 'VOLT',     accent: '#2563eb', banner: '1505740420928-5e560c06d30e', products: %w[1546868871-7041f2a55e12 1583394838336-acd977736f90 1526170375885-4d8ecf77b99f 1523275335684-37898b6baf30] },
-      casa:        { store: 'casa.nua', accent: '#0f766e', banner: '1586023492125-27b2c045efd7', products: %w[1555041469-a586c61ea9bc 1567538096630-e0c55bd6374c 1513506003901-1e6a229e2d15 1524758631624-e2822e304c36] }
-    }
+    # Os dados da vitrine fake (segmentos + fotos Unsplash) agora moram no
+    # HomeHelper (landing_app_segments) — compartilhados com a página /app.
+    app_segments = landing_app_segments
   %>
   <section class="mwtda-lp-part mwtda-lp-part--tint mwtda-lp-part--flip mwtda-lp-shop" id="apps" data-shop-showcase>
     <div class="mwtda-lp-part__inner">
@@ -417,6 +357,11 @@
           <a href="https://wa.me/5516991997608?text=<%= CGI.escape(t('home.apps.whatsapp_message')) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--dark mwtda-lp-btn--lg">
             <i class="fa-regular fa-bell"></i> <%= t('home.apps.cta_button') %>
           </a>
+          <% if (page = product_page_path('app')) %>
+            <%= link_to page, class: 'mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg', data: { turbo: false } do %>
+              <%= t('home.products.page_link') %> <i class="fa-solid fa-arrow-right"></i>
+            <% end %>
+          <% end %>
           <ul class="mwtda-lp-shop__pills">
             <% t('home.apps.pills').each do |pill| %>
               <li><i class="fa-solid fa-check"></i> <%= pill %></li>
@@ -428,50 +373,7 @@
       <div class="mwtda-lp-part__visual" data-reveal-self>
         <div class="mwtda-lp-part__glow"></div>
 
-        <div class="mwtda-lp-shop__phone" aria-hidden="true">
-          <div class="mwtda-lp-shop__notch"></div>
-          <div class="mwtda-lp-shop__screen">
-            <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
-
-            <% app_segments.each_with_index do |(key, seg), i| %>
-              <div class="mwtda-lp-shop__store" data-shop-panel="<%= key %>" data-active="<%= i.zero? %>" style="--shop-accent: <%= seg[:accent] %>">
-                <div class="mwtda-lp-shop__store-header">
-                  <i class="fa-solid fa-bars"></i>
-                  <span class="mwtda-lp-shop__store-name"><%= seg[:store] %></span>
-                  <span class="mwtda-lp-shop__bag"><i class="fa-solid fa-bag-shopping"></i><em>2</em></span>
-                </div>
-                <div class="mwtda-lp-shop__search"><i class="fa-solid fa-magnifying-glass"></i> <%= t('home.apps.phone.search') %></div>
-
-                <div class="mwtda-lp-shop__banner">
-                  <img src="<%= unsplash.(seg[:banner], 520) %>" alt="" loading="lazy">
-                  <div class="mwtda-lp-shop__banner-copy">
-                    <span><%= t("home.apps.segments.#{key}.banner_tag") %></span>
-                    <strong><%= t("home.apps.segments.#{key}.banner_title") %></strong>
-                    <em><%= t('home.apps.phone.shop_now') %> <i class="fa-solid fa-arrow-right"></i></em>
-                  </div>
-                </div>
-
-                <div class="mwtda-lp-shop__grid">
-                  <% names = t("home.apps.segments.#{key}.products") %>
-                  <% prices = t("home.apps.segments.#{key}.prices") %>
-                  <% seg[:products].each_with_index do |photo, p| %>
-                    <div class="mwtda-lp-shop__product">
-                      <div class="mwtda-lp-shop__product-img">
-                        <img src="<%= unsplash.(photo, 240) %>" alt="" loading="lazy">
-                        <i class="fa-regular fa-heart"></i>
-                      </div>
-                      <span class="mwtda-lp-shop__product-name"><%= names[p] %></span>
-                      <span class="mwtda-lp-shop__product-price"><%= prices[p] %></span>
-                      <span class="mwtda-lp-shop__product-add"><i class="fa-solid fa-plus"></i> <%= t('home.apps.phone.add') %></span>
-                    </div>
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
-
-            <div class="mwtda-lp-shop__checkout"><i class="fa-solid fa-lock"></i> <%= t('home.apps.phone.checkout') %></div>
-          </div>
-        </div>
+        <%= render 'home/app_phone', segments: app_segments %>
 
         <div class="mwtda-lp-shop__notifications" aria-hidden="true">
           <% [%w[sale fa-solid fa-sack-dollar], %w[pix fa-solid fa-bolt], %w[cart fa-solid fa-cart-shopping]].each_with_index do |(key, *icon), i| %>
@@ -510,636 +412,8 @@
     </div>
   </section>
 
-  <footer class="mwtda-lp-footer">
-    <div class="mwtda-lp-footer__inner">
-      <div class="mwtda-lp-footer__brand">
-        <%= image_tag 'admin/logonovo.png',
-              class: 'mwtda-lp-footer__logo',
-              alt: 'Mewtda',
-              style: 'display:block !important; height:26px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important;' %>
-        <p><%= t('home.footer.description') %></p>
-        <%= image_tag 'admin/shopifypartnerbadge_250.png',
-              class: 'mwtda-lp-footer__badge',
-              alt: t('home.footer.shopify_partner_alt'),
-              style: 'display:block !important; height:56px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important; opacity:0.9;' %>
-      </div>
-
-      <div class="mwtda-lp-footer__column">
-        <span class="mwtda-lp-footer__title"><%= t('home.footer.solucoes_title') %></span>
-        <% landing_products.each do |product| %>
-          <a href="#<%= product[:anchor] %>"><%= product[:logo] ? "#{product[:name]} by Mewtda" : "Mewtda #{product[:name]}" %></a>
-        <% end %>
-      </div>
-
-      <div class="mwtda-lp-footer__column">
-        <span class="mwtda-lp-footer__title"><%= t('home.footer.nav_title') %></span>
-        <% %w[vantagens comparativo como_funciona faq].each do |key| %>
-          <a href="#<%= key.dasherize %>"><%= t("home.nav.#{key}") %></a>
-        <% end %>
-      </div>
-
-      <div class="mwtda-lp-footer__column">
-        <span class="mwtda-lp-footer__title"><%= t('home.footer.contato_title') %></span>
-        <a href="https://wa.me/5516991997608" target="_blank"><%= t('home.footer.whatsapp') %></a>
-        <%= link_to t('home.footer.entrar'), new_user_session_path %>
-      </div>
-    </div>
-
-    <div class="mwtda-lp-footer__bottom">
-      &copy; <%= Date.today.year %> Mewtda
-    </div>
-  </footer>
+  <%= render 'home/footer' %>
 
 </div>
 
-<script>
-  // ===================================================================
-  // MEWTDA — efeitos de rolagem (JS puro, sem dependências)
-  // -------------------------------------------------------------------
-  // 2) escreve --mw-scroll-y na raiz .mwtda-lp pro parallax sutil do hero;
-  // 3) alterna .is-visible em [data-reveal] / [data-reveal-self] via
-  //    IntersectionObserver (fade + slide + blur escalonado);
-  // 4) calcula o progresso de scroll da seção "Como funciona" e escreve
-  //    --mw-progress (0 a 1) pra linha de progresso entre os 3 passos.
-  // Pode virar app/javascript/landing/scroll_effects.js sem alterar
-  // nada e ser importado no seu application.js / importmap.
-  // ===================================================================
-  document.addEventListener('DOMContentLoaded', function () {
-    var root = document.querySelector('.mwtda-lp')
-    var processGrid = document.querySelector('[data-process]')
-    if (!root) return
-
-    // --- 0: "portal" pra fora do layout do app -------------------------
-    // Se essa view for renderizada dentro do layout padrão (com sidebar,
-    // header fixo, etc.), qualquer ancestral entre <body> e .mwtda-lp que
-    // tenha transform / filter / perspective / will-change / contain cria
-    // um novo "containing block" — e nesse caso position:fixed passa a
-    // ficar preso dentro daquele ancestral em vez de cobrir a viewport
-    // inteira (era isso que deixava a página "de lado", encaixada ao lado
-    // da sidebar). Mover o próprio elemento para ser filho direto do
-    // <body> resolve isso na raiz, sem precisar tocar no layout do app.
-    if (root.parentElement !== document.body) {
-      document.body.appendChild(root)
-    }
-    // controle remoto e efeito de canal: mesmo motivo (position:fixed)
-    document.querySelectorAll('[data-remote], [data-remote-zap]').forEach(function (el) {
-      if (el.parentElement !== document.body) document.body.appendChild(el)
-    })
-
-    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    // --- quem realmente rola ------------------------------------------
-    // `root` é position:fixed + overflow-y:auto (ver bloco acima) — é
-    // ELE que dispara o evento `scroll`, a `window` NUNCA rola nesse
-    // esquema. Todo o resto do script (parallax, progresso, controle
-    // remoto) precisa escutar `root`, não `window`.
-    var scroller = root
-
-    // --- 2: var de parallax do hero, com throttle via rAF
-    var ticking = false
-    function onScroll() {
-      if (ticking) return
-      ticking = true
-      requestAnimationFrame(function () {
-        var y = root.scrollTop
-
-        if (!prefersReducedMotion) {
-          root.style.setProperty('--mw-scroll-y', (Math.min(y, 800) * -1) + 'px')
-        }
-
-        // --- 4: progresso do bloco "Como funciona" --------------------
-        if (processGrid) {
-          var rect = processGrid.getBoundingClientRect()
-          var vh = window.innerHeight
-          var start = vh * 0.85
-          var end = vh * 0.35
-          var total = rect.top - end
-          var range = start - end
-          var raw = 1 - total / range
-          var progress = Math.min(1, Math.max(0, raw))
-
-          processGrid.style.setProperty('--mw-progress', progress.toFixed(3))
-          processGrid.toggleAttribute('data-progress-lit-1', progress > 0.05)
-          processGrid.toggleAttribute('data-progress-lit-2', progress > 0.55)
-          processGrid.toggleAttribute('data-progress-lit-3', progress > 0.95)
-        }
-
-        ticking = false
-      })
-    }
-
-    scroller.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll, { passive: true })
-    onScroll()
-
-    // --- 3: reveal-on-scroll ------------------------------------------
-    var revealTargets = document.querySelectorAll('[data-reveal], [data-reveal-self]')
-
-    var observer = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
-    )
-
-    revealTargets.forEach(function (el) {
-      observer.observe(el)
-    })
-
-    // --- 5: vitrine "Sua loja" — abas de segmento trocam a loja do celular
-    // e o texto ao lado. Gira sozinha enquanto ninguém clica; o primeiro
-    // clique assume o controle e para a rotação automática.
-    var shop = document.querySelector('[data-shop-showcase]')
-    if (shop) {
-      var tabs = shop.querySelectorAll('[data-shop-tab]')
-      var panels = shop.querySelectorAll('[data-shop-panel]')
-      var keys = Array.prototype.map.call(tabs, function (tab) { return tab.getAttribute('data-shop-tab') })
-      var current = 0
-      var rotation = null
-
-      function showSegment(index) {
-        current = index
-        var key = keys[index]
-        tabs.forEach(function (tab) {
-          tab.setAttribute('aria-selected', tab.getAttribute('data-shop-tab') === key ? 'true' : 'false')
-        })
-        panels.forEach(function (panel) {
-          panel.setAttribute('data-active', panel.getAttribute('data-shop-panel') === key ? 'true' : 'false')
-        })
-      }
-
-      tabs.forEach(function (tab, i) {
-        tab.addEventListener('click', function () {
-          if (rotation) clearInterval(rotation)
-          rotation = null
-          showSegment(i)
-        })
-      })
-
-      if (!prefersReducedMotion) {
-        rotation = setInterval(function () {
-          showSegment((current + 1) % keys.length)
-        }, 4500)
-      }
-    }
-
-    // --- 6: controle remoto (menu fixo no canto) ------------------------
-    // Teclas = canais (seções). Clique rola suave até a seção, CH ▲/▼
-    // anda pela lista, o visor acompanha a seção que está no meio da tela
-    // e o LED de infravermelho "pisca" a cada comando. Em tela estreita o
-    // controle fica recolhido e abre/fecha pelo mini controle.
-    var remote = document.querySelector('[data-remote]')
-    if (remote) {
-      var channels = JSON.parse(remote.getAttribute('data-remote-channels'))
-      var toggle = remote.querySelector('[data-remote-toggle]')
-      var chEl = remote.querySelector('[data-remote-ch]')
-      var labelEl = remote.querySelector('[data-remote-label]')
-      var screenEl = remote.querySelector('.mwtda-lp-remote__screen')
-      var ir = remote.querySelector('[data-remote-ir]')
-      var channelLinks = remote.querySelectorAll('[data-remote-channel]')
-      var currentChannel = -1
-      var lockedChannel = null
-      var lockTimer = null
-
-      // encolhe o texto até caber na largura (nomes mais longos em
-      // EN/ES, ex: "Soluciones"), sem quebrar o layout do controle
-      function fitText(el) {
-        el.style.fontSize = ''
-        if (el.scrollWidth <= el.clientWidth) return
-        var size = parseFloat(getComputedStyle(el).fontSize)
-        el.style.fontSize = (size * el.clientWidth / el.scrollWidth * 0.97) + 'px'
-      }
-
-      remote.querySelectorAll('.mwtda-lp-remote__key small').forEach(fitText)
-
-      function showChannel(index) {
-        if (index === currentChannel) return
-        currentChannel = index
-        chEl.textContent = channels[index].ch
-        labelEl.textContent = channels[index].label
-        fitText(labelEl)
-        channelLinks.forEach(function (link) {
-          var active = link.getAttribute('data-remote-channel') === channels[index].id
-          if (active) link.setAttribute('aria-current', 'true')
-          else link.removeAttribute('aria-current')
-        })
-        screenEl.classList.remove('is-changing')
-        void screenEl.offsetWidth // reinicia a animação do visor
-        screenEl.classList.add('is-changing')
-      }
-
-      function blink() {
-        ir.classList.remove('is-sending')
-        void ir.offsetWidth
-        ir.classList.add('is-sending')
-      }
-
-      function setOpen(open) {
-        remote.classList.toggle('is-open', open)
-        // no mobile o controle aberto é maior: recalcula o encaixe do visor
-        if (open) {
-          fitText(labelEl)
-          remote.querySelectorAll('.mwtda-lp-remote__key small').forEach(fitText)
-        }
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
-      }
-
-      // troca de canal na tela: reinicia as animações do overlay a cada
-      // clique (remove a classe, força reflow, põe de volta)
-      var zap = document.querySelector('[data-remote-zap]')
-      var zapCh = zap && zap.querySelector('[data-zap-ch]')
-      var zapLabel = zap && zap.querySelector('[data-zap-label]')
-      var zapTimer = null
-
-      // ruído do chiado: bitmap pequeno gerado uma vez aqui (barato de
-      // compor) em vez de filtro SVG rasterizado na hora do clique
-      if (zap && !prefersReducedMotion) {
-        try {
-          var noise = document.createElement('canvas')
-          noise.width = noise.height = 160
-          var nctx = noise.getContext('2d')
-          var img = nctx.createImageData(160, 160)
-          for (var p = 0; p < img.data.length; p += 4) {
-            img.data[p + 3] = Math.random() * 150 // preto com alfa aleatório
-          }
-          nctx.putImageData(img, 0, 0)
-          zap.style.setProperty('--mw-zap-noise', 'url(' + noise.toDataURL() + ')')
-        } catch (e) {}
-      }
-
-      function zapTo(index) {
-        if (!zap) return
-        zapCh.textContent = channels[index].ch
-        zapLabel.textContent = channels[index].label
-        zap.classList.remove('is-zapping')
-        void zap.offsetWidth
-        zap.classList.add('is-zapping')
-        clearTimeout(zapTimer)
-        zapTimer = setTimeout(function () { zap.classList.remove('is-zapping') }, 1900)
-      }
-
-      function goTo(index) {
-        var target = document.getElementById(channels[index].id)
-        if (!target) return
-        blink()
-        zapTo(index)
-        showChannel(index)
-        lockedChannel = index
-        clearTimeout(lockTimer)
-        lockTimer = setTimeout(function () { lockedChannel = null }, 1200)
-        target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' })
-        setOpen(false)
-      }
-
-      channelLinks.forEach(function (link) {
-        link.addEventListener('click', function (e) {
-          e.preventDefault()
-          var id = link.getAttribute('data-remote-channel')
-          goTo(channels.findIndex(function (c) { return c.id === id }))
-        })
-      })
-
-      remote.querySelectorAll('[data-remote-step]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var step = parseInt(btn.getAttribute('data-remote-step'), 10)
-          goTo(Math.min(channels.length - 1, Math.max(0, currentChannel + step)))
-        })
-      })
-
-      toggle.addEventListener('click', function () {
-        setOpen(!remote.classList.contains('is-open'))
-      })
-
-      // no mobile, tocar fora do controle aberto fecha ele
-      document.addEventListener('click', function (e) {
-        if (remote.classList.contains('is-open') && !remote.contains(e.target)) setOpen(false)
-      })
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && remote.classList.contains('is-open')) {
-          setOpen(false)
-          toggle.focus()
-        }
-      })
-
-      // visor acompanha a seção que cruza o meio da tela
-      var sectionObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting || lockedChannel !== null) return
-          var index = channels.findIndex(function (c) { return c.id === entry.target.id })
-          if (index >= 0) showChannel(index)
-        })
-      }, { rootMargin: '-45% 0px -50% 0px' })
-
-      channels.forEach(function (c) {
-        var section = document.getElementById(c.id)
-        if (section) sectionObserver.observe(section)
-      })
-
-      // rolagem terminou: o visor volta a acompanhar a página
-      root.addEventListener('scrollend', function () { lockedChannel = null })
-    }
-
-    // --- 7: profundidade 3D --------------------------------------------
-    // [data-tilt]: o cartão inclina seguindo o ponteiro (--rx/--ry) e o
-    // brilho acompanha (--gx/--gy). Hero: os chips de vantagem andam em
-    // camadas (--mx/--my, cada chip multiplica pela própria profundidade).
-    // Cubo das vantagens: gira conforme a seção atravessa a tela
-    // (--cube-turn). Só com mouse de verdade e sem "reduzir movimento".
-    var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
-
-    if (finePointer && !prefersReducedMotion) {
-      document.querySelectorAll('[data-tilt]').forEach(function (card) {
-        card.addEventListener('pointermove', function (e) {
-          var r = card.getBoundingClientRect()
-          var x = (e.clientX - r.left) / r.width
-          var y = (e.clientY - r.top) / r.height
-          card.style.setProperty('--rx', ((0.5 - y) * 14).toFixed(2) + 'deg')
-          card.style.setProperty('--ry', ((x - 0.5) * 18).toFixed(2) + 'deg')
-          card.style.setProperty('--gx', (x * 100).toFixed(1) + '%')
-          card.style.setProperty('--gy', (y * 100).toFixed(1) + '%')
-          card.classList.add('is-tilting')
-        })
-        card.addEventListener('pointerleave', function () {
-          card.classList.remove('is-tilting')
-          card.style.setProperty('--rx', '0deg')
-          card.style.setProperty('--ry', '0deg')
-        })
-      })
-
-      var hero3d = document.querySelector('[data-hero3d]')
-      if (hero3d) {
-        hero3d.addEventListener('pointermove', function (e) {
-          var r = hero3d.getBoundingClientRect()
-          hero3d.style.setProperty('--mx', ((e.clientX - r.left) / r.width - 0.5).toFixed(3))
-          hero3d.style.setProperty('--my', ((e.clientY - r.top) / r.height - 0.5).toFixed(3))
-        })
-      }
-    }
-
-    var adv = document.querySelector('[data-adv]')
-    if (adv && !prefersReducedMotion) {
-      var cubeTicking = false
-      var turnCube = function () {
-        if (cubeTicking) return
-        cubeTicking = true
-        requestAnimationFrame(function () {
-          var r = adv.getBoundingClientRect()
-          var p = 1 - (r.top + r.height) / (window.innerHeight + r.height)
-          adv.style.setProperty('--cube-turn', (Math.min(1, Math.max(0, p)) * 360).toFixed(1) + 'deg')
-          cubeTicking = false
-        })
-      }
-      scroller.addEventListener('scroll', turnCube, { passive: true })
-      turnCube()
-    }
-
-    // --- 9: Sua Loja — abas trocam o case (prints do navegador e do
-    // celular, endereço e cartão com o link). Gira sozinho até o 1º clique;
-    // a troca faz o navegador dar um meio-giro 3D.
-    var cases = document.querySelector('[data-cases]')
-    if (cases) {
-      var caseTabs = cases.querySelectorAll('[data-case-tab]')
-      var casePanels = cases.querySelectorAll('[data-case-panel]')
-      var stage = cases.querySelector('[data-cases-stage]')
-      var caseIndex = 0
-      var caseRotation = null
-
-      var showCase = function (index) {
-        caseIndex = index
-        var key = caseTabs[index].getAttribute('data-case-tab')
-        caseTabs.forEach(function (tab) {
-          tab.setAttribute('aria-selected', tab === caseTabs[index] ? 'true' : 'false')
-        })
-        casePanels.forEach(function (panel) {
-          panel.setAttribute('data-active', panel.getAttribute('data-case-panel') === key ? 'true' : 'false')
-        })
-        if (!prefersReducedMotion) {
-          stage.classList.remove('is-swapping')
-          void stage.offsetWidth
-          stage.classList.add('is-swapping')
-        }
-      }
-
-      caseTabs.forEach(function (tab, i) {
-        tab.addEventListener('click', function () {
-          if (caseRotation) clearInterval(caseRotation)
-          caseRotation = null
-          showCase(i)
-        })
-      })
-
-      if (!prefersReducedMotion) {
-        caseRotation = setInterval(function () {
-          showCase((caseIndex + 1) % caseTabs.length)
-        }, 5000)
-      }
-    }
-
-    // --- 8: Antes × Depois — cartões que viram -----------------------
-    // Entram mostrando o "antes" e viram sozinhos em cascata quando a
-    // seção aparece; depois cada clique/toque alterna o lado.
-    var compare = document.querySelector('[data-compare]')
-    if (compare) {
-      var flips = compare.querySelectorAll('[data-flip]')
-      var setFlip = function (card, on) {
-        card.classList.toggle('is-flipped', on)
-        card.setAttribute('aria-pressed', on ? 'true' : 'false')
-      }
-
-      flips.forEach(function (card) {
-        card.addEventListener('click', function () {
-          setFlip(card, !card.classList.contains('is-flipped'))
-        })
-      })
-
-      // cada cartão vira quando ELE aparece (no celular estão empilhados);
-      // os que entram juntos (desktop, lado a lado) viram em cascata
-      var flipObserver = new IntersectionObserver(function (entries) {
-        entries.filter(function (e) { return e.isIntersecting }).forEach(function (entry, i) {
-          flipObserver.unobserve(entry.target)
-          setTimeout(function () { setFlip(entry.target, true) }, prefersReducedMotion ? 0 : 600 + i * 350)
-        })
-      }, { threshold: 0.6 })
-      flips.forEach(function (card) { flipObserver.observe(card) })
-    }
-  })
-</script>
-
-<script type="module">
-  // ===================================================================
-  // MEWTDA — logo animado em Three.js (barras tipo equalizador "ondulando")
-  // -------------------------------------------------------------------
-  // Recria o wordmark "mewtda" (textura de canvas 2D com o mesmo gradiente
-  // azul da marca) + as 6 barras coloridas do logo, só que em WebGL, com
-  // cada barra oscilando em altura (senoide com fase própria) pra dar o
-  // efeito de onda de áudio mexendo. Câmera ortográfica pra não ter
-  // distorção de perspectiva — a intenção é parecer um logo "vivo", não
-  // uma cena 3D.
-  // ===================================================================
-  document.addEventListener('DOMContentLoaded', async function () {
-    var container = document.querySelector('[data-mwtda-wave-logo]')
-    var canvas = container && container.querySelector('.mwtda-lp-hero__logo3d-canvas')
-    if (!container || !canvas) return
-
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    // Espera a fonte da marca carregar ANTES de montar a cena: o texto vira
-    // textura uma única vez, com a métrica final — evita ter que trocar a
-    // textura (e a geometria já ter sido montada com outro tamanho) depois.
-    if (document.fonts && document.fonts.ready) {
-      try { await document.fonts.ready } catch (e) {}
-    }
-
-    var THREE
-    try {
-      THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js')
-    } catch (e) {
-      return // sem THREE, fica só o fallback estático (background-image do CSS)
-    }
-
-    var renderer
-    try {
-      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true })
-    } catch (e) {
-      return // sem WebGL, idem — fallback estático cobre
-    }
-    renderer.setClearColor(0x000000, 0)
-
-    // WebGL deu certo: tira o fallback estático (background-image do CSS)
-    // pra não ficar sobreposto/"fantasma" atrás do canvas transparente.
-    container.style.backgroundImage = 'none'
-
-    var scene = new THREE.Scene()
-    var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10)
-    camera.position.z = 5
-
-    // --- wordmark "mewtda" via textura de canvas 2D --------------------
-    // Mede o texto de verdade (measureText) em vez de chutar um aspect
-    // ratio fixo pro canvas — assim a largura do plano bate exatamente
-    // com os glifos desenhados, sem sobra transparente que bagunça o
-    // posicionamento das barras ao lado.
-    var WORDMARK_FONT_PX = 220
-    var WORDMARK_FONT = "800 " + WORDMARK_FONT_PX + "px 'Space Grotesk', ui-sans-serif, system-ui, sans-serif"
-    var WORDMARK_PAD = WORDMARK_FONT_PX * 0.12
-
-    function makeWordmarkTexture () {
-      var probe = document.createElement('canvas').getContext('2d')
-      probe.font = WORDMARK_FONT
-      var metrics = probe.measureText('mewtda')
-      var textWidth = metrics.width
-      var ascent = metrics.actualBoundingBoxAscent || WORDMARK_FONT_PX * 0.72
-      var descent = metrics.actualBoundingBoxDescent || WORDMARK_FONT_PX * 0.22
-
-      var c = document.createElement('canvas')
-      c.width = Math.ceil(textWidth + WORDMARK_PAD * 2)
-      c.height = Math.ceil(ascent + descent + WORDMARK_PAD * 2)
-      var ctx = c.getContext('2d')
-      ctx.font = WORDMARK_FONT
-      ctx.textBaseline = 'alphabetic'
-      ctx.textAlign = 'left'
-      var grad = ctx.createLinearGradient(0, 0, c.width, 0)
-      grad.addColorStop(0, '#22b6ff')
-      grad.addColorStop(1, '#1d4ed8')
-      ctx.fillStyle = grad
-      ctx.fillText('mewtda', WORDMARK_PAD, WORDMARK_PAD + ascent)
-      var texture = new THREE.CanvasTexture(c)
-      texture.colorSpace = THREE.SRGBColorSpace
-      texture.needsUpdate = true
-      return { texture: texture, aspect: c.width / c.height }
-    }
-
-    // --- barras (equalizador) ------------------------------------------
-    var bars = [
-      { color: 0x7c3aed, base: 0.50, speed: 1.6, phase: 0.0 },
-      { color: 0xd946ef, base: 0.30, speed: 2.1, phase: 1.1 },
-      { color: 0xfb7115, base: 0.88, speed: 1.3, phase: 2.4 },
-      { color: 0xf5b301, base: 0.42, speed: 2.4, phase: 0.6 },
-      { color: 0x22c55e, base: 0.66, speed: 1.8, phase: 3.3 },
-      { color: 0x14e0a4, base: 0.34, speed: 2.0, phase: 4.2 }
-    ]
-    var barWidth = 0.085
-    var barGap = 0.045
-    var barsTotalWidth = bars.length * barWidth + (bars.length - 1) * barGap
-    var maxBase = Math.max.apply(null, bars.map(function (b) { return b.base }))
-
-    // --- layout: wordmark + gap + barras, tudo centralizado no eixo X --
-    var wordmark = makeWordmarkTexture()
-    var wordmarkHeight = 0.62
-    var wordmarkWidth = wordmarkHeight * wordmark.aspect
-    var groupGap = 0.22
-    var totalWidth = wordmarkWidth + groupGap + barsTotalWidth
-    var layoutStartX = -totalWidth / 2
-
-    var wordmarkMesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(wordmarkWidth, wordmarkHeight),
-      new THREE.MeshBasicMaterial({ map: wordmark.texture, transparent: true })
-    )
-    wordmarkMesh.position.x = layoutStartX + wordmarkWidth / 2
-    scene.add(wordmarkMesh)
-
-    var barsStartX = layoutStartX + wordmarkWidth + groupGap + barWidth / 2
-
-    bars.forEach(function (bar, i) {
-      var geometry = new THREE.BoxGeometry(barWidth, 1, 0.06)
-      var material = new THREE.MeshBasicMaterial({ color: bar.color })
-      var mesh = new THREE.Mesh(geometry, material)
-      mesh.position.x = barsStartX + i * (barWidth + barGap)
-      bar.mesh = mesh
-      scene.add(mesh)
-    })
-
-    function layout () {
-      var width = container.clientWidth || 1
-      var height = container.clientHeight || 1
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
-      renderer.setSize(width, height, false)
-
-      // ortográfica: mundo visível vai de -viewHalf a +viewHalf no eixo
-      // menor, escalado pelo aspect ratio do container.
-      var aspect = width / height
-      var viewHalf = 0.85
-      if (aspect >= 1) {
-        camera.left = -viewHalf * aspect
-        camera.right = viewHalf * aspect
-        camera.top = viewHalf
-        camera.bottom = -viewHalf
-      } else {
-        camera.left = -viewHalf
-        camera.right = viewHalf
-        camera.top = viewHalf / aspect
-        camera.bottom = -viewHalf / aspect
-      }
-      camera.updateProjectionMatrix()
-    }
-
-    function renderBars (t) {
-      bars.forEach(function (bar) {
-        var wave = 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * bar.speed + bar.phase))
-        var h = Math.max(0.06, bar.base * wave)
-        bar.mesh.scale.y = h
-        bar.mesh.position.y = h / 2 - maxBase / 2
-      })
-    }
-
-    layout()
-    renderBars(0)
-    renderer.render(scene, camera)
-
-    window.addEventListener('resize', layout, { passive: true })
-
-    if (reduceMotion) return // fica parado num frame só, sem loop de animação
-
-    function tick (now) {
-      renderBars((now || 0) / 1000)
-      renderer.render(scene, camera)
-      requestAnimationFrame(tick)
-    }
-    requestAnimationFrame(tick)
-  })
-</script>
+<%= render 'home/lp_scripts' %>

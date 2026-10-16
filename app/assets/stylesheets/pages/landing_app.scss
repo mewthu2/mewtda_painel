@@ -1,0 +1,535 @@
+// Página do produto "App" (home/app_page.html.erb) — prefixo mwtda-ap-*.
+// Referência: kobe.io (hero com celular + push flutuantes, bento de
+// recursos, tabs de segmento sobre painel escuro, números em gradiente).
+// Reusa tokens e componentes da landing (a página vive em .mwtda-lp) e a
+// vitrine fake do celular (classes mwtda-lp-shop__* de pages/landing.scss).
+
+  /* ------------------------------ HERO ------------------------------ */
+  .mwtda-ap-hero {
+    position: relative;
+    padding: 5rem 1.5rem 0;
+    background:
+      radial-gradient(1000px 540px at 18% -10%, rgba(252, 113, 7, 0.14), transparent 65%),
+      radial-gradient(820px 480px at 92% 8%, rgba(29, 78, 216, 0.12), transparent 65%),
+      var(--mw-bg);
+    overflow: hidden;
+  }
+
+  .mwtda-ap-hero__inner {
+    max-width: var(--mw-container);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    padding-bottom: 4rem;
+  }
+
+  .mwtda-ap-hero__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .mwtda-ap-plogo { font-size: 1.3rem; }
+
+  .mwtda-ap-hero__headline {
+    margin: 0;
+    font-family: var(--mw-font-heading);
+    font-size: clamp(2.4rem, 5.2vw, 4rem);
+    line-height: 1.05;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--mw-fg);
+  }
+
+  .mwtda-ap-hero__headline em {
+    display: block;
+    font-size: inherit;
+    font-style: normal;
+    background: linear-gradient(90deg, #fc7107, #ffb36b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .mwtda-ap-hero__sub {
+    margin: 0;
+    max-width: 520px;
+    color: var(--mw-fg-muted);
+    font-size: 1.08rem;
+    line-height: 1.65;
+  }
+
+  .mwtda-ap-hero__ctas { justify-content: flex-start; margin-top: 0.8rem; }
+
+  /* celular do hero com os pushes flutuando em volta (posições vêm de
+     .mwtda-lp-shop__notification--sale/--pix/--cart no landing.scss) */
+  .mwtda-ap-hero__visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 2.5rem;
+  }
+
+  .mwtda-ap-hero__visual .mwtda-lp-shop__phone { margin: 0 auto; }
+
+  /* ------------------- faixa de logos de clientes ------------------- */
+  .mwtda-ap-logos {
+    border-top: 1px solid var(--mw-border);
+    padding: 1.6rem 0 1.8rem;
+    text-align: center;
+  }
+
+  .mwtda-ap-logos > small {
+    display: block;
+    margin-bottom: 1.1rem;
+    font: 700 0.68rem var(--mw-font-body);
+    letter-spacing: 0.16em;
+    color: var(--mw-fg-muted);
+  }
+
+  .mwtda-ap-logos__strip {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+
+  .mwtda-ap-logos__track {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    width: max-content;
+    animation: mw-marquee 46s linear infinite;
+  }
+
+  .mwtda-ap-logos__logo {
+    height: 22px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0);
+    opacity: 0.45;
+  }
+
+  /* ----------------------- RECURSOS (bento) ------------------------- */
+  .mwtda-ap-features {
+    padding: 6rem 1.5rem;
+    background: var(--mw-bg-tint);
+    text-align: center;
+  }
+
+  .mwtda-ap-features__inner {
+    max-width: var(--mw-container);
+    margin: 0 auto;
+  }
+
+  .mwtda-ap-bento {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.25rem;
+    margin-top: 2.6rem;
+    text-align: left;
+  }
+
+  .mwtda-ap-bento__card {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 1.6rem;
+    border: 1px solid var(--mw-border);
+    border-radius: var(--mw-radius);
+    background: var(--mw-bg-elevated);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .mwtda-ap-bento__card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 44px rgba(11, 12, 16, 0.08);
+  }
+
+  .mwtda-ap-bento__card strong {
+    font-family: var(--mw-font-heading);
+    font-size: 1.12rem;
+  }
+
+  .mwtda-ap-bento__card p {
+    margin: 0;
+    color: var(--mw-fg-muted);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .mwtda-ap-bento__card--push { grid-column: span 4; grid-row: span 1; }
+
+  /* pilha de pushes (estilo iOS) do cartão destaque */
+  .mwtda-ap-pushstack {
+    display: grid;
+    gap: 0.55rem;
+    margin-bottom: 1rem;
+  }
+
+  .mwtda-ap-pushstack__card {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--mw-border);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 10px 26px -14px rgba(11, 12, 16, 0.35);
+    /* max-width em vez de min(): o LibSass tenta resolver min() em build e
+       quebra misturando px com %` */
+    width: 100%;
+    max-width: 400px;
+    margin-left: calc(var(--i) * 1.4rem);
+  }
+
+  .mwtda-ap-pushstack__card strong {
+    display: block;
+    font: 700 0.82rem var(--mw-font-body);
+  }
+
+  /* só o span de texto dentro do <div> — o seletor largo (card span) pegava
+     também o span do ícone e o das barrinhas da marca, quebrando o layout */
+  .mwtda-ap-pushstack__card > div span {
+    display: block;
+    color: var(--mw-fg-muted);
+    font-size: 0.74rem;
+  }
+
+  .mwtda-ap-pushstack__card small {
+    align-self: flex-start;
+    margin-left: auto;
+    color: #9ca3af;
+    font-size: 0.64rem;
+  }
+
+  .mwtda-ap-pushstack__icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: #0b0c10;
+  }
+
+  .mwtda-ap-pushstack__icon .mwtda-lp-plogo__bars {
+    font-size: 1.05rem;
+    height: 1em;
+  }
+
+  /* mini-visuais dos cartões menores */
+  .mwtda-ap-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    height: 74px;
+    margin-bottom: 0.9rem;
+  }
+
+  .mwtda-ap-mini--grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+
+  .mwtda-ap-mini--grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--mw-border);
+  }
+
+  .mwtda-ap-mini--brand b {
+    font-family: var(--mw-font-heading);
+    font-size: 2.3rem;
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(90deg, #22b6ff, #1d4ed8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-right: 0.4rem;
+  }
+
+  .mwtda-ap-mini--brand span {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(11, 12, 16, 0.18);
+  }
+
+  .mwtda-ap-mini--brand span:nth-of-type(1) { background: #fc7107; }
+  .mwtda-ap-mini--brand span:nth-of-type(2) { background: #00247e; }
+  .mwtda-ap-mini--brand span:nth-of-type(3) { background: #22c55e; }
+  .mwtda-ap-mini--brand span:nth-of-type(4) { background: #d946ef; }
+
+  .mwtda-ap-mini--chart { align-items: flex-end; }
+
+  .mwtda-ap-mini--chart i {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .mwtda-ap-mini--chart i:nth-child(1) { height: 42%; background: #7c3aed; }
+  .mwtda-ap-mini--chart i:nth-child(2) { height: 62%; background: #d946ef; }
+  .mwtda-ap-mini--chart i:nth-child(3) { height: 100%; background: #fb7115; }
+  .mwtda-ap-mini--chart i:nth-child(4) { height: 52%; background: #f5b301; }
+  .mwtda-ap-mini--chart i:nth-child(5) { height: 78%; background: #22c55e; }
+  .mwtda-ap-mini--chart i:nth-child(6) { height: 36%; background: #14e0a4; }
+
+  /* as barras do mini-gráfico dançam quando a trilha toca */
+  html.mwtda-sound-on .mwtda-ap-mini--chart i {
+    transform-origin: bottom;
+    animation: mw-eq-dance var(--mw-beat-dur, 0.65s) ease-in-out infinite;
+  }
+
+  html.mwtda-sound-on .mwtda-ap-mini--chart i:nth-child(2) { animation-delay: -0.11s; }
+  html.mwtda-sound-on .mwtda-ap-mini--chart i:nth-child(3) { animation-delay: -0.22s; }
+  html.mwtda-sound-on .mwtda-ap-mini--chart i:nth-child(4) { animation-delay: -0.33s; }
+  html.mwtda-sound-on .mwtda-ap-mini--chart i:nth-child(5) { animation-delay: -0.44s; }
+  html.mwtda-sound-on .mwtda-ap-mini--chart i:nth-child(6) { animation-delay: -0.54s; }
+
+  .mwtda-ap-mini--logos { justify-content: space-between; padding: 0 0.3rem; }
+
+  .mwtda-ap-mini--logos img {
+    height: 26px;
+    width: auto;
+    filter: grayscale(1);
+    opacity: 0.8;
+  }
+
+  /* ---------------- SEGMENTOS (tabs + painel escuro) ----------------- */
+  .mwtda-ap-segments {
+    padding: 6rem 1.5rem;
+    background: var(--mw-bg);
+    text-align: center;
+  }
+
+  .mwtda-ap-segments__inner {
+    max-width: var(--mw-container);
+    margin: 0 auto;
+  }
+
+  .mwtda-ap-segments__tabs {
+    justify-content: center;
+    margin: 1.8rem 0;
+  }
+
+  .mwtda-ap-stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    padding: 3rem;
+    border-radius: var(--mw-radius-lg);
+    background:
+      radial-gradient(640px 420px at 85% 20%, rgba(252, 113, 7, 0.18), transparent 65%),
+      #0b0c10;
+    text-align: left;
+    overflow: hidden;
+  }
+
+  .mwtda-ap-stage__pitches {
+    position: relative;
+    min-height: 5.5rem;
+    max-width: 420px;
+  }
+
+  .mwtda-ap-stage .mwtda-lp-shop__pitch {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: var(--mw-font-heading);
+    font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+    font-weight: 600;
+    line-height: 1.45;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+
+  .mwtda-ap-stage .mwtda-lp-shop__pitch[data-active="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .mwtda-ap-stage__phone { padding: 0 1rem; }
+
+  /* ------------------ NÚMEROS (cartões de gradiente) ----------------- */
+  .mwtda-ap-numbers {
+    padding: 6rem 1.5rem;
+    background: var(--mw-bg-tint);
+    text-align: center;
+  }
+
+  .mwtda-ap-numbers__inner {
+    max-width: var(--mw-container);
+    margin: 0 auto;
+  }
+
+  .mwtda-ap-numbers__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-top: 2.4rem;
+  }
+
+  .mwtda-ap-numbers__card {
+    display: grid;
+    gap: 0.4rem;
+    align-content: center;
+    min-height: 170px;
+    padding: 1.6rem 1.2rem;
+    border-radius: var(--mw-radius);
+    color: #fff;
+  }
+
+  .mwtda-ap-numbers__card strong {
+    font-family: var(--mw-font-heading);
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .mwtda-ap-numbers__card small {
+    font: 700 0.68rem var(--mw-font-body);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .mwtda-ap-numbers__card--plataformas { background: linear-gradient(135deg, #fc7107, #ffb36b); }
+  .mwtda-ap-numbers__card--push        { background: linear-gradient(135deg, #7c3aed, #d946ef); }
+  .mwtda-ap-numbers__card--painel      { background: linear-gradient(135deg, #00247e, #1d4ed8); }
+  .mwtda-ap-numbers__card--codigo      { background: linear-gradient(135deg, #15803d, #22c55e); }
+
+  .mwtda-ap-integr {
+    margin-top: 3.2rem;
+  }
+
+  .mwtda-ap-integr > small {
+    display: block;
+    margin-bottom: 1.2rem;
+    font: 700 0.68rem var(--mw-font-body);
+    letter-spacing: 0.16em;
+    color: var(--mw-fg-muted);
+  }
+
+  .mwtda-ap-integr__logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem 2.8rem;
+  }
+
+  .mwtda-ap-integr__logos img {
+    height: 26px;
+    width: auto;
+    filter: grayscale(1);
+    opacity: 0.75;
+    transition: filter 0.2s ease, opacity 0.2s ease;
+  }
+
+  .mwtda-ap-integr__logos img:hover { filter: none; opacity: 1; }
+
+  .mwtda-ap-integr__product { height: 22px; }
+
+  /* ------------------- ACESSO (lista de espera) ---------------------- */
+  .mwtda-ap-access {
+    padding: 6rem 1.5rem;
+    background: var(--mw-bg);
+  }
+
+  .mwtda-ap-access__card {
+    max-width: var(--mw-container);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+    padding: 2.8rem 3rem;
+    border: 1px solid var(--mw-border);
+    border-radius: var(--mw-radius-lg);
+    background: linear-gradient(135deg, #ffffff 0%, #fdf4ec 100%);
+    box-shadow: 0 30px 70px -40px rgba(11, 12, 16, 0.35);
+  }
+
+  .mwtda-ap-access__copy h2 {
+    margin: 0.9rem 0 1rem;
+    font-family: var(--mw-font-heading);
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .mwtda-ap-access__copy > p {
+    margin: 0 0 1.2rem;
+    color: var(--mw-fg-muted);
+    line-height: 1.65;
+    max-width: 520px;
+  }
+
+  /* prefixo .mwtda-lp: o reset da landing (.mwtda-lp ul) tem especificidade
+     maior que uma classe só e zerava margin/padding destes cartões */
+  .mwtda-lp .mwtda-ap-access__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mwtda-ap-access__chips li {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid rgba(252, 113, 7, 0.4);
+    border-radius: 999px;
+    font: 700 0.64rem var(--mw-font-body);
+    letter-spacing: 0.1em;
+    color: var(--mw-primary);
+  }
+
+  .mwtda-lp .mwtda-ap-access__includes {
+    display: grid;
+    gap: 0.7rem;
+    margin: 0;
+    padding: 1.6rem 1.8rem;
+    border: 1px solid var(--mw-border);
+    border-radius: var(--mw-radius);
+    background: #fff;
+    list-style: none;
+  }
+
+  .mwtda-ap-access__includes li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+  }
+
+  .mwtda-ap-access__includes i { color: #22c55e; font-size: 0.8rem; }
+
+  /* --------------------------- responsivo ---------------------------- */
+  @media (max-width: 980px) {
+    .mwtda-ap-hero__inner { grid-template-columns: 1fr; gap: 2rem; }
+    .mwtda-ap-hero__visual { padding: 0 1rem; }
+    .mwtda-ap-bento { grid-template-columns: 1fr; }
+    .mwtda-ap-bento__card,
+    .mwtda-ap-bento__card--push { grid-column: auto; }
+    .mwtda-ap-stage { grid-template-columns: 1fr; padding: 1.8rem 1.4rem; text-align: center; }
+    .mwtda-ap-stage__pitches { margin: 0 auto; }
+    .mwtda-ap-numbers__grid { grid-template-columns: repeat(2, 1fr); }
+    .mwtda-ap-access__card { grid-template-columns: 1fr; padding: 1.8rem 1.4rem; }
+  }
+
+  @media (max-width: 560px) {
+    .mwtda-ap-numbers__grid { grid-template-columns: 1fr; }
+  }
