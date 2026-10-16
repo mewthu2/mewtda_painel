@@ -1,0 +1,78 @@
+<%#
+  Celular com o painel de solicitacoes do Quero Trocar (tela que o
+  lojista usa no dia a dia). Usa o print real em
+  app/assets/images/landing/quero-trocar-mobile.png se existir; sem o
+  arquivo, cai na versao em HTML da mesma tela. Usado na secao 02 da
+  home e na pagina /quero-trocar.
+%>
+<% panel = 'home.trocas_part.panel' %>
+<div class="mwtda-lp-shop__phone mwtda-lp-exchange" aria-hidden="true">
+  <div class="mwtda-lp-shop__notch"></div>
+  <% if landing_image?('landing/quero-trocar-mobile.png') %>
+  <div class="mwtda-lp-shop__screen mwtda-lp-exchange__screen mwtda-lp-exchange__screen--print">
+    <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+    <%= image_tag 'landing/quero-trocar-mobile.png', alt: '', loading: 'lazy' %>
+  </div>
+  <% else %>
+  <div class="mwtda-lp-shop__screen mwtda-lp-exchange__screen">
+    <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+    <div class="mwtda-lp-exchange__body">
+      <div class="mwtda-lp-exchange__topbar">
+        <%= image_tag 'landing/quero-trocar-icon.png', alt: '', class: 'mwtda-lp-exchange__icon' %>
+        <span class="mwtda-lp-exchange__store"><i class="fa-solid fa-store"></i> Ateliê <i class="fa-solid fa-chevron-down"></i></span>
+        <span class="mwtda-lp-exchange__avatar">A</span>
+      </div>
+
+      <div class="mwtda-lp-exchange__heading">
+        <div>
+          <strong><%= t("#{panel}.title") %></strong>
+          <small><%= t("#{panel}.subtitle") %></small>
+        </div>
+        <span class="mwtda-lp-exchange__public"><i class="fa-solid fa-arrow-up-right-from-square"></i> <%= t("#{panel}.public_page") %></span>
+      </div>
+
+      <div class="mwtda-lp-exchange__stats">
+        <% [
+             ['all',      128, 'fa-solid fa-inbox'],
+             ['pending',    6, 'fa-solid fa-hourglass-half'],
+             ['approved',   9, 'fa-regular fa-thumbs-up'],
+             ['received',   4, 'fa-solid fa-clipboard-check'],
+             ['done',     104, 'fa-regular fa-circle-check'],
+             ['rejected',   5, 'fa-solid fa-ban']
+           ].each do |key, count, icon| %>
+          <div class="mwtda-lp-exchange__stat mwtda-lp-exchange__stat--<%= key %>">
+            <span><i class="<%= icon %>"></i></span>
+            <div><b><%= count %></b><small><%= t("#{panel}.stats.#{key}") %></small></div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mwtda-lp-exchange__list">
+        <span class="mwtda-lp-exchange__search"><i class="fa-solid fa-magnifying-glass"></i> <%= t("#{panel}.search") %></span>
+        <% [
+             ['#1042', 'Mariana Costa', 'exchange', 'pending'],
+             ['#1039', 'Rafael Lima',   'exchange', 'approved'],
+             ['#1035', 'Juliana Alves', 'refund',   'done'],
+             ['#1031', 'Bruno Souza',   'exchange', 'done'],
+             ['#1027', 'Camila Rocha',  'exchange', 'done']
+           ].each do |order, name, kind, status| %>
+          <div class="mwtda-lp-exchange__row">
+            <span class="mwtda-lp-exchange__initials"><%= name.split.map(&:first).join %></span>
+            <div>
+              <b><%= name %></b>
+              <small><%= order %> · <%= t("#{panel}.kinds.#{kind}") %></small>
+            </div>
+            <em class="mwtda-lp-exchange__badge mwtda-lp-exchange__badge--<%= status %>"><%= t("#{panel}.badges.#{status}") %></em>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <nav class="mwtda-lp-exchange__tabbar">
+      <span class="is-active"><i class="fa-solid fa-inbox"></i><%= t("#{panel}.nav.requests") %></span>
+      <span><i class="fa-solid fa-sliders"></i><%= t("#{panel}.nav.settings") %></span>
+      <span><i class="fa-regular fa-circle-question"></i><%= t("#{panel}.nav.help") %></span>
+    </nav>
+  </div>
+  <% end %>
+</div>

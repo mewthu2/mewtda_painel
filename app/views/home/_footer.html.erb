@@ -1,0 +1,39 @@
+<footer class="mwtda-lp-footer">
+  <div class="mwtda-lp-footer__inner">
+    <div class="mwtda-lp-footer__brand">
+      <%= image_tag 'admin/logonovo.png',
+            class: 'mwtda-lp-footer__logo',
+            alt: 'Mewtda',
+            style: 'display:block !important; height:26px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important;' %>
+      <p><%= t('home.footer.description') %></p>
+      <%= image_tag 'admin/shopifypartnerbadge_250.png',
+            class: 'mwtda-lp-footer__badge',
+            alt: t('home.footer.shopify_partner_alt'),
+            style: 'display:block !important; height:56px !important; width:auto !important; max-width:none !important; min-width:0 !important; max-height:none !important; min-height:0 !important; object-fit:contain !important; flex-shrink:0 !important; margin:0 !important; padding:0 !important; opacity:0.9;' %>
+    </div>
+
+    <div class="mwtda-lp-footer__column">
+      <span class="mwtda-lp-footer__title"><%= t('home.footer.solucoes_title') %></span>
+      <% landing_products.each do |product| %>
+        <a href="#<%= product[:anchor] %>"><%= product[:logo] ? "#{product[:name]} by Mewtda" : "Mewtda #{product[:name]}" %></a>
+      <% end %>
+    </div>
+
+    <div class="mwtda-lp-footer__column">
+      <span class="mwtda-lp-footer__title"><%= t('home.footer.nav_title') %></span>
+      <% %w[vantagens comparativo como_funciona faq].each do |key| %>
+        <a href="#<%= key.dasherize %>"><%= t("home.nav.#{key}") %></a>
+      <% end %>
+    </div>
+
+    <div class="mwtda-lp-footer__column">
+      <span class="mwtda-lp-footer__title"><%= t('home.footer.contato_title') %></span>
+      <a href="https://wa.me/5516991997608" target="_blank"><%= t('home.footer.whatsapp') %></a>
+      <%= link_to t('home.footer.entrar'), new_user_session_path %>
+    </div>
+  </div>
+
+  <div class="mwtda-lp-footer__bottom">
+    &copy; <%= Date.today.year %> Mewtda
+  </div>
+</footer>

@@ -10,7 +10,8 @@
       # (logo 3D, controle remoto, vitrine do celular) não rodaria de novo. Forçando
       # reload completo garante que tudo reinicializa certo.
     %>
-    <%= link_to label, root_path(locale: code),
+    <%# url_for mantém a página atual (home ou página de produto), só troca o locale %>
+    <%= link_to label, url_for(locale: code),
           class: "mwtda-lp-lang__option #{'is-active' if I18n.locale.to_s == code}",
           data: { turbo: false } %>
   <% end %>

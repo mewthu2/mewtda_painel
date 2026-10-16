@@ -1,7 +1,9 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.2'
+# ~> em vez de versão exata: qualquer patch da série 3.2 serve (o
+# RubyInstaller do Windows, por ex., só distribui o patch mais recente).
+ruby '~> 3.2.2'
 
 # This gem supports operating on xlsx files (Open XML format). While it is
 # capable of properly parsing the entire OOXML structure

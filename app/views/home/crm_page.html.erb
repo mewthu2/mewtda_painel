@@ -1,0 +1,174 @@
+<% title "Mewtda — #{t('home.crm_page.meta_title')}" %>
+
+<%#
+  =====================================================================
+  MEWTDA — Página do produto "MeuCRM"
+  ---------------------------------------------------------------------
+  Família visual das páginas de produto: hero tipográfico claro, grade
+  de recursos, automações de WhatsApp com um chat de exemplo dentro do
+  celular, o painel no notebook (reusa home/_crm_screen no frame
+  mwtda-lp-laptop da landing), FAQ em acordeão e CTA.
+  CSS → app/assets/stylesheets/pages/landing_products.scss
+        (mwtda-pp-* compartilhado com /quero-trocar + mwtda-cr-*)
+  =====================================================================
+%>
+
+<% content_for :head do %>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<% end %>
+
+<%
+  cp = 'home.crm_page'
+  whatsapp = ->(message) { "https://wa.me/5516991997608?text=#{CGI.escape(message)}" }
+  channels = [
+    { id: 'inicio',     label: t('home.nav.inicio') },
+    { id: 'recursos',   label: t("#{cp}.nav.recursos"),   key: 1 },
+    { id: 'automacoes', label: t("#{cp}.nav.automacoes"), key: 2 },
+    { id: 'painel',     label: t("#{cp}.nav.painel"),     key: 3 },
+    { id: 'faq',        label: t("#{cp}.nav.faq"),        key: 4 },
+    { id: 'contato',    label: t('home.nav.contato') }
+  ]
+  extras = { 'inicio' => 'fa-solid fa-arrow-up', 'contato' => 'fa-regular fa-comment' }
+%>
+
+<%= render 'home/remote', channels: channels, extras: extras, home_link: true %>
+
+<div class="mwtda-lp mwtda-cr">
+
+  <%= render 'home/header' %>
+
+  <%# ============================ HERO ============================ %>
+  <section class="mwtda-pp-hero" id="inicio">
+    <div class="mwtda-pp-hero__inner">
+      <%= image_tag 'landing/meu-crm-logo.png', alt: 'MeuCRM', class: 'mwtda-pp-hero__plogo' %>
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark"><%= t("#{cp}.hero.eyebrow") %></span>
+      <h1 class="mwtda-pp-hero__headline">
+        <%= t("#{cp}.hero.headline_a") %>
+        <em><%= t("#{cp}.hero.headline_b") %></em>
+      </h1>
+      <p class="mwtda-pp-hero__sub"><%= t("#{cp}.hero.sub") %></p>
+      <div class="mwtda-lp-hero__ctas">
+        <a href="<%= whatsapp.(t("#{cp}.hero.whatsapp_message")) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg">
+          <i class="fa-brands fa-whatsapp"></i> <%= t("#{cp}.hero.cta") %>
+        </a>
+        <a href="#recursos" class="mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg"><%= t("#{cp}.hero.cta_secondary") %></a>
+      </div>
+    </div>
+  </section>
+
+  <%# ====================== RECURSOS (grade) ====================== %>
+  <section class="mwtda-pp-section mwtda-pp-section--tint" id="recursos">
+    <div class="mwtda-pp-section__inner">
+      <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{cp}.features.eyebrow") %></span>
+      <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{cp}.features.title") %></h2>
+      <p class="mwtda-lp-section__lead" data-reveal-self><%= t("#{cp}.features.lead") %></p>
+      <div class="mwtda-pp-cards mwtda-pp-cards--3" data-reveal>
+        <% { funil: 'fa-solid fa-filter', clientes: 'fa-solid fa-users', metas: 'fa-solid fa-bullseye',
+             trocas_int: 'fa-solid fa-arrow-right-arrow-left', afiliados: 'fa-solid fa-handshake', integracoes: 'fa-solid fa-plug' }.each do |key, icon| %>
+          <div class="mwtda-pp-card">
+            <span class="mwtda-pp-card__icon"><i class="<%= icon %>"></i></span>
+            <strong><%= t("#{cp}.features.items.#{key}.title") %></strong>
+            <p><%= t("#{cp}.features.items.#{key}.text") %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ================== AUTOMAÇÕES (chat WhatsApp) ================== %>
+  <section class="mwtda-cr-autos" id="automacoes">
+    <div class="mwtda-cr-autos__inner">
+      <div class="mwtda-cr-autos__copy">
+        <span class="mwtda-sl-eyebrow mwtda-sl-eyebrow--dark" data-reveal-self><%= t("#{cp}.autos.eyebrow") %></span>
+        <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{cp}.autos.title") %></h2>
+        <p class="mwtda-lp-section__lead mwtda-cr-autos__lead" data-reveal-self><%= t("#{cp}.autos.lead") %></p>
+        <ul class="mwtda-cr-autos__items" data-reveal>
+          <% { rastreio: 'fa-solid fa-truck-fast', cashback: 'fa-solid fa-coins', carrinho: 'fa-solid fa-cart-shopping' }.each do |key, icon| %>
+            <li>
+              <span class="mwtda-pp-card__icon mwtda-cr-autos__icon"><i class="<%= icon %>"></i></span>
+              <div>
+                <strong><%= t("#{cp}.autos.items.#{key}.title") %></strong>
+                <p><%= t("#{cp}.autos.items.#{key}.text") %></p>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <div class="mwtda-cr-autos__visual" data-reveal-self aria-hidden="true">
+        <div class="mwtda-lp-shop__phone mwtda-cr-chatphone">
+          <div class="mwtda-lp-shop__notch"></div>
+          <div class="mwtda-lp-shop__screen mwtda-cr-chat">
+            <div class="mwtda-cr-chat__topbar">
+              <span class="mwtda-cr-chat__avatar"><span class="mwtda-lp-plogo__bars"><i></i><i></i><i></i><i></i><i></i><i></i></span></span>
+              <div><b>Ateliê</b><small>online</small></div>
+              <i class="fa-brands fa-whatsapp"></i>
+            </div>
+            <div class="mwtda-cr-chat__body">
+              <% t("#{cp}.autos.chat").each do |msg| %>
+                <p class="mwtda-cr-chat__bubble mwtda-cr-chat__bubble--<%= msg[:from] %>"><%= msg[:text] %></p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%# ================== PAINEL (notebook, faixa escura) ================== %>
+  <section class="mwtda-cr-panel" id="painel">
+    <div class="mwtda-cr-panel__inner">
+      <span class="mwtda-sl-eyebrow" data-reveal-self><%= t("#{cp}.painel.eyebrow") %></span>
+      <h2 class="mwtda-cr-panel__title" data-reveal-self><%= t("#{cp}.painel.title") %></h2>
+      <p class="mwtda-cr-panel__lead" data-reveal-self><%= t("#{cp}.painel.lead") %></p>
+      <div class="mwtda-cr-panel__stage" data-reveal-self>
+        <div class="mwtda-lp-laptop">
+          <div class="mwtda-lp-laptop__screen">
+            <span class="mwtda-lp-laptop__camera"></span>
+            <div class="mwtda-lp-laptop__display">
+              <%= render 'home/crm_screen' %>
+            </div>
+          </div>
+          <div class="mwtda-lp-laptop__base"><span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%# ============================ FAQ ============================ %>
+  <section class="mwtda-lp-section mwtda-lp-faq" id="faq">
+    <div class="mwtda-lp-section__inner mwtda-lp-faq__inner">
+      <div class="mwtda-lp-faq__head">
+        <span class="mwtda-lp-eyebrow" data-reveal-self><%= t("#{cp}.faq.eyebrow") %></span>
+        <h2 class="mwtda-lp-section__title" data-reveal-self><%= t("#{cp}.faq.title") %></h2>
+      </div>
+      <div class="mwtda-lp-faq__list" data-reveal>
+        <% t("#{cp}.faq.items").each do |item| %>
+          <details class="mwtda-lp-faq__item">
+            <summary><%= item[:q] %> <i class="fa-solid fa-plus" aria-hidden="true"></i></summary>
+            <p><%= item[:a] %></p>
+          </details>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ========================== CTA FINAL ========================= %>
+  <section class="mwtda-lp-section mwtda-lp-cta" id="contato">
+    <div class="mwtda-lp-section__inner mwtda-lp-cta__inner" data-reveal-self>
+      <h2><%= t("#{cp}.cta.title") %></h2>
+      <p><%= t("#{cp}.cta.text") %></p>
+      <div class="mwtda-lp-hero__ctas">
+        <a href="<%= whatsapp.(t("#{cp}.cta.whatsapp_message")) %>" target="_blank" class="mwtda-lp-btn mwtda-lp-btn--primary mwtda-lp-btn--lg">
+          <i class="fa-brands fa-whatsapp"></i> <%= t("#{cp}.cta.button") %>
+        </a>
+        <%= link_to t('home.footer.entrar'), new_user_session_path, class: 'mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg' %>
+      </div>
+    </div>
+  </section>
+
+  <%= render 'home/footer' %>
+
+</div>
+
+<%= render 'home/lp_scripts' %>

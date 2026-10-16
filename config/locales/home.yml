@@ -31,6 +31,499 @@ en:
       cta_contato: "Talk to us"
       cta_ver_solucoes: "Explore our solutions"
       whatsapp_message: "Hi, I'd like to learn about Mewtda's solutions."
+    sound:
+      play: "Press play on our beat"
+      mute: "Mute the beat"
+      osd_on: "Beat on"
+      osd_off: "Muted"
+      remote_tip: "Soundtrack: play / mute"
+    showcase:
+      aria: "Mewtda solutions, interactive panel"
+      hint: "Scroll to explore — or click a solution"
+      host: "app.mewtda.com.br"
+      open: "See it in detail"
+      crm:
+        kpi_revenue: "Revenue"
+        kpi_orders: "Orders"
+        kpi_roas: "ROAS"
+        funnel_title: "Conversion funnel"
+        funnel:
+          visitas: "Visits"
+          carrinho: "Cart"
+          checkout: "Checkout"
+          compra: "Purchase"
+        chart_title: "Sales — last 30 days"
+      trocas:
+        title: "Exchange requests"
+        subtitle: "Synced with your Shopify orders"
+      sites:
+        title: "Your store, live"
+        live: "Live"
+        meters:
+          design: "Custom design"
+          velocidade: "Speed"
+          conversao: "Ready to convert"
+      apps:
+        title: "Your store in your pocket"
+        soon: "Coming soon"
+    sites_page:
+      meta_title: "Shopify store development"
+      nav:
+        projetos: "Projects"
+        processo: "Process"
+        beneficios: "Benefits"
+        ecossistema: "Ecosystem"
+      hero:
+        eyebrow: "SHOPIFY STORE DEVELOPMENT"
+        headline_a: "Your store, built from scratch."
+        headline_b: "Live in weeks."
+        sub: "Design that looks like your brand, built on Shopify by people who run e-commerce operations every day — delivered already connected to Mewtda's CRM, exchanges and automations."
+        cta_whatsapp: "I want my store"
+        cta_projects: "See the projects"
+        whatsapp_message: "Hi! I want to build my Shopify store with Mewtda."
+      stats:
+        lojas: "brands served"
+        semanas: "weeks from briefing to launch"
+        shopify: "Shopify, end to end"
+      projects:
+        eyebrow: "PORTFOLIO"
+        title: "Our projects"
+        hint: "Keep scrolling — the projects follow along"
+        visit: "Visit the site"
+        taglines:
+          fernandafarah: "Signature fashion with its own editorial"
+          allie: "Minimal essentials, from catalog to checkout"
+          patoge: "Kids' fashion with a living collection"
+          vorr: "Streetwear with drops and waitlists"
+        cta_eyebrow: "THE NEXT ONE IS YOURS"
+        cta_title: "Your brand here"
+        cta_text: "Tell us what you sell and we'll design the store that sells with you."
+      process:
+        eyebrow: "HOW IT WORKS"
+        title: "From briefing to launch, no mystery"
+        steps:
+          briefing:
+            title: "Briefing and diagnosis"
+            text: "We understand the brand, the catalog and the operation before designing a single screen."
+          design:
+            title: "Design made to measure"
+            text: "A layout that looks like your brand, built to convert on mobile first."
+          build:
+            title: "Built on Shopify"
+            text: "Theme, products, payments, shipping and domain set up by people who do this every day."
+          conexoes:
+            title: "Mewtda connections"
+            text: "CRM, exchange system and WhatsApp automations connected before launch."
+          lancamento:
+            title: "Launch and follow-up"
+            text: "Store live with a full checklist — and us nearby through the first sales."
+      benefits:
+        eyebrow: "WHAT CHANGES"
+        title: "A store that's born selling"
+        items:
+          converter:
+            title: "Built to convert"
+            text: "Hierarchy, copy and checkout designed around the purchase, mobile first."
+          rapida:
+            title: "Genuinely fast"
+            text: "Light theme and clean structure: speed is part of the design, not an afterthought."
+          controle:
+            title: "You in control"
+            text: "Your store, your accounts, your data — with a panel to follow everything."
+          ecossistema:
+            title: "An ecosystem, not just a site"
+            text: "It launches connected to the CRM, exchanges and automations — no loose ends."
+      eco:
+        eyebrow: "ALL CONNECTED"
+        title: "Your store is born connected"
+        lead: "Every project ships integrated with the rest of Mewtda — one operation, one panel."
+        open: "Learn more"
+      cta:
+        title: "Shall we build your store?"
+        text: "Message us on WhatsApp and tell us what you sell."
+        button: "Talk to Mewtda"
+        whatsapp_message: "Hi! I want to build my Shopify store with Mewtda."
+      shift:
+        eyebrow: "THE SHIFT"
+        title_a: "Your brand has grown."
+        title_b: "Has your site kept up?"
+        p1: "Almost every store starts the same way: a nice template, adapted in a hurry, that works while volume is small. Then the brand grows — and the site starts holding growth back instead of pushing it."
+        p2: "The usual path is hiring an agency that delivers the site and disappears. The layout changes; the operation stays the same: scattered data, exchanges over email, customers left waiting."
+        p3: "Mewtda is different because we don't just design your store — we run e-commerce with you after launch. The site is the visible part of a system that's born working."
+        link: "How we work"
+      org:
+        eyebrow: "A STORE WIRED INTO THE MEWTDA ECOSYSTEM"
+        title: "Sites are bought. Operations are built."
+        text: "Your store isn't delivered on its own: it's born inside the same panel that runs the CRM, exchanges and automations of the brands you saw above. Every new project sharpens the next one — and the budget goes to your brand's strategy, not to reinventing the basics."
+        stats:
+          marcas: "brands live with Mewtda"
+          produtos: "products in one panel"
+          automacoes: "automations running for the store"
+          equipe: "team, from design to operations"
+      fromto:
+        eyebrow: "FROM QUOTE TO LIVE"
+        title: "Quoted in months. Live in weeks."
+        sub: "The hours don't disappear from the project — they move up the value chain."
+        text: "Layout, catalog, payments, shipping: the work is the same as ever. What changes is the base underneath. Since we already run stores every day, the basics aren't debated — they're configured. The time goes into what sets your brand apart."
+        from: "From"
+        to: "to"
+        items:
+          prazo:
+            from: "3–6 months"
+            to: "4–8 weeks"
+            label: "from briefing to launch"
+          base:
+            from: "a generic template"
+            to: "your brand's design"
+            label: "identity live"
+          dados:
+            from: "scattered spreadsheets"
+            to: "a single panel"
+            label: "operations from day 1"
+      process_couplet:
+        a: "The site is the storefront."
+        b: "The operation is what makes it sell."
+      owners:
+        eyebrow: "WHERE WE SIGN OUR NAME"
+        title: "Every delivery has an owner. And a signature."
+        lead: "Nothing in your store is left at \"it just got done\". On every project, without exception, a person answers for:"
+        items:
+          design:
+            title: "Design and conversion"
+            text: "What the experience should be — and why."
+          performance:
+            title: "Speed"
+            text: "The structural choices that determine load time."
+          catalogo:
+            title: "Catalog architecture"
+            text: "Collections, variants and filters that make sense to the buyer."
+          integracoes:
+            title: "Integrations"
+            text: "CRM, exchanges, WhatsApp and media connected and tested."
+          qa:
+            title: "Final review and launch"
+            text: "Nothing goes live without a full check."
+        bullets:
+          - "Nothing is published without your approval."
+          - "The store is yours: domain, accounts and data in your name."
+          - "Everything documented so your team can run the day-to-day."
+      field:
+        eyebrow: "FROM THE FIELD"
+        text: "The people who design your store run e-commerce every day: the same team behind the CRM, exchanges and automations of the brands above. When a collection drops, we're online with you — because the panel rings here too."
+        punch: "That's the difference between an agency that delivers a site and a team that operates with you."
+      build:
+        eyebrow: "WHAT GOES INTO YOUR STORE"
+        title_a: "Everything a store needs."
+        title_b: "One panel underneath."
+        lead: "From layout to shipping, the delivery is complete — and every piece ships already connected to the Mewtda panel."
+        groups:
+          design:
+            title: "Design & brand"
+            pitch: "A store that looks like you, not like a template."
+            featured: "Design made to measure"
+            featured_text: "Home, collections and product pages designed for your brand, mobile first."
+            items:
+              - "Identity applied end to end"
+              - "Product page built for conversion"
+              - "Banners and showcases per collection"
+          operacao:
+            title: "Operations ready"
+            pitch: "Configured by people who do this every day."
+            featured: "Store set up end to end"
+            featured_text: "Payments, shipping, domain and emails ready on launch day."
+            items:
+              - "Checkout and payment methods"
+              - "Shipping rules"
+              - "Policy and institutional pages"
+          conexoes:
+            title: "Connections"
+            pitch: "Born wired into the rest of Mewtda."
+            featured: "Panel integration"
+            featured_text: "CRM, exchanges and WhatsApp automations connected before going live."
+            items:
+              - "MeuCRM from day 1"
+              - "Quero Trocar integrated"
+              - "Pixel, Google and Meta configured"
+          crescimento:
+            title: "Growth"
+            pitch: "Launch is the beginning, not the end."
+            featured: "Ready for traction"
+            featured_text: "SEO groundwork, analytics and training so your team takes over."
+            items:
+              - "Technical SEO groundwork"
+              - "Reports in the panel"
+              - "Team training"
+      start:
+        eyebrow: "WHERE TO START"
+        title: "Fix the current store or start from scratch? We answer in writing."
+        text: "Send your store's link — or just the idea — on WhatsApp. You get an honest diagnosis with one of three answers: adjust what exists, redesign, or don't touch it yet. With the why behind each one."
+        cta: "Ask for a diagnosis"
+        alt: "See the projects"
+        case_label: "LIVE STORE"
+        case_text: "Want to see a full delivery? Visit a live project."
+        case_link: "Visit the site"
+        whatsapp_message: "Hi! I'd like a diagnosis of my store. The link is: "
+      team:
+        eyebrow: "WHO RUNS THE PROJECT"
+        title: "You talk to the people who build."
+        text: "No layers of account handling: from briefing to post-launch, you talk directly to the people designing and configuring your store — on WhatsApp, not through a form."
+      partners:
+        eyebrow: "PARTNERS"
+        title: "The platforms your store already knows."
+        text: "A Shopify Partner, with the Meta, Google and WhatsApp integrations set up by people who've done it before."
+    app_page:
+      meta_title: "Your store's app"
+      badge: "Coming soon"
+      nav:
+        recursos: "Features"
+        segmentos: "In practice"
+        acesso: "Access"
+        faq: "FAQ"
+      hero:
+        eyebrow: "IOS AND ANDROID APP"
+        headline_a: "Your store,"
+        headline_b: "now as an app."
+        sub: "A channel of your own: push notifications, showcases and repeat purchases in your customer's pocket — all run from the same panel that already powers your store, CRM and exchanges."
+        cta: "Join the waitlist"
+        cta_secondary: "See how it works"
+        whatsapp_message: "Hi! I want to join the waitlist for the Mewtda App."
+      logos: "AT HOME WITH THE BRANDS ALREADY SELLING WITH MEWTDA"
+      features:
+        eyebrow: "FEATURES"
+        title: "Everything your team needs to run the channel"
+        lead: "No parallel operation: the app joins the routine of whoever already runs your store, right in the Mewtda panel."
+        push:
+          title: "Push notifications"
+          text: "Launches, recovered carts, order updates: talk to the people who installed your brand — without paying for media again."
+          cards:
+            - title: "New collection just dropped 🧡"
+              text: "See it before everyone"
+            - title: "Your cart misses you"
+              text: "Finish with free shipping"
+            - title: "Order on the way"
+              text: "Arriving tomorrow"
+        vitrine:
+          title: "Showcases and collections"
+          text: "Banners, highlights and collections swapped from the panel — no third-party studio, no ticket."
+        painel:
+          title: "Mewtda panel"
+          text: "The app's sales, customers and campaigns in the same dashboard as the store."
+        branding:
+          title: "Your brand, for real"
+          text: "Colors, typography and app icon with your store's identity — not a generic shell."
+        integracoes:
+          title: "Integrations"
+          text: "Shopify, Meta, Google and WhatsApp connected from day one."
+      segments:
+        eyebrow: "IN PRACTICE"
+        title: "Made for the way your store sells"
+        lead: "Switch segments and see the app wear another face — the showcase is your brand's."
+      numbers:
+        eyebrow: "THE CHANNEL"
+        title: "A channel that's yours"
+        items:
+          plataformas:
+            value: "iOS + Android"
+            label: "on both app stores"
+          push:
+            value: "Unlimited push"
+            label: "from the panel, no cost per send"
+          painel:
+            value: "1 panel"
+            label: "the same as the store, CRM and exchanges"
+          codigo:
+            value: "0 code"
+            label: "for your team's day-to-day"
+      integr: "CONNECTED TO WHAT YOUR OPERATION ALREADY USES"
+      access:
+        eyebrow: "ACCESS"
+        title: "Arriving first for those already with Mewtda"
+        text: "The app is in development and will open in waves. Join the waitlist and we'll message you on WhatsApp when your turn comes — CRM and store-build clients get priority."
+        includes:
+          - "iOS and Android apps published on both stores"
+          - "Unlimited push notifications"
+          - "Showcases and collections run from the panel"
+          - "Integrated with MeuCRM and Quero Trocar"
+          - "Launch guided by the team"
+        chips:
+          - "COMING SOON"
+          - "IOS AND ANDROID"
+          - "PRIORITY FOR MEWTDA CLIENTS"
+        cta: "Join the waitlist"
+      faq:
+        eyebrow: "FAQ"
+        title: "The most common questions about the app"
+        items:
+          - q: "Do I need to be a Mewtda client to get the app?"
+            a: "No — but brands already using the CRM or that built their store with us go first in line. The app is born integrated with the panel, so if you're not a client yet, we sort that out in the same process."
+          - q: "Does it work with my Shopify store?"
+            a: "Yes. The app mirrors your Shopify catalog, inventory and checkout — a new product in the store shows up in the app, no rework."
+          - q: "Who runs the app day to day?"
+            a: "The same team that already runs your store, through the Mewtda panel: banners, collections, campaigns and push without depending on a developer."
+          - q: "Is the app just my site on a smaller screen?"
+            a: "No. It's a channel of its own: persistent login, push notifications, showcases built for repeat purchases and journeys for the people who chose to install your brand."
+          - q: "When does it launch and how much will it cost?"
+            a: "It's in development, opening in waves through the waitlist. Pricing and terms are announced to the list first — joining is commitment-free."
+      cta:
+        title: "Put your store in your customers' pocket"
+        text: "Join the waitlist and be the first to know — it's one WhatsApp message."
+        button: "Join the waitlist"
+        whatsapp_message: "Hi! I want to join the waitlist for the Mewtda App."
+    crm_page:
+      meta_title: MeuCRM — E-commerce CRM
+      nav:
+        recursos: Features
+        automacoes: Automations
+        painel: Panel
+        faq: FAQ
+      hero:
+        eyebrow: E-COMMERCE CRM
+        headline_a: Customers, sales and funnel.
+        headline_b: All in one panel.
+        sub: 'MeuCRM connects your Shopify, your ads and your WhatsApp in a single panel: see the whole funnel, know every customer, and know exactly where you''re losing sales.'
+        cta: Show me the CRM
+        cta_secondary: See the features
+        whatsapp_message: Hi! I'd like to see MeuCRM for my store.
+      features:
+        eyebrow: FEATURES
+        title: Everything your operation needs, no hunting for numbers
+        lead: What lives in scattered spreadsheets and tools today moves into one panel — updated straight from your store.
+        items:
+          funil:
+            title: Sales dashboard
+            text: 'Revenue, ROAS and CAC day by day, plus the full funnel: visits, product views, carts and checkouts.'
+          clientes:
+            title: Customer base
+            text: Every customer's purchase history, segmented and ready for campaigns — no exports needed.
+          metas:
+            title: Monthly goals
+            text: Set the month's goal and follow it with your team, right where the sales are coming in.
+          trocas_int:
+            title: Integrated exchanges
+            text: 'Quero Trocar lives right here: requests, approvals and store credit without leaving the panel.'
+          afiliados:
+            title: Affiliates and coupons
+            text: Create coupons and manage your affiliates in the same place your sales show up.
+          integracoes:
+            title: Integrations
+            text: 'Shopify, Google Ads and Meta Ads connected: sales and ad spend side by side, no manual reports.'
+      autos:
+        eyebrow: WHATSAPP AUTOMATIONS
+        title: Messages that send themselves, right on time
+        lead: Tracking updates, cashback and cart reminders land on your customer's WhatsApp — no one on the team copying and pasting.
+        chat:
+        - from: loja
+          text: 'Good news! Order #1042 is out for delivery. Track it here: BR123456789BR'
+        - from: cliente
+          text: Wow, that was fast! Thanks!
+        - from: loja
+          text: Did everything arrive okay? Your cashback from this order is ready to use on your next one.
+        - from: cliente
+          text: It did! Already eyeing my next order.
+        items:
+          rastreio:
+            title: Automatic tracking
+            text: 'Order ships, customer knows: the tracking code lands on WhatsApp with zero manual work.'
+          cashback:
+            title: Cashback unlocked
+            text: Customers hear the moment their cashback is ready — a real reason to come back and buy again.
+          carrinho:
+            title: Abandoned cart
+            text: Anyone who stopped at checkout gets a reminder at the right moment, straight from the panel.
+      painel:
+        eyebrow: THE PANEL
+        title: Built to open every day
+        lead: 'One look and you know how the store is doing: sales, funnel, goals and customers on one screen, updated straight from your Shopify.'
+      faq:
+        eyebrow: FAQ
+        title: The most common questions about MeuCRM
+        items:
+        - q: Does it work with my Shopify store?
+          a: Yes. MeuCRM connects to your Shopify and brings orders, customers and the funnel into the panel. And if you don't have a store yet, we also build one from scratch, already connected.
+        - q: My operation runs on spreadsheets today. Is migrating painful?
+          a: No — you don't type in any data by hand. Connect your Shopify and the panel starts tracking your orders and customers, while the spreadsheet slowly retires.
+        - q: Who is MeuCRM for?
+          a: Owners and teams of Shopify stores who handle sales, ads and customer care every day and want to see the whole operation without opening ten tabs.
+        - q: Do the automations use the official WhatsApp API?
+          a: Tracking, cashback and cart automations go out through the WhatsApp connected to your panel. Our team sets it up with you during onboarding and recommends the right setup for your message volume.
+        - q: How do I get started?
+          a: 'No forms: message us on WhatsApp, tell us how your operation runs today and we''ll show you the panel in action. Next steps are agreed in that conversation.'
+      cta:
+        title: Ready to run your store from one panel?
+        text: Message us on WhatsApp and tell us how your operation runs today — we'll show you MeuCRM working.
+        button: Talk to Mewtda
+        whatsapp_message: Hi! I'd like to see MeuCRM for my store.
+    qt_page:
+      meta_title: Quero Trocar — exchanges & returns
+      nav:
+        como: How it works
+        painel: Panel
+        beneficios: Benefits
+        faq: FAQ
+      hero:
+        eyebrow: EXCHANGES & RETURNS
+        headline_a: Your customer opens the exchange.
+        headline_b: You just approve it.
+        sub: 'Quero Trocar gives your store a self-service exchange portal: customers find their order, pick the items and send the reason. Once approved, the store credit becomes a Shopify coupon — no spreadsheets, no email threads.'
+        cta: Get it for my store
+        cta_secondary: See how it works
+        whatsapp_message: Hi! I'd like to see Quero Trocar for my store.
+      steps:
+        eyebrow: HOW IT WORKS
+        title: From request to coupon, with no one chasing anyone
+        lead: Four steps between a customer wanting an exchange and the store credit landing in their inbox.
+        items:
+          pedido:
+            title: The customer opens the exchange
+            text: On your store's own exchange page, they find the order by number and email and pick the items — without messaging your team.
+          regras:
+            title: The rules do the checking
+            text: Each order's window and conditions are checked automatically. Product arrived damaged? Reason and photo go in with the request.
+          vale:
+            title: Approved means store credit
+            text: You approve it in the panel and the coupon is created right in Shopify. The customer gets it by email instantly.
+          acompanha:
+            title: Your team sees everything
+            text: Every request has a clear status in the panel — pending, approved, received, completed — and the customer is emailed at each step.
+      painel:
+        eyebrow: THE PANEL
+        title: Every request in one place
+        lead: Search by order, protocol, name or email and see where each exchange and return stands — from your desktop or your phone.
+      benefits:
+        eyebrow: WHAT CHANGES
+        title: Less friction for everyone
+        items:
+          equipe:
+            title: Your team, out of the inbox
+            text: No more negotiating exchanges one by one over email or spreadsheets. The whole queue lives in the panel, with clear statuses.
+          cliente:
+            title: A better experience for customers
+            text: Whoever needs an exchange solves it on the spot, on a page that looks like your store — and knows the status without having to ask.
+          caixa:
+            title: The sale stays in your store
+            text: 'An approved exchange becomes a Shopify coupon: the value comes back to your store as a new purchase, not as a refund.'
+          shopify:
+            title: Connected to Shopify
+            text: The portal reads straight from your store's orders. No typing data by hand, no checking order by order.
+      faq:
+        eyebrow: FAQ
+        title: Common questions about Quero Trocar
+        items:
+        - q: Do I need a Shopify store?
+          a: Yes — Quero Trocar connects directly to your Shopify orders. If you don't have a store yet, we can also build one from scratch, with the exchange system already wired in.
+        - q: Who sets the exchange rules?
+          a: You do. Windows and conditions live in the panel settings, and the system applies them to every order automatically — including requiring a reason and photo when a product arrives damaged.
+        - q: What if the customer wants their money back?
+          a: Returns come in through the portal too and land in the same panel. The automatic store credit is for exchanges; you process the refund itself through your payment provider — with the request organized and the customer kept posted by email.
+        - q: Do customers need an account?
+          a: No. They find the order by its number and the purchase email. No password, no sign-up.
+        - q: How do I get it?
+          a: Message us on WhatsApp. We'll look at how you operate, connect Quero Trocar to your Shopify and style the exchange page to match your store.
+      cta:
+        title: Ready to get exchanges out of your inbox?
+        text: Send us a message on WhatsApp and we'll show you the system from the inside.
+        button: Talk to Mewtda
+        whatsapp_message: Hi! I'd like Quero Trocar for my Shopify store.
     strip:
       crm: "E-commerce CRM"
       trocas: "Exchanges integrated with Shopify"
@@ -112,6 +605,7 @@ en:
       title: "Four products, one connected operation"
       lead: "Each product solves one part of your store, and they all talk to each other in the same panel."
       more: "Learn more"
+      page_link: "See the full page"
       crm:
         tagline: "Customers, sales and conversion funnel in one panel."
       trocas:
@@ -191,6 +685,7 @@ en:
       number: "03"
       title: "Stores that sell from day one"
       lead: "We build your Shopify store from scratch: a design that looks like your brand, built to convert on desktop and mobile, and already connected to the Mewtda CRM."
+      page_link: "See the full page"
       case_label: "Store built by Mewtda"
       case_link: "See the live store"
       desktop_alt: "%{store} store on desktop"
@@ -390,6 +885,499 @@ es:
       cta_contato: "Habla con nosotros"
       cta_ver_solucoes: "Conoce las soluciones"
       whatsapp_message: "Hola, quiero conocer las soluciones de Mewtda."
+    sound:
+      play: "Dale play a nuestro beat"
+      mute: "Silenciar el beat"
+      osd_on: "Beat activado"
+      osd_off: "Silenciado"
+      remote_tip: "Banda sonora: reproducir / silenciar"
+    showcase:
+      aria: "Soluciones Mewtda, panel interactivo"
+      hint: "Desplázate para explorar — o haz clic en una solución"
+      host: "app.mewtda.com.br"
+      open: "Verlo en detalle"
+      crm:
+        kpi_revenue: "Facturación"
+        kpi_orders: "Pedidos"
+        kpi_roas: "ROAS"
+        funnel_title: "Embudo de conversión"
+        funnel:
+          visitas: "Visitas"
+          carrinho: "Carrito"
+          checkout: "Checkout"
+          compra: "Compra"
+        chart_title: "Ventas — últimos 30 días"
+      trocas:
+        title: "Solicitudes de cambio"
+        subtitle: "Sincronizadas con tus pedidos de Shopify"
+      sites:
+        title: "Tu tienda, en línea"
+        live: "En línea"
+        meters:
+          design: "Diseño a medida"
+          velocidade: "Velocidad"
+          conversao: "Lista para convertir"
+      apps:
+        title: "Tu tienda en el bolsillo"
+        soon: "Próximamente"
+    sites_page:
+      meta_title: "Creación de tiendas Shopify"
+      nav:
+        projetos: "Proyectos"
+        processo: "Proceso"
+        beneficios: "Beneficios"
+        ecossistema: "Ecosistema"
+      hero:
+        eyebrow: "CREACIÓN DE TIENDAS SHOPIFY"
+        headline_a: "Tu tienda, creada desde cero."
+        headline_b: "En línea en semanas."
+        sub: "Diseño con la cara de tu marca, construida en Shopify por gente que opera e-commerce todos los días — y entregada ya conectada al CRM, los cambios y las automatizaciones de Mewtda."
+        cta_whatsapp: "Quiero mi tienda"
+        cta_projects: "Ver proyectos"
+        whatsapp_message: "¡Hola! Quiero crear mi tienda Shopify con Mewtda."
+      stats:
+        lojas: "marcas atendidas"
+        semanas: "semanas del briefing al lanzamiento"
+        shopify: "Shopify, de punta a punta"
+      projects:
+        eyebrow: "PORTAFOLIO"
+        title: "Nuestros proyectos"
+        hint: "Sigue desplazándote — los proyectos acompañan"
+        visit: "Visitar el sitio"
+        taglines:
+          fernandafarah: "Moda de autor con editorial propio"
+          allie: "Esenciales minimalistas, del catálogo al checkout"
+          patoge: "Moda infantil con colección viva"
+          vorr: "Streetwear con drops y lista de espera"
+        cta_eyebrow: "EL PRÓXIMO ES TUYO"
+        cta_title: "Tu marca aquí"
+        cta_text: "Cuéntanos qué vendes y diseñamos la tienda que vende contigo."
+      process:
+        eyebrow: "CÓMO FUNCIONA"
+        title: "Del briefing al aire, sin misterio"
+        steps:
+          briefing:
+            title: "Briefing y diagnóstico"
+            text: "Entendemos la marca, el catálogo y la operación antes de diseñar una sola pantalla."
+          design:
+            title: "Diseño a medida"
+            text: "Un layout con la cara de tu marca, pensado para convertir primero en el celular."
+          build:
+            title: "Construcción en Shopify"
+            text: "Tema, productos, pagos, envíos y dominio configurados por quienes hacen esto todos los días."
+          conexoes:
+            title: "Conexiones de Mewtda"
+            text: "CRM, sistema de cambios y automatizaciones de WhatsApp conectados antes del lanzamiento."
+          lancamento:
+            title: "Lanzamiento y acompañamiento"
+            text: "Tienda en línea con checklist completo — y nosotros cerca en las primeras ventas."
+      benefits:
+        eyebrow: "QUÉ CAMBIA"
+        title: "Una tienda que nace vendiendo"
+        items:
+          converter:
+            title: "Pensada para convertir"
+            text: "Jerarquía, textos y checkout diseñados alrededor de la compra, mobile first."
+          rapida:
+            title: "Rápida de verdad"
+            text: "Tema liviano y estructura limpia: la velocidad es parte del diseño, no un detalle."
+          controle:
+            title: "Tú en control"
+            text: "Tu tienda, tus cuentas, tus datos — con un panel para seguirlo todo."
+          ecossistema:
+            title: "Un ecosistema, no solo un sitio"
+            text: "Nace conectada al CRM, los cambios y las automatizaciones — sin cabos sueltos."
+      eco:
+        eyebrow: "TODO CONECTADO"
+        title: "Tu tienda nace conectada"
+        lead: "Cada proyecto se entrega integrado al resto de Mewtda — una operación, un panel."
+        open: "Conocer"
+      cta:
+        title: "¿Creamos tu tienda?"
+        text: "Escríbenos por WhatsApp y cuéntanos qué vendes."
+        button: "Hablar con Mewtda"
+        whatsapp_message: "¡Hola! Quiero crear mi tienda Shopify con Mewtda."
+      shift:
+        eyebrow: "EL CAMBIO"
+        title_a: "Tu marca creció."
+        title_b: "¿Tu sitio acompañó?"
+        p1: "Casi toda tienda empieza igual: un template bonito, adaptado a las apuradas, que sirve mientras el volumen es pequeño. Después la marca crece — y el sitio empieza a frenar el crecimiento en vez de empujarlo."
+        p2: "El camino común es contratar una agencia que entrega el sitio y desaparece. El layout cambia; la operación sigue igual: datos dispersos, cambios por correo, clientes sin respuesta."
+        p3: "Mewtda es diferente porque no solo diseña tu tienda — opera e-commerce contigo después del lanzamiento. El sitio es la parte visible de un sistema que nace funcionando."
+        link: "Cómo trabajamos"
+      org:
+        eyebrow: "UNA TIENDA CONECTADA AL ECOSISTEMA MEWTDA"
+        title: "Un sitio se compra. Una operación se construye."
+        text: "Tu tienda no se entrega suelta: nace dentro del mismo panel que maneja el CRM, los cambios y las automatizaciones de las marcas que viste arriba. Cada proyecto nuevo afila el proceso del siguiente — y el presupuesto va a la estrategia de tu marca, no a reinventar lo básico."
+        stats:
+          marcas: "marcas en línea con Mewtda"
+          produtos: "productos en un mismo panel"
+          automacoes: "automatizaciones trabajando por la tienda"
+          equipe: "equipo, del diseño a la operación"
+      fromto:
+        eyebrow: "DEL PRESUPUESTO AL AIRE"
+        title: "Cotizada en meses. En línea en semanas."
+        sub: "Las horas no desaparecen del proyecto — cambian de lugar."
+        text: "Layout, catálogo, pagos, envíos: el trabajo es el mismo de siempre. Lo que cambia es la base de abajo. Como ya operamos tiendas todos los días, lo básico no se discute — se configura. El tiempo va a lo que diferencia tu marca."
+        from: "De"
+        to: "a"
+        items:
+          prazo:
+            from: "3–6 meses"
+            to: "4–8 semanas"
+            label: "del briefing al lanzamiento"
+          base:
+            from: "template genérico"
+            to: "diseño de tu marca"
+            label: "identidad en línea"
+          dados:
+            from: "planillas dispersas"
+            to: "un solo panel"
+            label: "operación desde el día 1"
+      process_couplet:
+        a: "El sitio es la vitrina."
+        b: "La operación es lo que lo hace vender."
+      owners:
+        eyebrow: "DONDE FIRMAMOS"
+        title: "Cada entrega tiene dueño. Y firma."
+        lead: "Nada en tu tienda queda en \"se hizo solo\". En todo proyecto, sin excepción, una persona responde por:"
+        items:
+          design:
+            title: "Diseño y conversión"
+            text: "Cómo debe ser la experiencia — y por qué."
+          performance:
+            title: "Velocidad"
+            text: "Las decisiones de estructura que definen la carga."
+          catalogo:
+            title: "Arquitectura del catálogo"
+            text: "Colecciones, variantes y filtros con sentido para quien compra."
+          integracoes:
+            title: "Integraciones"
+            text: "CRM, cambios, WhatsApp y medios conectados y probados."
+          qa:
+            title: "Revisión final y lanzamiento"
+            text: "Nada sale al aire sin una revisión completa."
+        bullets:
+          - "Nada se publica sin tu aprobación."
+          - "La tienda es tuya: dominio, cuentas y datos a tu nombre."
+          - "Todo documentado para que tu equipo maneje el día a día."
+      field:
+        eyebrow: "DESDE LA OPERACIÓN"
+        text: "Quien diseña tu tienda opera e-commerce todos los días: el mismo equipo detrás del CRM, los cambios y las automatizaciones de las marcas de arriba. Cuando una colección sale al aire, estamos en línea contigo — porque el panel también suena aquí."
+        punch: "Esa es la diferencia entre una agencia que entrega un sitio y un equipo que opera contigo."
+      build:
+        eyebrow: "QUÉ ENTRA EN TU TIENDA"
+        title_a: "Todo lo que una tienda necesita."
+        title_b: "Un panel por debajo."
+        lead: "Del layout al envío, la entrega es completa — y cada pieza sale ya conectada al panel Mewtda."
+        groups:
+          design:
+            title: "Diseño & marca"
+            pitch: "Una tienda con tu cara, no con la de un template."
+            featured: "Diseño a medida"
+            featured_text: "Inicio, colecciones y página de producto diseñadas para tu marca, mobile first."
+            items:
+              - "Identidad aplicada de punta a punta"
+              - "Página de producto pensada para convertir"
+              - "Banners y vitrinas por colección"
+          operacao:
+            title: "Operación lista"
+            pitch: "Configurada por quienes hacen esto todos los días."
+            featured: "Tienda configurada de punta a punta"
+            featured_text: "Pagos, envíos, dominio y correos listos el día del lanzamiento."
+            items:
+              - "Checkout y medios de pago"
+              - "Reglas de envío"
+              - "Páginas institucionales y políticas"
+          conexoes:
+            title: "Conexiones"
+            pitch: "Nace conectada al resto de Mewtda."
+            featured: "Integración con el panel"
+            featured_text: "CRM, cambios y automatizaciones de WhatsApp conectados antes de salir al aire."
+            items:
+              - "MeuCRM desde el día 1"
+              - "Quero Trocar integrado"
+              - "Pixel, Google y Meta configurados"
+          crescimento:
+            title: "Crecimiento"
+            pitch: "Lanzar es el comienzo, no el fin."
+            featured: "Lista para la tracción"
+            featured_text: "Base de SEO, analytics y entrenamiento para que tu equipo asuma."
+            items:
+              - "SEO técnico de base"
+              - "Reportes en el panel"
+              - "Entrenamiento del equipo"
+      start:
+        eyebrow: "POR DÓNDE EMPEZAR"
+        title: "¿Ajustar la tienda actual o empezar de cero? Respondemos por escrito."
+        text: "Manda el link de tu tienda — o solo la idea — por WhatsApp. Recibes un diagnóstico honesto con una de tres respuestas: ajustar lo que existe, rediseñar, o no tocar nada por ahora. Con el porqué de cada una."
+        cta: "Pedir un diagnóstico"
+        alt: "Ver los proyectos"
+        case_label: "TIENDA EN LÍNEA"
+        case_text: "¿Quieres ver una entrega completa? Visita un proyecto en línea."
+        case_link: "Visitar el sitio"
+        whatsapp_message: "¡Hola! Quiero un diagnóstico de mi tienda. El link es: "
+      team:
+        eyebrow: "QUIÉN LLEVA EL PROYECTO"
+        title: "Hablas con quien construye."
+        text: "Sin capas de atención: del briefing al post-lanzamiento, la conversación es directa con quienes diseñan y configuran tu tienda — por WhatsApp, no por formulario."
+      partners:
+        eyebrow: "PARTNERS"
+        title: "Las plataformas que tu tienda ya conoce."
+        text: "Shopify Partner, con las integraciones de Meta, Google y WhatsApp montadas por quienes ya lo hicieron antes."
+    app_page:
+      meta_title: "La app de tu tienda"
+      badge: "Próximamente"
+      nav:
+        recursos: "Recursos"
+        segmentos: "En la práctica"
+        acesso: "Acceso"
+        faq: "Preguntas"
+      hero:
+        eyebrow: "APP IOS Y ANDROID"
+        headline_a: "Tu tienda,"
+        headline_b: "ahora como app."
+        sub: "Un canal propio: push notifications, vitrinas y recompra en el bolsillo del cliente — todo operado desde el mismo panel que ya maneja tu tienda, el CRM y los cambios."
+        cta: "Entrar a la lista de espera"
+        cta_secondary: "Ver cómo funciona"
+        whatsapp_message: "¡Hola! Quiero entrar a la lista de espera de la App de Mewtda."
+      logos: "EN CASA DE LAS MARCAS QUE YA VENDEN CON MEWTDA"
+      features:
+        eyebrow: "RECURSOS"
+        title: "Todo lo que tu equipo necesita para operar el canal"
+        lead: "Sin operación paralela: la app entra en la rutina de quien ya maneja tu tienda, directo en el panel Mewtda."
+        push:
+          title: "Push notifications"
+          text: "Lanzamientos, carritos recuperados, pedido en camino: habla con quien instaló tu marca — sin pagar medios otra vez."
+          cards:
+            - title: "Colección nueva al aire 🧡"
+              text: "Mírala antes que todos"
+            - title: "Tu carrito te extraña"
+              text: "Termina con envío gratis"
+            - title: "Pedido en camino"
+              text: "Llega mañana"
+        vitrine:
+          title: "Vitrinas y colecciones"
+          text: "Banners, destacados y colecciones cambiados desde el panel — sin estudio de terceros, sin ticket."
+        painel:
+          title: "Panel Mewtda"
+          text: "Ventas, clientes y campañas de la app en el mismo dashboard de la tienda."
+        branding:
+          title: "Tu marca, de verdad"
+          text: "Colores, tipografía e ícono de la app con la identidad de tu tienda — no un shell genérico."
+        integracoes:
+          title: "Integraciones"
+          text: "Shopify, Meta, Google y WhatsApp conectados desde el primer día."
+      segments:
+        eyebrow: "EN LA PRÁCTICA"
+        title: "Hecha para la forma en que vende tu tienda"
+        lead: "Cambia el segmento y mira la app con otra cara — la vitrina es la de tu marca."
+      numbers:
+        eyebrow: "EL CANAL"
+        title: "Un canal que es tuyo"
+        items:
+          plataformas:
+            value: "iOS + Android"
+            label: "en las dos tiendas de apps"
+          push:
+            value: "Push ilimitado"
+            label: "desde el panel, sin costo por envío"
+          painel:
+            value: "1 panel"
+            label: "el mismo de la tienda, el CRM y los cambios"
+          codigo:
+            value: "0 código"
+            label: "para tu equipo en el día a día"
+      integr: "CONECTADA A LO QUE TU OPERACIÓN YA USA"
+      access:
+        eyebrow: "ACCESO"
+        title: "Llega primero para quienes ya son Mewtda"
+        text: "La app está en desarrollo y abrirá por tandas. Entra a la lista de espera y te avisamos por WhatsApp cuando llegue tu turno — clientes del CRM y de la creación de tiendas tienen prioridad."
+        includes:
+          - "Apps iOS y Android publicadas en las tiendas"
+          - "Push notifications ilimitadas"
+          - "Vitrinas y colecciones operadas desde el panel"
+          - "Integrada con MeuCRM y Quero Trocar"
+          - "Lanzamiento acompañado por el equipo"
+        chips:
+          - "PRÓXIMAMENTE"
+          - "IOS Y ANDROID"
+          - "PRIORIDAD PARA CLIENTES MEWTDA"
+        cta: "Entrar a la lista de espera"
+      faq:
+        eyebrow: "PREGUNTAS"
+        title: "Las dudas más comunes sobre la app"
+        items:
+          - q: "¿Necesito ser cliente de Mewtda para tener la app?"
+            a: "No — pero quien ya usa el CRM o creó su tienda con nosotros entra primero en la fila. La app nace integrada al panel, así que, si todavía no eres cliente, lo resolvemos en el mismo proceso."
+          - q: "¿Funciona con mi tienda Shopify?"
+            a: "Sí. La app refleja tu catálogo, inventario y checkout de Shopify — un producto nuevo en la tienda aparece en la app, sin retrabajo."
+          - q: "¿Quién opera la app en el día a día?"
+            a: "El mismo equipo que ya maneja tu tienda, desde el panel Mewtda: banners, colecciones, campañas y push sin depender de un desarrollador."
+          - q: "¿La app es solo mi sitio en una pantalla más chica?"
+            a: "No. Es un canal propio: login persistente, push notifications, vitrinas pensadas para la recompra y jornadas para quien eligió instalar tu marca."
+          - q: "¿Cuándo lanza y cuánto costará?"
+            a: "Está en desarrollo, abriendo por tandas con la lista de espera. El precio y las condiciones se anuncian primero a la lista — entrar no compromete a nada."
+      cta:
+        title: "Pon tu tienda en el bolsillo de quien compra"
+        text: "Entra a la lista de espera y entérate primero — es un mensaje de WhatsApp."
+        button: "Entrar a la lista de espera"
+        whatsapp_message: "¡Hola! Quiero entrar a la lista de espera de la App de Mewtda."
+    crm_page:
+      meta_title: MeuCRM — CRM para e-commerce
+      nav:
+        recursos: Recursos
+        automacoes: Automatizaciones
+        painel: Panel
+        faq: Preguntas
+      hero:
+        eyebrow: CRM PARA E-COMMERCE
+        headline_a: Clientes, ventas y embudo.
+        headline_b: Todo en un solo panel.
+        sub: 'MeuCRM conecta tu Shopify, tus anuncios y tu WhatsApp en un solo panel: ves el embudo completo, conoces a cada cliente y sabes exactamente dónde pierdes ventas.'
+        cta: Quiero conocer el CRM
+        cta_secondary: Ver recursos
+        whatsapp_message: ¡Hola! Quiero conocer MeuCRM para mi tienda.
+      features:
+        eyebrow: RECURSOS
+        title: Todo lo que tu operación necesita, sin perseguir números
+        lead: Lo que hoy vive en planillas y herramientas sueltas pasa a un solo panel, actualizado directo desde tu tienda.
+        items:
+          funil:
+            title: Panel de ventas
+            text: 'Facturación, ROAS y CAC día a día, con el embudo completo: visitas, productos vistos, carritos y checkouts.'
+          clientes:
+            title: Base de clientes
+            text: El historial de compras de cada cliente, segmentado y listo para campañas — sin exportar nada.
+          metas:
+            title: Metas mensuales
+            text: Define la meta del mes y síguela con tu equipo, en el mismo panel donde entran las ventas.
+          trocas_int:
+            title: Cambios integrados
+            text: 'Quero Trocar vive aquí adentro: solicitudes, aprobación y vale sin salir del panel.'
+          afiliados:
+            title: Afiliados y cupones
+            text: Crea cupones y gestiona tus afiliados en el mismo lugar donde aparecen las ventas.
+          integracoes:
+            title: Integraciones
+            text: 'Shopify, Google Ads y Meta Ads conectados: ventas y pauta lado a lado, sin armar reportes a mano.'
+      autos:
+        eyebrow: AUTOMATIZACIONES DE WHATSAPP
+        title: Mensajes que salen solos, en el momento justo
+        lead: Seguimiento, cashback y carrito abandonado directo al WhatsApp del cliente — sin que nadie del equipo copie y pegue.
+        chat:
+        - from: loja
+          text: '¡Buenas noticias! Tu pedido #1042 salió a entrega. Síguelo aquí: BR123456789BR'
+        - from: cliente
+          text: ¡Qué rápido! ¡Gracias!
+        - from: loja
+          text: ¿Llegó todo bien? Tu cashback de esta compra ya está liberado para la próxima.
+        - from: cliente
+          text: ¡Llegó! Ya estoy mirando qué pido ahora.
+        items:
+          rastreio:
+            title: Seguimiento automático
+            text: 'El pedido sale y el cliente se entera: el código de seguimiento llega al WhatsApp sin trabajo manual.'
+          cashback:
+            title: Cashback liberado
+            text: El cliente sabe al instante cuando su cashback se libera — una razón real para volver a comprar.
+          carrinho:
+            title: Carrito abandonado
+            text: Quien se quedó en el checkout recibe un recordatorio en el momento justo, directo desde el panel.
+      painel:
+        eyebrow: EL PANEL
+        title: Hecho para abrirlo todos los días
+        lead: 'Una mirada y sabes cómo va la tienda: ventas, embudo, metas y clientes en una sola pantalla, actualizados directo desde tu Shopify.'
+      faq:
+        eyebrow: PREGUNTAS
+        title: Las dudas más comunes sobre MeuCRM
+        items:
+        - q: ¿Funciona con mi tienda Shopify?
+          a: Sí. MeuCRM se conecta a tu Shopify y trae pedidos, clientes y embudo al panel. Y si todavía no tienes tienda, también la creamos desde cero, ya conectada.
+        - q: Hoy mi operación vive en planillas. ¿Migrar duele?
+          a: 'No: no cargas ninguna base a mano. Conectas tu Shopify y el panel empieza a seguir tus pedidos y clientes, mientras la planilla se jubila de a poco.'
+        - q: ¿Para quién es MeuCRM?
+          a: Para dueños y equipos de tiendas Shopify que manejan ventas, pauta y atención todos los días y quieren ver la operación completa sin abrir diez pestañas.
+        - q: ¿Las automatizaciones usan la API oficial de WhatsApp?
+          a: Las automatizaciones de seguimiento, cashback y carrito salen por el WhatsApp conectado al panel. Nuestro equipo lo configura contigo en la implementación y te orienta sobre el formato correcto para tu volumen de mensajes.
+        - q: ¿Cómo contrato?
+          a: 'Sin formularios: escríbenos por WhatsApp, cuéntanos cómo funciona tu operación hoy y te mostramos el panel funcionando. Los próximos pasos se acuerdan en esa conversación.'
+      cta:
+        title: ¿Ponemos tu tienda en un solo panel?
+        text: Escríbenos por WhatsApp y cuéntanos cómo funciona tu operación hoy — te mostramos MeuCRM en acción.
+        button: Hablar con Mewtda
+        whatsapp_message: ¡Hola! Quiero conocer MeuCRM para mi tienda.
+    qt_page:
+      meta_title: Quero Trocar — cambios y devoluciones
+      nav:
+        como: Cómo funciona
+        painel: Panel
+        beneficios: Beneficios
+        faq: Dudas
+      hero:
+        eyebrow: CAMBIOS Y DEVOLUCIONES
+        headline_a: Tu cliente abre el cambio.
+        headline_b: Tú solo apruebas.
+        sub: 'Quero Trocar le da a tu tienda un portal de cambios self-service: el cliente busca su pedido, elige los ítems y envía el motivo. Al aprobar, el vale se convierte en cupón de Shopify — sin planillas ni hilos de e-mail.'
+        cta: Lo quiero en mi tienda
+        cta_secondary: Ver cómo funciona
+        whatsapp_message: Hola, quiero conocer Quero Trocar para mi tienda.
+      steps:
+        eyebrow: CÓMO FUNCIONA
+        title: De la solicitud al cupón, sin perseguir a nadie
+        lead: Cuatro pasos desde que el cliente quiere cambiar hasta que el vale llega a su e-mail.
+        items:
+          pedido:
+            title: El cliente abre el cambio
+            text: En una página propia de tu tienda, busca el pedido por número y e-mail y elige los ítems — sin escribirle a tu equipo.
+          regras:
+            title: Las reglas evalúan
+            text: El plazo y las condiciones de cada pedido se revisan automáticamente. ¿Producto con daño? El motivo y la foto entran junto con la solicitud.
+          vale:
+            title: Aprobado, se vuelve vale
+            text: Apruebas en el panel y el cupón se crea directo en Shopify. El cliente lo recibe por e-mail al instante.
+          acompanha:
+            title: Tu equipo lo ve todo
+            text: Cada solicitud con estado claro en el panel — pendiente, aprobada, recibida, concluida — y el cliente avisado por e-mail en cada etapa.
+      painel:
+        eyebrow: EL PANEL
+        title: Todas las solicitudes en un solo lugar
+        lead: Busca por pedido, protocolo, nombre o e-mail y mira en qué punto está cada cambio y devolución — desde el computador o el celular.
+      benefits:
+        eyebrow: LO QUE CAMBIA
+        title: Menos fricción para todos
+        items:
+          equipe:
+            title: Tu equipo, fuera del e-mail
+            text: Se acabó negociar cambios uno a uno por planilla o WhatsApp. Toda la fila vive en el panel, con estados claros.
+          cliente:
+            title: Mejor experiencia para el cliente
+            text: Quien cambia lo resuelve al instante, solo, en una página con la cara de tu tienda — y conoce el estado sin tener que preguntar.
+          caixa:
+            title: La venta se queda en tu tienda
+            text: 'Un cambio aprobado se convierte en cupón de Shopify: el valor vuelve como nueva compra, no como reembolso.'
+          shopify:
+            title: Conectado a Shopify
+            text: El portal lee directo de los pedidos de tu tienda. Nada de digitar datos a mano ni revisar pedido por pedido.
+      faq:
+        eyebrow: DUDAS
+        title: Preguntas frecuentes sobre Quero Trocar
+        items:
+        - q: ¿Necesito una tienda en Shopify?
+          a: Sí — Quero Trocar se conecta directo a los pedidos de tu tienda Shopify. Si todavía no tienes tienda, también la creamos desde cero, ya con el sistema de cambios conectado.
+        - q: ¿Quién define las reglas de cambio?
+          a: Tú. Los plazos y condiciones se configuran en el panel, y el sistema los aplica a cada pedido automáticamente — incluso exigiendo motivo y foto cuando el producto llega con daño.
+        - q: ¿Y si el cliente quiere su dinero de vuelta?
+          a: Las devoluciones también entran por el portal y caen en el mismo panel. El vale automático es para los cambios; el reembolso lo procesas tú con tu medio de pago — con la solicitud organizada y el cliente avisado por e-mail.
+        - q: ¿Mi cliente necesita crear una cuenta?
+          a: No. Busca el pedido por el número y el e-mail de la compra. Sin contraseña y sin registro.
+        - q: ¿Cómo lo contrato?
+          a: Escríbenos por WhatsApp. Entendemos tu operación, conectamos Quero Trocar a tu Shopify y dejamos la página de cambios con la cara de tu tienda.
+      cta:
+        title: ¿Sacamos los cambios de tu e-mail?
+        text: Mándanos un mensaje por WhatsApp y te mostramos el sistema por dentro.
+        button: Hablar con Mewtda
+        whatsapp_message: Hola, quiero sumar Quero Trocar a mi tienda Shopify.
     strip:
       crm: "CRM para e-commerce"
       trocas: "Cambios integrados a Shopify"
@@ -471,6 +1459,7 @@ es:
       title: "Cuatro productos, una operación conectada"
       lead: "Cada producto resuelve una parte de tu tienda, y todos se comunican en el mismo panel."
       more: "Conocer"
+      page_link: "Ver la página completa"
       crm:
         tagline: "Clientes, ventas y embudo de conversión en un solo panel."
       trocas:
@@ -550,6 +1539,7 @@ es:
       number: "03"
       title: "Tiendas que venden desde el primer día"
       lead: "Creamos tu tienda en Shopify desde cero: diseño con la cara de tu marca, pensada para convertir en computador y celular, y ya conectada al CRM Mewtda."
+      page_link: "Ver la página completa"
       case_label: "Tienda creada por Mewtda"
       case_link: "Ver la tienda en línea"
       desktop_alt: "Tienda %{store} en computador"
@@ -749,6 +1739,499 @@ pt-BR:
       cta_contato: "Fale com a gente"
       cta_ver_solucoes: "Conheça as soluções"
       whatsapp_message: "Olá, quero conhecer as soluções da Mewtda."
+    sound:
+      play: "Dê o play na nossa batida"
+      mute: "Mutar a batida"
+      osd_on: "Batida ligada"
+      osd_off: "No mudo"
+      remote_tip: "Trilha sonora: tocar / mutar"
+    showcase:
+      aria: "Soluções Mewtda, painel interativo"
+      hint: "Role para explorar — ou clique numa solução"
+      host: "app.mewtda.com.br"
+      open: "Ver em detalhe"
+      crm:
+        kpi_revenue: "Faturamento"
+        kpi_orders: "Pedidos"
+        kpi_roas: "ROAS"
+        funnel_title: "Funil de conversão"
+        funnel:
+          visitas: "Visitas"
+          carrinho: "Carrinho"
+          checkout: "Checkout"
+          compra: "Compra"
+        chart_title: "Vendas — últimos 30 dias"
+      trocas:
+        title: "Solicitações de troca"
+        subtitle: "Sincronizadas com os pedidos da Shopify"
+      sites:
+        title: "Sua loja, no ar"
+        live: "No ar"
+        meters:
+          design: "Design sob medida"
+          velocidade: "Velocidade"
+          conversao: "Pronta pra converter"
+      apps:
+        title: "Sua loja no bolso"
+        soon: "Em breve"
+    sites_page:
+      meta_title: "Criação de lojas Shopify"
+      nav:
+        projetos: "Projetos"
+        processo: "Processo"
+        beneficios: "Benefícios"
+        ecossistema: "Ecossistema"
+      hero:
+        eyebrow: "CRIAÇÃO DE LOJAS SHOPIFY"
+        headline_a: "Sua loja, criada do zero."
+        headline_b: "No ar em semanas."
+        sub: "Design com a cara da sua marca, construída na Shopify por quem toca operação de e-commerce todo dia — e entregue já conectada ao CRM, às trocas e às automações da Mewtda."
+        cta_whatsapp: "Quero minha loja"
+        cta_projects: "Ver projetos"
+        whatsapp_message: "Olá! Quero criar minha loja Shopify com a Mewtda."
+      stats:
+        lojas: "marcas atendidas"
+        semanas: "semanas do briefing ao ar"
+        shopify: "Shopify, de ponta a ponta"
+      projects:
+        eyebrow: "PORTFÓLIO"
+        title: "Nossos projetos"
+        hint: "Continue rolando — os projetos acompanham"
+        visit: "Visitar o site"
+        taglines:
+          fernandafarah: "Moda autoral com editorial próprio"
+          allie: "Essenciais minimalistas, do catálogo ao checkout"
+          patoge: "Moda infantil com coleção viva"
+          vorr: "Streetwear com drops e lista de espera"
+        cta_eyebrow: "O PRÓXIMO É SEU"
+        cta_title: "Sua marca aqui"
+        cta_text: "Conta o que você vende e a gente desenha a loja que vende junto."
+      process:
+        eyebrow: "COMO FUNCIONA"
+        title: "Do briefing ao ar, sem mistério"
+        steps:
+          briefing:
+            title: "Briefing e diagnóstico"
+            text: "Entendemos a marca, o catálogo e a operação antes de desenhar qualquer tela."
+          design:
+            title: "Design sob medida"
+            text: "Layout com a cara da sua marca, pensado pra converter primeiro no celular."
+          build:
+            title: "Construção na Shopify"
+            text: "Tema, produtos, pagamentos, frete e domínio configurados por quem faz isso todo dia."
+          conexoes:
+            title: "Conexões da Mewtda"
+            text: "CRM, sistema de trocas e automações de WhatsApp conectados antes do lançamento."
+          lancamento:
+            title: "Lançamento e acompanhamento"
+            text: "Loja no ar com checklist completo — e a gente por perto nas primeiras vendas."
+      benefits:
+        eyebrow: "O QUE MUDA"
+        title: "Uma loja que já nasce vendendo"
+        items:
+          converter:
+            title: "Pensada pra converter"
+            text: "Hierarquia, texto e checkout desenhados em volta da compra, mobile first."
+          rapida:
+            title: "Rápida de verdade"
+            text: "Tema leve e estrutura limpa: velocidade é parte do design, não um detalhe."
+          controle:
+            title: "Você no controle"
+            text: "Sua loja, suas contas, seus dados — com um painel pra acompanhar tudo."
+          ecossistema:
+            title: "Ecossistema, não só um site"
+            text: "Já nasce conectada ao CRM, às trocas e às automações — sem pontas soltas."
+      eco:
+        eyebrow: "TUDO CONECTADO"
+        title: "Sua loja já nasce conectada"
+        lead: "Todo projeto é entregue integrado ao resto da Mewtda — uma operação, um painel."
+        open: "Conhecer"
+      cta:
+        title: "Vamos criar a sua loja?"
+        text: "Chama no WhatsApp e conta o que você vende."
+        button: "Falar com a Mewtda"
+        whatsapp_message: "Olá! Quero criar minha loja Shopify com a Mewtda."
+      shift:
+        eyebrow: "A VIRADA"
+        title_a: "Sua marca cresceu."
+        title_b: "Seu site acompanhou?"
+        p1: "Quase toda loja começa igual: um template bonito, adaptado às pressas, que serve enquanto o volume é pequeno. Aí a marca cresce — e o site passa a segurar o crescimento em vez de empurrar."
+        p2: "O caminho comum é contratar uma agência que entrega o site e some. O layout até muda; a operação continua a mesma: dados espalhados, trocas no e-mail, cliente sem resposta."
+        p3: "A Mewtda faz diferente porque não é só quem desenha a sua loja — é quem opera e-commerce com você depois do lançamento. O site é a parte visível de um sistema que já nasce funcionando."
+        link: "Como a gente trabalha"
+      org:
+        eyebrow: "LOJA LIGADA AO ECOSSISTEMA MEWTDA"
+        title: "Site se compra. Operação se constrói."
+        text: "Sua loja não é entregue solta: ela nasce dentro do mesmo painel que toca o CRM, as trocas e as automações das marcas que você viu ali em cima. Cada projeto novo afia o processo do próximo — e o orçamento vai pra estratégia da sua marca, não pra reinventar o básico."
+        stats:
+          marcas: "marcas no ar com a Mewtda"
+          produtos: "produtos no mesmo painel"
+          automacoes: "automações rodando pela loja"
+          equipe: "equipe, do design à operação"
+      fromto:
+        eyebrow: "DO ORÇAMENTO AO AR"
+        title: "Orçada em meses. No ar em semanas."
+        sub: "As horas não somem do projeto — elas mudam de lugar."
+        text: "Layout, catálogo, pagamentos, frete: o trabalho é o mesmo de sempre. O que muda é a base por baixo. Como a gente já opera lojas todos os dias, o básico não se discute — se configura. O tempo vai pro que diferencia a sua marca."
+        from: "De"
+        to: "para"
+        items:
+          prazo:
+            from: "3–6 meses"
+            to: "4–8 semanas"
+            label: "do briefing ao lançamento"
+          base:
+            from: "template genérico"
+            to: "design da sua marca"
+            label: "identidade no ar"
+          dados:
+            from: "planilhas espalhadas"
+            to: "um painel só"
+            label: "operação desde o dia 1"
+      process_couplet:
+        a: "O site é a vitrine."
+        b: "A operação é o que faz ele vender."
+      owners:
+        eyebrow: "ONDE A GENTE ASSINA EMBAIXO"
+        title: "Cada entrega tem dono. E assinatura."
+        lead: "Nada na sua loja fica no \"ficou pronto sozinho\". Em todo projeto, sem exceção, uma pessoa responde por:"
+        items:
+          design:
+            title: "Design e conversão"
+            text: "Como a experiência deve ser — e por quê."
+          performance:
+            title: "Velocidade"
+            text: "As escolhas de estrutura que definem o carregamento."
+          catalogo:
+            title: "Arquitetura do catálogo"
+            text: "Coleções, variantes e filtros que fazem sentido pra quem compra."
+          integracoes:
+            title: "Integrações"
+            text: "CRM, trocas, WhatsApp e mídia conectados e testados."
+          qa:
+            title: "Revisão final e lançamento"
+            text: "Nada entra no ar sem conferência completa."
+        bullets:
+          - "Nada é publicado sem a sua aprovação."
+          - "A loja é sua: domínio, contas e dados no seu nome."
+          - "Tudo documentado pra sua equipe tocar o dia a dia."
+      field:
+        eyebrow: "DA OPERAÇÃO"
+        text: "Quem desenha a sua loja é quem opera e-commerce todos os dias: as mesmas pessoas por trás do CRM, das trocas e das automações das marcas lá de cima. Quando uma coleção entra no ar, a gente está online junto — porque o painel toca aqui também."
+        punch: "Essa é a diferença entre uma agência que entrega um site e uma equipe que opera junto."
+      build:
+        eyebrow: "O QUE ENTRA NA SUA LOJA"
+        title_a: "Tudo que uma loja precisa."
+        title_b: "Um painel por baixo."
+        lead: "Do layout ao frete, a entrega é completa — e cada peça já sai conectada ao painel Mewtda."
+        groups:
+          design:
+            title: "Design & marca"
+            pitch: "Uma loja com a sua cara, não com a de um template."
+            featured: "Design sob medida"
+            featured_text: "Página inicial, coleções e página de produto desenhadas pra sua marca, mobile first."
+            items:
+              - "Identidade aplicada de ponta a ponta"
+              - "Página de produto pensada pra conversão"
+              - "Banners e vitrines por coleção"
+          operacao:
+            title: "Operação pronta"
+            pitch: "Configurada por quem faz isso todo dia."
+            featured: "Loja configurada de ponta a ponta"
+            featured_text: "Pagamentos, frete, domínio e e-mails prontos no dia do lançamento."
+            items:
+              - "Checkout e meios de pagamento"
+              - "Regras de frete"
+              - "Páginas institucionais e políticas"
+          conexoes:
+            title: "Conexões"
+            pitch: "Já nasce ligada no resto da Mewtda."
+            featured: "Integração com o painel"
+            featured_text: "CRM, trocas e automações de WhatsApp conectados antes de entrar no ar."
+            items:
+              - "MeuCRM desde o dia 1"
+              - "Quero Trocar integrado"
+              - "Pixel, Google e Meta configurados"
+          crescimento:
+            title: "Crescimento"
+            pitch: "Lançar é o começo, não o fim."
+            featured: "Pronta pra tração"
+            featured_text: "Base de SEO, analytics e treinamento pra sua equipe assumir o dia a dia."
+            items:
+              - "SEO técnico de base"
+              - "Relatórios no painel"
+              - "Treinamento da equipe"
+      start:
+        eyebrow: "POR ONDE COMEÇAR"
+        title: "Ajustar a loja atual ou recomeçar do zero? A gente responde por escrito."
+        text: "Manda o link da sua loja — ou só a ideia — no WhatsApp. Você recebe um diagnóstico honesto com uma de três respostas: ajustar o que existe, redesenhar, ou não mexer agora. Com o porquê de cada uma."
+        cta: "Pedir um diagnóstico"
+        alt: "Ver os projetos"
+        case_label: "LOJA NO AR"
+        case_text: "Quer ver uma entrega completa? Visite um projeto no ar."
+        case_link: "Visitar o site"
+        whatsapp_message: "Olá! Quero um diagnóstico da minha loja. O link é: "
+      team:
+        eyebrow: "QUEM TOCA O PROJETO"
+        title: "Você fala com quem constrói."
+        text: "Sem camadas de atendimento: do briefing ao pós-lançamento, a conversa é direta com quem desenha e configura a sua loja — no WhatsApp, não em formulário."
+      partners:
+        eyebrow: "PARCEIROS"
+        title: "As plataformas que sua loja já conhece."
+        text: "Shopify Partner, com as integrações de Meta, Google e WhatsApp montadas por quem já fez isso antes."
+    app_page:
+      meta_title: "O app da sua loja"
+      badge: "Em breve"
+      nav:
+        recursos: "Recursos"
+        segmentos: "Na prática"
+        acesso: "Acesso"
+        faq: "Dúvidas"
+      hero:
+        eyebrow: "APP IOS E ANDROID"
+        headline_a: "A sua loja,"
+        headline_b: "agora como app."
+        sub: "Um canal que é seu: push notifications, vitrines e recompra no bolso do cliente — tudo operado pelo mesmo painel que já toca sua loja, o CRM e as trocas."
+        cta: "Entrar na lista de espera"
+        cta_secondary: "Ver como funciona"
+        whatsapp_message: "Olá! Quero entrar na lista de espera do App da Mewtda."
+      logos: "NA CASA DAS MARCAS QUE JÁ VENDEM COM A MEWTDA"
+      features:
+        eyebrow: "RECURSOS"
+        title: "Tudo que seu time precisa pra operar o canal"
+        lead: "Sem operação paralela: o app entra na rotina de quem já cuida da loja, direto no painel Mewtda."
+        push:
+          title: "Push notifications"
+          text: "Lançamento, carrinho recuperado, pedido a caminho: fale com quem instalou a sua marca — sem pagar mídia de novo."
+          cards:
+            - title: "Coleção nova no ar 🧡"
+              text: "Veja antes de todo mundo"
+            - title: "Seu carrinho sente sua falta"
+              text: "Finalize com frete grátis"
+            - title: "Pedido a caminho"
+              text: "Chega amanhã"
+        vitrine:
+          title: "Vitrines e coleções"
+          text: "Banners, destaques e coleções trocados pelo painel — sem estúdio de terceiro, sem ticket."
+        painel:
+          title: "Painel Mewtda"
+          text: "Vendas, clientes e campanhas do app no mesmo dashboard da loja."
+        branding:
+          title: "Sua marca, de verdade"
+          text: "Cores, tipografia e ícone do app com a identidade da loja — não um shell genérico."
+        integracoes:
+          title: "Integrações"
+          text: "Shopify, Meta, Google e WhatsApp conectados desde o primeiro dia."
+      segments:
+        eyebrow: "NA PRÁTICA"
+        title: "Feito pro jeito da sua loja"
+        lead: "Troque o segmento e veja o app com outra cara — a vitrine é a da sua marca."
+      numbers:
+        eyebrow: "O CANAL"
+        title: "Um canal que é seu"
+        items:
+          plataformas:
+            value: "iOS + Android"
+            label: "nas duas lojas de aplicativo"
+          push:
+            value: "Push ilimitado"
+            label: "direto do painel, sem custo por envio"
+          painel:
+            value: "1 painel"
+            label: "o mesmo da loja, do CRM e das trocas"
+          codigo:
+            value: "0 código"
+            label: "pra sua equipe no dia a dia"
+      integr: "CONECTADO AO QUE SUA OPERAÇÃO JÁ USA"
+      access:
+        eyebrow: "ACESSO"
+        title: "Chegando primeiro pra quem já é Mewtda"
+        text: "O app está em desenvolvimento e vai abrir em turmas. Entre na lista de espera e a gente te chama no WhatsApp quando a sua vez chegar — clientes do CRM e da criação de lojas têm prioridade."
+        includes:
+          - "App iOS e Android publicados nas lojas"
+          - "Push notifications ilimitadas"
+          - "Vitrines e coleções operadas pelo painel"
+          - "Integrado ao MeuCRM e ao Quero Trocar"
+          - "Lançamento acompanhado pela equipe"
+        chips:
+          - "EM BREVE"
+          - "IOS E ANDROID"
+          - "PRIORIDADE PRA CLIENTES MEWTDA"
+        cta: "Entrar na lista de espera"
+      faq:
+        eyebrow: "DÚVIDAS"
+        title: "As perguntas mais comuns sobre o app"
+        items:
+          - q: "Preciso ser cliente da Mewtda pra ter o app?"
+            a: "Não — mas quem já usa o CRM ou criou a loja com a gente entra primeiro na fila. O app nasce integrado ao painel, então, se você ainda não é cliente, a gente resolve isso no mesmo processo."
+          - q: "Funciona com a minha loja Shopify?"
+            a: "Sim. O app espelha seu catálogo, estoque e checkout da Shopify — produto novo na loja aparece no app, sem retrabalho."
+          - q: "Quem vai operar o app no dia a dia?"
+            a: "O mesmo time que já cuida da sua loja, pelo painel Mewtda: banners, coleções, campanhas e push sem depender de desenvolvedor."
+          - q: "O app é só o meu site numa tela menor?"
+            a: "Não. É um canal próprio: login persistente, push notifications, vitrines pensadas pra recompra e jornadas pra quem escolheu instalar a sua marca."
+          - q: "Quando lança e quanto vai custar?"
+            a: "Estamos em desenvolvimento, abrindo em turmas pela lista de espera. Preço e condições são anunciados primeiro pra quem está na lista — e entrar não compromete em nada."
+      cta:
+        title: "Coloque sua loja no bolso de quem compra"
+        text: "Entra na lista de espera e seja avisado primeiro — é uma mensagem no WhatsApp."
+        button: "Entrar na lista de espera"
+        whatsapp_message: "Olá! Quero entrar na lista de espera do App da Mewtda."
+    crm_page:
+      meta_title: MeuCRM — CRM para e-commerce
+      nav:
+        recursos: Recursos
+        automacoes: Automações
+        painel: Painel
+        faq: Dúvidas
+      hero:
+        eyebrow: CRM PARA E-COMMERCE
+        headline_a: Clientes, vendas e funil.
+        headline_b: Num painel só.
+        sub: 'O MeuCRM conecta sua Shopify, seus anúncios e seu WhatsApp num único painel: você enxerga o funil inteiro, conhece cada cliente e sabe exatamente onde está perdendo venda.'
+        cta: Quero conhecer o CRM
+        cta_secondary: Ver recursos
+        whatsapp_message: Olá! Quero conhecer o MeuCRM na minha loja.
+      features:
+        eyebrow: RECURSOS
+        title: Tudo que a operação precisa, sem caçar número
+        lead: O que hoje mora em planilhas e ferramentas soltas passa a viver no mesmo painel — atualizado direto da sua loja.
+        items:
+          funil:
+            title: Dashboard de vendas
+            text: 'Faturamento, ROAS e CAC dia a dia, com o funil completo: visitas, produtos vistos, carrinhos e checkouts.'
+          clientes:
+            title: Base de clientes
+            text: O histórico de compras de cada cliente, segmentado e pronto pra campanha — sem exportar nada.
+          metas:
+            title: Metas mensais
+            text: Defina a meta do mês e acompanhe com a equipe, no mesmo painel que mostra as vendas acontecendo.
+          trocas_int:
+            title: Trocas integradas
+            text: 'O Quero Trocar vive aqui dentro: solicitações, aprovação e vale-troca sem sair do painel.'
+          afiliados:
+            title: Afiliados e cupons
+            text: Crie cupons e gerencie seus afiliados no mesmo lugar em que as vendas aparecem.
+          integracoes:
+            title: Integrações
+            text: 'Shopify, Google Ads e Meta Ads conectados: venda e mídia lado a lado, sem montar relatório na mão.'
+      autos:
+        eyebrow: AUTOMAÇÕES DE WHATSAPP
+        title: Mensagens que saem sozinhas, na hora certa
+        lead: Rastreio, cashback e carrinho abandonado direto no WhatsApp do cliente — sem ninguém da equipe ter que copiar e colar.
+        chat:
+        - from: loja
+          text: 'Boa notícia! Seu pedido #1042 saiu pra entrega. Acompanhe por aqui: BR123456789BR'
+        - from: cliente
+          text: Opa, que rápido! Valeu!
+        - from: loja
+          text: Chegou tudo certinho? Seu cashback dessa compra já está liberado pra usar na próxima.
+        - from: cliente
+          text: Chegou sim! Já tô de olho no que vem agora.
+        items:
+          rastreio:
+            title: Rastreio automático
+            text: 'Pedido saiu, cliente avisado: o código de rastreio chega no WhatsApp sem trabalho manual.'
+          cashback:
+            title: Cashback liberado
+            text: O cliente fica sabendo na hora em que o cashback libera — um motivo real pra voltar e comprar de novo.
+          carrinho:
+            title: Carrinho abandonado
+            text: Quem parou no checkout recebe um lembrete no momento certo, direto do painel.
+      painel:
+        eyebrow: O PAINEL
+        title: Feito pra abrir todo dia
+        lead: 'Bateu o olho, entendeu a loja: vendas, funil, metas e clientes na mesma tela, atualizados direto da sua Shopify.'
+      faq:
+        eyebrow: DÚVIDAS
+        title: As perguntas mais comuns sobre o MeuCRM
+        items:
+        - q: Funciona com a minha loja Shopify?
+          a: Sim. O MeuCRM se conecta à sua Shopify e traz pedidos, clientes e funil pro painel. E se você ainda não tem loja, a gente também cria do zero, já conectada.
+        - q: Hoje minha operação roda em planilha. A migração é dolorida?
+          a: 'Não: você não digita base nenhuma na mão. Conectou a Shopify, o painel passa a acompanhar seus pedidos e clientes — e a planilha vai se aposentando aos poucos.'
+        - q: Pra quem é o MeuCRM?
+          a: Pra donos e equipes de lojas Shopify que cuidam de venda, mídia e atendimento no dia a dia e querem enxergar a operação inteira sem abrir dez abas.
+        - q: As automações usam a API oficial do WhatsApp?
+          a: As automações de rastreio, cashback e carrinho saem pelo WhatsApp conectado ao painel. A configuração é feita junto com a nossa equipe na implantação, que orienta o formato certo pro seu volume de mensagens.
+        - q: Como eu contrato?
+          a: 'Sem formulário: chama a gente no WhatsApp, conta como sua operação funciona hoje e a gente mostra o painel rodando. Os próximos passos são combinados nessa conversa.'
+      cta:
+        title: Vamos colocar sua loja num painel só?
+        text: Chama no WhatsApp e conta como sua operação roda hoje — a gente mostra o MeuCRM funcionando.
+        button: Falar com a Mewtda
+        whatsapp_message: Olá! Quero conhecer o MeuCRM na minha loja.
+    qt_page:
+      meta_title: Quero Trocar — trocas e devoluções
+      nav:
+        como: Como funciona
+        painel: Painel
+        beneficios: Benefícios
+        faq: Dúvidas
+      hero:
+        eyebrow: TROCAS E DEVOLUÇÕES
+        headline_a: Seu cliente abre a troca.
+        headline_b: Você só aprova.
+        sub: 'O Quero Trocar coloca um portal de trocas self-service na sua loja: o cliente busca o pedido, escolhe os itens e envia o motivo. Aprovou, o vale-troca vira cupom na Shopify — sem planilha, sem fio de e-mail.'
+        cta: Quero na minha loja
+        cta_secondary: Ver como funciona
+        whatsapp_message: Olá! Quero conhecer o Quero Trocar pra minha loja.
+      steps:
+        eyebrow: COMO FUNCIONA
+        title: Da solicitação ao cupom, sem ninguém correr atrás
+        lead: Quatro passos entre o cliente querer trocar e o vale-troca chegar no e-mail dele.
+        items:
+          pedido:
+            title: O cliente abre a troca
+            text: Numa página própria da sua loja, ele busca o pedido pelo número e e-mail e escolhe os itens — sem precisar chamar sua equipe.
+          regras:
+            title: As regras avaliam
+            text: Prazo e condição de cada pedido são checados automaticamente. Produto chegou com avaria? Motivo e foto entram junto na solicitação.
+          vale:
+            title: Aprovou, virou vale-troca
+            text: Você aprova no painel e o cupom é criado direto na Shopify. O cliente recebe por e-mail na hora.
+          acompanha:
+            title: Sua equipe acompanha tudo
+            text: Cada solicitação com status claro no painel — pendente, aprovada, recebida, concluída — e o cliente avisado por e-mail em cada etapa.
+      painel:
+        eyebrow: O PAINEL
+        title: Todas as solicitações num lugar só
+        lead: Busque por pedido, protocolo, nome ou e-mail e veja em que pé está cada troca e devolução — do computador ou do celular.
+      benefits:
+        eyebrow: O QUE MUDA
+        title: Menos atrito pra todo mundo
+        items:
+          equipe:
+            title: Equipe fora do e-mail
+            text: Chega de negociar troca uma a uma na planilha ou no WhatsApp. A fila inteira vive no painel, com status claro.
+          cliente:
+            title: Cliente bem atendido
+            text: Quem troca resolve na hora, sozinho, numa página com a cara da sua loja — e sabe o status sem precisar perguntar.
+          caixa:
+            title: A venda fica na loja
+            text: 'Troca aprovada vira cupom na Shopify: o valor volta pra sua loja como nova compra, não como estorno.'
+          shopify:
+            title: Conectado à Shopify
+            text: O portal busca direto nos pedidos da sua loja. Nada de digitar dados à mão nem conferir pedido por pedido.
+      faq:
+        eyebrow: DÚVIDAS
+        title: As perguntas mais comuns sobre o Quero Trocar
+        items:
+        - q: Preciso ter loja na Shopify?
+          a: Sim — o Quero Trocar se conecta direto aos pedidos da sua loja Shopify. Se você ainda não tem loja, a gente também cria do zero, já com o sistema de trocas ligado.
+        - q: Quem define as regras de troca?
+          a: Você. Prazos e condições ficam na configuração do painel, e o sistema aplica em cada pedido automaticamente — inclusive exigindo motivo e foto quando o produto chega com avaria.
+        - q: E quando o cliente quer o dinheiro de volta?
+          a: Devoluções também entram pelo portal e caem no mesmo painel. O vale-troca automático é pras trocas; o estorno em si você processa pelo seu meio de pagamento — com a solicitação organizada e o cliente avisado por e-mail.
+        - q: Meu cliente precisa de login?
+          a: Não. Ele busca o pedido pelo número e pelo e-mail da compra. Sem senha, sem cadastro.
+        - q: Como eu contrato?
+          a: Chamando a gente no WhatsApp. A gente entende sua operação, conecta o Quero Trocar à sua Shopify e deixa a página de trocas com a cara da sua loja.
+      cta:
+        title: Vamos tirar as trocas do seu e-mail?
+        text: Manda uma mensagem no WhatsApp e a gente te mostra o sistema por dentro.
+        button: Falar com a Mewtda
+        whatsapp_message: Olá! Quero o Quero Trocar na minha loja Shopify.
     strip:
       crm: "CRM para e-commerce"
       trocas: "Trocas integradas à Shopify"
@@ -830,6 +2313,7 @@ pt-BR:
       title: "Quatro produtos, uma operação conectada"
       lead: "Cada produto resolve uma parte da sua loja, e todos conversam entre si no mesmo painel."
       more: "Conhecer"
+      page_link: "Ver a página completa"
       crm:
         tagline: "Clientes, vendas e funil de conversão num painel só."
       trocas:
@@ -909,6 +2393,7 @@ pt-BR:
       number: "03"
       title: "Lojas que vendem desde o primeiro dia"
       lead: "Criamos sua loja na Shopify do zero: design com a cara da sua marca, pensada pra converter no computador e no celular, e já conectada ao CRM Mewtda."
+      page_link: "Ver a página completa"
       case_label: "Loja criada pela Mewtda"
       case_link: "Ver a loja no ar"
       desktop_alt: "Loja %{store} no computador"

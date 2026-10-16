@@ -1,0 +1,50 @@
+<%#
+  Celular com a vitrine fake de e-commerce (inspirado na kobe.io), um
+  "store" por segmento — os painéis trocam via data-shop-panel (JS bloco 5
+  de home/_lp_scripts). Usado na seção 04 da home e na página /app.
+  Locals: segments (hash do HomeHelper#landing_app_segments).
+%>
+<div class="mwtda-lp-shop__phone" aria-hidden="true">
+  <div class="mwtda-lp-shop__notch"></div>
+  <div class="mwtda-lp-shop__screen">
+    <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+
+    <% segments.each_with_index do |(key, seg), i| %>
+      <div class="mwtda-lp-shop__store" data-shop-panel="<%= key %>" data-active="<%= i.zero? %>" style="--shop-accent: <%= seg[:accent] %>">
+        <div class="mwtda-lp-shop__store-header">
+          <i class="fa-solid fa-bars"></i>
+          <span class="mwtda-lp-shop__store-name"><%= seg[:store] %></span>
+          <span class="mwtda-lp-shop__bag"><i class="fa-solid fa-bag-shopping"></i><em>2</em></span>
+        </div>
+        <div class="mwtda-lp-shop__search"><i class="fa-solid fa-magnifying-glass"></i> <%= t('home.apps.phone.search') %></div>
+
+        <div class="mwtda-lp-shop__banner">
+          <img src="<%= unsplash_photo(seg[:banner], 520) %>" alt="" loading="lazy">
+          <div class="mwtda-lp-shop__banner-copy">
+            <span><%= t("home.apps.segments.#{key}.banner_tag") %></span>
+            <strong><%= t("home.apps.segments.#{key}.banner_title") %></strong>
+            <em><%= t('home.apps.phone.shop_now') %> <i class="fa-solid fa-arrow-right"></i></em>
+          </div>
+        </div>
+
+        <div class="mwtda-lp-shop__grid">
+          <% names = t("home.apps.segments.#{key}.products") %>
+          <% prices = t("home.apps.segments.#{key}.prices") %>
+          <% seg[:products].each_with_index do |photo, p| %>
+            <div class="mwtda-lp-shop__product">
+              <div class="mwtda-lp-shop__product-img">
+                <img src="<%= unsplash_photo(photo, 240) %>" alt="" loading="lazy">
+                <i class="fa-regular fa-heart"></i>
+              </div>
+              <span class="mwtda-lp-shop__product-name"><%= names[p] %></span>
+              <span class="mwtda-lp-shop__product-price"><%= prices[p] %></span>
+              <span class="mwtda-lp-shop__product-add"><i class="fa-solid fa-plus"></i> <%= t('home.apps.phone.add') %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="mwtda-lp-shop__checkout"><i class="fa-solid fa-lock"></i> <%= t('home.apps.phone.checkout') %></div>
+  </div>
+</div>

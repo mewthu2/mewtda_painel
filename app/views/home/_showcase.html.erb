@@ -1,0 +1,160 @@
+<%#
+  Painel interativo das soluções (estilo Mixpanel): a lista de soluções à
+  esquerda e um "navegador" à direita cujo conteúdo troca conforme a
+  rolagem (desktop: a seção fica presa na tela enquanto você rola pelos 4
+  passos) ou o clique (mobile e sempre que alguém clica num passo).
+  O JS fica no fim de home/index.html.erb (bloco 10); os contadores,
+  funil, gráfico e notificações re-animam a cada troca via classe .is-live.
+%>
+<div class="mwtda-lp-showcase" data-showcase>
+  <div class="mwtda-lp-showcase__pin">
+    <div class="mwtda-lp-show__steps" role="tablist" aria-label="<%= t('home.showcase.aria') %>">
+      <% landing_products.each_with_index do |product, i| %>
+        <button type="button" class="mwtda-lp-show__step" role="tab" aria-selected="<%= i.zero? %>" data-show-step="<%= product[:key] %>">
+          <span class="mwtda-lp-show__step-rail" aria-hidden="true"><i></i></span>
+          <span class="mwtda-lp-show__step-body">
+            <%= render 'home/product_logo', product: product %>
+            <p><%= t("home.products.#{product[:key]}.tagline") %></p>
+          </span>
+        </button>
+      <% end %>
+      <span class="mwtda-lp-show__hint" aria-hidden="true"><i class="fa-solid fa-computer-mouse"></i> <%= t('home.showcase.hint') %></span>
+    </div>
+
+    <div class="mwtda-lp-show__stage" data-show-stage>
+      <div class="mwtda-lp-browser mwtda-lp-show__frame">
+        <div class="mwtda-lp-browser__bar">
+          <span></span><span></span><span></span>
+          <em><i class="fa-solid fa-lock"></i> <%= t('home.showcase.host') %></em>
+        </div>
+
+        <div class="mwtda-lp-show__panels">
+
+          <%# ------------------------- CRM ------------------------- %>
+          <div class="mwtda-lp-show__panel mwtda-lp-show__panel--crm" data-show-panel="crm" data-active="true">
+            <div class="mwtda-lp-show__kpis">
+              <div class="mwtda-lp-show__kpi">
+                <small><%= t('home.showcase.crm.kpi_revenue') %></small>
+                <strong><span data-count="184230" data-prefix="R$ ">R$ 0</span></strong>
+                <em class="is-up"><i class="fa-solid fa-arrow-trend-up"></i> +18%</em>
+              </div>
+              <div class="mwtda-lp-show__kpi">
+                <small><%= t('home.showcase.crm.kpi_orders') %></small>
+                <strong><span data-count="1208">0</span></strong>
+                <em class="is-up"><i class="fa-solid fa-arrow-trend-up"></i> +12%</em>
+              </div>
+              <div class="mwtda-lp-show__kpi">
+                <small><%= t('home.showcase.crm.kpi_roas') %></small>
+                <strong><span data-count="4.2" data-dec="1" data-suffix="x">0x</span></strong>
+                <em class="is-up"><i class="fa-solid fa-arrow-trend-up"></i> +0,6</em>
+              </div>
+            </div>
+            <div class="mwtda-lp-show__split">
+              <div class="mwtda-lp-show__funnel">
+                <small><%= t('home.showcase.crm.funnel_title') %></small>
+                <% { visitas: 100, carrinho: 38, checkout: 21, compra: 12 }.each do |key, pct| %>
+                  <div class="mwtda-lp-show__funnel-row">
+                    <span><%= t("home.showcase.crm.funnel.#{key}") %></span>
+                    <div class="mwtda-lp-show__funnel-bar"><i style="--w: <%= pct %>%"></i></div>
+                    <b><%= pct %>%</b>
+                  </div>
+                <% end %>
+              </div>
+              <div class="mwtda-lp-show__chart">
+                <small><%= t('home.showcase.crm.chart_title') %></small>
+                <svg viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="mw-show-area" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#fc7107" stop-opacity="0.28"/>
+                      <stop offset="1" stop-color="#fc7107" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path class="mwtda-lp-show__chart-area" fill="url(#mw-show-area)"
+                        d="M0,96 C24,92 40,70 60,74 S96,52 118,58 S156,38 178,44 S216,28 240,32 S296,12 320,16 L320,120 L0,120 Z"/>
+                  <path class="mwtda-lp-show__chart-line" fill="none" stroke="#fc7107" stroke-width="3" stroke-linecap="round"
+                        d="M0,96 C24,92 40,70 60,74 S96,52 118,58 S156,38 178,44 S216,28 240,32 S296,12 320,16"/>
+                </svg>
+              </div>
+            </div>
+            <a class="mwtda-lp-show__open" href="#crm"><%= t('home.showcase.open') %> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <%# ------------------------ TROCAS ----------------------- %>
+          <div class="mwtda-lp-show__panel mwtda-lp-show__panel--trocas" data-show-panel="trocas">
+            <div class="mwtda-lp-show__head">
+              <strong><%= t('home.showcase.trocas.title') %></strong>
+              <small><%= t('home.showcase.trocas.subtitle') %></small>
+            </div>
+            <div class="mwtda-lp-show__chips">
+              <% [['pending', 6, '#b45309'], ['approved', 9, '#0b72e7'], ['done', 104, '#15803d']].each do |key, count, color| %>
+                <span class="mwtda-lp-show__chip" style="--chip: <%= color %>">
+                  <b data-count="<%= count %>">0</b> <%= t("home.trocas_part.panel.stats.#{key}") %>
+                </span>
+              <% end %>
+            </div>
+            <div class="mwtda-lp-show__rows">
+              <% [
+                   ['#1042', 'Mariana Costa', 'pending'],
+                   ['#1039', 'Rafael Lima',   'approved'],
+                   ['#1035', 'Juliana Alves', 'done'],
+                   ['#1031', 'Bruno Souza',   'done']
+                 ].each do |order, name, status| %>
+                <div class="mwtda-lp-show__row">
+                  <span class="mwtda-lp-show__row-initials"><%= name.split.map(&:first).join %></span>
+                  <div><b><%= name %></b><small><%= order %> · <%= t('home.trocas_part.panel.kinds.exchange') %></small></div>
+                  <em class="mwtda-lp-show__badge mwtda-lp-show__badge--<%= status %>"><%= t("home.trocas_part.panel.badges.#{status}") %></em>
+                </div>
+              <% end %>
+            </div>
+            <a class="mwtda-lp-show__open" href="#trocas"><%= t('home.showcase.open') %> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <%# ------------------------- SITES ----------------------- %>
+          <div class="mwtda-lp-show__panel mwtda-lp-show__panel--sites" data-show-panel="new">
+            <div class="mwtda-lp-show__head">
+              <strong><%= t('home.showcase.sites.title') %></strong>
+              <span class="mwtda-lp-show__live"><i></i> <%= t('home.showcase.sites.live') %></span>
+            </div>
+            <div class="mwtda-lp-show__site">
+              <div class="mwtda-lp-show__site-shot">
+                <%= image_tag 'landing/site-desktop.jpg', alt: '', loading: 'lazy' %>
+              </div>
+              <div class="mwtda-lp-show__meters">
+                <% { design: 98, velocidade: 96, conversao: 92 }.each do |key, val| %>
+                  <div class="mwtda-lp-show__meter">
+                    <span><%= t("home.showcase.sites.meters.#{key}") %></span>
+                    <div class="mwtda-lp-show__meter-bar"><i style="--w: <%= val %>%"></i></div>
+                    <b data-count="<%= val %>">0</b>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+            <a class="mwtda-lp-show__open" href="#sites"><%= t('home.showcase.open') %> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <%# ------------------------- APPS ------------------------ %>
+          <div class="mwtda-lp-show__panel mwtda-lp-show__panel--apps" data-show-panel="app">
+            <div class="mwtda-lp-show__head">
+              <strong><%= t('home.showcase.apps.title') %></strong>
+              <span class="mwtda-lp-badge"><%= t('home.showcase.apps.soon') %></span>
+            </div>
+            <div class="mwtda-lp-show__pushes">
+              <% [%w[sale fa-solid fa-sack-dollar], %w[pix fa-solid fa-bolt], %w[cart fa-solid fa-cart-shopping]].each_with_index do |(key, *icon), i| %>
+                <div class="mwtda-lp-show__push" style="--i: <%= i %>">
+                  <span class="mwtda-lp-show__push-icon"><i class="<%= icon.join(' ') %>"></i></span>
+                  <div>
+                    <strong><%= t("home.apps.notifications.#{key}_title") %></strong>
+                    <span><%= t("home.apps.notifications.#{key}_text") %></span>
+                  </div>
+                  <small><%= t('home.apps.notifications.now') %></small>
+                </div>
+              <% end %>
+            </div>
+            <a class="mwtda-lp-show__open" href="#apps"><%= t('home.showcase.open') %> <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

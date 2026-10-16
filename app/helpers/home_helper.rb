@@ -78,6 +78,35 @@ module HomeHelper
     LANDING_PRODUCTS
   end
 
+  # Página dedicada de cada produto (vão sendo criadas uma a uma). Produto
+  # sem página ainda cai no anchor da seção dele na home — e os botões
+  # "Ver a página completa" só aparecem pra quem já tem página.
+  def product_page_path(key)
+    {
+      'crm'    => meu_crm_path,
+      'trocas' => quero_trocar_path,
+      'new'    => sua_loja_path,
+      'app'    => app_page_path
+    }[key.to_s]
+  end
+
+  # Vitrine fake do celular (seção 04 da home e página /app). Fotos do
+  # Unsplash — pra usar prints reais de lojas de clientes, troque os ids.
+  LANDING_APP_SEGMENTS = {
+    moda:        { store: 'ATELIÊ',   accent: '#e4572e', banner: '1483985988355-763728e1935b', products: %w[1591047139829-d91aecb6caea 1503342217505-b0a15ec3261c 1542291026-7eec264c27ff 1560343090-f0409e92791a] },
+    beleza:      { store: 'glow.co',  accent: '#c2587e', banner: '1596462502278-27bfdc403348', products: %w[1608571423902-eed4a5ad8108 1620916566398-39f1143ab7be 1571781926291-c477ebfd024b 1556228578-8c89e6adf883] },
+    eletronicos: { store: 'VOLT',     accent: '#2563eb', banner: '1505740420928-5e560c06d30e', products: %w[1546868871-7041f2a55e12 1583394838336-acd977736f90 1526170375885-4d8ecf77b99f 1523275335684-37898b6baf30] },
+    casa:        { store: 'casa.nua', accent: '#0f766e', banner: '1586023492125-27b2c045efd7', products: %w[1555041469-a586c61ea9bc 1567538096630-e0c55bd6374c 1513506003901-1e6a229e2d15 1524758631624-e2822e304c36] }
+  }.freeze
+
+  def landing_app_segments
+    LANDING_APP_SEGMENTS
+  end
+
+  def unsplash_photo(id, width = 360)
+    "https://images.unsplash.com/photo-#{id}?w=#{width}&q=70&auto=format&fit=crop"
+  end
+
   def landing_product(key)
     LANDING_PRODUCTS.find { |product| product[:key] == key }
   end
