@@ -1,0 +1,77 @@
+<% title 'Automações personalizadas' %>
+
+<div class="automations-wrapper">
+
+  <div class="automations-intro">
+    <h1 class="automations-intro__title">Automações personalizadas</h1>
+    <p class="automations-intro__text">
+      Rotinas feitas sob medida para a operação de cada cliente. Elas aparecem aqui só para o cliente
+      para o qual foram criadas.
+    </p>
+  </div>
+
+  <% if @automations.empty? %>
+    <div class="crm-card custom-automations-empty">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <p>Nenhuma automação personalizada disponível para <strong><%= @client.name %></strong> ainda.</p>
+    </div>
+  <% else %>
+    <div class="automations-grid">
+      <% @automations.each do |kind, automation| %>
+        <div class="automations-card">
+          <div class="automations-card__icon">
+            <i class="<%= automation[:icon] %>"></i>
+          </div>
+          <div class="automations-card__body">
+            <div class="automations-card__title"><%= automation[:title] %></div>
+            <p class="automations-card__description"><%= automation[:description] %></p>
+          </div>
+          <div class="automations-card__cta-row">
+            <%= link_to new_custom_automation_path(kind: kind), class: 'crm-btn crm-btn--primary automations-card__cta' do %>
+              Gerar nova nota
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="crm-card custom-automations-history">
+      <h2 class="custom-automations-history__title">Histórico</h2>
+
+      <% if @runs.empty? %>
+        <p class="custom-automations-history__empty">Nenhuma execução ainda.</p>
+      <% else %>
+        <div class="custom-automations-table-wrap">
+          <table class="crm-table">
+            <thead>
+              <tr>
+                <th>Período</th>
+                <th>Situação</th>
+                <th class="text-right">Pedidos</th>
+                <th class="text-right">Itens</th>
+                <th class="text-right">Valor da nota</th>
+                <th>Nota no Tiny</th>
+                <th>Criada em</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @runs.each do |run| %>
+                <tr>
+                  <td><%= run.period_start.strftime('%d/%m/%Y') %> a <%= run.period_end.strftime('%d/%m/%Y') %></td>
+                  <td><%= render 'status_tag', run: run %></td>
+                  <td class="text-right"><%= run.orders_count %></td>
+                  <td class="text-right"><%= run.items.size %></td>
+                  <td class="text-right"><%= number_to_currency(run.total_value, unit: 'R$ ', separator: ',', delimiter: '.') %></td>
+                  <td><%= run.tiny_note_number.presence || run.tiny_note_id.presence || '—' %></td>
+                  <td><%= l(run.created_at, format: '%d/%m/%Y %H:%M') %></td>
+                  <td class="text-right"><%= link_to 'Abrir', custom_automation_path(run), class: 'crm-btn crm-btn--secondary' %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

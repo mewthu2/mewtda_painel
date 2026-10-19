@@ -49,6 +49,14 @@ Rails.application.routes.draw do
     post  'automations/cart-recovery/data/:id/resend', to: 'automations#resend_cart_recovery',
                                                        as: :resend_cart_recovery_automation
 
+    resources :custom_automations, path: 'custom-automations', only: [:index, :new, :create, :show] do
+      member do
+        get  :spreadsheet
+        post :emit
+        post :discard
+      end
+    end
+
     resources :events, only: [:index] do
       collection do
         get  'session/:session_id', action: :session_detail, as: :session

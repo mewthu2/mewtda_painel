@@ -80,6 +80,11 @@
         </div>
       </details>
 
+      <%= link_to custom_automations_path, class: "crm-sidebar__link #{'active' if request.path.start_with?(custom_automations_path)}" do %>
+        <i class="fa-solid fa-wand-magic-sparkles crm-fa"></i>
+        Automações personalizadas
+      <% end %>
+
       <% marketing_active = request.path.start_with?(affiliates_path) || request.path.start_with?('/crm/popup') ||
                              request.path.start_with?(landing_pages_path) ||
                              request.path.start_with?(email_templates_path) || request.path.start_with?('/crm/email_configuration') %>

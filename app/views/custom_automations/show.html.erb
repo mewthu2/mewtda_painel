@@ -1,0 +1,142 @@
+<% title 'Nota de transferência' %>
+<% brl = ->(v) { number_to_currency(v, unit: 'R$ ', separator: ',', delimiter: '.') } %>
+
+<div class="automations-wrapper">
+
+  <div class="custom-automations-header">
+    <div>
+      <%= link_to custom_automations_path, class: 'custom-automations-header__back' do %>
+        <i class="fa-solid fa-arrow-left"></i> Automações personalizadas
+      <% end %>
+      <h1 class="automations-intro__title">
+        Nota de transferência — <%= @run.period_start.strftime('%d/%m/%Y') %> a <%= @run.period_end.strftime('%d/%m/%Y') %>
+      </h1>
+      <div class="custom-automations-header__meta">
+        <%= render 'status_tag', run: @run %>
+        <span><%= @run.order_filter_label %></span>
+        <span><%= number_with_precision(@run.price_percentage, precision: 2, strip_insignificant_zeros: true) %>% do preço praticado</span>
+      </div>
+    </div>
+
+    <div class="custom-automations-header__actions">
+      <% if @run.items.any? %>
+        <%= link_to spreadsheet_custom_automation_path(@run), class: 'crm-btn crm-btn--secondary' do %>
+          <i class="fa-solid fa-file-excel"></i> Baixar planilha
+        <% end %>
+      <% end %>
+      <% if @run.discardable? %>
+        <%= button_to 'Descartar', discard_custom_automation_path(@run), method: :post,
+              class: 'crm-btn crm-btn--secondary',
+              form: { data: { turbo: false }, onsubmit: "return confirm('Descartar esta execução?');" } %>
+      <% end %>
+      <% if @run.emittable? %>
+        <%= button_to emit_custom_automation_path(@run), method: :post, class: 'crm-btn crm-btn--primary',
+              form: { data: { turbo: false },
+                      onsubmit: "return confirm('Emitir a nota #{@run.tiny_note_number} no valor de #{brl.call(@run.total_value)}? Ela será transmitida para a SEFAZ.');" } do %>
+          <i class="fa-solid fa-paper-plane"></i> Conferido — emitir nota
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @run.in_progress? %>
+    <div class="crm-card custom-automations-progress">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      <%= @run.status == 'emitting' ? 'Emitindo a nota no Tiny...' : 'Lendo os pedidos da Shopify e montando a nota no Tiny. Pode levar alguns minutos.' %>
+    </div>
+    <script>setTimeout(function () { window.location.reload(); }, 5000);</script>
+  <% end %>
+
+  <% if @run.error_message.present? %>
+    <div class="campaigns-alert campaigns-alert--danger">
+      <div class="campaigns-alert__content">
+        <strong>Erro</strong>
+        <p><%= @run.error_message %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @run.status == 'emitted' %>
+    <div class="campaigns-alert custom-automations-success">
+      <div class="campaigns-alert__content">
+        <strong>Nota enviada para emissão em <%= l(@run.emitted_at, format: '%d/%m/%Y %H:%M') %>.</strong>
+        <p>Acompanhe a autorização da SEFAZ no Tiny da matriz (nota <%= @run.tiny_note_number.presence || @run.tiny_note_id %>).</p>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @run.warnings.any? %>
+    <div class="campaigns-alert custom-automations-warnings">
+      <div class="campaigns-alert__content">
+        <strong>Pontos para conferir (<%= @run.warnings.size %>)</strong>
+        <ul>
+          <% @run.warnings.each do |warning| %>
+            <li><%= warning %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="custom-automations-stats">
+    <div class="crm-card custom-automations-stat">
+      <span class="custom-automations-stat__label">Pedidos</span>
+      <strong class="custom-automations-stat__value"><%= @run.orders_count %></strong>
+    </div>
+    <div class="crm-card custom-automations-stat">
+      <span class="custom-automations-stat__label">SKUs</span>
+      <strong class="custom-automations-stat__value"><%= @run.items.size %></strong>
+    </div>
+    <div class="crm-card custom-automations-stat">
+      <span class="custom-automations-stat__label">Peças</span>
+      <strong class="custom-automations-stat__value"><%= @run.total_quantity %></strong>
+    </div>
+    <div class="crm-card custom-automations-stat">
+      <span class="custom-automations-stat__label">Valor da nota</span>
+      <strong class="custom-automations-stat__value"><%= brl.call(@run.total_value) %></strong>
+    </div>
+    <div class="crm-card custom-automations-stat">
+      <span class="custom-automations-stat__label">Nota no Tiny</span>
+      <strong class="custom-automations-stat__value"><%= @run.tiny_note_number.presence || @run.tiny_note_id.presence || '—' %></strong>
+    </div>
+  </div>
+
+  <% if @run.items.any? %>
+    <div class="crm-card custom-automations-table-wrap">
+      <table class="crm-table">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Descrição</th>
+            <th class="text-right">Qtd</th>
+            <th class="text-right">Preço médio</th>
+            <th class="text-right">Unitário NF</th>
+            <th class="text-right">Total NF</th>
+            <th>NCM</th>
+            <th>Tiny</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @run.items.each do |item| %>
+            <tr>
+              <td><%= item['sku'].presence || '—' %></td>
+              <td><%= item['description'] || item['shopify_title'] %></td>
+              <td class="text-right"><%= item['quantity'] %></td>
+              <td class="text-right"><%= brl.call(item['average_price']) %></td>
+              <td class="text-right"><%= brl.call(item['unit_value']) %></td>
+              <td class="text-right"><%= brl.call(item['total']) %></td>
+              <td><%= item['ncm'].presence || '—' %></td>
+              <td>
+                <% if item['tiny_found'] %>
+                  <span class="crm-tag crm-tag--success">OK</span>
+                <% elsif item.key?('tiny_found') %>
+                  <span class="crm-tag crm-tag--danger">Não achado</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

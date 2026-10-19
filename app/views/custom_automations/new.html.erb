@@ -1,0 +1,79 @@
+<% automation = @automations[@run.kind] %>
+<% title 'Nova nota de transferência' %>
+
+<div class="cpform-wrapper">
+  <div class="cpform-card">
+
+    <div class="cpform-card__header">
+      <div class="cpform-card__header-icon">
+        <i class="<%= automation[:icon] %>"></i>
+      </div>
+      <div>
+        <h2 class="cpform-card__title"><%= automation[:title] %></h2>
+        <p class="cpform-card__subtitle">Cliente: <%= @client.name %></p>
+      </div>
+    </div>
+
+    <% if @run.errors.any? %>
+      <div class="cpform-errors">
+        <div>
+          <strong>Corrija os erros abaixo:</strong>
+          <ul>
+            <% @run.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+
+    <%= form_with model: @run, url: custom_automations_path, method: :post, data: { turbo: false },
+                  html: { autocomplete: 'off' } do |form| %>
+      <%= form.hidden_field :kind %>
+      <div class="cpform-card__body">
+
+        <div class="cpform-section">
+          <div class="cpform-section__header">Pedidos da Shopify</div>
+          <p class="cpform-section__description">
+            Todos os pedidos criados no período entram na nota, agrupados por SKU. A nota é criada no Tiny da
+            matriz como <strong>pendente</strong> — só é emitida depois que você conferir e aprovar.
+          </p>
+
+          <div class="cpform-row">
+            <div class="cpform-field">
+              <%= form.label :period_start, 'De', class: 'crm-label' %>
+              <%= form.date_field :period_start, class: 'crm-input', required: true %>
+            </div>
+            <div class="cpform-field">
+              <%= form.label :period_end, 'Até', class: 'crm-label' %>
+              <%= form.date_field :period_end, class: 'crm-input', required: true %>
+            </div>
+          </div>
+
+          <div class="cpform-field">
+            <%= form.label :order_filter, 'Quais pedidos entram', class: 'crm-label' %>
+            <%= form.select :order_filter, CustomAutomationRun::ORDER_FILTERS.invert, {}, class: 'crm-input' %>
+          </div>
+        </div>
+
+        <div class="cpform-section cpform-section--highlight">
+          <div class="cpform-section__header cpform-section__header--highlight">Valor dos itens</div>
+          <p class="cpform-section__description">
+            Valor unitário na nota = preço médio praticado na Shopify (já com desconto) × este percentual.
+          </p>
+          <div class="cpform-field">
+            <%= form.label :price_percentage, '% sobre o preço praticado', class: 'crm-label' %>
+            <%= form.number_field :price_percentage, class: 'crm-input cpform-field__input--half',
+                                  min: 1, max: 100, step: 0.01, required: true %>
+          </div>
+        </div>
+      </div>
+
+      <div class="cpform-card__footer">
+        <%= link_to 'Voltar', custom_automations_path, class: 'crm-btn crm-btn--secondary' %>
+        <%= form.submit 'Gerar nota para conferência', class: 'crm-btn crm-btn--primary',
+                        data: { disable_with: 'Enviando...' } %>
+      </div>
+    <% end %>
+  </div>
+</div>
