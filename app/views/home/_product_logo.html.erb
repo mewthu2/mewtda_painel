@@ -1,6 +1,6 @@
 <%# Logo de produto: wordmark "mewtda" + barrinhas da marca + nome do
     produto na cor dele (ex: mewtda ||||| CRM). Produto com marca própria
-    (`logo`, ex: Quero Trocar) usa a imagem no lugar. %>
+    (`logo`, ex: Pode Trocar) usa a imagem no lugar. %>
 <% if product[:logo] %>
   <%= image_tag product[:logo], alt: product[:name], class: "mwtda-lp-plogo-img mwtda-lp-plogo-img--#{product[:key]}" %>
 <% else %>

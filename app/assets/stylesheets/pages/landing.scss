@@ -2192,7 +2192,7 @@
   }
 
   /* -----------------------------------------------------------------
-     15. QUERO TROCAR (02) — celular com o painel de solicitações
+     15. PODE TROCAR (02) — celular com o painel de solicitações
      ----------------------------------------------------------------- */
   .mwtda-lp-exchange {
     transform: rotate(3deg);
@@ -2209,9 +2209,9 @@
     font-size: inherit;
   }
 
-  // mesmas cores do painel do Quero Trocar (fundo verde-claro, verde-escuro da marca)
+  // mesmas cores do painel do Pode Trocar (fundo verde-claro, verde-escuro da marca)
   .mwtda-lp-exchange__screen {
-    --qt-green: #04432f;
+    --qt-green: #0b5a36;
     --qt-soft: #d3e8d0;
     background: #f1f6f0;
     font-size: 0.62rem;
@@ -2472,7 +2472,7 @@
   }
 
   .mwtda-lp-exchange__notification--new { top: 14%; right: -6%; }
-  .mwtda-lp-exchange__notification--new .mwtda-lp-shop__notification-icon { background: #04432f; }
+  .mwtda-lp-exchange__notification--new .mwtda-lp-shop__notification-icon { background: #0b5a36; }
   .mwtda-lp-exchange__notification--approved { bottom: 16%; left: -4%; }
   .mwtda-lp-exchange__notification--approved .mwtda-lp-shop__notification-icon { background: #16a34a; }
 

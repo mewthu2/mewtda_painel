@@ -1,6 +1,6 @@
-// Páginas dos produtos MeuCRM (/meu-crm) e Quero Trocar (/quero-trocar).
+// Páginas dos produtos MeuCRM (/meu-crm) e Pode Trocar (/quero-trocar).
 // mwtda-pp-* = família compartilhada (hero claro centrado, seções, cards);
-// mwtda-cr-* = específicos do MeuCRM; mwtda-qt-* = do Quero Trocar.
+// mwtda-cr-* = específicos do MeuCRM; mwtda-qt-* = do Pode Trocar.
 // Reusa tokens/componentes da landing (as páginas vivem em .mwtda-lp).
 
   /* ---------------------- HERO (claro, centrado) --------------------- */
@@ -50,9 +50,9 @@
     color: transparent;
   }
 
-  /* acento do Quero Trocar: o verde da marca */
+  /* acento do Pode Trocar: o verde da marca */
   .mwtda-pp-hero__headline em.mwtda-qt-accent {
-    background: linear-gradient(90deg, #04432f, #15803d);
+    background: linear-gradient(90deg, #0b5a36, #15803d);
     -webkit-background-clip: text;
     background-clip: text;
   }
@@ -302,7 +302,7 @@
     margin: 3rem auto 0;
   }
 
-  /* --------------- Quero Trocar: passos de como funciona -------------- */
+  /* --------------- Pode Trocar: passos de como funciona -------------- */
   .mwtda-lp .mwtda-qt-steps {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -333,7 +333,7 @@
     height: 34px;
     border-radius: 50%;
     background: rgba(4, 67, 47, 0.1);
-    color: #04432f;
+    color: #0b5a36;
     font-family: var(--mw-font-heading);
     font-weight: 700;
     margin-bottom: 0.3rem;
@@ -361,7 +361,7 @@
     font-weight: 700;
   }
 
-  /* ------------- Quero Trocar: painel (celular + avisos) -------------- */
+  /* ------------- Pode Trocar: painel (celular + avisos) -------------- */
   .mwtda-qt-panel {
     padding: 6rem 1.5rem;
     background: var(--mw-bg-tint);
@@ -390,7 +390,7 @@
 
   .mwtda-qt-icon {
     background: rgba(4, 67, 47, 0.1);
-    color: #04432f;
+    color: #0b5a36;
   }
 
   /* --------------------------- responsivo ---------------------------- */

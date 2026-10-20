@@ -242,7 +242,7 @@ en:
             featured_text: "CRM, exchanges and WhatsApp automations connected before going live."
             items:
               - "MeuCRM from day 1"
-              - "Quero Trocar integrated"
+              - "Pode Trocar integrated"
               - "Pixel, Google and Meta configured"
           crescimento:
             title: "Growth"
@@ -343,7 +343,7 @@ en:
           - "iOS and Android apps published on both stores"
           - "Unlimited push notifications"
           - "Showcases and collections run from the panel"
-          - "Integrated with MeuCRM and Quero Trocar"
+          - "Integrated with MeuCRM and Pode Trocar"
           - "Launch guided by the team"
         chips:
           - "COMING SOON"
@@ -400,7 +400,7 @@ en:
             text: Set the month's goal and follow it with your team, right where the sales are coming in.
           trocas_int:
             title: Integrated exchanges
-            text: 'Quero Trocar lives right here: requests, approvals and store credit without leaving the panel.'
+            text: 'Pode Trocar lives right here: requests, approvals and store credit without leaving the panel.'
           afiliados:
             title: Affiliates and coupons
             text: Create coupons and manage your affiliates in the same place your sales show up.
@@ -454,7 +454,7 @@ en:
         button: Talk to Mewtda
         whatsapp_message: Hi! I'd like to see MeuCRM for my store.
     qt_page:
-      meta_title: Quero Trocar — exchanges & returns
+      meta_title: Pode Trocar — exchanges & returns
       nav:
         como: How it works
         painel: Panel
@@ -464,10 +464,10 @@ en:
         eyebrow: EXCHANGES & RETURNS
         headline_a: Your customer opens the exchange.
         headline_b: You just approve it.
-        sub: 'Quero Trocar gives your store a self-service exchange portal: customers find their order, pick the items and send the reason. Once approved, the store credit becomes a Shopify coupon — no spreadsheets, no email threads.'
+        sub: 'Pode Trocar gives your store a self-service exchange portal: customers find their order, pick the items and send the reason. Once approved, the store credit becomes a Shopify coupon — no spreadsheets, no email threads.'
         cta: Get it for my store
         cta_secondary: See how it works
-        whatsapp_message: Hi! I'd like to see Quero Trocar for my store.
+        whatsapp_message: Hi! I'd like to see Pode Trocar for my store.
       steps:
         eyebrow: HOW IT WORKS
         title: From request to coupon, with no one chasing anyone
@@ -507,10 +507,10 @@ en:
             text: The portal reads straight from your store's orders. No typing data by hand, no checking order by order.
       faq:
         eyebrow: FAQ
-        title: Common questions about Quero Trocar
+        title: Common questions about Pode Trocar
         items:
         - q: Do I need a Shopify store?
-          a: Yes — Quero Trocar connects directly to your Shopify orders. If you don't have a store yet, we can also build one from scratch, with the exchange system already wired in.
+          a: Yes — Pode Trocar connects directly to your Shopify orders. If you don't have a store yet, we can also build one from scratch, with the exchange system already wired in.
         - q: Who sets the exchange rules?
           a: You do. Windows and conditions live in the panel settings, and the system applies them to every order automatically — including requiring a reason and photo when a product arrives damaged.
         - q: What if the customer wants their money back?
@@ -518,12 +518,12 @@ en:
         - q: Do customers need an account?
           a: No. They find the order by its number and the purchase email. No password, no sign-up.
         - q: How do I get it?
-          a: Message us on WhatsApp. We'll look at how you operate, connect Quero Trocar to your Shopify and style the exchange page to match your store.
+          a: Message us on WhatsApp. We'll look at how you operate, connect Pode Trocar to your Shopify and style the exchange page to match your store.
       cta:
         title: Ready to get exchanges out of your inbox?
         text: Send us a message on WhatsApp and we'll show you the system from the inside.
         button: Talk to Mewtda
-        whatsapp_message: Hi! I'd like Quero Trocar for my Shopify store.
+        whatsapp_message: Hi! I'd like Pode Trocar for my Shopify store.
     strip:
       crm: "E-commerce CRM"
       trocas: "Exchanges integrated with Shopify"
@@ -659,8 +659,8 @@ en:
         new_text: "Order #1042 · 1 item"
         approved_title: "Exchange approved"
         approved_text: "Coupon TROCA-1042 emailed"
-      cta_button: "Get Quero Trocar"
-      whatsapp_message: "Hi, I'd like to know Quero Trocar by Mewtda."
+      cta_button: "Get Pode Trocar"
+      whatsapp_message: "Hi, I'd like to know Pode Trocar by Mewtda."
     crm_part:
       number: "01"
       title: "Your whole store in one panel"
@@ -813,7 +813,7 @@ en:
         - title: "Chat"
           text: "You tell us how your operation works today and we point out the solutions that make sense."
         - title: "Setup"
-          text: "We connect the CRM and Quero Trocar to your Shopify, or build your store from scratch."
+          text: "We connect the CRM and Pode Trocar to your Shopify, or build your store from scratch."
         - title: "Operation under control"
           text: "You follow sales, customers and exchanges in the panel and talk to us on WhatsApp."
     faq:
@@ -822,10 +822,10 @@ en:
       lead: "What store owners ask most before getting started."
       items:
         - q: "Do I need a Shopify store?"
-          a: "The CRM and Quero Trocar connect to your Shopify store. If you don't have a store yet, we build one from scratch, already connected to Mewtda's solutions."
+          a: "The CRM and Pode Trocar connect to your Shopify store. If you don't have a store yet, we build one from scratch, already connected to Mewtda's solutions."
         - q: "What can I follow in the CRM?"
           a: "Conversion funnel (visits, viewed products, carts and checkouts), customer history, monthly goals, revenue, ROAS and CAC, plus WhatsApp automations."
-        - q: "How does Quero Trocar work?"
+        - q: "How does Pode Trocar work?"
           a: "Your customer finds the order by number and email, picks the items and sends the reason. You approve it in the panel and the store credit becomes a Shopify coupon, sent by email."
         - q: "Does the store built by Mewtda come ready?"
           a: "Yes: custom design, products, payments, shipping and domain configured, and the store launches already connected to the Mewtda panel."
@@ -1096,7 +1096,7 @@ es:
             featured_text: "CRM, cambios y automatizaciones de WhatsApp conectados antes de salir al aire."
             items:
               - "MeuCRM desde el día 1"
-              - "Quero Trocar integrado"
+              - "Pode Trocar integrado"
               - "Pixel, Google y Meta configurados"
           crescimento:
             title: "Crecimiento"
@@ -1197,7 +1197,7 @@ es:
           - "Apps iOS y Android publicadas en las tiendas"
           - "Push notifications ilimitadas"
           - "Vitrinas y colecciones operadas desde el panel"
-          - "Integrada con MeuCRM y Quero Trocar"
+          - "Integrada con MeuCRM y Pode Trocar"
           - "Lanzamiento acompañado por el equipo"
         chips:
           - "PRÓXIMAMENTE"
@@ -1254,7 +1254,7 @@ es:
             text: Define la meta del mes y síguela con tu equipo, en el mismo panel donde entran las ventas.
           trocas_int:
             title: Cambios integrados
-            text: 'Quero Trocar vive aquí adentro: solicitudes, aprobación y vale sin salir del panel.'
+            text: 'Pode Trocar vive aquí adentro: solicitudes, aprobación y vale sin salir del panel.'
           afiliados:
             title: Afiliados y cupones
             text: Crea cupones y gestiona tus afiliados en el mismo lugar donde aparecen las ventas.
@@ -1308,7 +1308,7 @@ es:
         button: Hablar con Mewtda
         whatsapp_message: ¡Hola! Quiero conocer MeuCRM para mi tienda.
     qt_page:
-      meta_title: Quero Trocar — cambios y devoluciones
+      meta_title: Pode Trocar — cambios y devoluciones
       nav:
         como: Cómo funciona
         painel: Panel
@@ -1318,10 +1318,10 @@ es:
         eyebrow: CAMBIOS Y DEVOLUCIONES
         headline_a: Tu cliente abre el cambio.
         headline_b: Tú solo apruebas.
-        sub: 'Quero Trocar le da a tu tienda un portal de cambios self-service: el cliente busca su pedido, elige los ítems y envía el motivo. Al aprobar, el vale se convierte en cupón de Shopify — sin planillas ni hilos de e-mail.'
+        sub: 'Pode Trocar le da a tu tienda un portal de cambios self-service: el cliente busca su pedido, elige los ítems y envía el motivo. Al aprobar, el vale se convierte en cupón de Shopify — sin planillas ni hilos de e-mail.'
         cta: Lo quiero en mi tienda
         cta_secondary: Ver cómo funciona
-        whatsapp_message: Hola, quiero conocer Quero Trocar para mi tienda.
+        whatsapp_message: Hola, quiero conocer Pode Trocar para mi tienda.
       steps:
         eyebrow: CÓMO FUNCIONA
         title: De la solicitud al cupón, sin perseguir a nadie
@@ -1361,10 +1361,10 @@ es:
             text: El portal lee directo de los pedidos de tu tienda. Nada de digitar datos a mano ni revisar pedido por pedido.
       faq:
         eyebrow: DUDAS
-        title: Preguntas frecuentes sobre Quero Trocar
+        title: Preguntas frecuentes sobre Pode Trocar
         items:
         - q: ¿Necesito una tienda en Shopify?
-          a: Sí — Quero Trocar se conecta directo a los pedidos de tu tienda Shopify. Si todavía no tienes tienda, también la creamos desde cero, ya con el sistema de cambios conectado.
+          a: Sí — Pode Trocar se conecta directo a los pedidos de tu tienda Shopify. Si todavía no tienes tienda, también la creamos desde cero, ya con el sistema de cambios conectado.
         - q: ¿Quién define las reglas de cambio?
           a: Tú. Los plazos y condiciones se configuran en el panel, y el sistema los aplica a cada pedido automáticamente — incluso exigiendo motivo y foto cuando el producto llega con daño.
         - q: ¿Y si el cliente quiere su dinero de vuelta?
@@ -1372,12 +1372,12 @@ es:
         - q: ¿Mi cliente necesita crear una cuenta?
           a: No. Busca el pedido por el número y el e-mail de la compra. Sin contraseña y sin registro.
         - q: ¿Cómo lo contrato?
-          a: Escríbenos por WhatsApp. Entendemos tu operación, conectamos Quero Trocar a tu Shopify y dejamos la página de cambios con la cara de tu tienda.
+          a: Escríbenos por WhatsApp. Entendemos tu operación, conectamos Pode Trocar a tu Shopify y dejamos la página de cambios con la cara de tu tienda.
       cta:
         title: ¿Sacamos los cambios de tu e-mail?
         text: Mándanos un mensaje por WhatsApp y te mostramos el sistema por dentro.
         button: Hablar con Mewtda
-        whatsapp_message: Hola, quiero sumar Quero Trocar a mi tienda Shopify.
+        whatsapp_message: Hola, quiero sumar Pode Trocar a mi tienda Shopify.
     strip:
       crm: "CRM para e-commerce"
       trocas: "Cambios integrados a Shopify"
@@ -1513,8 +1513,8 @@ es:
         new_text: "Pedido #1042 · 1 ítem"
         approved_title: "Cambio aprobado"
         approved_text: "Cupón TROCA-1042 enviado por e-mail"
-      cta_button: "Conocer Quero Trocar"
-      whatsapp_message: "Hola, quiero conocer Quero Trocar by Mewtda."
+      cta_button: "Conocer Pode Trocar"
+      whatsapp_message: "Hola, quiero conocer Pode Trocar by Mewtda."
     crm_part:
       number: "01"
       title: "Toda tu tienda en un solo panel"
@@ -1667,7 +1667,7 @@ es:
         - title: "Charla"
           text: "Nos cuentas cómo funciona tu operación hoy y te indicamos las soluciones que tienen sentido."
         - title: "Implementación"
-          text: "Conectamos el CRM y Quero Trocar a tu Shopify, o creamos tu tienda desde cero."
+          text: "Conectamos el CRM y Pode Trocar a tu Shopify, o creamos tu tienda desde cero."
         - title: "Operación bajo control"
           text: "Sigues ventas, clientes y cambios en el panel y hablas con nosotros por WhatsApp."
     faq:
@@ -1676,10 +1676,10 @@ es:
       lead: "Lo que más preguntan los comerciantes antes de empezar."
       items:
         - q: "¿Necesito tener una tienda en Shopify?"
-          a: "El CRM y Quero Trocar se conectan a tu tienda Shopify. Si aún no tienes tienda, la creamos desde cero, ya conectada a las soluciones de Mewtda."
+          a: "El CRM y Pode Trocar se conectan a tu tienda Shopify. Si aún no tienes tienda, la creamos desde cero, ya conectada a las soluciones de Mewtda."
         - q: "¿Qué puedo seguir en el CRM?"
           a: "Embudo de conversión (visitas, productos vistos, carritos y checkouts), historial de clientes, metas mensuales, facturación, ROAS y CAC, además de las automatizaciones de WhatsApp."
-        - q: "¿Cómo funciona Quero Trocar?"
+        - q: "¿Cómo funciona Pode Trocar?"
           a: "Tu cliente busca el pedido por número y correo, elige los artículos y envía el motivo. Lo apruebas en el panel y el vale de cambio se convierte en un cupón de Shopify, enviado por correo."
         - q: "¿La tienda creada por Mewtda viene lista?"
           a: "Sí: diseño a medida, productos, pagos, envíos y dominio configurados, y la tienda sale al aire ya conectada al panel de Mewtda."
@@ -1950,7 +1950,7 @@ pt-BR:
             featured_text: "CRM, trocas e automações de WhatsApp conectados antes de entrar no ar."
             items:
               - "MeuCRM desde o dia 1"
-              - "Quero Trocar integrado"
+              - "Pode Trocar integrado"
               - "Pixel, Google e Meta configurados"
           crescimento:
             title: "Crescimento"
@@ -2051,7 +2051,7 @@ pt-BR:
           - "App iOS e Android publicados nas lojas"
           - "Push notifications ilimitadas"
           - "Vitrines e coleções operadas pelo painel"
-          - "Integrado ao MeuCRM e ao Quero Trocar"
+          - "Integrado ao MeuCRM e ao Pode Trocar"
           - "Lançamento acompanhado pela equipe"
         chips:
           - "EM BREVE"
@@ -2108,7 +2108,7 @@ pt-BR:
             text: Defina a meta do mês e acompanhe com a equipe, no mesmo painel que mostra as vendas acontecendo.
           trocas_int:
             title: Trocas integradas
-            text: 'O Quero Trocar vive aqui dentro: solicitações, aprovação e vale-troca sem sair do painel.'
+            text: 'O Pode Trocar vive aqui dentro: solicitações, aprovação e vale-troca sem sair do painel.'
           afiliados:
             title: Afiliados e cupons
             text: Crie cupons e gerencie seus afiliados no mesmo lugar em que as vendas aparecem.
@@ -2162,7 +2162,7 @@ pt-BR:
         button: Falar com a Mewtda
         whatsapp_message: Olá! Quero conhecer o MeuCRM na minha loja.
     qt_page:
-      meta_title: Quero Trocar — trocas e devoluções
+      meta_title: Pode Trocar — trocas e devoluções
       nav:
         como: Como funciona
         painel: Painel
@@ -2172,10 +2172,10 @@ pt-BR:
         eyebrow: TROCAS E DEVOLUÇÕES
         headline_a: Seu cliente abre a troca.
         headline_b: Você só aprova.
-        sub: 'O Quero Trocar coloca um portal de trocas self-service na sua loja: o cliente busca o pedido, escolhe os itens e envia o motivo. Aprovou, o vale-troca vira cupom na Shopify — sem planilha, sem fio de e-mail.'
+        sub: 'O Pode Trocar coloca um portal de trocas self-service na sua loja: o cliente busca o pedido, escolhe os itens e envia o motivo. Aprovou, o vale-troca vira cupom na Shopify — sem planilha, sem fio de e-mail.'
         cta: Quero na minha loja
         cta_secondary: Ver como funciona
-        whatsapp_message: Olá! Quero conhecer o Quero Trocar pra minha loja.
+        whatsapp_message: Olá! Quero conhecer o Pode Trocar pra minha loja.
       steps:
         eyebrow: COMO FUNCIONA
         title: Da solicitação ao cupom, sem ninguém correr atrás
@@ -2215,10 +2215,10 @@ pt-BR:
             text: O portal busca direto nos pedidos da sua loja. Nada de digitar dados à mão nem conferir pedido por pedido.
       faq:
         eyebrow: DÚVIDAS
-        title: As perguntas mais comuns sobre o Quero Trocar
+        title: As perguntas mais comuns sobre o Pode Trocar
         items:
         - q: Preciso ter loja na Shopify?
-          a: Sim — o Quero Trocar se conecta direto aos pedidos da sua loja Shopify. Se você ainda não tem loja, a gente também cria do zero, já com o sistema de trocas ligado.
+          a: Sim — o Pode Trocar se conecta direto aos pedidos da sua loja Shopify. Se você ainda não tem loja, a gente também cria do zero, já com o sistema de trocas ligado.
         - q: Quem define as regras de troca?
           a: Você. Prazos e condições ficam na configuração do painel, e o sistema aplica em cada pedido automaticamente — inclusive exigindo motivo e foto quando o produto chega com avaria.
         - q: E quando o cliente quer o dinheiro de volta?
@@ -2226,12 +2226,12 @@ pt-BR:
         - q: Meu cliente precisa de login?
           a: Não. Ele busca o pedido pelo número e pelo e-mail da compra. Sem senha, sem cadastro.
         - q: Como eu contrato?
-          a: Chamando a gente no WhatsApp. A gente entende sua operação, conecta o Quero Trocar à sua Shopify e deixa a página de trocas com a cara da sua loja.
+          a: Chamando a gente no WhatsApp. A gente entende sua operação, conecta o Pode Trocar à sua Shopify e deixa a página de trocas com a cara da sua loja.
       cta:
         title: Vamos tirar as trocas do seu e-mail?
         text: Manda uma mensagem no WhatsApp e a gente te mostra o sistema por dentro.
         button: Falar com a Mewtda
-        whatsapp_message: Olá! Quero o Quero Trocar na minha loja Shopify.
+        whatsapp_message: Olá! Quero o Pode Trocar na minha loja Shopify.
     strip:
       crm: "CRM para e-commerce"
       trocas: "Trocas integradas à Shopify"
@@ -2367,8 +2367,8 @@ pt-BR:
         new_text: "Pedido #1042 · 1 item"
         approved_title: "Troca aprovada"
         approved_text: "Cupom TROCA-1042 enviado por e-mail"
-      cta_button: "Conhecer o Quero Trocar"
-      whatsapp_message: "Olá, quero conhecer o Quero Trocar by Mewtda."
+      cta_button: "Conhecer o Pode Trocar"
+      whatsapp_message: "Olá, quero conhecer o Pode Trocar by Mewtda."
     crm_part:
       number: "01"
       title: "Tudo da sua loja num painel só"
@@ -2521,7 +2521,7 @@ pt-BR:
         - title: "Conversa"
           text: "Você conta como funciona sua operação hoje e a gente indica as soluções que fazem sentido."
         - title: "Implantação"
-          text: "Conectamos o CRM e o Quero Trocar à sua Shopify, ou criamos sua loja do zero."
+          text: "Conectamos o CRM e o Pode Trocar à sua Shopify, ou criamos sua loja do zero."
         - title: "Operação no controle"
           text: "Você acompanha vendas, clientes e trocas pelo painel e fala com a gente pelo WhatsApp."
     faq:
@@ -2530,10 +2530,10 @@ pt-BR:
       lead: "O que os lojistas mais perguntam antes de começar."
       items:
         - q: "Preciso ter uma loja na Shopify?"
-          a: "O CRM e o Quero Trocar se conectam à sua loja Shopify. Se você ainda não tem loja, a gente cria do zero, já conectada às soluções Mewtda."
+          a: "O CRM e o Pode Trocar se conectam à sua loja Shopify. Se você ainda não tem loja, a gente cria do zero, já conectada às soluções Mewtda."
         - q: "O que eu acompanho no CRM?"
           a: "Funil de conversão (visitas, produtos vistos, carrinhos e checkouts), histórico de clientes, metas mensais, faturamento, ROAS e CAC, além das automações de WhatsApp."
-        - q: "Como funciona o Quero Trocar?"
+        - q: "Como funciona o Pode Trocar?"
           a: "Seu cliente busca o pedido pelo número e e-mail, escolhe os itens e envia o motivo. Você aprova no painel e o vale-troca vira cupom na Shopify, enviado por e-mail."
         - q: "A loja criada pela Mewtda já vem pronta?"
           a: "Sim: design sob medida, produtos, pagamentos, frete e domínio configurados, e a loja entra no ar já conectada ao painel Mewtda."

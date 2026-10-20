@@ -7,7 +7,9 @@ Rails.application.routes.draw do
   get 'sua-loja',     to: 'home#sites', as: :sua_loja
   get 'app',          to: 'home#app_page', as: :app_page
   get 'meu-crm',      to: 'home#crm_page', as: :meu_crm
-  get 'quero-trocar', to: 'home#trocas_page', as: :quero_trocar
+
+  # O Pode Trocar (ex-Quero Trocar) agora tem site próprio
+  get 'quero-trocar', to: redirect('https://www.podetrocar.com.br/')
 
   namespace :integrations do
     match 'shopify/events', to: 'shopify_events#create', via: [:post, :options]

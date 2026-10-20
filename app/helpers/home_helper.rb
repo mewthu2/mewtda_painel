@@ -66,8 +66,8 @@ module HomeHelper
   LANDING_PRODUCTS = [
     { key: 'crm',    name: 'MeuCRM',      color: '#0b72e7', icon: 'fa-solid fa-chart-line',              anchor: 'crm',
       logo: 'landing/meu-crm-logo.png' },
-    { key: 'trocas', name: 'Quero Trocar', color: '#04432f', icon: 'fa-solid fa-arrow-right-arrow-left', anchor: 'trocas',
-      logo: 'landing/quero-trocar-logo.png' },
+    { key: 'trocas', name: 'Pode Trocar', color: '#0b5a36', icon: 'fa-solid fa-arrow-right-arrow-left', anchor: 'trocas',
+      logo: 'landing/pode-trocar-logo.png' },
     { key: 'new',    name: 'Sua Loja',    color: '#1a7fdc', icon: 'fa-brands fa-shopify',                anchor: 'sites',
       logo: 'landing/sua-loja-logo.png' },
     { key: 'app',    name: 'App',         color: '#1a7fdc', icon: 'fa-solid fa-mobile-screen',          anchor: 'apps',
@@ -80,11 +80,14 @@ module HomeHelper
 
   # Página dedicada de cada produto (vão sendo criadas uma a uma). Produto
   # sem página ainda cai no anchor da seção dele na home — e os botões
-  # "Ver a página completa" só aparecem pra quem já tem página.
+  # "Ver a página completa" só aparecem pra quem já tem página. O Pode
+  # Trocar tem site próprio, então aponta pra fora.
+  PODE_TROCAR_URL = 'https://www.podetrocar.com.br/'.freeze
+
   def product_page_path(key)
     {
       'crm'    => meu_crm_path,
-      'trocas' => quero_trocar_path,
+      'trocas' => PODE_TROCAR_URL,
       'new'    => sua_loja_path,
       'app'    => app_page_path
     }[key.to_s]

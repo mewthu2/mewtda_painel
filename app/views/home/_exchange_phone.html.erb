@@ -1,24 +1,24 @@
 <%#
-  Celular com o painel de solicitacoes do Quero Trocar (tela que o
+  Celular com o painel de solicitacoes do Pode Trocar (tela que o
   lojista usa no dia a dia). Usa o print real em
-  app/assets/images/landing/quero-trocar-mobile.png se existir; sem o
+  app/assets/images/landing/pode-trocar-mobile.png se existir; sem o
   arquivo, cai na versao em HTML da mesma tela. Usado na secao 02 da
   home e na pagina /quero-trocar.
 %>
 <% panel = 'home.trocas_part.panel' %>
 <div class="mwtda-lp-shop__phone mwtda-lp-exchange" aria-hidden="true">
   <div class="mwtda-lp-shop__notch"></div>
-  <% if landing_image?('landing/quero-trocar-mobile.png') %>
+  <% if landing_image?('landing/pode-trocar-mobile.png') %>
   <div class="mwtda-lp-shop__screen mwtda-lp-exchange__screen mwtda-lp-exchange__screen--print">
     <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
-    <%= image_tag 'landing/quero-trocar-mobile.png', alt: '', loading: 'lazy' %>
+    <%= image_tag 'landing/pode-trocar-mobile.png', alt: '', loading: 'lazy' %>
   </div>
   <% else %>
   <div class="mwtda-lp-shop__screen mwtda-lp-exchange__screen">
     <div class="mwtda-lp-shop__statusbar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
     <div class="mwtda-lp-exchange__body">
       <div class="mwtda-lp-exchange__topbar">
-        <%= image_tag 'landing/quero-trocar-icon.png', alt: '', class: 'mwtda-lp-exchange__icon' %>
+        <%= image_tag 'landing/pode-trocar-icon.png', alt: '', class: 'mwtda-lp-exchange__icon' %>
         <span class="mwtda-lp-exchange__store"><i class="fa-solid fa-store"></i> Ateliê <i class="fa-solid fa-chevron-down"></i></span>
         <span class="mwtda-lp-exchange__avatar">A</span>
       </div>

@@ -36,7 +36,7 @@
     <%# chips de vantagem flutuando em profundidades diferentes: seguem o
         mouse com parallax 3D (JS bloco 7) %>
     <div class="mwtda-lp-hero__chips" aria-hidden="true">
-      <% { funil: ['fa-solid fa-filter', '#0b72e7'], troca: ['fa-solid fa-ticket', '#04432f'], whatsapp: ['fa-brands fa-whatsapp', '#22c55e'], partner: ['fa-brands fa-shopify', '#5e8e3e'] }.each_with_index do |(key, (icon, color)), i| %>
+      <% { funil: ['fa-solid fa-filter', '#0b72e7'], troca: ['fa-solid fa-ticket', '#0b5a36'], whatsapp: ['fa-brands fa-whatsapp', '#22c55e'], partner: ['fa-brands fa-shopify', '#5e8e3e'] }.each_with_index do |(key, (icon, color)), i| %>
         <span class="mwtda-lp-hero__chip mwtda-lp-hero__chip--<%= i %>" style="--chip: <%= color %>">
           <i class="<%= icon %>"></i> <%= t("home.hero_chips.#{key}") %>
         </span>
@@ -175,7 +175,7 @@
     </div>
   </section>
 
-  <%# ======================== 02 — QUERO TROCAR======================= %>
+  <%# ======================== 02 — PODE TROCAR======================= %>
   <section class="mwtda-lp-part mwtda-lp-part--tint mwtda-lp-part--flip" id="trocas">
     <div class="mwtda-lp-part__inner">
       <div class="mwtda-lp-part__copy">
@@ -210,9 +210,9 @@
 
       <div class="mwtda-lp-part__visual" data-reveal-self>
         <div class="mwtda-lp-part__glow"></div>
-        <%# Celular com o painel do Quero Trocar (tela "Solicitações" que o
+        <%# Celular com o painel do Pode Trocar (tela "Solicitações" que o
             lojista usa no dia a dia). Usa o print real em
-            app/assets/images/landing/quero-trocar-mobile.png; sem o arquivo,
+            app/assets/images/landing/pode-trocar-mobile.png; sem o arquivo,
             cai numa versão em HTML da mesma tela. %>
         <%= render 'home/exchange_phone' %>
 
