@@ -173,6 +173,52 @@
 
         </div>
       </div>
+
+      <%# Celular por cima do canto do navegador: troca de tela junto com o
+          painel (o JS do bloco 10 ativa todo [data-show-panel]). Print real
+          em landing/showcase-<key>-mobile.jpg; sem ele, cai num mock. %>
+      <div class="mwtda-lp-show__phone" aria-hidden="true">
+        <span class="mwtda-lp-show__phone-notch"></span>
+        <% landing_products.each_with_index do |product, i| %>
+          <div class="mwtda-lp-show__phone-screen" data-show-panel="<%= product[:key] %>" data-active="<%= i.zero? %>">
+            <% if (shot = showcase_shot("#{product[:key]}-mobile")) %>
+              <%= image_tag shot, alt: '', loading: 'lazy' %>
+            <% else %>
+              <div class="mwtda-lp-show__phone-mock">
+                <strong><%= product[:name] %></strong>
+                <div class="mwtda-lp-show__kpi">
+                  <small><%= t('home.showcase.crm.kpi_revenue') %></small>
+                  <strong><span data-count="184230" data-prefix="R$ ">R$ 0</span></strong>
+                  <em class="is-up"><i class="fa-solid fa-arrow-trend-up"></i> +18%</em>
+                </div>
+                <div class="mwtda-lp-show__kpi">
+                  <small><%= t('home.showcase.crm.kpi_orders') %></small>
+                  <strong><span data-count="1208">0</span></strong>
+                  <em class="is-up"><i class="fa-solid fa-arrow-trend-up"></i> +12%</em>
+                </div>
+                <div class="mwtda-lp-show__funnel">
+                  <small><%= t('home.showcase.crm.funnel_title') %></small>
+                  <% { visitas: 100, carrinho: 38, checkout: 21, compra: 12 }.each do |key, pct| %>
+                    <div class="mwtda-lp-show__funnel-row">
+                      <span><%= t("home.showcase.crm.funnel.#{key}") %></span>
+                      <div class="mwtda-lp-show__funnel-bar"><i style="--w: <%= pct %>%"></i></div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+            <% if product[:key] == 'app' %>
+              <div class="mwtda-lp-show__phone-push">
+                <span class="mwtda-lp-show__push-icon"><i class="fa-solid fa-sack-dollar"></i></span>
+                <div>
+                  <strong><%= t('home.apps.notifications.sale_title') %></strong>
+                  <span><%= t('home.apps.notifications.sale_text') %></span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>
