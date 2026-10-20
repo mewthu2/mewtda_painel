@@ -32,8 +32,6 @@ en:
       cta_ver_solucoes: "Explore our solutions"
       whatsapp_message: "Hi, I'd like to learn about Mewtda's solutions."
     sound:
-      play: "Press play on our beat"
-      mute: "Mute the beat"
       osd_on: "Beat on"
       osd_off: "Muted"
       remote_tip: "Soundtrack: play / mute"
@@ -886,8 +884,6 @@ es:
       cta_ver_solucoes: "Conoce las soluciones"
       whatsapp_message: "Hola, quiero conocer las soluciones de Mewtda."
     sound:
-      play: "Dale play a nuestro beat"
-      mute: "Silenciar el beat"
       osd_on: "Beat activado"
       osd_off: "Silenciado"
       remote_tip: "Banda sonora: reproducir / silenciar"
@@ -1740,8 +1736,6 @@ pt-BR:
       cta_ver_solucoes: "Conheça as soluções"
       whatsapp_message: "Olá, quero conhecer as soluções da Mewtda."
     sound:
-      play: "Dê o play na nossa batida"
-      mute: "Mutar a batida"
       osd_on: "Batida ligada"
       osd_off: "No mudo"
       remote_tip: "Trilha sonora: tocar / mutar"

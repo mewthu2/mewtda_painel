@@ -60,15 +60,15 @@
         </a>
         <a href="#produtos" class="mwtda-lp-btn mwtda-lp-btn--outline mwtda-lp-btn--lg"><%= t('home.hero.cta_ver_solucoes') %></a>
       </div>
-      <%# trilha sonora: o logo é um equalizador — este botão dá o play numa
-          batida gerada no navegador (Web Audio, bloco 11 do JS) e as barras
-          do logo passam a seguir a música de verdade. Mute aqui ou no
-          controle remoto. %>
+      <%# trilha sonora: o logo é um equalizador — este alto-falante liga/muta
+          uma batida gerada no navegador (Web Audio, bloco 11 do JS) e as
+          barras do logo passam a seguir a música de verdade. Mute aqui ou
+          no controle remoto. %>
       <button type="button" class="mwtda-lp-soundpill mwtda-lp-hero__sound" data-sound-toggle aria-pressed="false"
+              aria-label="<%= t('home.sound.remote_tip') %>" title="<%= t('home.sound.remote_tip') %>"
               data-osd-on="<%= t('home.sound.osd_on') %>" data-osd-off="<%= t('home.sound.osd_off') %>">
-        <span class="mwtda-lp-soundpill__eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        <span class="mwtda-lp-soundpill__label mwtda-lp-soundpill__label--play"><%= t('home.sound.play') %></span>
-        <span class="mwtda-lp-soundpill__label mwtda-lp-soundpill__label--mute"><%= t('home.sound.mute') %></span>
+        <i class="fa-solid fa-volume-xmark mwtda-lp-soundpill__icon mwtda-lp-soundpill__icon--off" aria-hidden="true"></i>
+        <i class="fa-solid fa-volume-high mwtda-lp-soundpill__icon mwtda-lp-soundpill__icon--on" aria-hidden="true"></i>
       </button>
     </div>
   </section>

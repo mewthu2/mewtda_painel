@@ -60,6 +60,13 @@ module HomeHelper
     Rails.root.join('app', 'assets', 'images', path).file?
   end
 
+  # Print real da tela do produto pro painel "Soluções" da home
+  # (landing/showcase-<key>.jpg). Sem o arquivo, o painel mostra o mock em HTML.
+  def showcase_shot(key)
+    path = "landing/showcase-#{key}.jpg"
+    path if landing_image?(path)
+  end
+
   # Os 4 produtos da landing, na ordem das seções. Nomes são marca (não
   # traduzem); `anchor` é o id da seção na página. `logo` (opcional)
   # troca o wordmark em CSS pela imagem da marca própria.
