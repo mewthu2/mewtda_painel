@@ -18,7 +18,7 @@
       login: HomeHelper::PODE_TROCAR_URL },
     { key: 'new',    name: 'Sua Loja',    host: 'LOJA DO CLIENTE',   desk: 'landing/site-desktop.jpg',    mob: 'landing/showcase-new-mobile.jpg', html: sua_html },
     { key: 'app',    name: 'App',         host: 'APP DA LOJA',       desk: 'landing/showcase-app.jpg',    mob: 'landing/showcase-app-mobile.jpg' },
-    { key: 'ia',     name: t('home.city.ia_name'), host: 'MEWTDA IA', desk: nil,                          mob: nil }
+    { key: 'ia',     name: t('home.city.ia_name'), host: 'MEWTDA IA', desk: 'landing/showcase-ia.jpg', mob: 'landing/showcase-ia-mobile.jpg' }
   ]
   open_index = 1
   pins = [
@@ -56,6 +56,7 @@
     <a class="logo" href="#topo">mewtda</a>
     <nav aria-label="<%= t('home.city.nav_label') %>">
       <a href="#canais"><%= t('home.city.nav_channels') %></a>
+      <a href="#clientes"><%= t('home.city.nav_clients') %></a>
       <a href="#contato"><%= t('home.city.nav_contact') %></a>
       <span class="lang">
         <% { 'pt-BR' => 'PT', 'en' => 'EN', 'es' => 'ES' }.each do |code, label| %>
@@ -149,6 +150,42 @@
   </div>
 </section>
 
+<% client_logos = client_logo_assets %>
+<% if client_logos.any? %>
+  <%# Clientes: fachada de prédio à noite, cada logo é um letreiro de neon que
+      acende piscando (fora de ordem) quando a seção entra na tela; ao passar
+      o mouse aparece a plaquinha com o endereço da loja. %>
+  <section class="clients" id="clientes">
+    <div class="wrap">
+      <div class="ch-head">
+        <div>
+          <span class="kicker"><span class="rec" aria-hidden="true"></span><%= t('home.city.clients_kicker', count: client_logos.size) %></span>
+          <h2><%= t('home.city.clients_title_1') %><br><span class="hot"><%= t('home.city.clients_title_2') %></span></h2>
+        </div>
+        <p><%= t('home.city.clients_text') %></p>
+      </div>
+
+      <div class="facade" data-facade>
+        <% neons = %w[#ff7a1a #00e5ff #ff2bd6 #a78bfa #22c55e #f5b301] %>
+        <% client_logos.each_with_index do |logo, i| %>
+          <% site = client_site(logo) %>
+          <% host = site && URI(site).host.delete_prefix('www.') %>
+          <% style = "--neon: #{neons[i % neons.size]}; --on: #{((i * 7) % client_logos.size) * 0.14}s" %>
+          <% sign = capture do %>
+            <%= image_tag logo, alt: host || t('home.clients.logo_alt'), loading: 'lazy' %>
+            <% if host %><span class="plate"><%= host %></span><% end %>
+          <% end %>
+          <% if site %>
+            <a class="sign" href="<%= site %>" target="_blank" rel="noopener" style="<%= style %>"><%= sign %></a>
+          <% else %>
+            <div class="sign" style="<%= style %>"><%= sign %></div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </section>
+<% end %>
+
 <section class="contact" id="contato">
   <div class="wrap">
     <span class="kicker"><%= t('home.city.contact_kicker') %></span>
@@ -185,6 +222,20 @@
         ch.querySelector('.ch-stage').hidden = !me
       })
     })
+  })()
+
+  // clientes: os letreiros acendem quando a fachada aparece na tela
+  // (o ; inicial evita que o IIFE acima seja chamado com este como argumento)
+  ;(function () {
+    var facade = document.querySelector('[data-facade]')
+    if (!facade) return
+    if (!('IntersectionObserver' in window)) return facade.classList.add('is-lit')
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return
+      facade.classList.add('is-lit')
+      io.disconnect()
+    }, { threshold: 0.25 })
+    io.observe(facade)
   })()
 </script>
 
