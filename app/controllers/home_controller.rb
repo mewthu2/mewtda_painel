@@ -6,7 +6,9 @@ class HomeController < ApplicationController
   before_action :load_sales_preview, if: -> { user_signed_in? && @client }, only: [:index]
 
   def index
-    render user_signed_in? ? 'home/dashboard' : 'home/index'
+    return render('home/dashboard') if user_signed_in?
+
+    render 'home/city', layout: 'home_city'
   end
 
   # Página pública do produto "Sua Loja" (criação de sites Shopify)

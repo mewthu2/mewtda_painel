@@ -1,0 +1,227 @@
+<script>
+  // ===================================================================
+  // MEWTDA — bloco 11: trilha sonora (Web Audio, zero dependências)
+  // -------------------------------------------------------------------
+  // O logo é um equalizador — este bloco dá a música. Uma batida lo-fi
+  // (92 BPM: bumbo, caixa, chimbal, baixo e um pad de acordes) é
+  // SINTETIZADA no navegador com Web Audio API: nenhum mp3, nenhum
+  // download, nenhum problema de direitos. Um AnalyserNode mede o som em
+  // tempo real e alimenta:
+  //   • as 6 barras do logo em Three.js (window.mwtdaSound.bands());
+  //   • a var CSS --mw-beat (energia do grave, 0 a 1) no <html>, que o
+  //     CSS usa pra "pulsar" detalhes da página no ritmo;
+  //   • a classe mwtda-sound-on no <html> (barrinhas da marca dançando).
+  // Só começa com clique (autoplay é bloqueado mesmo): no botão do hero
+  // ou na tecla ♪ do controle remoto — qualquer um toca/muta.
+  // ===================================================================
+  document.addEventListener('DOMContentLoaded', function () {
+    var Ctx = window.AudioContext || window.webkitAudioContext
+    var buttons = document.querySelectorAll('[data-sound-toggle]')
+    if (!Ctx || !buttons.length) return
+
+    var BPM = 92
+    var STEP = 60 / BPM / 4            // dura de uma semicolcheia
+    var STEPS = 4 * 16                 // loop de 4 compassos
+    var ctx = null, master = null, analyser = null
+    var playing = false
+    var step = 0, nextTime = 0, timer = null, rafOn = false
+    var freqData = null
+    var smooth = new Float32Array(6)   // 6 faixas pro logo, já suavizadas
+
+    // Am9 → Fmaj7 → Cmaj7 → G6 (progressão lo-fi), nota MIDI → Hz
+    var hz = function (n) { return 440 * Math.pow(2, (n - 69) / 12) }
+    var CHORDS = [[57, 64, 67, 71], [53, 60, 64, 69], [55, 60, 64, 71], [50, 59, 64, 67]]
+    var BASS = [33, 29, 36, 31]
+
+    function init () {
+      ctx = new Ctx()
+      master = ctx.createGain()
+      master.gain.value = 0
+      var comp = ctx.createDynamicsCompressor()
+      analyser = ctx.createAnalyser()
+      analyser.fftSize = 256
+      analyser.smoothingTimeConstant = 0.55
+      master.connect(comp)
+      comp.connect(analyser)
+      analyser.connect(ctx.destination)
+      freqData = new Uint8Array(analyser.frequencyBinCount)
+      document.documentElement.style.setProperty('--mw-beat-dur', (60 / BPM).toFixed(3) + 's')
+    }
+
+    // envelope ataque/decay padrão
+    function env (gain, t, attack, peak, decay) {
+      gain.gain.setValueAtTime(0.0001, t)
+      gain.gain.linearRampToValueAtTime(peak, t + attack)
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + attack + decay)
+    }
+
+    function noiseBuffer (seconds) {
+      var buf = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * seconds), ctx.sampleRate)
+      var data = buf.getChannelData(0)
+      for (var i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2)
+      return buf
+    }
+
+    function kick (t) {
+      var o = ctx.createOscillator()
+      var g = ctx.createGain()
+      o.type = 'sine'
+      o.frequency.setValueAtTime(140, t)
+      o.frequency.exponentialRampToValueAtTime(42, t + 0.11)
+      env(g, t, 0.002, 0.85, 0.24)
+      o.connect(g).connect(master)
+      o.start(t); o.stop(t + 0.3)
+    }
+
+    function snare (t) {
+      var src = ctx.createBufferSource()
+      src.buffer = noiseBuffer(0.18)
+      var bp = ctx.createBiquadFilter()
+      bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = 0.8
+      var g = ctx.createGain(); g.gain.value = 0.5
+      src.connect(bp).connect(g).connect(master)
+      src.start(t)
+      var o = ctx.createOscillator()
+      var og = ctx.createGain()
+      o.type = 'triangle'; o.frequency.value = 190
+      env(og, t, 0.001, 0.22, 0.09)
+      o.connect(og).connect(master)
+      o.start(t); o.stop(t + 0.12)
+    }
+
+    function hat (t, open, vel) {
+      var src = ctx.createBufferSource()
+      src.buffer = noiseBuffer(open ? 0.28 : 0.05)
+      var hp = ctx.createBiquadFilter()
+      hp.type = 'highpass'; hp.frequency.value = 7200
+      var g = ctx.createGain(); g.gain.value = 0.16 * vel
+      src.connect(hp).connect(g).connect(master)
+      src.start(t)
+    }
+
+    function bass (t, note, dur) {
+      var o = ctx.createOscillator()
+      var lp = ctx.createBiquadFilter()
+      var g = ctx.createGain()
+      o.type = 'sawtooth'
+      o.frequency.value = hz(note)
+      lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.7
+      env(g, t, 0.01, 0.3, dur)
+      o.connect(lp).connect(g).connect(master)
+      o.start(t); o.stop(t + dur + 0.1)
+    }
+
+    function keys (t, notes) {
+      notes.forEach(function (note) {
+        var o = ctx.createOscillator()
+        var lp = ctx.createBiquadFilter()
+        var g = ctx.createGain()
+        o.type = 'triangle'
+        o.frequency.value = hz(note) * (1 + (Math.random() - 0.5) * 0.002) // leve "fita"
+        lp.type = 'lowpass'; lp.frequency.value = 1500
+        env(g, t, 0.035, 0.055, 1.3)
+        o.connect(lp).connect(g).connect(master)
+        o.start(t); o.stop(t + 1.5)
+      })
+    }
+
+    function playStepAt (s, t) {
+      var bar = Math.floor(s / 16)
+      var i = s % 16
+      var swing = (i % 4 === 2) ? STEP * 0.08 : 0
+      if (i === 0 || i === 7 || i === 10 || (bar === 3 && i === 13)) kick(t)
+      if (i === 4 || i === 12) snare(t)
+      if (i % 2 === 0) hat(t + swing, false, i % 4 === 0 ? 1 : 0.55)
+      if (i === 14 && bar % 2 === 1) hat(t, true, 0.5)
+      if (i === 0) { bass(t, BASS[bar], STEP * 9); keys(t, CHORDS[bar]) }
+      if (i === 7) bass(t, BASS[bar], STEP * 2)
+      if (i === 10) bass(t, BASS[bar] + 12, STEP * 2)
+      if (i === 8 && bar % 2 === 1) keys(t, [CHORDS[bar][3] + 12])
+    }
+
+    // agendador com "lookahead": agenda tudo que cai nos próximos 120ms
+    function schedule () {
+      while (nextTime < ctx.currentTime + 0.12) {
+        playStepAt(step % STEPS, nextTime)
+        nextTime += STEP
+        step++
+      }
+    }
+
+    // mede o espectro a cada frame: 6 faixas pro logo + energia do grave
+    // na var --mw-beat (é ela que faz a página "pulsar" no ritmo)
+    var BANDS = [[1, 3], [4, 8], [9, 16], [17, 30], [31, 60], [61, 110]]
+    function frame () {
+      if (!rafOn) return
+      analyser.getByteFrequencyData(freqData)
+      for (var k = 0; k < 6; k++) {
+        var from = BANDS[k][0], to = BANDS[k][1], sum = 0
+        for (var b = from; b <= to; b++) sum += freqData[b]
+        var v = (sum / (to - from + 1)) / 255
+        smooth[k] += (v - smooth[k]) * (v > smooth[k] ? 0.5 : 0.14)
+      }
+      var bassEnergy = Math.pow((smooth[0] + smooth[1]) / 2, 1.5)
+      document.documentElement.style.setProperty('--mw-beat', Math.min(1, bassEnergy * 1.4).toFixed(3))
+      requestAnimationFrame(frame)
+    }
+
+    function setButtons () {
+      buttons.forEach(function (btn) { btn.setAttribute('aria-pressed', playing ? 'true' : 'false') })
+      document.documentElement.classList.toggle('mwtda-sound-on', playing)
+    }
+
+    // reusa o letreiro de "troca de canal" do controle remoto pra avisar
+    // que a trilha ligou/desligou — ♪ no lugar do número do canal
+    var zap = document.querySelector('[data-remote-zap]')
+    var zapTimer = null
+    function announce () {
+      if (!zap) return
+      var source = document.querySelector('[data-sound-toggle][data-osd-on]')
+      if (!source) return
+      zap.querySelector('[data-zap-ch]').textContent = '♪'
+      zap.querySelector('[data-zap-label]').textContent = source.getAttribute(playing ? 'data-osd-on' : 'data-osd-off')
+      zap.classList.remove('is-zapping')
+      void zap.offsetWidth
+      zap.classList.add('is-zapping')
+      clearTimeout(zapTimer)
+      zapTimer = setTimeout(function () { zap.classList.remove('is-zapping') }, 1900)
+    }
+
+    function toggle () {
+      if (!ctx) init()
+      if (ctx.state === 'suspended') ctx.resume()
+      playing = !playing
+      var t = ctx.currentTime
+      master.gain.cancelScheduledValues(t)
+      master.gain.setValueAtTime(master.gain.value, t)
+      if (playing) {
+        master.gain.linearRampToValueAtTime(0.55, t + 0.4)
+        if (!timer) {
+          nextTime = ctx.currentTime + 0.06
+          step = 0
+          timer = setInterval(schedule, 25)
+        }
+        if (!rafOn) { rafOn = true; requestAnimationFrame(frame) }
+      } else {
+        master.gain.linearRampToValueAtTime(0.0001, t + 0.3)
+        setTimeout(function () {
+          if (playing) return
+          clearInterval(timer); timer = null
+          rafOn = false
+          document.documentElement.style.setProperty('--mw-beat', '0')
+        }, 450)
+      }
+      setButtons()
+      announce()
+    }
+
+    buttons.forEach(function (btn) { btn.addEventListener('click', toggle) })
+
+    // o que o resto da página consome (logo em Three.js, bloco do hero)
+    window.mwtdaSound = {
+      get playing () { return playing },
+      bands: function () { return smooth },
+      toggle: toggle
+    }
+  })
+</script>

@@ -1,0 +1,181 @@
+<% title "Mewtda — #{t('home.city.title')}" %>
+
+<%#
+  Home pública "Cidade noturna": hero sobre um vídeo aéreo noturno de
+  Manhattan com balões dos produtos pipocando pela cidade; abaixo, letreiro
+  corrido, os cinco canais (acordeão com as telas reais no navegador +
+  celular) e o neon de contato. Layout próprio (layouts/home_city), CSS em
+  stylesheets/home_city.scss.
+%>
+
+<%
+  whatsapp = "https://wa.me/5516991997608?text=#{CGI.escape(t('home.city.whatsapp_message'))}"
+  sua_html = safe_join(['Sua ', content_tag(:span, safe_join(%w[Loja Operação Marca].map { |word| content_tag(:span, word) }), class: 'rot')])
+  channels = [
+    { key: 'crm',    name: 'MeuCRM',      host: 'APP.MEWTDA.COM.BR', desk: 'landing/showcase-crm.jpg',    mob: 'landing/showcase-crm-mobile.jpg' },
+    { key: 'trocas', name: 'Pode Trocar', host: 'PODETROCAR.COM.BR', desk: 'landing/showcase-trocas.jpg', mob: 'landing/showcase-trocas-mobile.jpg' },
+    { key: 'new',    name: 'Sua Loja',    host: 'LOJA DO CLIENTE',   desk: 'landing/site-desktop.jpg',    mob: 'landing/showcase-new-mobile.jpg', html: sua_html },
+    { key: 'app',    name: 'App',         host: 'APP DA LOJA',       desk: nil,                           mob: 'landing/showcase-app-mobile.jpg' },
+    { key: 'ia',     name: t('home.city.ia_name'), host: 'MEWTDA IA', desk: nil,                          mob: nil }
+  ]
+  open_index = 1
+  pins = [
+    ['landing/meu-crm-logo.png',     64, 34],
+    ['landing/pode-trocar-logo.png', 84, 52],
+    ['landing/sua-loja-logo.png',    72, 70],
+    ['landing/app-logo.png',         90, 28],
+    [nil,                            58, 58]
+  ]
+%>
+
+<section class="hero" id="topo">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="<%= image_path('landing/city-poster.jpg') %>" aria-hidden="true">
+    <source src="<%= asset_path('city-night-1080.webm') %>" type="video/webm">
+    <source src="<%= asset_path('city-night-1080.mp4') %>" type="video/mp4">
+  </video>
+
+  <div class="pins" aria-hidden="true">
+    <% pins.each_with_index do |(logo, x, y), i| %>
+      <span class="pin" style="--x: <%= x %>%; --y: <%= y %>%; --dl: <%= i * 3 %>s">
+        <span class="bubble">
+          <% if logo %>
+            <%= image_tag logo, alt: '' %>
+          <% else %>
+            <span class="ia">mewtda <b>IA</b></span>
+          <% end %>
+        </span>
+      </span>
+    <% end %>
+  </div>
+
+  <span class="credit"><%= t('home.city.video_credit') %>: <a href="https://commons.wikimedia.org/wiki/File:Aerial_views_of_Downtown_Manhattan,_New_York_City,_USA_at_night_including_Battery_Park,_Freedom_Tower,_Wall_Street,_The_Oculus,_West_Side_Highway_and_Hudson_River.webm" target="_blank" rel="noopener">the Dronalist</a>, CC BY 3.0</span>
+
+  <div class="wrap nav">
+    <a class="logo" href="#topo">mewtda</a>
+    <nav aria-label="<%= t('home.city.nav_label') %>">
+      <a href="#canais"><%= t('home.city.nav_channels') %></a>
+      <a href="#contato"><%= t('home.city.nav_contact') %></a>
+      <span class="lang">
+        <% { 'pt-BR' => 'PT', 'en' => 'EN', 'es' => 'ES' }.each do |code, label| %>
+          <%= link_to label, url_for(locale: code), class: ('is-active' if I18n.locale.to_s == code), data: { turbo: false } %>
+        <% end %>
+      </span>
+    </nav>
+  </div>
+
+  <div class="wrap">
+    <div class="hero-body">
+      <span class="kicker"><%= t('home.city.kicker') %></span>
+      <h1>
+        <span class="glitch" data-text="<%= t('home.city.headline_1') %>"><%= t('home.city.headline_1') %></span><br>
+        <span class="stroke"><%= t('home.city.headline_2') %></span> <span class="hot"><%= t('home.city.headline_3') %></span>
+      </h1>
+      <p class="lead"><%= t('home.city.lead') %></p>
+      <div class="actions">
+        <a class="btn btn--solid" href="<%= whatsapp %>" target="_blank" rel="noopener"><%= t('home.city.cta') %></a>
+        <button type="button" class="sound" data-sound-toggle aria-pressed="false"
+                aria-label="<%= t('home.sound.remote_tip') %>" title="<%= t('home.sound.remote_tip') %>">
+          <svg class="off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/></svg>
+          <svg class="on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <% 2.times do %>
+      <% t('home.city.ticker').each do |item| %><span><%= item %></span><b>◆</b><% end %>
+    <% end %>
+  </div>
+</div>
+
+<section class="channels" id="canais">
+  <div class="wrap">
+    <div class="ch-head">
+      <h2><%= t('home.city.channels_title_1') %><br><%= t('home.city.channels_title_2') %></h2>
+      <p><%= t('home.city.channels_text') %></p>
+    </div>
+
+    <div class="ch-list" data-channels>
+      <% channels.each_with_index do |c, i| %>
+        <% open = i == open_index %>
+        <% page = product_page_path(c[:key]) %>
+        <div class="ch" data-open="<%= open %>">
+          <button type="button" class="ch-btn" aria-expanded="<%= open %>" aria-controls="ch-stage-<%= i %>">
+            <span class="ch-code">CH.0<%= i + 1 %></span>
+            <span class="ch-name"><%= c[:html] || c[:name] %></span>
+            <span class="ch-tag"><%= t("home.city.channels.#{c[:key]}") %></span>
+            <span class="ch-sign" aria-hidden="true"><%= open ? '−' : '+' %></span>
+          </button>
+          <div class="ch-stage" id="ch-stage-<%= i %>" <%= 'hidden' unless open %>>
+            <span class="ch-live" aria-hidden="true"><%= t('home.city.live') %> · <%= c[:host] %></span>
+            <div class="screen">
+              <div class="screen-desk">
+                <% if c[:desk] %>
+                  <%= image_tag c[:desk], alt: c[:name], loading: 'lazy' %>
+                <% else %>
+                  <div class="placeholder"><%= c[:name].upcase %> · <%= t('home.city.soon') %></div>
+                <% end %>
+              </div>
+              <div class="phone" aria-hidden="true">
+                <div>
+                  <% if c[:mob] %>
+                    <%= image_tag c[:mob], alt: '', loading: 'lazy' %>
+                  <% else %>
+                    <div class="placeholder"><%= t('home.city.soon') %></div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <% if page %>
+              <a class="ch-link" href="<%= page %>"<%= ' target="_blank" rel="noopener"'.html_safe if page.start_with?('http') %>><%= t('home.city.open_page') %> →</a>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contato">
+  <div class="wrap">
+    <span class="kicker"><%= t('home.city.contact_kicker') %></span>
+    <h2><%= t('home.city.contact_title_1') %><br><%= t('home.city.contact_title_2') %></h2>
+    <a class="btn btn--line" href="<%= whatsapp %>" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-13.2 7.9L3 21l1.1-4.6A9 9 0 1 1 21 12z"/></svg>
+      <%= t('home.city.contact_button') %>
+    </a>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>© <%= Date.current.year %> MEWTDA</span>
+    <span>CH.01 MEUCRM · CH.02 PODE TROCAR · CH.03 SUA LOJA · CH.04 APP · CH.05 IA</span>
+  </div>
+</footer>
+
+<script>
+  // canais: acordeão, um aberto por vez
+  (function () {
+    var list = document.querySelector('[data-channels]')
+    if (!list) return
+    list.addEventListener('click', function (e) {
+      var btn = e.target.closest('.ch-btn')
+      if (!btn) return
+      var item = btn.parentElement
+      var open = item.getAttribute('data-open') !== 'true'
+      list.querySelectorAll('.ch').forEach(function (ch) {
+        var me = ch === item && open
+        ch.setAttribute('data-open', me)
+        ch.querySelector('.ch-btn').setAttribute('aria-expanded', me)
+        ch.querySelector('.ch-sign').textContent = me ? '−' : '+'
+        ch.querySelector('.ch-stage').hidden = !me
+      })
+    })
+  })()
+</script>
+
+<%= render 'home/sound_script' %>
