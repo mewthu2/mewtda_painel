@@ -12,10 +12,12 @@
   whatsapp = "https://wa.me/5516991997608?text=#{CGI.escape(t('home.city.whatsapp_message'))}"
   sua_html = safe_join(['Sua ', content_tag(:span, safe_join(%w[Loja Operação Marca].map { |word| content_tag(:span, word) }), class: 'rot')])
   channels = [
-    { key: 'crm',    name: 'MeuCRM',      host: 'APP.MEWTDA.COM.BR', desk: 'landing/showcase-crm.jpg',    mob: 'landing/showcase-crm-mobile.jpg' },
-    { key: 'trocas', name: 'Pode Trocar', host: 'PODETROCAR.COM.BR', desk: 'landing/showcase-trocas.jpg', mob: 'landing/showcase-trocas-mobile.jpg' },
+    { key: 'crm',    name: 'MeuCRM',      host: 'APP.MEWTDA.COM.BR', desk: 'landing/showcase-crm.jpg',    mob: 'landing/showcase-crm-mobile.jpg',
+      login: 'https://www.mewtda.com.br/crm' },
+    { key: 'trocas', name: 'Pode Trocar', host: 'PODETROCAR.COM.BR', desk: 'landing/showcase-trocas.jpg', mob: 'landing/showcase-trocas-mobile.jpg',
+      login: HomeHelper::PODE_TROCAR_URL },
     { key: 'new',    name: 'Sua Loja',    host: 'LOJA DO CLIENTE',   desk: 'landing/site-desktop.jpg',    mob: 'landing/showcase-new-mobile.jpg', html: sua_html },
-    { key: 'app',    name: 'App',         host: 'APP DA LOJA',       desk: nil,                           mob: 'landing/showcase-app-mobile.jpg' },
+    { key: 'app',    name: 'App',         host: 'APP DA LOJA',       desk: 'landing/showcase-app.jpg',    mob: 'landing/showcase-app-mobile.jpg' },
     { key: 'ia',     name: t('home.city.ia_name'), host: 'MEWTDA IA', desk: nil,                          mob: nil }
   ]
   open_index = 1
@@ -67,7 +69,8 @@
     <div class="hero-body">
       <span class="kicker"><%= t('home.city.kicker') %></span>
       <h1>
-        <span class="glitch" data-text="<%= t('home.city.headline_1') %>"><%= t('home.city.headline_1') %></span><br>
+        <span class="glitch" data-text="<%= t('home.city.headline_prefix') %>"><%= t('home.city.headline_prefix') %></span>
+        <span class="rot"><% t('home.city.hero_words').each do |word| %><span><%= word %></span><% end %></span><br>
         <span class="stroke"><%= t('home.city.headline_2') %></span> <span class="hot"><%= t('home.city.headline_3') %></span>
       </h1>
       <p class="lead"><%= t('home.city.lead') %></p>
@@ -129,8 +132,15 @@
                 </div>
               </div>
             </div>
-            <% if page %>
-              <a class="ch-link" href="<%= page %>"<%= ' target="_blank" rel="noopener"'.html_safe if page.start_with?('http') %>><%= t('home.city.open_page') %> →</a>
+            <% if c[:login] || page %>
+              <div class="ch-actions">
+                <% if c[:login] %>
+                  <a class="btn btn--solid btn--sm" href="<%= c[:login] %>" target="_blank" rel="noopener"><%= t('home.city.login', product: c[:name]) %></a>
+                <% end %>
+                <% if page && page != c[:login] %>
+                  <a class="ch-link" href="<%= page %>"<%= ' target="_blank" rel="noopener"'.html_safe if page.start_with?('http') %>><%= t('home.city.open_page') %> →</a>
+                <% end %>
+              </div>
             <% end %>
           </div>
         </div>
