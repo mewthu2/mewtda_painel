@@ -20,6 +20,7 @@ module HomeHelper
     'henrri_negativo'                              => 'https://henrri.com.br/',
     'kace'                                         => 'https://www.kacewear.com.br/',
     'logo'                                         => 'https://www.usezaos.com.br/',
+    'Logo_Header_94582ed2-dc65-4f29-8e6a-3e2a2e96ba5b_1' => 'https://minimalclub.com.br/',
     'LOGO_BRANCA'                                  => 'https://fernandafarah.com.br/',
     'logosite1'                                    => 'https://chasebrasil.com/',
     'lyss'                                         => 'https://lyssoficial.com.br/',
