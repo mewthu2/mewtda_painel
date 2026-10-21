@@ -53,7 +53,7 @@
   <span class="credit"><%= t('home.city.video_credit') %>: <a href="https://commons.wikimedia.org/wiki/File:Aerial_views_of_Downtown_Manhattan,_New_York_City,_USA_at_night_including_Battery_Park,_Freedom_Tower,_Wall_Street,_The_Oculus,_West_Side_Highway_and_Hudson_River.webm" target="_blank" rel="noopener">the Dronalist</a>, CC BY 3.0</span>
 
   <div class="wrap nav">
-    <a class="logo" href="#topo">mewtda</a>
+    <a class="logo" href="#topo" aria-label="Mewtda"><%= image_tag 'landing/mewtda-logo-nav.png', alt: 'Mewtda', width: 174, height: 56 %></a>
     <nav aria-label="<%= t('home.city.nav_label') %>">
       <a href="#canais"><%= t('home.city.nav_channels') %></a>
       <a href="#clientes"><%= t('home.city.nav_clients') %></a>
@@ -159,8 +159,8 @@
     <div class="wrap">
       <div class="ch-head">
         <div>
-          <span class="kicker"><span class="rec" aria-hidden="true"></span><%= t('home.city.clients_kicker', count: client_logos.size) %></span>
-          <h2><%= t('home.city.clients_title_1') %><br><span class="hot"><%= t('home.city.clients_title_2') %></span></h2>
+          <span class="kicker"><span class="rec" aria-hidden="true"></span><%= t('home.city.clients_kicker') %></span>
+          <h2><%= t('home.city.clients_title_1') %><br><span class="hot"><%= t('home.city.clients_title_2_html') %></span></h2>
         </div>
         <p><%= t('home.city.clients_text') %></p>
       </div>
