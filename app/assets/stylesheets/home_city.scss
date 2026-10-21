@@ -114,6 +114,47 @@ h2 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: c
 .phone > div { width: 100%; height: 100%; border-radius: 19px; overflow: hidden; background: #fff; }
 .phone .placeholder { font-size: 10px; }
 
+/* ---------------- CLIENTES ---------------- */
+// letreiro de neon: o logo vira silhueta branca (brightness(0) zera a cor
+// mantendo o alfa; os logos vêm em variantes claras/escuras diferentes) e o
+// brilho colorido vem dos drop-shadows na cor --neon de cada letreiro
+$sign-off: brightness(0) invert(1);
+$sign-on: brightness(0) invert(1) drop-shadow(0 0 1px var(--neon)) drop-shadow(0 0 8px var(--neon)) drop-shadow(0 0 22px var(--neon));
+.clients { position: relative; background: var(--bg); border-top: 1px solid var(--line); }
+.clients .wrap { padding-block: 120px; display: flex; flex-direction: column; gap: 56px; }
+.clients h2 .hot { color: var(--accent); text-shadow: 0 0 30px rgba(255,122,26,.45); }
+.clients .kicker { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.rec { width: 8px; height: 8px; border-radius: 50%; background: #ff3b3b; box-shadow: 0 0 10px #ff3b3b; animation: rec 1.4s steps(1) infinite; }
+@keyframes rec { 50% { opacity: .2; } }
+/* a fachada: vãos de 1px entre os letreiros, e janelinhas acesas no fundo de cada um */
+.facade { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.sign { position: relative; display: flex; align-items: center; justify-content: center; height: 132px; padding: 24px; overflow: hidden; isolation: isolate;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 5px, var(--bg-2) 5px 26px),
+    repeating-linear-gradient(0deg, transparent 0 7px, var(--bg-2) 7px 30px),
+    rgba(245,179,1,.07); }
+.sign::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(closest-side, color-mix(in srgb, var(--neon) 22%, transparent), transparent); opacity: 0; transition: opacity .6s ease; }
+.sign img { display: block; max-width: 72%; max-height: 46px; width: auto; height: auto; object-fit: contain; filter: $sign-off; opacity: .1; transition: transform .25s ease; }
+.facade.is-lit .sign::before { opacity: .55; transition-delay: var(--on); }
+.facade.is-lit .sign img { animation: neon-on 1.2s steps(1) forwards; animation-delay: var(--on); }
+/* alguns letreiros ficam com mau contato depois de acesos */
+.facade.is-lit .sign:nth-child(5n+3) { animation: buzz 6s steps(1) infinite; animation-delay: calc(var(--on) + 2s); }
+@keyframes neon-on {
+  0% { opacity: .1; filter: $sign-off; }
+  8% { opacity: 1; filter: $sign-on; }
+  14% { opacity: .15; filter: $sign-off; }
+  28% { opacity: 1; filter: $sign-on; }
+  33% { opacity: .3; filter: $sign-off; }
+  40%, 100% { opacity: 1; filter: $sign-on; }
+}
+@keyframes buzz { 0%, 100% { opacity: 1; } 71% { opacity: .35; } 73% { opacity: 1; } 75% { opacity: .5; } 77% { opacity: 1; } }
+/* plaquinha de endereço: o site da loja aparece ao passar o mouse */
+.plate { position: absolute; left: 0; right: 0; bottom: 12px; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; text-align: center; color: var(--neon); opacity: 0; transform: translateY(6px); transition: opacity .2s ease, transform .2s ease; }
+a.sign:hover::before, a.sign:focus-visible::before { opacity: 1; }
+a.sign:hover img, a.sign:focus-visible img { transform: scale(1.06); }
+a.sign:hover .plate, a.sign:focus-visible .plate { opacity: 1; transform: none; }
+a.sign:focus-visible { outline-offset: -3px; }
+
 /* ---------------- CONTATO ---------------- */
 .contact { position: relative; border-top: 1px solid var(--line); overflow: hidden; }
 .contact::before { content: ""; position: absolute; inset: -20% 0 0; pointer-events: none; background-image: repeating-linear-gradient(105deg, transparent 0 22px, rgba(160,190,255,.07) 22px 23px); background-size: 100% 220px; animation: rain .9s linear infinite; }
@@ -146,6 +187,12 @@ h2 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: c
   .nav nav a { padding: 10px 6px; }
   .lang { margin-left: 4px; }
   .hero::after { background: linear-gradient(to bottom, rgba(5,5,7,.8), rgba(5,5,7,.55) 50%, var(--bg)); }
+  .clients .wrap { padding-block: 88px; gap: 40px; }
+  .facade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sign { height: 104px; padding: 16px 12px 28px; }
+  .sign img { max-height: 34px; max-width: 80%; }
+  /* sem hover no toque: a plaquinha fica sempre à mostra */
+  .plate { bottom: 9px; font-size: 9px; letter-spacing: .08em; opacity: .75; transform: none; }
 }
 @media (max-width: 520px) {
   .nav nav > a { display: none; }
@@ -154,5 +201,8 @@ h2 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: c
   .pin, .pin::before { animation: none; opacity: 1; }
   .rot > span { animation: none; }
   .rot > span:first-child { opacity: 1; transform: none; }
-  .logo, .contact h2, .glitch::before, .glitch::after, .ticker-track, .contact::before { animation: none; }
+  .logo, .contact h2, .glitch::before, .glitch::after, .ticker-track, .contact::before, .rec { animation: none; }
+  .facade .sign, .facade .sign img { animation: none !important; }
+  .facade .sign img { opacity: 1; filter: $sign-on; }
+  .facade .sign::before { opacity: .55; transition: none; }
 }
