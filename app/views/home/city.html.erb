@@ -3,7 +3,7 @@
 <%#
   Home pública "Cidade noturna": hero sobre um vídeo aéreo noturno de
   Manhattan com balões dos produtos pipocando pela cidade; abaixo, letreiro
-  corrido, os cinco canais (acordeão com as telas reais no navegador +
+  corrido, os seis canais (acordeão com as telas reais no navegador +
   celular) e o neon de contato. Layout próprio (layouts/home_city), CSS em
   stylesheets/home_city.scss.
 %>
@@ -18,7 +18,12 @@
       login: HomeHelper::PODE_TROCAR_URL },
     { key: 'new',    name: 'Sua Loja',    host: 'LOJA DO CLIENTE',   desk: 'landing/site-desktop.jpg',    mob: 'landing/showcase-new-mobile.jpg', html: sua_html },
     { key: 'app',    name: 'App',         host: 'APP DA LOJA',       desk: 'landing/showcase-app.jpg',    mob: 'landing/showcase-app-mobile.jpg' },
-    { key: 'ia',     name: t('home.city.ia_name'), host: 'MEWTDA IA', desk: 'landing/showcase-ia.jpg', mob: 'landing/showcase-ia-mobile.jpg' }
+    { key: 'ia',     name: t('home.city.ia_name'), host: 'MEWTDA IA', desk: 'landing/showcase-ia.jpg', mob: 'landing/showcase-ia-mobile.jpg' },
+    # prints opcionais: enquanto não existirem, o palco mostra "em breve"
+    { key: 'rainbow', name: 'Rainbow PDV', host: 'APP.RAINBOWPDV.COM.BR',
+      desk: ('landing/showcase-rainbow.jpg' if landing_image?('landing/showcase-rainbow.jpg')),
+      mob:  ('landing/showcase-rainbow-mobile.jpg' if landing_image?('landing/showcase-rainbow-mobile.jpg')),
+      login: 'https://app.rainbowpdv.com.br/' }
   ]
   open_index = 1
   pins = [
@@ -26,7 +31,8 @@
     ['landing/pode-trocar-logo.png', 84, 52],
     ['landing/sua-loja-logo.png',    72, 70],
     ['landing/app-logo.png',         90, 28],
-    [nil,                            58, 58]
+    [nil,                            58, 58],
+    [:rainbow,                       80, 62]
   ]
 %>
 
@@ -38,9 +44,11 @@
 
   <div class="pins" aria-hidden="true">
     <% pins.each_with_index do |(logo, x, y), i| %>
-      <span class="pin" style="--x: <%= x %>%; --y: <%= y %>%; --dl: <%= i * 3 %>s">
+      <span class="pin" style="--x: <%= x %>%; --y: <%= y %>%; --dl: <%= (i * 15.0 / pins.size).round(1) %>s">
         <span class="bubble">
-          <% if logo %>
+          <% if logo == :rainbow %>
+            <%= image_tag 'landing/rainbow-mark.png', alt: '' %><span class="ia">Rainbow <b>PDV</b></span>
+          <% elsif logo %>
             <%= image_tag logo, alt: '' %>
           <% else %>
             <span class="ia">mewtda <b>IA</b></span>
@@ -200,7 +208,7 @@
 <footer class="foot">
   <div class="wrap">
     <span>© <%= Date.current.year %> MEWTDA</span>
-    <span>CH.01 MEUCRM · CH.02 PODE TROCAR · CH.03 SUA LOJA · CH.04 APP · CH.05 IA</span>
+    <span>CH.01 MEUCRM · CH.02 PODE TROCAR · CH.03 SUA LOJA · CH.04 APP · CH.05 IA · CH.06 RAINBOW PDV</span>
   </div>
 </footer>
 
