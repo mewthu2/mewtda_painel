@@ -37,18 +37,19 @@
   </head>
 
   <body>
+    <%# Casco no estilo do Rainbow/ClickUp: sidebar branca fixa à esquerda e,
+        ao lado, topo fino com breadcrumb, conteúdo e rodapé. %>
     <div class="main-background">
       <% if current_user.present? %>
-        <%= render 'layouts/partials/header' %>
-      <% end %>
-      <div class="crm-shell__body">
-        <% if current_user.present? %>
-          <%= render 'layouts/partials/sidebar' %>
-        <% end %>
+        <%= render 'layouts/partials/sidebar' %>
+        <div class="crm-nav-overlay" id="crm-nav-overlay"></div>
+        <div class="crm-main">
+          <%= render 'layouts/partials/header' %>
+          <%= render 'layouts/partials/content' %>
+          <%= render 'layouts/partials/footer' %>
+        </div>
+      <% else %>
         <%= render 'layouts/partials/content' %>
-      </div>
-      <% if current_user.present? %>
-        <%= render 'layouts/partials/footer' %>
       <% end %>
     </div>
   </body>

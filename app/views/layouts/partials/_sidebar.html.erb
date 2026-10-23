@@ -1,4 +1,40 @@
 <aside class="crm-sidebar" id="crm-sidebar">
+  <%= link_to crm_path, class: 'crm-sidebar__brand' do %>
+    <%= image_tag 'admin/meu-crm-logo-roxo.png', alt: 'MeuCRM', class: 'crm-sidebar__logo' %>
+  <% end %>
+
+  <%# Cliente atual, como o workspace do ClickUp. Admin troca por aqui. %>
+  <% ws_client = crm_current_client %>
+  <% if current_user.admin? %>
+    <div class="crm-ws" id="crm-ws">
+      <button type="button" class="crm-ws__btn" id="crm-ws-toggle" aria-haspopup="true" aria-expanded="false">
+        <%= ws_badge(ws_client&.name) %>
+        <span class="crm-ws__name"><%= ws_client&.name || 'Selecionar cliente' %></span>
+        <i class="fa-solid fa-chevron-down crm-ws__chevron"></i>
+      </button>
+      <div class="crm-ws__menu" id="crm-ws-menu" hidden>
+        <div class="crm-ws__label">Clientes</div>
+        <% Client.where(active: true).order(:name).each do |client| %>
+          <button type="button" class="crm-ws__item" onclick="updateSelectedClient(<%= client.id %>)">
+            <%= ws_badge(client.name) %>
+            <span><%= client.name %></span>
+            <% if ws_client&.id == client.id %><i class="fa-solid fa-check"></i><% end %>
+          </button>
+        <% end %>
+        <%= link_to clients_path, class: 'crm-ws__item crm-ws__manage' do %>
+          <i class="fa-solid fa-building crm-fa"></i><span>Gerenciar clientes</span>
+        <% end %>
+      </div>
+    </div>
+  <% elsif ws_client %>
+    <div class="crm-ws">
+      <div class="crm-ws__btn crm-ws__btn--static">
+        <%= ws_badge(ws_client.name) %>
+        <span class="crm-ws__name"><%= ws_client.name %></span>
+      </div>
+    </div>
+  <% end %>
+
   <nav class="crm-sidebar__nav">
 
     <% if current_user.profile_id == Profile::AFFILIATE %>
@@ -177,4 +213,59 @@
     <% end %>
 
   </nav>
+
+  <div class="crm-sidebar__bottom">
+    <a class="crm-sidebar__link" href="https://wa.me/5516991997608?text=Olá,%20preciso%20de%20suporte%20no%20CRM." target="_blank" rel="noopener">
+      <i class="fa-brands fa-whatsapp crm-fa"></i>
+      Falar no suporte
+    </a>
+
+    <%# Menu do usuário: abre pra cima, a partir do rodapé da sidebar %>
+    <div class="crm-user" id="crm-user-menu">
+      <button type="button" class="crm-user__btn" id="crm-user-toggle" aria-haspopup="true" aria-expanded="false">
+        <span class="crm-user__avatar"><%= current_user.name.first.upcase %></span>
+        <span class="crm-user__text">
+          <span class="crm-user__name"><%= current_user.name %></span>
+          <span class="crm-user__role"><%= current_user.admin? ? 'Administrador' : 'Usuário' %></span>
+        </span>
+        <i class="fa-solid fa-chevron-up crm-user__chevron"></i>
+      </button>
+
+      <div class="crm-user__dropdown" id="crm-dropdown" hidden>
+        <div class="crm-user__dropdown-head">
+          <strong><%= current_user.name %></strong>
+          <span><%= current_user.email %></span>
+        </div>
+
+        <%= link_to edit_account_path, class: 'crm-user__item' do %>
+          <i class="fa-solid fa-key crm-fa"></i>
+          Minha Conta
+        <% end %>
+
+        <% if current_user.admin? %>
+          <%= link_to ad_costs_path, class: 'crm-user__item' do %>
+            <i class="fa-solid fa-money-bill-wave crm-fa"></i>
+            Custos de Anúncio
+          <% end %>
+        <% elsif current_user.profile_id != Profile::AFFILIATE %>
+          <%= link_to edit_settings_path, class: 'crm-user__item' do %>
+            <i class="fa-solid fa-gear crm-fa"></i>
+            Configurações
+          <% end %>
+
+          <%= link_to ad_costs_path, class: 'crm-user__item' do %>
+            <i class="fa-solid fa-money-bill-wave crm-fa"></i>
+            Custos de Anúncio
+          <% end %>
+        <% end %>
+
+        <div class="crm-user__sep"></div>
+
+        <%= link_to destroy_user_session_path, data: { turbo: false }, class: 'crm-user__item crm-user__item--danger' do %>
+          <i class="fa-solid fa-right-from-bracket crm-fa"></i>
+          Sair
+        <% end %>
+      </div>
+    </div>
+  </div>
 </aside>

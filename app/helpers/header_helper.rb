@@ -32,6 +32,24 @@ module HeaderHelper
     items
   end
 
+  # Cliente que aparece no seletor da sidebar e no breadcrumb: o escolhido
+  # pelo admin (session[:selected_client_id]) ou o do próprio lojista.
+  def crm_current_client
+    return current_user.client unless current_user.admin?
+
+    @crm_current_client ||= Client.find_by(id: session[:selected_client_id]) if session[:selected_client_id].present?
+  end
+
+  # Quadradinho com a inicial do cliente, como os workspaces do ClickUp (mesmas
+  # cores do Rainbow).
+  WS_BADGE_HUES = %w[#ff5f6d #ffb347 #e6c800 #3ccf8e #5ab9ff #8f7cff #e17cff].freeze
+
+  def ws_badge(name)
+    name = name.to_s.strip.presence || '?'
+    color = WS_BADGE_HUES[name.sum % WS_BADGE_HUES.size]
+    content_tag(:span, name[0].upcase, class: 'crm-ws__badge', style: "background: #{color}")
+  end
+
   private
 
   def affiliate_nav_items(user)

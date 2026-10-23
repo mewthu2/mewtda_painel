@@ -1,146 +1,71 @@
+// Rodapé enxuto do CRM, igual ao do Rainbow: "Desenvolvido por Mewtda" à
+// esquerda e o selo Shopify Partner + suporte à direita.
 .crm-footer {
-  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 14px 32px;
   border-top: 1px solid var(--outline);
+  background: var(--bg);
+  color: var(--fg-alt);
+  font-size: 12px;
 }
 
-.crm-footer__container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 48px 24px 40px;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.4fr;
-  gap: 40px;
+.crm-footer a {
+  text-decoration: none;
 }
 
 .crm-footer__brand {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--fg-alt);
 }
 
 .crm-footer__logo {
-  width: 180px;
+  height: 22px;
+  width: auto;
 }
 
-.crm-footer__description {
-  margin-top: 12px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--fg-alt);
-  max-width: 260px;
+.crm-footer__right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .crm-footer__badge {
-  width: 88px;
-  margin-top: 20px;
-  opacity: .92;
-  transition: opacity .15s, transform .15s;
-}
-
-.crm-footer__badge:hover {
-  opacity: 1;
-  transform: translateY(-2px);
-}
-
-.crm-footer__column {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.crm-footer__title {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--fg-alt);
-  margin-bottom: 6px;
-  position: relative;
-  padding-bottom: 10px;
-}
-
-.crm-footer__title::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 28px;
-  height: 2px;
-  background: var(--primary);
-  border-radius: 2px;
-}
-
-.crm-footer__link {
-  font-size: 14px;
-  color: var(--fg);
-  text-decoration: none;
-  transition: color .15s, transform .15s;
-  width: fit-content;
-}
-
-.crm-footer__link:hover {
-  color: var(--primary);
-  transform: translateX(3px);
+  height: 32px;
+  width: auto;
 }
 
 .crm-footer__support {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.crm-footer__support-text {
-  font-size: 14px;
-  color: var(--fg-alt);
-  line-height: 1.5;
-}
-
-.crm-footer__whatsapp {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--outline-strong);
+  border-radius: 99px;
+  color: var(--fg);
+  transition: border-color .15s;
+}
+
+.crm-footer__support::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
   background: #25d366;
-  color: #fff;
-  text-decoration: none;
-  padding: 11px 18px;
-  border-radius: var(--radius);
-  font-size: 14px;
-  font-weight: 600;
-  width: fit-content;
-  box-shadow: 0 2px 10px rgba(37, 211, 102, .3);
-  transition: background .15s, transform .15s, box-shadow .15s;
 }
 
-.crm-footer__whatsapp:hover {
-  background: #1ebe5d;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(37, 211, 102, .4);
-}
-
-.crm-footer__bottom {
-  border-top: 1px solid var(--outline);
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--fg-alt);
-}
-
-.crm-footer__version {
-  opacity: .7;
+.crm-footer__support:hover {
+  border-color: var(--fg);
+  color: var(--fg);
 }
 
 @media (max-width: 900px) {
-  .crm-footer__container {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .crm-footer__brand { align-items: center; text-align: center; }
-
-  .crm-footer__bottom {
-    flex-direction: column;
-    gap: 6px;
-    text-align: center;
+  .crm-footer {
+    padding: 14px 16px;
   }
 }

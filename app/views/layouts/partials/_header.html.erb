@@ -1,18 +1,20 @@
 <header class="crm-header">
 
-  <!-- LEFT -->
-  <div class="crm-header__left">
+  <button class="crm-header__hamburger" id="crm-hamburger" type="button" aria-label="Abrir menu" aria-expanded="false">
+    <i class="fa-solid fa-bars"></i>
+  </button>
 
-    <button class="crm-header__hamburger" id="crm-hamburger" type="button" aria-label="Abrir menu" aria-expanded="false">
-      <span class="crm-hamburger__bar"></span>
-      <span class="crm-hamburger__bar"></span>
-      <span class="crm-hamburger__bar"></span>
-    </button>
-
-    <%= link_to crm_path, class: "crm-header__brand" do %>
-      <%= image_tag 'admin/logo-novo.png', class: 'crm-header__logo' %>
+  <!-- BREADCRUMB: cliente / título da página -->
+  <div class="crm-header__crumbs">
+    <% crumb_client = crm_current_client %>
+    <% if crumb_client %>
+      <%= ws_badge(crumb_client.name) %>
+      <span class="crm-header__crumb-client"><%= crumb_client.name %></span>
     <% end %>
-
+    <% if content_for?(:title) %>
+      <% if crumb_client %><span class="crm-header__crumb-sep">/</span><% end %>
+      <strong><%= yield(:title) %></strong>
+    <% end %>
   </div>
 
   <!-- SEARCH -->
@@ -35,117 +37,12 @@
     </div>
   </div>
 
-  <!-- RIGHT -->
-  <div class="crm-header__actions">
-
-    <button type="button" class="crm-theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
-      <i class="fa-solid fa-sun"></i>
-      <i class="fa-solid fa-moon"></i>
-    </button>
-
-    <% if current_user.admin? %>
-      <select class="crm-header__client-select" onchange="updateSelectedClient(this.value)">
-        <option value="">Cliente</option>
-        <% Client.where(active: true).order(:name).each do |client| %>
-          <option value="<%= client.id %>" <%= "selected" if session[:selected_client_id].to_i == client.id %>>
-            <%= client.name %>
-          </option>
-        <% end %>
-      </select>
-    <% end %>
-
-    <!-- USER -->
-    <div class="crm-header__user" id="crm-user-menu">
-
-      <div class="crm-header__avatar">
-        <%= current_user.name.first.upcase %>
-      </div>
-
-      <i class="fa-solid fa-chevron-down crm-user-chevron"></i>
-
-      <div class="crm-header__dropdown" id="crm-dropdown">
-
-        <div class="crm-header__dropdown-header">
-          <div class="crm-header__dropdown-avatar"><%= current_user.name.first.upcase %></div>
-          <div class="crm-header__dropdown-header-info">
-            <strong><%= current_user.name %></strong>
-            <span class="crm-header__dropdown-role"><%= current_user.admin? ? 'Administrador' : 'Usuário' %></span>
-            <span class="crm-header__dropdown-email"><%= current_user.email %></span>
-          </div>
-        </div>
-
-        <div class="crm-header__dropdown-sep"></div>
-
-        <%= link_to edit_account_path, class: 'crm-header__dropdown-item' do %>
-          <i class="fa-solid fa-key crm-fa"></i>
-          Minha Conta
-        <% end %>
-
-        <div class="crm-header__dropdown-sep"></div>
-
-        <% if current_user.admin? %>
-          <%= link_to users_path, class: 'crm-header__dropdown-item' do %>
-            <i class="fa-solid fa-user crm-fa"></i>
-            Usuários
-          <% end %>
-
-          <%= link_to clients_path, class: 'crm-header__dropdown-item' do %>
-            <i class="fa-solid fa-building crm-fa"></i>
-            Clientes
-          <% end %>
-
-          <%= link_to profiles_path, class: 'crm-header__dropdown-item' do %>
-            <i class="fa-solid fa-id-badge crm-fa"></i>
-            Perfis
-          <% end %>
-
-          <%= link_to ad_costs_path, class: 'crm-header__dropdown-item' do %>
-            <i class="fa-solid fa-money-bill-wave crm-fa"></i>
-            Custos de Anúncio
-          <% end %>
-
-          <%= link_to '/crm/sidekiq', class: 'crm-header__dropdown-item', target: '_blank' do %>
-            <i class="fa-solid fa-bolt crm-fa"></i>
-            Sidekiq
-          <% end %>
-
-          <% if current_user&.profile_id == 1 %>
-            <%= link_to try_on_index_path, class: "crm-header__dropdown-item #{'active' if request.path.start_with?(try_on_index_path)}" do %>
-              <i class="fa-solid fa-wand-magic-sparkles crm-fa"></i>
-              Try-On Virtual
-            <% end %>
-          <% end %>
-          <div class="crm-header__dropdown-sep"></div>
-        <% elsif current_user.profile_id != Profile::AFFILIATE %>
-          <%= link_to edit_settings_path, class: 'crm-header__dropdown-item' do %>
-            <i class="fa-solid fa-gear crm-fa"></i>
-            Configurações
-          <% end %>
-
-          <%= link_to ad_costs_path, class: 'crm-header__dropdown-item' do %>
-            <i class="fa-solid fa-money-bill-wave crm-fa"></i>
-            Custos de Anúncio
-          <% end %>
-          <div class="crm-header__dropdown-sep"></div>
-        <% end %>
-
-        <%= link_to destroy_user_session_path,
-          data: { turbo: false },
-          class: 'crm-header__dropdown-item crm-header__dropdown-item--danger' do %>
-          <i class="fa-solid fa-right-from-bracket crm-fa"></i>
-          Sair
-        <% end %>
-
-      </div>
-
-    </div>
-
-  </div>
+  <button type="button" class="crm-theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+    <i class="fa-solid fa-sun"></i>
+    <i class="fa-solid fa-moon"></i>
+  </button>
 
 </header>
-
-<!-- MOBILE OVERLAY -->
-<div class="crm-nav-overlay" id="crm-nav-overlay"></div>
 
 <script>
 
@@ -171,38 +68,30 @@ function toggleTheme() {
 
 (function () {
 
-  /* USER DROPDOWN */
-  const menu     = document.getElementById('crm-user-menu');
-  const dropdown = document.getElementById('crm-dropdown');
-  const chevron  = menu ? menu.querySelector('.crm-user-chevron') : null;
+  /* DROPDOWNS DA SIDEBAR — menu do usuário e seletor de cliente (ver _sidebar) */
+  function dropdown(wrapId, toggleId, menuId) {
+    const wrap   = document.getElementById(wrapId);
+    const toggle = document.getElementById(toggleId);
+    const menu   = document.getElementById(menuId);
+    if (!wrap || !toggle || !menu) return;
 
-  function closeUserDropdown() {
-    if (!dropdown) return;
-    dropdown.classList.remove('open');
-    if (chevron) chevron.classList.remove('open');
-  }
+    function setOpen(open) {
+      menu.hidden = !open;
+      toggle.setAttribute('aria-expanded', open);
+      wrap.classList.toggle('open', open);
+    }
 
-  function openUserDropdown() {
-    if (!dropdown) return;
-    dropdown.classList.add('open');
-    if (chevron) chevron.classList.add('open');
-  }
-
-  if (menu) {
-    menu.addEventListener('click', function (e) {
+    toggle.addEventListener('click', function (e) {
       e.stopPropagation();
-      const isOpen = dropdown.classList.contains('open');
-      isOpen ? closeUserDropdown() : openUserDropdown();
+      setOpen(menu.hidden);
     });
-
-    document.addEventListener('click', function () {
-      closeUserDropdown();
-    });
-
-    dropdown.addEventListener('click', function (e) {
-      e.stopPropagation();
-    });
+    menu.addEventListener('click', function (e) { e.stopPropagation(); });
+    document.addEventListener('click', function () { setOpen(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
   }
+
+  dropdown('crm-user-menu', 'crm-user-toggle', 'crm-dropdown');
+  dropdown('crm-ws', 'crm-ws-toggle', 'crm-ws-menu');
 
   /* NAV SEARCH — filtra telas/menus (ver HeaderHelper#searchable_nav_items) */
   const searchBox    = document.getElementById('crm-nav-search');
@@ -299,7 +188,7 @@ function toggleTheme() {
 
     document.addEventListener('click', function () {
       closeSearchResults();
-      if (window.innerWidth <= 768) closeSearchInput();
+      if (window.innerWidth <= 900) closeSearchInput();
     });
   }
 
@@ -310,7 +199,6 @@ function toggleTheme() {
 
   function openSidebar() {
     sidebar.classList.add('open');
-    hamburger.classList.add('open');
     overlay.classList.add('open');
     hamburger.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
@@ -318,7 +206,6 @@ function toggleTheme() {
 
   function closeSidebar() {
     sidebar.classList.remove('open');
-    hamburger.classList.remove('open');
     overlay.classList.remove('open');
     hamburger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
