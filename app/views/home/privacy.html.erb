@@ -1,15 +1,37 @@
 <%#
   Política de privacidade pública dos apps Mewtda (URL exigida pela App Store
   e pelo Google Play). Página autocontida: renderizada sem layout.
+  Idioma vem do ?locale= (pt-BR, en, es), tratado no ApplicationController.
+%>
+<%
+  lang = case I18n.locale.to_s
+         when /\Aen/ then 'en'
+         when /\Aes/ then 'es'
+         else 'pt'
+         end
+  copy = {
+    'pt' => { html: 'pt-BR', title: 'Política de Privacidade', updated: 'Última atualização: 24 de outubro de 2026',
+              description: 'Política de Privacidade dos aplicativos e serviços da Mewtda.' },
+    'en' => { html: 'en', title: 'Privacy Policy', updated: 'Last updated: October 24, 2026',
+              description: 'Privacy Policy for Mewtda apps and services.' },
+    'es' => { html: 'es', title: 'Política de Privacidad', updated: 'Última actualización: 24 de octubre de 2026',
+              description: 'Política de Privacidad de las aplicaciones y servicios de Mewtda.' }
+  }[lang]
+  languages = [['pt-BR', 'pt', 'Português'], ['en', 'en', 'English'], ['es', 'es', 'Español']]
+  whatsapp = '<a href="https://wa.me/5516991997608" target="_blank" rel="noopener">+55 (16) 99199-7608</a>'.html_safe
+  site = '<a href="https://www.mewtda.com.br">www.mewtda.com.br</a>'.html_safe
 %>
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="<%= copy[:html] %>">
   <head>
     <meta charset="utf-8">
-    <title>Política de Privacidade - Mewtda</title>
+    <title><%= copy[:title] %> - Mewtda</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Política de Privacidade dos aplicativos e serviços da Mewtda.">
+    <meta name="description" content="<%= copy[:description] %>">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <% languages.each do |locale, _, _| %>
+      <link rel="alternate" hreflang="<%= locale %>" href="https://www.mewtda.com.br/privacidade?locale=<%= locale %>">
+    <% end %>
     <style>
       :root { --bg: #ffffff; --fg: #1d1d22; --muted: #5d5d6b; --line: #e6e6ec; --accent: #6b3fd6; }
       @media (prefers-color-scheme: dark) {
@@ -17,10 +39,12 @@
       }
       * { box-sizing: border-box; }
       body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-      main { max-width: 760px; margin: 0 auto; padding: 48px 16px 64px; }
+      main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+      nav.langs { display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 24px; flex-wrap: wrap; }
+      nav.langs a { padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: var(--muted); font-size: .9rem; }
+      nav.langs a[aria-current] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
       h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }
       h2 { font-size: 1.2rem; margin: 36px 0 8px; padding-top: 16px; border-top: 1px solid var(--line); }
-      p, li { color: var(--fg); }
       ul { padding-left: 20px; }
       .updated { color: var(--muted); margin: 0 0 24px; }
       a { color: var(--accent); }
@@ -29,9 +53,142 @@
   </head>
   <body>
     <main>
-      <h1>Política de Privacidade</h1>
-      <p class="updated">Última atualização: 24 de outubro de 2026</p>
+      <nav class="langs" aria-label="Language">
+        <% languages.each do |locale, key, label| %>
+          <a href="/privacidade?locale=<%= locale %>" hreflang="<%= locale %>"<%= ' aria-current="page"'.html_safe if key == lang %>><%= label %></a>
+        <% end %>
+      </nav>
 
+      <h1><%= copy[:title] %></h1>
+      <p class="updated"><%= copy[:updated] %></p>
+
+<% if lang == 'en' %>
+      <p>This Privacy Policy explains how <strong>Mewtda</strong> ("we") collects, uses, stores and protects information from people who use our mobile apps, websites and services (together, the "Services"). It follows Brazil's General Data Protection Law (Law No. 13,709/2018 — LGPD).</p>
+      <p>By using the Services, you agree to the practices described here. If you do not agree, please do not use the Services.</p>
+
+      <h2>1. Information we collect</h2>
+      <ul>
+        <li><strong>Information you provide:</strong> name, email, phone number, address and other details entered in sign-ups, purchases, forms or customer support.</li>
+        <li><strong>Order and payment data:</strong> items purchased, amounts and delivery status. Payments are processed by partners (such as payment gateways and Shopify); we do not store your full card details.</li>
+        <li><strong>Device and usage data:</strong> device model, operating system, language, app identifiers, IP address, pages and screens visited, and crash logs.</li>
+        <li><strong>Notifications:</strong> if you allow it, a push notification token so we can send updates about orders, news and promotions.</li>
+        <li><strong>Device permissions:</strong> camera, photos or location are only accessed when you allow it and only for the requested feature (for example, sending a photo of a product). You can revoke these permissions in your device settings.</li>
+      </ul>
+
+      <h2>2. How we use information</h2>
+      <ul>
+        <li>To provide, operate and improve the Services;</li>
+        <li>To process orders, payments, deliveries, exchanges and returns;</li>
+        <li>To provide customer support and respond to your requests;</li>
+        <li>To send communications about your orders and, with your consent, offers and news;</li>
+        <li>To prevent fraud and keep the Services secure;</li>
+        <li>To comply with legal and regulatory obligations.</li>
+      </ul>
+
+      <h2>3. Legal bases</h2>
+      <p>We process personal data based on the performance of a contract, compliance with legal obligations, legitimate interest and, when required, your consent, which you may withdraw at any time.</p>
+
+      <h2>4. Sharing</h2>
+      <p>We do not sell your personal data. We may share it only with:</p>
+      <ul>
+        <li>The store you are buying from, when the app belongs to a Mewtda partner store;</li>
+        <li>Service providers that help us operate the Services (hosting, e-commerce platform, payments, logistics, email, messaging and notifications, usage analytics);</li>
+        <li>Public authorities, when required by law or court order.</li>
+      </ul>
+      <p>These partners may only use the data to provide the contracted services and must protect it appropriately.</p>
+
+      <h2>5. Storage and security</h2>
+      <p>We use reasonable technical and organizational measures to protect your data against unauthorized access, loss or alteration, including encrypted connections. Data may be stored on servers outside Brazil, always with adequate protection safeguards. We keep data only as long as needed for the purposes of this policy or as required by law.</p>
+
+      <h2>6. Your rights</h2>
+      <p>Under the LGPD, you may request at any time:</p>
+      <ul>
+        <li>Confirmation that we process your data, and access to it;</li>
+        <li>Correction of incomplete, inaccurate or outdated data;</li>
+        <li>Anonymization, blocking or deletion of unnecessary data;</li>
+        <li>Data portability;</li>
+        <li>Deletion of your account and of data processed based on consent;</li>
+        <li>Information about whom we share your data with;</li>
+        <li>Withdrawal of consent.</li>
+      </ul>
+      <p>To exercise these rights, including requesting deletion of your account, contact us through the channel listed in section 9.</p>
+
+      <h2>7. Children</h2>
+      <p>The Services are not intended for children under 13, and we do not knowingly collect data from children. If you believe a child has provided us with data, please contact us so we can remove it.</p>
+
+      <h2>8. Changes to this policy</h2>
+      <p>We may update this Privacy Policy from time to time. The latest version will always be on this page, with the date of the last update at the top.</p>
+
+      <h2>9. Contact</h2>
+      <p>Questions or requests about privacy and personal data:</p>
+      <ul>
+        <li>WhatsApp: <%= whatsapp %></li>
+        <li>Website: <%= site %></li>
+      </ul>
+<% elsif lang == 'es' %>
+      <p>Esta Política de Privacidad explica cómo <strong>Mewtda</strong> ("nosotros") recopila, utiliza, almacena y protege la información de las personas que usan nuestras aplicaciones móviles, sitios web y servicios (en conjunto, los "Servicios"). Sigue la Ley General de Protección de Datos de Brasil (Ley n.º 13.709/2018 — LGPD).</p>
+      <p>Al usar los Servicios, aceptas las prácticas descritas aquí. Si no estás de acuerdo, no utilices los Servicios.</p>
+
+      <h2>1. Información que recopilamos</h2>
+      <ul>
+        <li><strong>Datos que proporcionas:</strong> nombre, correo electrónico, teléfono, dirección y otra información indicada en registros, compras, formularios o en la atención al cliente.</li>
+        <li><strong>Datos de pedidos y pagos:</strong> artículos comprados, importes y estado de entrega. Los pagos son procesados por socios (como pasarelas de pago y Shopify); no almacenamos los datos completos de tu tarjeta.</li>
+        <li><strong>Datos del dispositivo y de uso:</strong> modelo del dispositivo, sistema operativo, idioma, identificadores de la app, dirección IP, páginas y pantallas visitadas y registros de errores.</li>
+        <li><strong>Notificaciones:</strong> si lo autorizas, un token de notificaciones push para enviarte avisos sobre pedidos, novedades y promociones.</li>
+        <li><strong>Permisos del dispositivo:</strong> solo accedemos a la cámara, las fotos o la ubicación cuando lo autorizas y únicamente para la función solicitada (por ejemplo, enviar una foto de un producto). Puedes revocar estos permisos en la configuración del dispositivo.</li>
+      </ul>
+
+      <h2>2. Cómo usamos la información</h2>
+      <ul>
+        <li>Prestar, operar y mejorar los Servicios;</li>
+        <li>Procesar pedidos, pagos, entregas, cambios y devoluciones;</li>
+        <li>Brindar atención y responder a tus solicitudes;</li>
+        <li>Enviar comunicaciones sobre tus pedidos y, con tu consentimiento, ofertas y novedades;</li>
+        <li>Prevenir fraudes y garantizar la seguridad de los Servicios;</li>
+        <li>Cumplir obligaciones legales y regulatorias.</li>
+      </ul>
+
+      <h2>3. Bases legales</h2>
+      <p>Tratamos datos personales con base en la ejecución de un contrato, el cumplimiento de obligaciones legales, el interés legítimo y, cuando sea necesario, tu consentimiento, que puedes retirar en cualquier momento.</p>
+
+      <h2>4. Compartir información</h2>
+      <p>No vendemos tus datos personales. Solo podemos compartirlos con:</p>
+      <ul>
+        <li>La tienda en la que estás comprando, cuando la app pertenece a una tienda asociada a Mewtda;</li>
+        <li>Proveedores de servicios que nos ayudan a operar los Servicios (alojamiento, plataforma de comercio electrónico, pagos, logística, envío de correos, mensajes y notificaciones, análisis de uso);</li>
+        <li>Autoridades públicas, cuando lo exija la ley o una orden judicial.</li>
+      </ul>
+      <p>Estos socios solo pueden usar los datos para prestar los servicios contratados y deben protegerlos adecuadamente.</p>
+
+      <h2>5. Almacenamiento y seguridad</h2>
+      <p>Adoptamos medidas técnicas y organizativas razonables para proteger tus datos contra accesos no autorizados, pérdida o alteración, incluidas conexiones cifradas. Los datos pueden almacenarse en servidores fuera de Brasil, siempre con garantías adecuadas de protección. Conservamos los datos solo durante el tiempo necesario para los fines de esta política o el plazo exigido por la ley.</p>
+
+      <h2>6. Tus derechos</h2>
+      <p>De acuerdo con la LGPD, puedes solicitar en cualquier momento:</p>
+      <ul>
+        <li>Confirmación de la existencia del tratamiento y acceso a tus datos;</li>
+        <li>Corrección de datos incompletos, inexactos o desactualizados;</li>
+        <li>Anonimización, bloqueo o eliminación de datos innecesarios;</li>
+        <li>Portabilidad de los datos;</li>
+        <li>Eliminación de tu cuenta y de los datos tratados con base en el consentimiento;</li>
+        <li>Información sobre con quién compartimos tus datos;</li>
+        <li>Revocación del consentimiento.</li>
+      </ul>
+      <p>Para ejercer estos derechos, incluida la solicitud de eliminación de tu cuenta, contáctanos por el canal indicado en la sección 9.</p>
+
+      <h2>7. Menores</h2>
+      <p>Los Servicios no están dirigidos a menores de 13 años y no recopilamos intencionalmente datos de menores. Si crees que un menor nos ha proporcionado datos, contáctanos para que podamos eliminarlos.</p>
+
+      <h2>8. Cambios en esta política</h2>
+      <p>Podemos actualizar esta Política de Privacidad periódicamente. La versión más reciente estará siempre en esta página, con la fecha de la última actualización en la parte superior.</p>
+
+      <h2>9. Contacto</h2>
+      <p>Dudas o solicitudes sobre privacidad y datos personales:</p>
+      <ul>
+        <li>WhatsApp: <%= whatsapp %></li>
+        <li>Sitio web: <%= site %></li>
+      </ul>
+<% else %>
       <p>Esta Política de Privacidade explica como a <strong>Mewtda</strong> ("nós") coleta, usa, armazena e protege as informações das pessoas que usam nossos aplicativos móveis, sites e serviços (em conjunto, os "Serviços"). Ela segue a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 — LGPD).</p>
       <p>Ao usar os Serviços, você concorda com as práticas descritas aqui. Se não concordar, não utilize os Serviços.</p>
 
@@ -91,9 +248,10 @@
       <h2>9. Contato</h2>
       <p>Dúvidas ou solicitações sobre privacidade e dados pessoais:</p>
       <ul>
-        <li>WhatsApp: <a href="https://wa.me/5516991997608" target="_blank" rel="noopener">+55 (16) 99199-7608</a></li>
-        <li>Site: <a href="https://www.mewtda.com.br">www.mewtda.com.br</a></li>
+        <li>WhatsApp: <%= whatsapp %></li>
+        <li>Site: <%= site %></li>
       </ul>
+<% end %>
 
       <footer>&copy; <%= Date.today.year %> Mewtda</footer>
     </main>
