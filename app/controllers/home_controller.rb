@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   include ClientScoped
 
-  skip_before_action :authenticate_user!, only: [:index, :sites, :app_page, :crm_page]
+  skip_before_action :authenticate_user!, only: [:index, :sites, :app_page, :crm_page, :privacy]
   before_action :set_client, if: :user_signed_in?, only: [:index]
   before_action :load_sales_preview, if: -> { user_signed_in? && @client }, only: [:index]
 
@@ -19,6 +19,11 @@ class HomeController < ApplicationController
 
   # Página pública do produto "MeuCRM"
   def crm_page; end
+
+  # Política de privacidade pública dos apps — página autocontida, sem layout
+  def privacy
+    render layout: false
+  end
 
   private
 

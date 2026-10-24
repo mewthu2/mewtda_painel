@@ -8,6 +8,10 @@ Rails.application.routes.draw do
   get 'app',          to: 'home#app_page', as: :app_page
   get 'meu-crm',      to: 'home#crm_page', as: :meu_crm
 
+  # Política de privacidade usada nos apps (lojas da Apple/Google exigem URL pública)
+  get 'privacidade',  to: 'home#privacy', as: :privacy
+  get 'privacy',      to: redirect('/privacidade')
+
   # O Pode Trocar (ex-Quero Trocar) agora tem site próprio
   get 'quero-trocar', to: redirect('https://www.podetrocar.com.br/')
 
