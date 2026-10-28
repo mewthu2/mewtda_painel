@@ -35,9 +35,11 @@ class ClientsController < ApplicationController
   def edit; end
 
   def update
-    params[:client].delete(:meta_access_token) if params[:client][:meta_access_token].blank?
-    params[:client].delete(:shopify_api_secret) if params[:client][:shopify_api_secret].blank?
-    params[:client].delete(:shopify_storefront_token) if params[:client][:shopify_storefront_token].blank?
+    # Os campos de senha vêm sempre vazios no form: em branco = manter o valor atual.
+    %i[meta_access_token shopify_access_token shopify_api_secret shopify_storefront_token zapi_instance_token
+       zapi_client_token whatsapp_cloud_access_token].each do |secret|
+      params[:client].delete(secret) if params[:client][secret].blank?
+    end
 
     if @client.update(client_params)
       redirect_to clients_path, notice: 'Cliente atualizado com sucesso.'
@@ -78,6 +80,7 @@ class ClientsController < ApplicationController
       :name, :email, :active, :shopify_shop_url, :shopify_access_token,
       :shopify_api_key, :shopify_api_secret, :shopify_storefront_token, :slug,
       :zapi_instance_id, :zapi_instance_token, :zapi_client_token,
+      :whatsapp_cloud_phone_number_id, :whatsapp_cloud_business_account_id, :whatsapp_cloud_access_token,
       :meta_access_token, :meta_ad_account_id,
       :google_ads_customer_id
     )

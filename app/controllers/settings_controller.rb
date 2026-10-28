@@ -4,8 +4,10 @@ class SettingsController < ApplicationController
   def edit; end
 
   def update
-    params[:client].delete(:meta_access_token) if params[:client][:meta_access_token].blank?
-    params[:client].delete(:shopify_storefront_token) if params[:client][:shopify_storefront_token].blank?
+    %i[meta_access_token shopify_access_token shopify_storefront_token zapi_instance_token zapi_client_token
+       whatsapp_cloud_access_token].each do |secret|
+      params[:client].delete(secret) if params[:client][secret].blank?
+    end
 
     if @client.update(client_params)
       redirect_to edit_settings_path, notice: 'Configurações atualizadas com sucesso.'
@@ -28,6 +30,7 @@ class SettingsController < ApplicationController
     params.require(:client).permit(
       :name, :email, :shopify_shop_url, :shopify_access_token, :shopify_storefront_token,
       :zapi_instance_id, :zapi_instance_token, :zapi_client_token,
+      :whatsapp_cloud_phone_number_id, :whatsapp_cloud_business_account_id, :whatsapp_cloud_access_token,
       :meta_access_token, :meta_ad_account_id,
       :google_ads_customer_id
     )

@@ -62,7 +62,7 @@ module Sales
     # o pedido cancelado, sem tentar reconciliar com o relatório do Shopify.
     def orders_scope
       scope = Order.not_cancelled.where(client_id: client.id, shopify_creation_date: period)
-      scope = scope.where('tags ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(tag)}%") if tag.present?
+      scope = scope.with_any_tag(tag) if tag.present?
       scope
     end
 
@@ -173,7 +173,7 @@ module Sales
       return nil if goal_tag.blank?
 
       orders_scope
-        .where('tags ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(goal_tag)}%")
+        .with_any_tag(goal_tag)
         .sum(:subtotal_price)
     end
 

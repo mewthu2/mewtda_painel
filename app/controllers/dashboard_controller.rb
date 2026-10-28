@@ -49,6 +49,15 @@ class DashboardController < ApplicationController
       return
     end
 
+    # Os eventos do pixel são muitos e as consultas demoram: a tela abre vazia
+    # e só carrega depois que o usuário escolhe o período.
+    if params[:period].blank? && (@filter_year.blank? || @filter_month.blank?)
+      @period = nil
+      @empty_state = true
+      @awaiting_period = true
+      return
+    end
+
     # Filtro por mês/ano tem prioridade sobre os filtros rápidos
     if @filter_year.present? && @filter_month.present?
       start_date = Time.zone.local(@filter_year, @filter_month, 1).beginning_of_day

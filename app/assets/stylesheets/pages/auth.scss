@@ -1,9 +1,17 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+// A tela de login é sempre clara: o tema escuro do CRM (localStorage
+// 'crm-theme') também chega aqui, mas o layout usa cores fixas de fundo claro.
 .lp {
+  --primary: #5800e8;
+  --primary-hover: #4700bd;
+  --bg: #ffffff;
+  --fg: #0d1321;
+  --outline: #ececef;
   display: flex;
   min-height: 100vh;
   background: var(--bg);
+  color: var(--fg);
 }
 
 .lp__panel {

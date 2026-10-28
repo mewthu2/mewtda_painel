@@ -59,4 +59,55 @@ class ClientsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal 'existing-token', client.reload.meta_access_token
   end
+
+  test 'blank Z-API and WhatsApp Cloud tokens preserve the stored ones' do
+    admin = build_admin
+    client = Client.create!(
+      name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com",
+      zapi_instance_token: 'zapi-instance', zapi_client_token: 'zapi-client',
+      whatsapp_cloud_access_token: 'cloud-token'
+    )
+    sign_in admin
+
+    patch client_path(client), params: {
+      client: { name: client.name, email: client.email, zapi_instance_token: '', zapi_client_token: '',
+                whatsapp_cloud_access_token: '' }
+    }
+
+    client.reload
+    assert_equal 'zapi-instance', client.zapi_instance_token
+    assert_equal 'zapi-client', client.zapi_client_token
+    assert_equal 'cloud-token', client.whatsapp_cloud_access_token
+  end
+
+  test 'admin can set the WhatsApp Cloud API credentials' do
+    admin = build_admin
+    client = Client.create!(name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    sign_in admin
+
+    patch client_path(client), params: {
+      client: { name: client.name, email: client.email, whatsapp_cloud_phone_number_id: '1065',
+                whatsapp_cloud_business_account_id: '1022', whatsapp_cloud_access_token: 'EAAG-token' }
+    }
+
+    client.reload
+    assert client.whatsapp_cloud_configured?
+    assert_equal '1022', client.whatsapp_cloud_business_account_id
+    assert_equal 'EAAG-token', client.whatsapp_cloud_access_token
+  end
+
+  test 'edit page splits integrations into tabs' do
+    admin = build_admin
+    client = Client.create!(name: 'Loja Teste', email: "loja-#{SecureRandom.hex(4)}@example.com")
+    sign_in admin
+
+    get edit_client_path(client)
+
+    assert_response :success
+    %w[geral shopify whatsapp meta google].each do |tab|
+      assert_select "[data-tab='#{tab}']"
+      assert_select "[data-panel='#{tab}']"
+    end
+    assert_match 'API Oficial do WhatsApp', response.body
+  end
 end

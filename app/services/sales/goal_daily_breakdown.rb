@@ -92,7 +92,7 @@ module Sales
     def tagged_orders_scope
       return orders_scope.none if tag.blank?
 
-      orders_scope.where('tags ILIKE ?', "%#{ActiveRecord::Base.sanitize_sql_like(tag)}%")
+      orders_scope.with_any_tag(tag)
     end
 
     def tagged_totals_by_day

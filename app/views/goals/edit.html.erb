@@ -83,15 +83,15 @@
           </div>
           <div class="users-form-page__row">
             <div class="users-form-page__field">
-              <%= form.label :tagged_revenue_tag, 'Tag do pedido', class: 'crm-label' %>
-              <%= form.text_field :tagged_revenue_tag, class: 'crm-input', placeholder: 'Ex.: VendedoraElo' %>
+              <%= form.label :tagged_revenue_tag, 'Tag(s) do pedido', class: 'crm-label' %>
+              <%= form.text_field :tagged_revenue_tag, class: 'crm-input', placeholder: 'Ex.: VendedoraElo, Eloina' %>
             </div>
             <div class="users-form-page__field">
               <%= form.label :tagged_revenue_target, 'Meta de Vendas com essa tag (R$)', class: 'crm-label' %>
               <%= form.number_field :tagged_revenue_target, class: 'crm-input', step: '0.01', min: 0, placeholder: 'Ex.: 30000' %>
             </div>
           </div>
-          <span class="cpform-field__hint">Soma o Bruto − Descontos só dos pedidos que tiverem essa tag (ex.: nome de uma vendedora específica).</span>
+          <span class="cpform-field__hint">Soma o Bruto − Descontos só dos pedidos que tiverem essa tag (ex.: nome de uma vendedora específica). Para somar mais de uma tag, separe por vírgula.</span>
         </div>
       </div>
 

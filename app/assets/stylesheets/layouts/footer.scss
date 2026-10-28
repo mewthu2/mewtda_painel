@@ -6,11 +6,35 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
+  position: relative;
   padding: 14px 32px;
   border-top: 1px solid var(--outline);
   background: var(--bg);
   color: var(--fg-alt);
   font-size: 12px;
+}
+
+/* Linha animada na borda de cima: um brilho roxo/branco correndo da
+   esquerda pra direita. */
+.crm-footer::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), #c4a8ff, #ffffff, #c4a8ff, var(--primary), #c4a8ff, #ffffff, #c4a8ff, var(--primary));
+  background-size: 200% 100%;
+  animation: crm-footer-line 6s linear infinite;
+}
+
+@keyframes crm-footer-line {
+  from { background-position: 100% 0; }
+  to   { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crm-footer::before { animation: none; }
 }
 
 .crm-footer a {

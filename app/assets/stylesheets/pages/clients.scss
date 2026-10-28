@@ -112,6 +112,39 @@
 
 .cform-accordion__body { padding: 1rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
 
+/* Abas do cadastro (Geral, Shopify, WhatsApp, Meta Ads, Google Ads...) */
+.cform-tabs { display: flex; gap: 0.25rem; padding: 0 1.25rem; border-bottom: 1px solid var(--outline); overflow-x: auto; scrollbar-width: none; }
+.cform-tabs::-webkit-scrollbar { display: none; }
+.cform-tab {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 0.75rem; margin-bottom: -1px;
+  background: none; border: none; border-bottom: 2px solid transparent; color: var(--fg-alt);
+  font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.cform-tab:hover { color: var(--fg); }
+.cform-tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--primary); }
+.cform-tab__dot { width: 7px; height: 7px; border-radius: 50%; background: #f0b400; }
+.cform-tab__dot--ok { background: #1e9e4a; }
+
+.cform-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+.cform-panel[hidden] { display: none; }
+
+/* Logos das integrações, nas cores das marcas */
+.cform-logo { width: 26px; height: 26px; border-radius: 7px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 15px; color: #fff; font-weight: 800; }
+.cform-logo i { font-size: 15px; }
+.cform-logo--geral { background: var(--primary-tint); color: var(--primary); }
+.cform-logo--shopify { background: #95bf47; }
+.cform-logo--whatsapp { background: #25d366; }
+.cform-logo--meta { background: #0866ff; }
+.cform-logo--google { background: #fff; border: 1px solid var(--outline); }
+.cform-logo--google i { background: conic-gradient(from -45deg, #ea4335 0 25%, #4285f4 0 50%, #34a853 0 75%, #fbbc05 0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.cform-logo--zapi { background: #111827; font-size: 14px; }
+
+/* Provedores dentro da aba WhatsApp (Z-API e API Oficial) */
+.cform-provider { border: 1px solid var(--outline); border-radius: var(--radius); overflow: hidden; }
+.cform-provider__header { display: flex; align-items: center; gap: 0.6rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--outline); font-weight: 600; font-size: 0.9rem; color: var(--fg); }
+.cform-provider__title { flex: 1; }
+.cform-provider__body { padding: 1rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+
 .cform-users-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .cform-user-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: var(--bg); border: 1px solid var(--outline); border-radius: var(--radius); }
 .cform-user-item__avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }

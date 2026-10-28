@@ -9,7 +9,8 @@ class Client < ApplicationRecord
   has_many :email_templates, dependent: :destroy
   has_many :landing_pages, dependent: :destroy
 
-  encrypts :meta_access_token, :google_ads_refresh_token, :shopify_api_secret, :shopify_storefront_token
+  encrypts :meta_access_token, :google_ads_refresh_token, :shopify_api_secret, :shopify_storefront_token,
+           :whatsapp_cloud_access_token
 
   before_validation :generate_slug, if: -> { slug.blank? && name.present? }
 
@@ -33,6 +34,12 @@ class Client < ApplicationRecord
     zapi_instance_id.present? &&
       zapi_instance_token.present? &&
       zapi_client_token.present?
+  end
+
+  # API Oficial do WhatsApp (Cloud API da Meta). Por ora só guarda as
+  # credenciais; o envio automático ainda sai pela Z-API.
+  def whatsapp_cloud_configured?
+    whatsapp_cloud_phone_number_id.present? && whatsapp_cloud_access_token.present?
   end
 
   def shopify_configured?

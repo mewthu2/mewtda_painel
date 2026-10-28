@@ -11,6 +11,18 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # Depois do login vai pro Início (prévia de vendas). Se o usuário tinha
+  # tentado abrir /crm (Trackeamento site), não volta pra lá: essa tela
+  # consulta os eventos do pixel da Shopify e demora muito pra carregar.
+  def after_sign_in_path_for(resource)
+    stored = stored_location_for(resource)
+    return root_path if stored.blank? || URI.parse(stored).path.chomp('/') == crm_path.chomp('/')
+
+    stored
+  rescue URI::InvalidURIError
+    root_path
+  end
+
   # Lê o idioma de ?locale=, memoriza na sessão pra persistir entre páginas,
   # e cai pro default se não vier nada ou vier um valor inválido.
   def set_locale

@@ -233,4 +233,13 @@ class Sales::MonthlyMetricsTest < ActiveSupport::TestCase
     assert_equal 150.0, result[:tagged_revenue].to_f
     assert_equal 150.0, result[:tagged_revenue_target_progress_pct]
   end
+
+  test 'tagged_revenue accepts several comma-separated goal tags' do
+    @client.goals.create!(year: 2026, month: 3, tagged_revenue_target: 500, tagged_revenue_tag: 'VendedoraElo, Eloina')
+    create_order(total_price: 150, tags: 'VendedoraElo, promo')
+    create_order(total_price: 200, tags: 'Eloina')
+    create_order(total_price: 300, tags: 'outra-tag')
+
+    assert_equal 350.0, call[:tagged_revenue].to_f
+  end
 end

@@ -23,9 +23,11 @@
   width: auto;
 }
 
-:root.theme-dark .crm-sidebar__logo {
-  filter: brightness(0) invert(1);
-}
+/* No tema escuro troca pela versão com "Meu" e "by Mewtda" em branco
+   (inverter o logo inteiro apagava o roxo e o check) */
+.crm-sidebar__logo--dark { display: none; }
+:root.theme-dark .crm-sidebar__logo--light { display: none; }
+:root.theme-dark .crm-sidebar__logo--dark { display: block; }
 
 /* Cliente atual (workspace) */
 .crm-ws {

@@ -11,6 +11,8 @@
         if (localStorage.getItem('crm-theme') === 'dark') {
           document.documentElement.classList.add('theme-dark');
         }
+        var zoom = parseFloat(localStorage.getItem('crm-zoom'));
+        if (zoom) document.documentElement.style.setProperty('--crm-zoom', zoom);
       })();
     </script>
 

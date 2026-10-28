@@ -67,3 +67,23 @@ body {
 
 :root.theme-dark .crm-theme-toggle .fa-sun { display: block; }
 :root.theme-dark .crm-theme-toggle .fa-moon { display: none; }
+
+/* A−/A+ ao lado do tema (ver changeFontSize em _header) */
+.crm-font-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.crm-font-size .crm-theme-toggle {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.crm-font-size .crm-font-size__up {
+  font-size: 15px;
+}
+
+.crm-main .crm-content {
+  zoom: var(--crm-zoom, 1);
+}

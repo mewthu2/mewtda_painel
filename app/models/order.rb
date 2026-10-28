@@ -13,6 +13,14 @@ class Order < ApplicationRecord
   scope :by_date_from, lambda { |d| where('shopify_creation_date >= ?', d.to_date.beginning_of_day) if d.present? }
   scope :by_date_to,   lambda { |d| where('shopify_creation_date <= ?', d.to_date.end_of_day) if d.present? }
   scope :not_cancelled, -> { where(cancelled_at: nil) }
+  # Aceita várias tags separadas por vírgula ("VendedoraElo, Eloina"): o
+  # pedido entra se tiver qualquer uma delas.
+  scope :with_any_tag, lambda { |value|
+    tags = value.to_s.split(',').map(&:strip).reject(&:blank?)
+    next all if tags.empty?
+
+    where(Array.new(tags.size, 'tags ILIKE ?').join(' OR '), *tags.map { |t| "%#{sanitize_sql_like(t)}%" })
+  }
 
   # Helpers
   def total

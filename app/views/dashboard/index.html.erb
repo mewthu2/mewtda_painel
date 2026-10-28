@@ -74,8 +74,13 @@
             <path d="M16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/>
           </svg>
         </div>
-        <h2 class="db-empty__title">Nenhum dado disponivel</h2>
-        <p class="db-empty__text"><%= @empty_message %></p>
+        <% if @awaiting_period %>
+          <h2 class="db-empty__title" data-db-loading-title>Escolha um período</h2>
+          <p class="db-empty__text" data-db-loading-text>Selecione Hoje, 7, 15 ou 30 dias (ou um mês) acima para carregar os dados do pixel.</p>
+        <% else %>
+          <h2 class="db-empty__title">Nenhum dado disponivel</h2>
+          <p class="db-empty__text"><%= @empty_message %></p>
+        <% end %>
       </div>
     </div>
 
@@ -494,6 +499,23 @@
   </div>
 </div>
 
+
+<% if @awaiting_period %>
+<script>
+  // As consultas do pixel demoram: avisa que está carregando depois do clique.
+  (function () {
+    function showLoading() {
+      var title = document.querySelector('[data-db-loading-title]');
+      var text  = document.querySelector('[data-db-loading-text]');
+      if (title) title.textContent = 'Carregando dados…';
+      if (text)  text.textContent  = 'Isso pode levar alguns segundos.';
+    }
+    document.querySelectorAll('.db-filter-btn').forEach(function (el) { el.addEventListener('click', showLoading); });
+    var form = document.querySelector('.db-month-filter__form');
+    if (form) form.addEventListener('submit', showLoading);
+  })();
+</script>
+<% end %>
 
 <% unless @empty_state %>
 <script>
