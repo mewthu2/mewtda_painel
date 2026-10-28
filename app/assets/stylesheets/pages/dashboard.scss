@@ -151,6 +151,8 @@
     margin-bottom: 24px;
   }
   .db-empty__icon svg { color: var(--fg-alt); }
+  .db-empty__icon--spin svg { animation: db-spin 0.9s linear infinite; }
+  @keyframes db-spin { to { transform: rotate(360deg); } }
   .db-empty__title {
     font-size: 18px;
     font-weight: 700;

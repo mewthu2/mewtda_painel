@@ -330,7 +330,6 @@ document.addEventListener("DOMContentLoaded", function () {
     checkoutCompleted: <%= raw @goal_daily[:checkout_completed_count_by_day].to_json %>
   };
 
-  var goalColors = { normal: primary, done: '#16a34a', over: '#dc2626', empty: gridColor };
   var goalFormatters = {
     currency: function (v) { return 'R$ ' + v.toFixed(2).replace('.', ','); },
     percent: function (v) { return v.toFixed(1) + '%'; },
@@ -343,7 +342,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var series = goalDaily[row.dataset.metric] || [];
     var reference = parseFloat(row.dataset.reference);
-    var color = goalColors[row.dataset.status] || primary;
     var formatter = goalFormatters[row.dataset.format] || function (v) { return v; };
 
     var annotations = isNaN(reference) ? {} : {
@@ -359,23 +357,42 @@ document.addEventListener("DOMContentLoaded", function () {
       }]
     };
 
+    // Candles dia a dia: abre no valor do dia anterior e fecha no do dia
+    // (verde = subiu, vermelho = caiu). Dias sem dado ficam sem candle.
+    var candles = [];
+    var previous = null;
+    series.forEach(function (value, i) {
+      if (value === null || value === undefined) return;
+      var open = previous === null ? value : previous;
+      candles.push({
+        x: 'Dia ' + goalDaily.days[i],
+        y: [open, Math.max(open, value), Math.min(open, value), value]
+      });
+      previous = value;
+    });
+
     new ApexCharts(el, {
-      chart: { toolbar: { show: false }, fontFamily: 'inherit', height: 240, type: 'area' },
-      series: [{ name: row.dataset.label, data: series }],
-      xaxis: {
-        categories: goalDaily.days,
-        labels: { formatter: function (d) { return 'Dia ' + d; } }
-      },
-      yaxis: { labels: { formatter: formatter } },
-      colors: [color],
+      chart: { toolbar: { show: false }, fontFamily: 'inherit', height: 240, type: 'candlestick' },
+      series: [{ name: row.dataset.label, data: candles }],
+      xaxis: { type: 'category', labels: { rotate: 0, hideOverlappingLabels: true } },
+      yaxis: { labels: { formatter: formatter }, tooltip: { enabled: false } },
+      plotOptions: { candlestick: { colors: { upward: '#16a34a', downward: '#dc2626' }, wick: { useFillColor: true } } },
       grid: { borderColor: gridColor },
-      stroke: { width: 2, curve: 'smooth' },
-      fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05 } },
       annotations: annotations,
       legend: { show: false },
       tooltip: {
         theme: tooltipTheme,
-        y: { formatter: function (v) { return v === null ? '—' : formatter(v); } }
+        custom: function (opts) {
+          var point = candles[opts.dataPointIndex];
+          if (!point) return '';
+          var diff = point.y[3] - point.y[0];
+          var sign = diff > 0 ? '+' : (diff < 0 ? '−' : '');
+          return '<div class="apexcharts-tooltip-title">' + point.x + '</div>' +
+            '<div style="padding: 6px 10px">' +
+              '<div><strong>' + formatter(point.y[3]) + '</strong></div>' +
+              '<div style="color:' + (diff >= 0 ? '#16a34a' : '#dc2626') + '">' + sign + formatter(Math.abs(diff)) + ' vs dia anterior</div>' +
+            '</div>';
+        }
       }
     }).render();
   });

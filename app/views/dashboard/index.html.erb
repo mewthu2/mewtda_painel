@@ -85,398 +85,22 @@
     </div>
 
   <% else %>
-
-    <%
-      def calc_change(current, previous)
-        return { value: 0, direction: 'neutral' } if previous.zero?
-        change = ((current - previous).to_f / previous * 100).round(1)
-        { value: change.abs, direction: change > 0 ? 'up' : (change < 0 ? 'down' : 'neutral') }
-      end
-
-      def tag_variant(direction)
-        { 'up' => 'success', 'down' => 'danger', 'neutral' => 'neutral' }[direction]
-      end
-
-      sessions_change = calc_change(@unique_sessions, @prev_unique_sessions)
-      checkout_change = calc_change(@counts[:checkout_completed], @prev_counts[:checkout_completed])
-    %>
-
-    <div class="db-kpi-grid">
-      <div class="db-kpi db-kpi--blue">
-        <div class="db-kpi__label">Sessoes Unicas</div>
-        <div class="db-kpi__value"><%= number_with_delimiter(@unique_sessions) %></div>
-        <span class="db-kpi__change crm-tag crm-tag--<%= tag_variant(sessions_change[:direction]) %>">
-          <% if sessions_change[:direction] == 'up' %>+<% elsif sessions_change[:direction] == 'down' %>-<% end %><%= sessions_change[:value] %>%
-        </span>
-      </div>
-
-      <div class="db-kpi db-kpi--green">
-        <div class="db-kpi__label">Checkouts</div>
-        <div class="db-kpi__value"><%= number_with_delimiter(@counts[:checkout_completed]) %></div>
-        <span class="db-kpi__change crm-tag crm-tag--<%= tag_variant(checkout_change[:direction]) %>">
-          <% if checkout_change[:direction] == 'up' %>+<% elsif checkout_change[:direction] == 'down' %>-<% end %><%= checkout_change[:value] %>%
-        </span>
-      </div>
-
-      <div class="db-kpi db-kpi--amber">
-        <div class="db-kpi__label">Taxa Conversao</div>
-        <div class="db-kpi__value"><%= @conversion[:checkout_completed] %>%</div>
-        <span class="db-kpi__change crm-tag crm-tag--neutral">do total</span>
-      </div>
-
-      <div class="db-kpi db-kpi--rose">
-        <div class="db-kpi__label">Nao Convertidos</div>
-        <div class="db-kpi__value"><%= @abandoned_carts %></div>
-        <span class="db-kpi__change crm-tag crm-tag--danger"><%= @abandoned_rate %>% taxa</span>
-      </div>
-
-      <div class="db-kpi db-kpi--purple">
-        <div class="db-kpi__label">Total Eventos</div>
-        <div class="db-kpi__value"><%= number_with_delimiter(@counts.values.sum) %></div>
-        <span class="db-kpi__change crm-tag crm-tag--neutral">no periodo</span>
-      </div>
-    </div>
-
-
-    <div class="db-funnel-section">
-      <div class="db-funnel-section__header">
-        <div class="db-funnel-section__title">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
-          Funil de Conversao
-        </div>
-        <div class="db-funnel-section__period">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <% period_label = { "1" => "Hoje", "7" => "Ultimos 7 dias", "15" => "Ultimos 15 dias", "30" => "Ultimos 30 dias" }[@period] || "Hoje" %>
-          <%= period_label %>
-        </div>
-      </div>
-
-      <div class="db-funnel">
-        <div class="db-funnel__step">
-          <div class="db-funnel__icon" style="background:rgba(59,130,246,.15)">
-            <svg width="20" height="20" fill="none" stroke="#3b82f6" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"/></svg>
+    <%# Relatório chega pelo websocket (TrackingReportChannel), ver script abaixo %>
+    <div id="db-report" data-report-token="<%= @report_token %>">
+      <div class="db-card">
+        <div class="db-empty">
+          <div class="db-empty__icon db-empty__icon--spin">
+            <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg>
           </div>
-          <div class="db-funnel__count"><%= number_with_delimiter(@counts[:page_viewed]) %></div>
-          <div class="db-funnel__name">Paginas Vistas</div>
-          <div class="db-funnel__bar">
-            <div class="db-funnel__bar-fill" style="width:100%; background:#3b82f6"></div>
-          </div>
-          <div class="db-funnel__rate">100%</div>
-        </div>
-
-        <div class="db-funnel__step">
-          <div class="db-funnel__icon" style="background:rgba(34,197,94,.15)">
-            <svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-          </div>
-          <div class="db-funnel__count"><%= number_with_delimiter(@counts[:product_viewed]) %></div>
-          <div class="db-funnel__name">Produtos Vistos</div>
-          <div class="db-funnel__bar">
-            <div class="db-funnel__bar-fill" style="width:<%= @conversion[:product_viewed] %>%; background:#22c55e"></div>
-          </div>
-          <div class="db-funnel__rate"><%= @conversion[:product_viewed] %>%</div>
-          <div class="db-funnel__dropoff"><%= @dropoff[:page_to_product] %>% saiu</div>
-          <% if @avg_times[:page_to_product] > 0 %>
-            <div class="db-funnel__time">
-              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-              <%= @avg_times[:page_to_product] %> min
-            </div>
-          <% end %>
-        </div>
-
-        <div class="db-funnel__step">
-          <div class="db-funnel__icon" style="background:rgba(245,158,11,.15)">
-            <svg width="20" height="20" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007 17h11M7 13l-.4-2M17 17a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/></svg>
-          </div>
-          <div class="db-funnel__count"><%= number_with_delimiter(@counts[:added_to_cart]) %></div>
-          <div class="db-funnel__name">Add ao Carrinho</div>
-          <div class="db-funnel__bar">
-            <div class="db-funnel__bar-fill" style="width:<%= @conversion[:added_to_cart] %>%; background:#f59e0b"></div>
-          </div>
-          <div class="db-funnel__rate"><%= @conversion[:added_to_cart] %>%</div>
-          <div class="db-funnel__dropoff"><%= @dropoff[:product_to_cart] %>% saiu</div>
-          <% if @avg_times[:product_to_cart] > 0 %>
-            <div class="db-funnel__time">
-              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-              <%= @avg_times[:product_to_cart] %> min
-            </div>
-          <% end %>
-        </div>
-
-        <div class="db-funnel__step">
-          <div class="db-funnel__icon" style="background:rgba(236,72,153,.15)">
-            <svg width="20" height="20" fill="none" stroke="#ec4899" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <div class="db-funnel__count"><%= number_with_delimiter(@counts[:checkout_completed]) %></div>
-          <div class="db-funnel__name">Checkout</div>
-          <div class="db-funnel__bar">
-            <div class="db-funnel__bar-fill" style="width:<%= @conversion[:checkout_completed] %>%; background:#ec4899"></div>
-          </div>
-          <div class="db-funnel__rate"><%= @conversion[:checkout_completed] %>%</div>
-          <div class="db-funnel__dropoff"><%= @dropoff[:cart_to_checkout] %>% nao converteu</div>
-          <% if @avg_times[:cart_to_checkout] > 0 %>
-            <div class="db-funnel__time">
-              <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-              <%= @avg_times[:cart_to_checkout] %> min
-            </div>
-          <% end %>
+          <h2 class="db-empty__title" data-db-report-title>Carregando dados…</h2>
+          <p class="db-empty__text" data-db-report-text>Estamos processando os eventos do pixel. A tela atualiza sozinha quando terminar.</p>
         </div>
       </div>
     </div>
-
-
-    <div class="db-grid-2">
-      <div class="db-card">
-        <div class="db-card__header">
-          <span class="db-card__title">Eventos por Dia</span>
-        </div>
-        <div class="db-chart-wrap">
-          <div id="events_chart"></div>
-        </div>
-      </div>
-
-      <div class="db-card">
-        <div class="db-card__header">
-          <span class="db-card__title">Dispositivos</span>
-        </div>
-        <div class="db-chart-wrap">
-          <div id="devices_chart"></div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="db-grid-3">
-      <div class="db-card">
-        <div class="db-card__header">
-          <span class="db-card__title">Origem do Trafego</span>
-        </div>
-        <div class="db-chart-wrap">
-          <div id="referrers_chart"></div>
-        </div>
-      </div>
-
-      <div class="db-card">
-        <div class="db-card__header">
-          <span class="db-card__title">Top Produtos Vistos</span>
-        </div>
-        <% if @top_products_viewed.any? %>
-          <ul class="db-top-list db-top-list--products">
-            <% @top_products_viewed.each_with_index do |p, i| %>
-              <li>
-                <span class="db-top-list__rank"><%= i + 1 %></span>
-                <% if p[:image].present? %>
-                  <img
-                    src="<%= p[:image].start_with?('//') ? "https:#{p[:image]}" : p[:image] %>"
-                    alt="<%= p[:title] %>"
-                    class="db-top-list__img"
-                    loading="lazy"
-                  />
-                <% else %>
-                  <span class="db-top-list__img-placeholder">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                  </span>
-                <% end %>
-                <div class="db-top-list__info">
-                  <span class="db-top-list__title"><%= p[:title] %></span>
-                  <% if p[:sku].present? %>
-                    <span class="db-top-list__sku">SKU: <%= p[:sku] %></span>
-                  <% elsif p[:price].present? && p[:price].to_f > 0 %>
-                    <span class="db-top-list__price">
-                      <%= number_to_currency(p[:price], unit: "R$", separator: ",", delimiter: ".") %>
-                    </span>
-                  <% end %>
-                </div>
-                <span class="db-top-list__count"><%= p[:count] %></span>
-              </li>
-            <% end %>
-          </ul>
-        <% else %>
-          <p class="db-empty-note">Sem dados</p>
-        <% end %>
-      </div>
-
-      <div class="db-card">
-        <div class="db-card__header">
-          <span class="db-card__title">Top Produtos no Carrinho</span>
-        </div>
-        <% if @top_products_carted.any? %>
-          <ul class="db-top-list db-top-list--products">
-            <% @top_products_carted.each_with_index do |p, i| %>
-              <li>
-                <span class="db-top-list__rank"><%= i + 1 %></span>
-                <% if p[:image].present? %>
-                  <img
-                    src="<%= p[:image].start_with?('//') ? "https:#{p[:image]}" : p[:image] %>"
-                    alt="<%= p[:title] %>"
-                    class="db-top-list__img"
-                    loading="lazy"
-                  />
-                <% else %>
-                  <span class="db-top-list__img-placeholder">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007 17h11M7 13l-.4-2M17 17a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z"/></svg>
-                  </span>
-                <% end %>
-                <div class="db-top-list__info">
-                  <span class="db-top-list__title"><%= p[:title] %></span>
-                  <% if p[:sku].present? %>
-                    <span class="db-top-list__sku">SKU: <%= p[:sku] %></span>
-                  <% elsif p[:price].present? && p[:price].to_f > 0 %>
-                    <span class="db-top-list__price">
-                      <%= number_to_currency(p[:price], unit: "R$", separator: ",", delimiter: ".") %>
-                    </span>
-                  <% end %>
-                </div>
-                <span class="db-top-list__count"><%= p[:count] %></span>
-              </li>
-            <% end %>
-          </ul>
-        <% else %>
-          <p class="db-empty-note">Sem dados</p>
-        <% end %>
-      </div>
-    </div>
-
-
-    <div class="db-card" style="margin-bottom:24px">
-      <div class="db-card__header">
-        <span class="db-card__title">Atividade por Hora do Dia</span>
-      </div>
-      <% max_hour = @hourly_events.values.max || 1 %>
-      <div class="db-heatmap">
-        <% @hourly_events.each do |hour, count| %>
-          <%
-            intensity = count.to_f / max_hour
-            bg = if intensity == 0
-              '#f1f5f9'
-            elsif intensity < 0.25
-              '#dbeafe'
-            elsif intensity < 0.5
-              '#93c5fd'
-            elsif intensity < 0.75
-              '#3b82f6'
-            else
-              '#1d4ed8'
-            end
-            text_color = intensity >= 0.5 ? '#fff' : '#64748b'
-          %>
-          <div
-            class="db-heatmap__cell"
-            style="background:<%= bg %>; color:<%= text_color %>"
-            data-tooltip="<%= hour %>h: <%= count %> eventos"
-          >
-            <%= count > 0 ? count : '' %>
-          </div>
-        <% end %>
-      </div>
-      <div class="db-heatmap__labels">
-        <% (0..23).each do |h| %>
-          <span class="db-heatmap__label"><%= h.to_s.rjust(2, '0') %></span>
-        <% end %>
-      </div>
-    </div>
-
-
-    <div class="db-grid-2">
-      <div class="db-card">
-        <div class="db-card__header">
-          <span class="db-card__title">Atividade por Dia da Semana</span>
-        </div>
-        <div class="db-chart-wrap">
-          <div id="weekday_chart"></div>
-        </div>
-      </div>
-
-      <div class="db-card">
-        <div class="db-card__header">
-          <span class="db-card__title">Funil Comparativo</span>
-        </div>
-        <div class="db-chart-wrap">
-          <div id="funnel_bar_chart"></div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="db-table-card">
-      <div class="db-table-card__header">
-        <span class="db-table-card__title">Sessoes Recentes</span>
-        <span class="db-table-card__count"><%= @sessions.size %> sessoes | <%= @sessions.count { |s| !s[:abandoned] } %> convertidas</span>
-      </div>
-
-      <div class="db-table-wrap">
-        <table class="db-table crm-table">
-          <thead>
-            <tr>
-              <th>Sessao</th>
-              <th>Dominio</th>
-              <th>Jornada</th>
-              <th class="center">Device</th>
-              <th class="center">Duracao</th>
-              <th class="center">Eventos</th>
-              <th class="center">Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <% if @sessions.empty? %>
-              <tr>
-                <td colspan="7" class="db-table__empty">
-                  Nenhuma sessao encontrada no periodo selecionado.
-                </td>
-              </tr>
-            <% else %>
-              <% @sessions.each do |s| %>
-                <tr
-                  class="db-session-row <%= 'db-table__row--abandoned' if s[:abandoned] %>"
-                  data-session-id="<%= s[:session_id] %>"
-                  data-fetch-url="<%= crm_session_path(session_id: s[:session_id]) %>"
-                >
-                  <td>
-                    <span class="db-badge db-badge--mono"><%= s[:session_id].truncate(12) %></span>
-                  </td>
-                  <td style="font-weight:500; color:#0f172a"><%= s[:shop_domain] %></td>
-                  <td>
-                    <div style="display:flex; gap:4px; flex-wrap:wrap">
-                      <% s[:last_kinds].each do |kind| %>
-                        <%
-                          badge_class = case kind
-                            when 'page_viewed'           then 'db-badge--info'
-                            when 'product_viewed'        then 'crm-tag crm-tag--success'
-                            when 'product_added_to_cart' then 'crm-tag crm-tag--warning'
-                            when 'checkout_started'      then 'crm-tag crm-tag--warning'
-                            when 'checkout_completed'    then 'db-badge--checkout'
-                            else ''
-                          end
-                        %>
-                        <span class="db-badge <%= badge_class %>"><%= kind.split('_').first(2).join(' ') %></span>
-                      <% end %>
-                    </div>
-                  </td>
-                  <td class="center">
-                    <span class="db-badge db-badge--device"><%= s[:device] %></span>
-                  </td>
-                  <td class="center" style="color:#64748b; font-size:12px"><%= s[:duration_min] %> min</td>
-                  <td class="center">
-                    <span class="db-badge db-badge--count"><%= s[:event_count] %></span>
-                  </td>
-                  <td class="center">
-                    <% if s[:abandoned] %>
-                      <span class="crm-tag crm-tag--danger">nao converteu</span>
-                    <% else %>
-                      <span class="crm-tag crm-tag--success">converteu</span>
-                    <% end %>
-                  </td>
-                </tr>
-              <% end %>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
   <% end %>
 
 </div>
+
 
 
 <div id="db-modal-overlay" class="db-modal-overlay" role="dialog" aria-modal="true">
@@ -517,18 +141,58 @@
 </script>
 <% end %>
 
-<% unless @empty_state %>
+<% if @report_token %>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+  // Assina o canal, pede o relatório e troca o "Carregando" pelo HTML pronto.
+  (function () {
+    var box = document.getElementById('db-report');
+    if (!box || !window.ActionCable) return;
+
+    function fail(message) {
+      var title = box.querySelector('[data-db-report-title]');
+      var text  = box.querySelector('[data-db-report-text]');
+      if (title) title.textContent = 'Não deu pra carregar';
+      if (text)  text.textContent  = message;
+      var icon = box.querySelector('.db-empty__icon--spin');
+      if (icon) icon.classList.remove('db-empty__icon--spin');
+    }
+
+    var done = false, started = false;
+    var consumer = ActionCable.createConsumer();
+    var timeout = setTimeout(function () {
+      if (!done) fail('Demorou mais que o esperado. Recarregue a página para tentar de novo.');
+    }, 180000);
+
+    consumer.subscriptions.create({ channel: 'TrackingReportChannel', token: box.dataset.reportToken }, {
+      connected: function () {
+        if (started) return;
+        started = true;
+        this.perform('start');
+      },
+      rejected: function () { fail('Sessão expirada. Recarregue a página.'); },
+      received: function (data) {
+        done = true;
+        clearTimeout(timeout);
+        consumer.disconnect();
+        if (data.error) return fail(data.error);
+
+        box.innerHTML = data.html;
+        var chartData = document.getElementById('db-chart-data');
+        if (chartData) renderDbCharts(JSON.parse(chartData.textContent));
+      }
+    });
+  })();
+
+function renderDbCharts(d) {
   var COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#ec4899', '#8b5cf6'];
 
   new ApexCharts(document.querySelector("#events_chart"), {
     chart: { type: 'area', height: 220, toolbar: { show: false }, fontFamily: 'inherit' },
     series: [
-      { name: 'Page',     data: <%= raw @daily_events.select{|k,_| k[1]=='page_viewed'}.map{|k,v| [k[0],v]}.to_json %> },
-      { name: 'Produto',  data: <%= raw @daily_events.select{|k,_| k[1]=='product_viewed'}.map{|k,v| [k[0],v]}.to_json %> },
-      { name: 'Carrinho', data: <%= raw @daily_events.select{|k,_| k[1]=='product_added_to_cart'}.map{|k,v| [k[0],v]}.to_json %> },
-      { name: 'Checkout', data: <%= raw @daily_events.select{|k,_| k[1]=='checkout_completed'}.map{|k,v| [k[0],v]}.to_json %> }
+      { name: 'Page',     data: d.daily.page_viewed },
+      { name: 'Produto',  data: d.daily.product_viewed },
+      { name: 'Carrinho', data: d.daily.product_added_to_cart },
+      { name: 'Checkout', data: d.daily.checkout_completed }
     ],
     xaxis: { type: 'datetime', labels: { style: { fontSize: '11px' } } },
     colors: COLORS,
@@ -541,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   new ApexCharts(document.querySelector("#devices_chart"), {
     chart: { type: 'donut', height: 220, fontFamily: 'inherit' },
-    series: [<%= @devices[:desktop] %>, <%= @devices[:mobile] %>, <%= @devices[:tablet] %>],
+    series: d.devices,
     labels: ['Desktop', 'Mobile', 'Tablet'],
     colors: ['#3b82f6', '#22c55e', '#f59e0b'],
     legend: { position: 'bottom', fontSize: '12px' },
@@ -551,8 +215,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   new ApexCharts(document.querySelector("#referrers_chart"), {
     chart: { type: 'bar', height: 220, toolbar: { show: false }, fontFamily: 'inherit' },
-    series: [{ name: 'Visitas', data: <%= raw @referrers.values.to_json %> }],
-    xaxis: { categories: <%= raw @referrers.keys.to_json %> },
+    series: [{ name: 'Visitas', data: d.referrers.values }],
+    xaxis: { categories: d.referrers.labels },
     colors: ['#8b5cf6'],
     plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
     grid: { borderColor: '#f1f5f9' },
@@ -561,8 +225,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   new ApexCharts(document.querySelector("#weekday_chart"), {
     chart: { type: 'bar', height: 200, toolbar: { show: false }, fontFamily: 'inherit' },
-    series: [{ name: 'Eventos', data: <%= raw @weekday_events.map{|d| d[:count]}.to_json %> }],
-    xaxis: { categories: <%= raw @weekday_events.map{|d| d[:day]}.to_json %> },
+    series: [{ name: 'Eventos', data: d.weekday.values }],
+    xaxis: { categories: d.weekday.labels },
     colors: ['#3b82f6'],
     plotOptions: { bar: { borderRadius: 4, columnWidth: '55%' } },
     grid: { borderColor: '#f1f5f9' },
@@ -571,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   new ApexCharts(document.querySelector("#funnel_bar_chart"), {
     chart: { type: 'bar', height: 200, toolbar: { show: false }, fontFamily: 'inherit' },
-    series: [{ name: 'Eventos', data: [<%= @counts[:page_viewed] %>, <%= @counts[:product_viewed] %>, <%= @counts[:added_to_cart] %>, <%= @counts[:checkout_completed] %>] }],
+    series: [{ name: 'Eventos', data: d.funnel }],
     xaxis: { categories: ['Paginas', 'Produtos', 'Carrinho', 'Checkout'] },
     colors: COLORS,
     plotOptions: { bar: { distributed: true, borderRadius: 6, columnWidth: '50%' } },
@@ -579,8 +243,9 @@ document.addEventListener("DOMContentLoaded", function () {
     grid: { borderColor: '#f1f5f9' },
     dataLabels: { enabled: true, style: { fontSize: '12px', fontWeight: 700 } }
   }).render();
-});
+}
 </script>
+<% end %>
 
 <script>
 (function () {
@@ -622,9 +287,12 @@ document.addEventListener("DOMContentLoaded", function () {
     return html;
   }
 
-  document.querySelectorAll('.db-session-row').forEach(function (row) {
-    row.addEventListener('click', function () {
-      var sid = this.dataset.sessionId, url = this.dataset.fetchUrl;
+  // Delegação: as linhas chegam depois, junto com o relatório.
+  document.addEventListener('click', function (e) {
+    var row = e.target.closest && e.target.closest('.db-session-row');
+    if (!row) return;
+    (function () {
+      var sid = row.dataset.sessionId, url = row.dataset.fetchUrl;
       document.getElementById('db-modal-sid').textContent = sid;
       document.getElementById('db-modal-meta').innerHTML = '';
       document.getElementById('db-modal-events-list').innerHTML = '';
@@ -648,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById('db-modal-events').style.display = 'block';
         })
         .catch(function () { document.getElementById('db-modal-loading').textContent = 'Erro ao carregar. Tente novamente.'; });
-    });
+    })();
   });
 
   function closeModal() { document.getElementById('db-modal-overlay').style.display = 'none'; document.body.style.overflow = ''; }
@@ -657,4 +325,3 @@ document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 }());
 </script>
-<% end %>
