@@ -34,4 +34,18 @@ class OrderTest < ActiveSupport::TestCase
     assert_includes result, active
     assert_not_includes result, cancelled
   end
+
+  test 'with_any_tag soma VendedoraElo e Eloina mesmo com só uma tag na meta' do
+    client = build_client
+
+    elo = Order.create!(client: client, shopify_order_id: '3001', tags: 'VendedoraElo')
+    eloina = Order.create!(client: client, shopify_order_id: '3002', tags: 'Eloina, Outra')
+    other = Order.create!(client: client, shopify_order_id: '3003', tags: 'Outra')
+
+    [Order.with_any_tag('VendedoraElo'), Order.with_any_tag('eloina')].each do |result|
+      assert_includes result, elo
+      assert_includes result, eloina
+      assert_not_includes result, other
+    end
+  end
 end
